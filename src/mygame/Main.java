@@ -37,10 +37,10 @@ public class Main extends SimpleApplication implements ActionListener{
     private boolean left = false, right = false, up = false, down = false;
     private Vector3f camDir = new Vector3f();
     private Vector3f camLeft = new Vector3f();
-    private Node n;
+    private Node n;     //Aufhebare Objekte
+    private Nifty nifty;
     
     public static void main(String[] args) {
-        System.out.println("test");
         app = new Main();
         app.start();
     }
@@ -111,7 +111,7 @@ public class Main extends SimpleApplication implements ActionListener{
         
         NiftyJmeDisplay niftyDisplay = new NiftyJmeDisplay( assetManager, inputManager, audioRenderer, guiViewPort);
         //Create a new NiftyGui objects
-        Nifty nifty = niftyDisplay.getNifty();
+        nifty = niftyDisplay.getNifty();
         //Read yout XML and initialize your custom Screen Controller
         nifty.fromXml("Interface/screen.xml", "start");
         //attach the Niftry display to the gui view port as a processor
@@ -119,9 +119,13 @@ public class Main extends SimpleApplication implements ActionListener{
         //disable the fly cam
         flyCam.setDragToRotate(true);
         
+        //Entfernt, dass escape das Spiel beendet
+        inputManager.deleteMapping(SimpleApplication.INPUT_MAPPING_EXIT);
+        
     }
     
     private void setUpKeys() {
+    //Tasten um Spieler zu Steuern
     inputManager.addMapping("Left", new KeyTrigger(KeyInput.KEY_A));
     inputManager.addMapping("Right", new KeyTrigger(KeyInput.KEY_D));
     inputManager.addMapping("Up", new KeyTrigger(KeyInput.KEY_W));
@@ -132,6 +136,11 @@ public class Main extends SimpleApplication implements ActionListener{
     inputManager.addListener(this, "Up");
     inputManager.addListener(this, "Down");
     inputManager.addListener(this, "Jump");
+    //Allgemeine Tasten
+    inputManager.addMapping("Menu", new KeyTrigger(KeyInput.KEY_ESCAPE));
+    inputManager.addListener(this, "Menu");
+    
+    
   }
     
     public void onAction(String binding, boolean isPressed, float tpf) {
@@ -145,6 +154,9 @@ public class Main extends SimpleApplication implements ActionListener{
       down = isPressed;
     } else if (binding.equals("Jump")) {
       if (isPressed) { player.jump(); }
+    } else if (binding.equals("Menu")) {
+        nifty.gotoScreen("pause");
+        flyCam.setDragToRotate(true);
     }
   }
 

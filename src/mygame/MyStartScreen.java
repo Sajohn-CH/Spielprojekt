@@ -8,6 +8,8 @@ import com.jme3.app.Application;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
 import de.lessvoid.nifty.Nifty;
+import de.lessvoid.nifty.elements.Element;
+import de.lessvoid.nifty.elements.render.TextRenderer;
 import de.lessvoid.nifty.input.NiftyInputEvent;
 import de.lessvoid.nifty.screen.KeyInputHandler;
 import de.lessvoid.nifty.screen.Screen;
@@ -19,20 +21,21 @@ import de.lessvoid.nifty.screen.ScreenController;
  */
 public class MyStartScreen extends AbstractAppState implements ScreenController, KeyInputHandler{
     private Nifty nifty;
-    private Application app;
     
     
     
     @Override
     public void initialize(AppStateManager stateManager, Application app) {
         super.initialize(stateManager, app);
-        this.app = app;
         //TODO: initialize your AppState, e.g. attach spatials to rootNode
         //this is called on the OpenGL thread after the AppState has been attached
     }
     
     @Override
     public void update(float tpf) {
+        //TODO: weitermachen
+        Element niftyElement = nifty.getCurrentScreen().findElementByName("time");
+        niftyElement.getRenderer(TextRenderer.class).setText(String.valueOf(System.currentTimeMillis()));
         //TODO: implement behavior during runtime
     }
     
@@ -64,15 +67,23 @@ public class MyStartScreen extends AbstractAppState implements ScreenController,
     }
     
     public void quitGame() {
-       app.stop();
+       Main.app.stop();
     }
     
     public String getPlayerName() {
         return String.valueOf(System.currentTimeMillis());
     }
+    
+    public void toStart() {
+        nifty.gotoScreen("start");
+    }
 
     //From KeyInputHandler
     public boolean keyEvent(NiftyInputEvent inputEvent) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    public String getScore() {
+        return "0";
     }
 }

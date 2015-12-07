@@ -22,10 +22,45 @@
             </panel>
         </layer>
     </screen>
+    
     <screen id="hud" controller="mygame.MyStartScreen">
         <layer id="background" childLayout="center">
             <image filename="Interface/hud.png" imageMode="resize:40,490,110,170,40,560,40,270,40,560,40,40" width="100%" height="100%"></image>
         </layer>
+        <layer id="foreground" childLayout="vertical">
+            <panel id="top" height="90%" width="100%" childLayout="vertical" ></panel>
+            <panel id="bottom" height="10%" width="100%" childLayout="vertical" backgroundColor="#000f">
+                <panel id="score" height="9%" width="50%" childLayout="center">
+                    <text text="Score: ${CALL.getScore()}" font="Interface/Fonts/Arial.fnt" width="50%" height="100%" />
+                </panel>
+                <panel id="time" height="9%" width="100%" childLayout="center"> 
+                    <text id="time" text="Time" font="Interface/Fonts/Arial.fnt" width="50%" height="100%"/>
+                </panel>  
+            </panel>
+        </layer>
      
+    </screen>
+    
+    <screen id="pause" childLayout="vertical" controller="mygame.MyStartScreen">
+        <layer id="background" childLayout="center">
+            <image filename="Interface/opaque-60.png" imageMode="resize:40,490,110,170,40,560,40,270,40,560,40,40" width="100%" height="100%"></image>
+        </layer>
+        <layer id="foreground" backgroundColor="#0000" childLayout="vertical">
+            <panel id="panel_top" height="34%" width="75%" align="center" childLayout="center">
+                <control name="button" label="Fortsetzen" id="StartButton" align="center" valign="center" visibleToMouse="true">
+                    <interact onClick="startGame(hud)"/>
+                </control>
+             </panel>
+            <panel id="panel_mid" height="33%" width="75%" align="center" childLayout="center">
+                <control name="button" label="Startmenu" id="MenuButton" align="center" valign="center" visibleToMouse="true">
+                    <interact onClick="toStart()"/>
+                </control>
+            </panel>
+            <panel id="panel_bottom" height="33%" width="75%" align="center" childLayout="center">
+                <control name="button" label="Beenden" id="QuitButton" align="center" valign="center" visibleToMouse="true">
+                    <interact onClick="quitGame()"/>
+                </control>
+            </panel> 
+        </layer>
     </screen>
 </nifty>
