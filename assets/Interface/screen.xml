@@ -22,11 +22,15 @@
             </panel>
         </layer>
     </screen>
+<<<<<<< HEAD
     
+=======
+>>>>>>> d75742f8c9d5210157fcfaf90e1b7a39c7ee298c
     <screen id="hud" controller="mygame.MyStartScreen">
         <layer id="background" childLayout="center">
             <image filename="Interface/hud.png" imageMode="resize:40,490,110,170,40,560,40,270,40,560,40,40" width="100%" height="100%"></image>
         </layer>
+<<<<<<< HEAD
         <layer id="foreground" childLayout="vertical">
             <panel id="top" height="90%" width="100%" childLayout="vertical" ></panel>
             <panel id="bottom" height="10%" width="100%" childLayout="vertical" backgroundColor="#000f">
@@ -63,4 +67,8 @@
             </panel> 
         </layer>
     </screen>
+=======
+     
+    </screen>
+>>>>>>> d75742f8c9d5210157fcfaf90e1b7a39c7ee298c
 </nifty>
