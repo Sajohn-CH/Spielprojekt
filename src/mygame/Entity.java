@@ -1,0 +1,71 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package mygame;
+
+import com.jme3.app.state.AbstractAppState;
+import com.jme3.math.Vector3f;
+
+/**
+ *
+ * @author florian.wenk
+ */
+public class Entity extends AbstractAppState{
+    private int health;
+    private int damage;
+    private int level;
+    private int speed;
+    private Vector3f location;
+    private boolean living;
+
+    public int getHealth(){
+            return this.health;
+    }
+
+    public void increaseHealth(int health){
+            this.health = this.health + health;
+            if(this.health <= 0)
+                    living = false;
+    }
+
+    public int getDamage(){
+            return this.damage;
+    }
+
+    public void setDamage(int damage){
+            this.damage = damage;
+    }
+
+    public int getLevel(){
+            return this.level;
+    }
+
+    public void setLevel (int level){
+            this.level = level;
+    }
+
+    public int getSpeed (){
+            return this.speed;
+    }
+
+    public void setSpeed(int speed){
+            this.speed = speed;
+    }
+
+    public Vector3f getLocation(){
+            return this.location;
+    }
+    
+    public void setLocation(Vector3f location){
+        this.location = location;
+    }
+
+    public boolean isLiving(){
+            return this.living;
+    }
+    
+    public void setLiving(boolean living){
+        this.living = living;
+    }
+}

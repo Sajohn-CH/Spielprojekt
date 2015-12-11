@@ -1,6 +1,7 @@
 package mygame;
 
 import com.jme3.app.SimpleApplication;
+import com.jme3.asset.AssetManager;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
 import com.jme3.bullet.collision.shapes.CollisionShape;
@@ -30,7 +31,7 @@ import de.lessvoid.nifty.Nifty;
 public class Main extends SimpleApplication implements ActionListener{
     private Spatial scene;
     protected static Main app;
-    private BulletAppState bulletAppState;
+    protected static BulletAppState bulletAppState;
     private RigidBodyControl sceneC;
     private CharacterControl player;
     private Vector3f walkDirection = new Vector3f();
@@ -47,15 +48,21 @@ public class Main extends SimpleApplication implements ActionListener{
 
     @Override
     public void simpleInitApp() {
-       scene = assetManager.loadModel("Scenes/newScene.j3o");
+        scene = assetManager.loadModel("Scenes/newScene.j3o");
         scene.setLocalScale(2f);
         
+        bulletAppState = new BulletAppState();
+        stateManager.attach(bulletAppState);
+        
         setUpKeys();
-        //scene.setLocalTranslation(0, -5, 0);
-        //flyCam.setMoveSpeed(30);
         n = new Node();             // attach to n to let disappear when player is there
         Node n1 = new Node();       // attach to n1 to make collision resistant
                 
+        Bomb bomb = new Bomb(1, new Vector3f(0, 4, 0));
+        stateManager.attach(bomb);
+        rootNode.attachChild(bomb.n);
+        bomb.move(new Vector3f(100, 0, 50));
+        
         Box b = new Box(1, 1, 1);
         Geometry geom = new Geometry("Box", b);
         Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
@@ -98,9 +105,6 @@ public class Main extends SimpleApplication implements ActionListener{
         player.setFallSpeed(90);
         player.setGravity(30);
         player.setPhysicsLocation(new Vector3f(0, 10, 0));
-                
-        bulletAppState = new BulletAppState();
-        stateManager.attach(bulletAppState);
     
         rootNode.attachChild(n);
         rootNode.attachChild(n1);
@@ -109,11 +113,29 @@ public class Main extends SimpleApplication implements ActionListener{
         bulletAppState.getPhysicsSpace().add(boxC);
         bulletAppState.getPhysicsSpace().add(player);
         
+        //MyStartScreen myStartScreen = new MyStartScreen();
+        //stateManager.attach(myStartScreen);
+        //HudScreenState hudScreenState = new HudScreenState();
+        //stateManager.attach(hudScreenState);
+        
+        
         NiftyJmeDisplay niftyDisplay = new NiftyJmeDisplay( assetManager, inputManager, audioRenderer, guiViewPort);
         //Create a new NiftyGui objects
         nifty = niftyDisplay.getNifty();
         //Read yout XML and initialize your custom Screen Controller
-        nifty.fromXml("Interface/screen.xml", "start");
+        nifty.addXml("Interface/hud.xml");
+        nifty.addXml("Interface/screen.xml"); 
+        MyStartScreen startState = (MyStartScreen) nifty.getScreen("start").getScreenController();
+        nifty.registerScreenController(startState);
+        nifty.gotoScreen("hud");
+        stateManager.attach(startState);
+        
+        HudScreenState hudState = (HudScreenState) nifty.getScreen("hud").getScreenController();
+        nifty.registerScreenController(hudState);
+        stateManager.attach(hudState);
+        
+        nifty.gotoScreen("start");
+        //nifty.fromXml("Interface/screen.xml", "start", myStartScreen);
         //attach the Niftry display to the gui view port as a processor
         guiViewPort.addProcessor(niftyDisplay);
         //disable the fly cam
@@ -181,6 +203,8 @@ public class Main extends SimpleApplication implements ActionListener{
         if (down) {
             walkDirection.addLocal(camDir.negate());
         }
+        //walkDirection.normalizeLocal();
+        //walkDirection.multLocal(50 * tpf);
         player.setWalkDirection(walkDirection);
         cam.setLocation(player.getPhysicsLocation());
     }

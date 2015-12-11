@@ -34,8 +34,8 @@ public class MyStartScreen extends AbstractAppState implements ScreenController,
     @Override
     public void update(float tpf) {
         //TODO: weitermachen
-        Element niftyElement = nifty.getCurrentScreen().findElementByName("time");
-        niftyElement.getRenderer(TextRenderer.class).setText(String.valueOf(System.currentTimeMillis()));
+        //Element niftyElement = nifty.getCurrentScreen().findElementByName("time");
+        //niftyElement.getRenderer(TextRenderer.class).setText(String.valueOf(System.currentTimeMillis()));
         //TODO: implement behavior during runtime
     }
     
@@ -49,6 +49,7 @@ public class MyStartScreen extends AbstractAppState implements ScreenController,
 
     public void bind(Nifty nifty, Screen screen) {
         this.nifty = nifty;
+        System.out.println("bind " + screen.getScreenId());
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

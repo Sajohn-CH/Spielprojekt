@@ -22,7 +22,7 @@
             </panel>
         </layer>
     </screen>
-    
+    <!--
     <screen id="hud" controller="mygame.MyStartScreen">
         <layer id="background" childLayout="center">
             <image filename="Interface/hud.png" imageMode="resize:40,490,110,170,40,560,40,270,40,560,40,40" width="100%" height="100%"></image>
@@ -40,7 +40,7 @@
         </layer>
      
     </screen>
-    
+    -->
     <screen id="pause" childLayout="vertical" controller="mygame.MyStartScreen">
         <layer id="background" childLayout="center">
             <image filename="Interface/opaque-60.png" imageMode="resize:40,490,110,170,40,560,40,270,40,560,40,40" width="100%" height="100%"></image>
