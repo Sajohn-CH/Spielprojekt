@@ -9,6 +9,7 @@ import com.jme3.bullet.control.CharacterControl;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.input.KeyInput;
+import com.jme3.input.MouseInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.material.Material;
@@ -40,6 +41,7 @@ public class Main extends SimpleApplication implements ActionListener{
     private Vector3f camLeft = new Vector3f();
     private Node n;     //Aufhebare Objekte
     private Nifty nifty;
+    private HudScreenState hudState;
     
     public static void main(String[] args) {
         app = new Main();
@@ -130,7 +132,7 @@ public class Main extends SimpleApplication implements ActionListener{
         nifty.gotoScreen("hud");
         stateManager.attach(startState);
         
-        HudScreenState hudState = (HudScreenState) nifty.getScreen("hud").getScreenController();
+        hudState = (HudScreenState) nifty.getScreen("hud").getScreenController();
         nifty.registerScreenController(hudState);
         stateManager.attach(hudState);
         
@@ -162,7 +164,16 @@ public class Main extends SimpleApplication implements ActionListener{
     inputManager.addMapping("Menu", new KeyTrigger(KeyInput.KEY_ESCAPE));
     inputManager.addListener(this, "Menu");
     
-    
+    inputManager.addMapping("item_1", new KeyTrigger(KeyInput.KEY_1));
+    inputManager.addListener(this, "item_1");
+    inputManager.addMapping("item_2", new KeyTrigger(KeyInput.KEY_2));
+    inputManager.addListener(this, "item_2");
+    inputManager.addMapping("item_3", new KeyTrigger(KeyInput.KEY_3));
+    inputManager.addListener(this, "item_3");
+    inputManager.addMapping("item_4", new KeyTrigger(KeyInput.KEY_4));
+    inputManager.addListener(this, "item_4");
+    inputManager.addMapping("item_5", new KeyTrigger(KeyInput.KEY_5));
+    inputManager.addListener(this, "item_5");
   }
     
     public void onAction(String binding, boolean isPressed, float tpf) {
@@ -179,7 +190,24 @@ public class Main extends SimpleApplication implements ActionListener{
     } else if (binding.equals("Menu")) {
         nifty.gotoScreen("pause");
         flyCam.setDragToRotate(true);
+    } else if(binding.equals("item_1")) {
+        hudState.selectItem(1);
     }
+    else if(binding.equals("item_2")) {
+        hudState.selectItem(2);
+    }
+    else if(binding.equals("item_3")) {
+        hudState.selectItem(3);
+    }
+    else if(binding.equals("item_4")) {
+        hudState.selectItem(4);
+    }
+    else if(binding.equals("item_5")) {
+        hudState.selectItem(5);
+    }
+    
+    
+    
   }
 
     @Override
