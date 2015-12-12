@@ -12,6 +12,8 @@ import com.jme3.input.KeyInput;
 import com.jme3.input.MouseInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
+import com.jme3.input.controls.MouseAxisTrigger;
+import com.jme3.input.controls.MouseButtonTrigger;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
@@ -50,6 +52,9 @@ public class Main extends SimpleApplication implements ActionListener{
 
     @Override
     public void simpleInitApp() {
+        //Set this boolean true when the game loop should stop running when ever the window loses focus.
+        app.setPauseOnLostFocus(true);
+        
         scene = assetManager.loadModel("Scenes/newScene.j3o");
         scene.setLocalScale(2f);
         
@@ -145,6 +150,8 @@ public class Main extends SimpleApplication implements ActionListener{
         
         //Entfernt, dass escape das Spiel beendet
         inputManager.deleteMapping(SimpleApplication.INPUT_MAPPING_EXIT);
+        //Setzt Scrollgeschwindigkeit auf null, so dass man mit dem Mausrad nicht scrollen kann.
+        flyCam.setZoomSpeed(0);
         
     }
     
@@ -163,7 +170,7 @@ public class Main extends SimpleApplication implements ActionListener{
     //Allgemeine Tasten
     inputManager.addMapping("Menu", new KeyTrigger(KeyInput.KEY_ESCAPE));
     inputManager.addListener(this, "Menu");
-    
+    //Tasten für SchnelleisteSlots
     inputManager.addMapping("item_1", new KeyTrigger(KeyInput.KEY_1));
     inputManager.addListener(this, "item_1");
     inputManager.addMapping("item_2", new KeyTrigger(KeyInput.KEY_2));
@@ -174,36 +181,43 @@ public class Main extends SimpleApplication implements ActionListener{
     inputManager.addListener(this, "item_4");
     inputManager.addMapping("item_5", new KeyTrigger(KeyInput.KEY_5));
     inputManager.addListener(this, "item_5");
+    //Mausrad
+    inputManager.addMapping("item_scroll_up", new MouseAxisTrigger(MouseInput.AXIS_WHEEL, false));
+    inputManager.addListener(this, "item_scroll_up");
+    inputManager.addMapping("item_scroll_down", new MouseAxisTrigger(MouseInput.AXIS_WHEEL, true));
+    inputManager.addListener(this, "item_scroll_down");
+    
+    
   }
     
     public void onAction(String binding, boolean isPressed, float tpf) {
     if (binding.equals("Left")) {
-      left = isPressed;
+        left = isPressed;
     } else if (binding.equals("Right")) {
-      right= isPressed;
+        right= isPressed;
     } else if (binding.equals("Up")) {
-      up = isPressed;
+         up = isPressed;
     } else if (binding.equals("Down")) {
-      down = isPressed;
+         down = isPressed;
     } else if (binding.equals("Jump")) {
-      if (isPressed) { player.jump(); }
+         if (isPressed) { player.jump(); }
     } else if (binding.equals("Menu")) {
         nifty.gotoScreen("pause");
         flyCam.setDragToRotate(true);
     } else if(binding.equals("item_1")) {
         hudState.selectItem(1);
-    }
-    else if(binding.equals("item_2")) {
+    } else if(binding.equals("item_2")) {
         hudState.selectItem(2);
-    }
-    else if(binding.equals("item_3")) {
+    } else if(binding.equals("item_3")) {
         hudState.selectItem(3);
-    }
-    else if(binding.equals("item_4")) {
+    } else if(binding.equals("item_4")) {
         hudState.selectItem(4);
-    }
-    else if(binding.equals("item_5")) {
+    } else if(binding.equals("item_5")) {
         hudState.selectItem(5);
+    } else if(binding.equals("item_scroll_up")) {
+        hudState.nextSelectedItem();
+    } else if(binding.equals("item_scroll_down")) {
+        hudState.lastSelectedItem();
     }
     
     
@@ -241,5 +255,4 @@ public class Main extends SimpleApplication implements ActionListener{
     public void simpleRender(RenderManager rm) {
         //TODO: add render code
     }
-    
 }

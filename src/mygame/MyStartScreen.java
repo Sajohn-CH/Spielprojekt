@@ -33,10 +33,7 @@ public class MyStartScreen extends AbstractAppState implements ScreenController,
     
     @Override
     public void update(float tpf) {
-        //TODO: weitermachen
-        //Element niftyElement = nifty.getCurrentScreen().findElementByName("time");
-        //niftyElement.getRenderer(TextRenderer.class).setText(String.valueOf(System.currentTimeMillis()));
-        //TODO: implement behavior during runtime
+         //TODO: implement behavior during runtime
     }
     
     @Override

@@ -53,8 +53,12 @@ public class HudScreenState extends AbstractAppState implements ScreenController
     public String getScore() {
         return "0";
     }
-    
+    /**
+     * Setzt Auswahl/Slot des Items in der Leiste auf die gegeben Zahl
+     * @param num  Auszuwählender Slot
+     */
     public void selectItem(int num) {
+        //
         NiftyImage img = nifty.getRenderEngine().createImage(screen, "Interface/item-frame.png", false);
         Element item = screen.findElementByName("item-"+itemSelected);
         item.getRenderer(ImageRenderer.class).setImage(img);
@@ -64,6 +68,29 @@ public class HudScreenState extends AbstractAppState implements ScreenController
         itemSel.getRenderer(ImageRenderer.class).setImage(imgSel);
         
         itemSelected = num;
+    }
+    /**
+     * Wählt die nächste Auswahl/Slot der Leiste
+     */
+    public void nextSelectedItem() {
+        if(itemSelected == 5) {
+            selectItem(1);
+        } else {
+        int nextItem = itemSelected+1;
+        selectItem(nextItem);
+        }
+    }
+    
+     /**
+     * Wählt die letzte (nicht chronologisch) Auswahl/Slot der Leiste
+     */
+    public void lastSelectedItem() {
+        if(itemSelected == 1) {
+            selectItem(5);
+        } else {
+         int lastItem =  itemSelected-1;
+        selectItem(lastItem);
+        }
     }
      
 }
