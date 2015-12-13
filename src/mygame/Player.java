@@ -75,7 +75,7 @@ public class Player extends Entity{
         fire.setImagesX(2);
         fire.setImagesY(2);
         Material mat = new Material(Main.app.getAssetManager(), "Common/MatDefs/Misc/Particle.j3md");
-        mat.setTexture("Texture", Main.app.getAssetManager().loadTexture("Effects/Explosion/flash.png"));
+        mat.setTexture("Texture", Main.app.getAssetManager().loadTexture("Effects/flash.png"));
         mat.setBoolean("PointSprite", POINT_SPRITE);
         fire.setMaterial(mat);
         Main.app.getRootNode().attachChild(fire);
