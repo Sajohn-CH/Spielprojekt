@@ -15,6 +15,7 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Sphere;
+import static mygame.Main.bombs;
 
 /**
  *
@@ -34,15 +35,14 @@ public class Bomb extends Entity{
         Material mat = new Material (Main.app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
         mat.setColor("Color", ColorRGBA.Red);
         bomb.setMaterial(mat);
-        Main.bombs.add(this);
-        Main.bombNode.attachChildAt(bomb, Main.bombs.indexOf(this));
-        Main.app.getStateManager().attach(this);
         
         CollisionShape bombShape = CollisionShapeFactory.createMeshShape(bomb);
         bombC = new RigidBodyControl(bombShape, 0);
         bombC.setKinematic(true);
         bomb.addControl(bombC);
         Main.bulletAppState.getPhysicsSpace().add(bombC);
+        
+        init();
     }
 	
     public Bomb(int level, Vector3f location){
@@ -51,6 +51,12 @@ public class Bomb extends Entity{
             bomb.setLocalTranslation(location);
     }
 
+    private void init(){
+        Main.bombs.add(this);
+        Main.bombNode.attachChildAt(bomb, Main.bombs.indexOf(this));
+        Main.app.getStateManager().attach(this);
+    }
+    
     @Override
     public void increaseHealth(int health){
         super.increaseHealth(health);
