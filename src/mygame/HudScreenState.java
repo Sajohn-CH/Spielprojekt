@@ -38,6 +38,13 @@ public class HudScreenState extends AbstractAppState implements ScreenController
         //Setze Geldmenge
         Element moneyElement = screen.findElementByName("money");
         moneyElement.getRenderer(TextRenderer.class).setText("Geld: 100$");
+        
+        Element healthPnl = screen.findElementByName("healthPnl");
+        Element healthElement = screen.findElementByName("healthBar");
+        //System.out.println("health:"+player.getHealthPercentage());
+        healthElement.setWidth((int)(player.getHealthPercentage()/100f*healthPnl.getWidth()));
+        Element healthText = screen.findElementByName("health");
+        healthText.getRenderer(TextRenderer.class).setText(player.getHealthPercentage()+"%");
     }
     
     public void bind(Nifty nifty, Screen screen) {

@@ -88,7 +88,7 @@ public class Main extends SimpleApplication implements ActionListener{
         Bomb bomb = new Bomb(1, new Vector3f(0, 4, 0));
         bomb.setSpeed(10);
         bomb.setHealth(100);
-        bomb.setDamage(100);
+        bomb.setDamage(10);
         bomb.move(beacon.getLocation());
         
         Bomb bomb1 = new Bomb(1, new Vector3f(0, 4, 0));

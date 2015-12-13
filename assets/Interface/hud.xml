@@ -10,16 +10,24 @@
                 <text text="Welle: ${CALL.getScore()}" font="Interface/Fonts/Arial.fnt" width="25%" height="100%" />
                 <text id="time" text="Time" font="Interface/Fonts/Arial.fnt" width="50%" height="100%" align="left"/>
             </panel>
-            <panel id="top" height="85%" width="100%" childLayout="vertical" ></panel>
-            <panel id="bottom" height="10%" width="100%" childLayout="horizontal" >
+            
+            <panel id="top" height="82%" width="100%" childLayout="vertical" ></panel>
+            
+            <panel id="bottom" height="13%" width="100%" childLayout="horizontal" >
                <panel id="bottom_left" height="100%" width="25%" childLayout="vertical"/>
-               <panel id="bottom_bar" height="100%" width="50%" childLayout="horizontal" backgroundColor="#000f">
-                   <image id="item-1" filename="Interface/item-frame-selected.png" width="20%" height="100%"/>
-                   <image id="item-2" filename="Interface/item-frame.png" width="20%" height="100%"/>
-                   <image id="item-3" filename="Interface/item-frame.png" width="20%" height="100%"/>
-                   <image id="item-4" filename="Interface/item-frame.png" width="20%" height="100%"/>
-                   <image id="item-5" filename="Interface/item-frame.png" width="20%" height="100%"/>
-
+               <panel id="bottom_bar" height="100%" width="50%" childLayout="vertical" backgroundColor="#000f">
+                    <panel id="healthPnl" height="10%" width="100%" childLayout="horizontal">
+                        <panel id="healthBar" height="100%" width="100%" childLayout="horizontal" backgroundColor="#021FB0">
+                            <text id="health" text="100%" height="100%" width="100%" font="Interface/Fonts/Arial.fnt" />
+                        </panel>
+                    </panel>
+                    <panel id="items" height="90%" width="100%" childLayout="horizontal">
+                        <image id="item-1" filename="Interface/item-frame-selected.png" width="20%" height="100%"/>
+                        <image id="item-2" filename="Interface/item-frame.png" width="20%" height="100%"/>
+                        <image id="item-3" filename="Interface/item-frame.png" width="20%" height="100%"/>
+                        <image id="item-4" filename="Interface/item-frame.png" width="20%" height="100%"/>
+                        <image id="item-5" filename="Interface/item-frame.png" width="20%" height="100%"/>
+                    </panel>
                </panel>
                <panel id="bottom_right" height="100%" width="25%" childLayout="vertical"/>
             </panel>

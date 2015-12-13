@@ -18,9 +18,20 @@ public class Entity extends AbstractAppState{
     private int speed;
     private Vector3f location;
     private boolean living;
+    protected int maxHealth = 100;
 
     public int getHealth(){
         return this.health;
+    }
+    
+    public void setMaxHealth(int maxHealth) {
+        this.maxHealth = maxHealth;
+    }
+    
+    public int getHealthPercentage() {
+        //System.out.println("healt:"+health);
+        //System.out.println("maxHealth"+maxHealth);
+        return (int)(100f*health/maxHealth);
     }
     
     public void setHealth(int health){

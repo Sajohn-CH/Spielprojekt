@@ -45,7 +45,7 @@ public class Player extends Entity{
         player.setPhysicsLocation(new Vector3f(0, 10, 0));
         this.setLiving(true);
         this.setDamage(0);
-        this.setHealth(0);
+        setHealth(this.maxHealth);
         this.setSpeed(50);
         Main.bulletAppState.getPhysicsSpace().add(player);
     }
