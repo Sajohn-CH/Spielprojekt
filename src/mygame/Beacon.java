@@ -1,0 +1,54 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package mygame;
+
+import com.jme3.bullet.collision.shapes.CollisionShape;
+import com.jme3.bullet.control.RigidBodyControl;
+import com.jme3.bullet.util.CollisionShapeFactory;
+import com.jme3.material.Material;
+import com.jme3.math.ColorRGBA;
+import com.jme3.math.Vector3f;
+import com.jme3.scene.Geometry;
+import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
+import com.jme3.scene.shape.Box;
+
+/**
+ *
+ * @author florianwenk
+ */
+public class Beacon extends Entity {
+    
+    private RigidBodyControl beaconC;
+    protected Spatial beacon;
+    
+    public Beacon(Vector3f location, int health){
+        this.setLiving(true);
+        this.setLocation(new Vector3f(location.x, 4, location.z));
+        this.setHealth(health);
+        Box b = new Box(8, 8, 8);
+        beacon = new Geometry("Box", b);
+        Material mat = new Material(Main.app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
+        mat.setColor("Color", ColorRGBA.Orange);
+        beacon.setMaterial(mat);
+        beacon.setLocalTranslation(this.getLocation());
+        Main.app.getRootNode().attachChild(beacon);
+        Main.app.getStateManager().attach(this);
+        
+        CollisionShape beaconShape = CollisionShapeFactory.createMeshShape(beacon);
+        beaconC = new RigidBodyControl(beaconShape, 0);
+        beacon.addControl(beaconC);
+        Main.bulletAppState.getPhysicsSpace().add(beaconC);
+    }
+    
+    @Override
+    public void update(float tpf) {
+        if(!this.isLiving()){
+            Main.player.setLiving(false);
+            this.beacon.removeFromParent();
+            Main.bulletAppState.getPhysicsSpace().remove(beaconC);
+        }
+    }
+}

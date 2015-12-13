@@ -13,6 +13,7 @@ import de.lessvoid.nifty.render.NiftyImage;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
 import java.text.SimpleDateFormat;
+import static mygame.Main.player;
 
 /**
  *
@@ -23,6 +24,11 @@ public class HudScreenState extends AbstractAppState implements ScreenController
     private Screen screen;
     private SimpleDateFormat df = new SimpleDateFormat("HH:mm");
     private int itemSelected = 1;
+    private Player player;
+    
+    public void setPlayer(Player player){
+        this.player = player;
+    }
     
     @Override
     public void update(float tpf) {

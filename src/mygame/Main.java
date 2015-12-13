@@ -8,6 +8,10 @@ import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.CharacterControl;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
+import com.jme3.collision.Collidable;
+import com.jme3.collision.CollisionResults;
+import com.jme3.collision.UnsupportedCollisionException;
+import com.jme3.font.BitmapText;
 import com.jme3.input.KeyInput;
 import com.jme3.input.MouseInput;
 import com.jme3.input.controls.ActionListener;
@@ -25,6 +29,7 @@ import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Box;
 import com.jme3.scene.shape.Sphere;
 import de.lessvoid.nifty.Nifty;
+import java.util.ArrayList;
 
 /**
  * test
@@ -32,16 +37,17 @@ import de.lessvoid.nifty.Nifty;
  */
 
 public class Main extends SimpleApplication implements ActionListener{
-    private Spatial scene;
+    protected static Spatial scene;
     protected static Main app;
     protected static BulletAppState bulletAppState;
     private RigidBodyControl sceneC;
-    private CharacterControl player;
-    private Vector3f walkDirection = new Vector3f();
-    private boolean left = false, right = false, up = false, down = false;
-    private Vector3f camDir = new Vector3f();
-    private Vector3f camLeft = new Vector3f();
     private Node n;     //Aufhebare Objekte
+    protected static Node bombNode;
+    protected static ArrayList<Bomb> bombs;
+    protected static Node towerNode;
+    protected static ArrayList<Tower> towers;
+    protected static Player player;
+    protected static Beacon beacon;
     private Nifty nifty;
     private HudScreenState hudState;
     
@@ -61,14 +67,42 @@ public class Main extends SimpleApplication implements ActionListener{
         bulletAppState = new BulletAppState();
         stateManager.attach(bulletAppState);
         
+        bombs = new ArrayList<Bomb>();
+        bombNode = new Node();
+        rootNode.attachChild(bombNode);
+        
+        towers = new ArrayList<Tower>();
+        towerNode = new Node();
+        rootNode.attachChild(towerNode);
+        
+        player = new Player(this);
+        player.setDamage(100);
+        player.setHealth(100);
+        
+        beacon = new Beacon(new Vector3f(50, 0, 50), 100);
+        
         setUpKeys();
         n = new Node();             // attach to n to let disappear when player is there
         Node n1 = new Node();       // attach to n1 to make collision resistant
                 
         Bomb bomb = new Bomb(1, new Vector3f(0, 4, 0));
-        stateManager.attach(bomb);
-        rootNode.attachChild(bomb.n);
-        bomb.move(new Vector3f(100, 0, 50));
+        bomb.setSpeed(10);
+        bomb.setHealth(100);
+        bomb.setDamage(100);
+        bomb.move(beacon.getLocation());
+        
+        Bomb bomb1 = new Bomb(1, new Vector3f(0, 4, 0));
+        bomb1.setSpeed(3);
+        bomb1.setHealth(100);
+        bomb1.setDamage(10);
+        bomb1.move(new Vector3f(20, 0, 100));
+        
+        Bomb bomb2 = new Bomb(1, new Vector3f(0, 4, 0));
+        bomb2.setSpeed(5);
+        bomb2.setHealth(100);
+        bomb2.setDamage(10);
+        bomb2.move(new Vector3f(-20, 0, -100));
+        
         
         Box b = new Box(1, 1, 1);
         Geometry geom = new Geometry("Box", b);
@@ -106,19 +140,11 @@ public class Main extends SimpleApplication implements ActionListener{
         RigidBodyControl boxC = new RigidBodyControl(boxShape, 0);
         n1.addControl(boxC);
               
-        CapsuleCollisionShape capsuleShape = new CapsuleCollisionShape(1.5f, 6f, 1);
-        player = new CharacterControl(capsuleShape, 0.05f);
-        player.setJumpSpeed(20);
-        player.setFallSpeed(90);
-        player.setGravity(30);
-        player.setPhysicsLocation(new Vector3f(0, 10, 0));
-    
         rootNode.attachChild(n);
         rootNode.attachChild(n1);
         rootNode.attachChild(scene);
         bulletAppState.getPhysicsSpace().add(sceneC);
         bulletAppState.getPhysicsSpace().add(boxC);
-        bulletAppState.getPhysicsSpace().add(player);
         
         //MyStartScreen myStartScreen = new MyStartScreen();
         //stateManager.attach(myStartScreen);
@@ -138,6 +164,7 @@ public class Main extends SimpleApplication implements ActionListener{
         stateManager.attach(startState);
         
         hudState = (HudScreenState) nifty.getScreen("hud").getScreenController();
+        hudState.setPlayer(player);
         nifty.registerScreenController(hudState);
         stateManager.attach(hudState);
         
@@ -156,73 +183,51 @@ public class Main extends SimpleApplication implements ActionListener{
     }
     
     private void setUpKeys() {
-    //Tasten um Spieler zu Steuern
-    inputManager.addMapping("Left", new KeyTrigger(KeyInput.KEY_A));
-    inputManager.addMapping("Right", new KeyTrigger(KeyInput.KEY_D));
-    inputManager.addMapping("Up", new KeyTrigger(KeyInput.KEY_W));
-    inputManager.addMapping("Down", new KeyTrigger(KeyInput.KEY_S));
-    inputManager.addMapping("Jump", new KeyTrigger(KeyInput.KEY_SPACE));
-    inputManager.addListener(this, "Left");
-    inputManager.addListener(this, "Right");
-    inputManager.addListener(this, "Up");
-    inputManager.addListener(this, "Down");
-    inputManager.addListener(this, "Jump");
-    //Allgemeine Tasten
-    inputManager.addMapping("Menu", new KeyTrigger(KeyInput.KEY_ESCAPE));
-    inputManager.addListener(this, "Menu");
-    //Tasten für SchnelleisteSlots
-    inputManager.addMapping("item_1", new KeyTrigger(KeyInput.KEY_1));
-    inputManager.addListener(this, "item_1");
-    inputManager.addMapping("item_2", new KeyTrigger(KeyInput.KEY_2));
-    inputManager.addListener(this, "item_2");
-    inputManager.addMapping("item_3", new KeyTrigger(KeyInput.KEY_3));
-    inputManager.addListener(this, "item_3");
-    inputManager.addMapping("item_4", new KeyTrigger(KeyInput.KEY_4));
-    inputManager.addListener(this, "item_4");
-    inputManager.addMapping("item_5", new KeyTrigger(KeyInput.KEY_5));
-    inputManager.addListener(this, "item_5");
-    //Mausrad
-    inputManager.addMapping("item_scroll_up", new MouseAxisTrigger(MouseInput.AXIS_WHEEL, false));
-    inputManager.addListener(this, "item_scroll_up");
-    inputManager.addMapping("item_scroll_down", new MouseAxisTrigger(MouseInput.AXIS_WHEEL, true));
-    inputManager.addListener(this, "item_scroll_down");
-    
-    
-  }
-    
-    public void onAction(String binding, boolean isPressed, float tpf) {
-    if (binding.equals("Left")) {
-        left = isPressed;
-    } else if (binding.equals("Right")) {
-        right= isPressed;
-    } else if (binding.equals("Up")) {
-         up = isPressed;
-    } else if (binding.equals("Down")) {
-         down = isPressed;
-    } else if (binding.equals("Jump")) {
-         if (isPressed) { player.jump(); }
-    } else if (binding.equals("Menu")) {
-        nifty.gotoScreen("pause");
-        flyCam.setDragToRotate(true);
-    } else if(binding.equals("item_1")) {
-        hudState.selectItem(1);
-    } else if(binding.equals("item_2")) {
-        hudState.selectItem(2);
-    } else if(binding.equals("item_3")) {
-        hudState.selectItem(3);
-    } else if(binding.equals("item_4")) {
-        hudState.selectItem(4);
-    } else if(binding.equals("item_5")) {
-        hudState.selectItem(5);
-    } else if(binding.equals("item_scroll_up")) {
-        hudState.nextSelectedItem();
-    } else if(binding.equals("item_scroll_down")) {
-        hudState.lastSelectedItem();
+        //Allgemeine Tasten
+        inputManager.addMapping("Menu", new KeyTrigger(KeyInput.KEY_ESCAPE));
+        inputManager.addListener(this, "Menu");
+        //Tasten für SchnelleisteSlots
+        inputManager.addMapping("item_1", new KeyTrigger(KeyInput.KEY_1));
+        inputManager.addListener(this, "item_1");
+        inputManager.addMapping("item_2", new KeyTrigger(KeyInput.KEY_2));
+        inputManager.addListener(this, "item_2");
+        inputManager.addMapping("item_3", new KeyTrigger(KeyInput.KEY_3));
+        inputManager.addListener(this, "item_3");
+        inputManager.addMapping("item_4", new KeyTrigger(KeyInput.KEY_4));
+        inputManager.addListener(this, "item_4");
+        inputManager.addMapping("item_5", new KeyTrigger(KeyInput.KEY_5));
+        inputManager.addListener(this, "item_5");
+        //Mausrad
+        inputManager.addMapping("item_scroll_up", new MouseAxisTrigger(MouseInput.AXIS_WHEEL, false));
+        inputManager.addListener(this, "item_scroll_up");
+        inputManager.addMapping("item_scroll_down", new MouseAxisTrigger(MouseInput.AXIS_WHEEL, true));
+        inputManager.addListener(this, "item_scroll_down");
     }
     
+    @Override
+    public void onAction(String binding, boolean isPressed, float tpf) {
+        player.onAction(binding, isPressed);
+        if (binding.equals("Menu")) {
+            nifty.gotoScreen("pause");
+            flyCam.setDragToRotate(true);
+            detachCrossHairs();
+        } else if(binding.equals("item_1")) {
+            hudState.selectItem(1);
+        } else if(binding.equals("item_2")) {
+            hudState.selectItem(2);
+        } else if(binding.equals("item_3")) {
+            hudState.selectItem(3);
+        } else if(binding.equals("item_4")) {
+            hudState.selectItem(4);
+        } else if(binding.equals("item_5")) {
+            hudState.selectItem(5);
+        } else if(binding.equals("item_scroll_up")) {
+            hudState.nextSelectedItem();
+        } else if(binding.equals("item_scroll_down")) {
+            hudState.lastSelectedItem();
+        }
     
-    
-  }
+    }
 
     @Override
     public void simpleUpdate(float tpf) {
@@ -230,29 +235,26 @@ public class Main extends SimpleApplication implements ActionListener{
             if(!n.getChildren().isEmpty())
                 if((cam.getLocation().getX()-1 < n.getChild(i).getLocalTranslation().add(n.getLocalTranslation()).getX() && cam.getLocation().getX()+1 > n.getChild(i).getLocalTranslation().add(n.getLocalTranslation()).getX()) && (cam.getLocation().getZ()-1 < n.getChild(i).getLocalTranslation().add(n.getLocalTranslation()).getZ() && cam.getLocation().getZ()+1 > n.getChild(i).getLocalTranslation().add(n.getLocalTranslation()).getZ()))
                     n.detachChildAt(0); // If cam is in box -> detach box
-        camDir.set(cam.getDirection()).multLocal(0.6f);
-        camLeft.set(cam.getLeft()).multLocal(0.4f);
-        walkDirection.set(0, 0, 0);
-        if (left) {
-            walkDirection.addLocal(camLeft);
-        }
-        if (right) {
-            walkDirection.addLocal(camLeft.negate());
-        }
-        if (up) {
-            walkDirection.addLocal(camDir);
-        }
-        if (down) {
-            walkDirection.addLocal(camDir.negate());
-        }
-        //walkDirection.normalizeLocal();
-        //walkDirection.multLocal(50 * tpf);
-        player.setWalkDirection(walkDirection);
-        cam.setLocation(player.getPhysicsLocation());
+        player.walk(tpf, cam);
     }
 
     @Override
     public void simpleRender(RenderManager rm) {
         //TODO: add render code
     }
+    
+    public void initCrossHairs(){
+        guiFont = assetManager.loadFont("Interface/Fonts/Default.fnt");
+        BitmapText ch = new BitmapText(guiFont, false);
+        ch.setSize(guiFont.getCharSet().getRenderedSize() * 2);
+        ch.setText("+"); // crosshairs
+        ch.setLocalTranslation( // center
+          settings.getWidth() / 2 - ch.getLineWidth()/2, settings.getHeight() / 2 + ch.getLineHeight()/2, 0);
+        guiNode.attachChildAt(ch, 0);
+    }
+    
+    public void detachCrossHairs(){
+        guiNode.detachChildAt(0);
+    }
+    
 }

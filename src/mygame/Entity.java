@@ -20,41 +20,45 @@ public class Entity extends AbstractAppState{
     private boolean living;
 
     public int getHealth(){
-            return this.health;
+        return this.health;
+    }
+    
+    public void setHealth(int health){
+        this.health = health;
     }
 
     public void increaseHealth(int health){
-            this.health = this.health + health;
-            if(this.health <= 0)
-                    living = false;
+        this.health = this.health + health;
+        if(this.health <= 0)
+                living = false;
     }
 
     public int getDamage(){
-            return this.damage;
+        return this.damage;
     }
 
     public void setDamage(int damage){
-            this.damage = damage;
+        this.damage = damage;
     }
 
     public int getLevel(){
-            return this.level;
+        return this.level;
     }
 
     public void setLevel (int level){
-            this.level = level;
+        this.level = level;
     }
 
     public int getSpeed (){
-            return this.speed;
+        return this.speed;
     }
 
     public void setSpeed(int speed){
-            this.speed = speed;
+        this.speed = speed;
     }
 
     public Vector3f getLocation(){
-            return this.location;
+        return this.location;
     }
     
     public void setLocation(Vector3f location){
@@ -62,7 +66,7 @@ public class Entity extends AbstractAppState{
     }
 
     public boolean isLiving(){
-            return this.living;
+        return this.living;
     }
     
     public void setLiving(boolean living){
