@@ -5,13 +5,18 @@
             <image filename="Interface/opaque-0.png" imageMode="resize:40,490,110,170,40,560,40,270,40,560,40,40" width="100%" height="100%"></image>
         </layer>
         <layer id="foreground" childLayout="vertical">
-            <panel id="top_bar" height="5%" width="100%" childLayout="horizontal" backgroundColor="#000000">
-                <text id="money" text="Geld:" font="Interface/Fonts/Arial.fnt" width="25%" height="100%"/>
-                <text text="Welle: ${CALL.getScore()}" font="Interface/Fonts/Arial.fnt" width="25%" height="100%" />
-                <text id="time" text="Time" font="Interface/Fonts/Arial.fnt" width="50%" height="100%" align="left"/>
+            <panel id="top_bar" height="8%" width="100%" childLayout="vertical" backgroundColor="#000000">
+                <panel id="bar" height="85%" width="100%" childLayout="horizontal">
+                    <text id="money" text="Geld:" font="Interface/Fonts/Arial.fnt" width="25%" height="100%"/>
+                    <text text="Welle: ${CALL.getScore()}" font="Interface/Fonts/Arial.fnt" width="25%" height="100%" />
+                    <text id="time" text="Time" font="Interface/Fonts/Arial.fnt" width="50%" height="100%" align="left"/>
+                </panel>
+                <panel id="beaconHealthBar" height="15%" width="100%" childLayout="horizontal" backgroundColor="#FF0000">
+                    <text id="beaconHealth" text="100%" height="100%" width="100%" font="Interface/Fonts/Arial.fnt"/>
+                </panel>
             </panel>
             
-            <panel id="top" height="82%" width="100%" childLayout="vertical" ></panel>
+            <panel id="top" height="79%" width="100%" childLayout="vertical" ></panel>
             
             <panel id="bottom" height="13%" width="100%" childLayout="horizontal" >
                <panel id="bottom_left" height="100%" width="25%" childLayout="vertical"/>

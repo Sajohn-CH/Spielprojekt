@@ -38,13 +38,19 @@ public class HudScreenState extends AbstractAppState implements ScreenController
         //Setze Geldmenge
         Element moneyElement = screen.findElementByName("money");
         moneyElement.getRenderer(TextRenderer.class).setText("Geld: 100$");
-        
+        //Setzt HealthBar des Players
         Element healthPnl = screen.findElementByName("healthPnl");
         Element healthElement = screen.findElementByName("healthBar");
-        //System.out.println("health:"+player.getHealthPercentage());
         healthElement.setWidth((int)(player.getHealthPercentage()/100f*healthPnl.getWidth()));
         Element healthText = screen.findElementByName("health");
         healthText.getRenderer(TextRenderer.class).setText(player.getHealthPercentage()+"%");
+        //Setzt HealthBar des Beacon
+        Element beaconHealthBar = screen.findElementByName("beaconHealthBar");
+        Element topBar = screen.findElementByName("top_bar");
+        beaconHealthBar.setWidth((int)(Main.app.beacon.getHealthPercentage()/100f*topBar.getWidth()));
+        Element beaconHealth = screen.findElementByName("beaconHealth");
+        beaconHealth.getRenderer(TextRenderer.class).setText(Main.app.beacon.getHealthPercentage()+"%");
+        
     }
     
     public void bind(Nifty nifty, Screen screen) {
