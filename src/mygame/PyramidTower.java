@@ -1,3 +1,7 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package mygame;
 
 import com.jme3.bullet.collision.shapes.CollisionShape;
@@ -5,44 +9,36 @@ import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
-import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.shape.Box;
-import com.jme3.scene.shape.Cylinder;
+import com.jme3.scene.shape.Dome;
 import com.jme3.scene.shape.Line;
-
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 
 /**
  *
- * @author samuel
+ * @author florianwenk
  */
-public class MGTower extends Tower{
-    
+public class PyramidTower extends Tower{
+      
     RigidBodyControl towerC;
     private Geometry line;
     private long shot;
     
-    public MGTower(Vector3f location) {
-        this.setDamage(10);
-        this.setRange(50);
+    public PyramidTower (Vector3f location, int damage, int range){
+        this.setDamage(damage);
+        this.setRange(range);
         this.setLocation(location);
         this.setLiving(true);
-        this.setLocation(new Vector3f(location.x, 4, location.z));
-        Cylinder b = new Cylinder(32, 32, 2, 8, true);
-        this.setSpatial(new Geometry("Cylinder", b));
-        Quaternion q = new Quaternion();
-        q.fromAngleAxis((float) Math.PI/2 , new Vector3f(1,0,0));
-        this.getSpatial().setLocalRotation(q);
+        this.setLocation(new Vector3f(location.x, 0, location.z));
+        Dome b = new Dome(Vector3f.ZERO, 2, 4, 1f,false); 
+        this.setSpatial(new Geometry("Pyramid", b));
+        this.getSpatial().setLocalScale(2f, 15f, 2f);
         Material mat = new Material(Main.app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
-        mat.setColor("Color", ColorRGBA.Cyan);
+        mat.setColor("Color", ColorRGBA.Magenta);
         this.getSpatial().setMaterial(mat);
         this.getSpatial().setLocalTranslation(this.getLocation());
-       
+        
         line = new Geometry("line");
         Material matL = new Material(Main.app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
         matL.setColor("Color", ColorRGBA.Red);
@@ -72,4 +68,5 @@ public class MGTower extends Tower{
             line.removeFromParent();
         }
     }
+    
 }

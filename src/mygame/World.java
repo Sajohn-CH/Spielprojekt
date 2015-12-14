@@ -45,6 +45,11 @@ public class World extends AbstractAppState{
         return new ArrayList<Bomb>(bombs.values());
     }
     
+    public void removeBomb(Bomb bomb){
+        bombNode.detachChild(bomb.getSpatial());
+        this.bombs.remove(bomb.getSpatial());
+    }
+    
     public Player getPlayer() {
         return player;
     }
@@ -65,6 +70,11 @@ public class World extends AbstractAppState{
     public ArrayList<Tower> getAllTowers() {
         return new ArrayList<Tower>(towers.values());
     }
+    
+    public void removeTower(Tower tower){
+        towerNode.detachChild(tower.getSpatial());
+        this.towers.remove(tower.getSpatial());
+    }
 
     public Node getBombNode() {
         return bombNode;
@@ -76,16 +86,23 @@ public class World extends AbstractAppState{
     
     @Override
     public void update (float tpf){
-        ArrayList<Tower> allTowers= this.getAllTowers();
         ArrayList<Bomb> allBombs = this.getAllBombs();
+        ArrayList<Tower> allTowers= this.getAllTowers();
         
         player.action(tpf);
         beacon.action(tpf);
         for(int i = 0; i < allBombs.size(); i++){
             allBombs.get(i).action(tpf);
+            if(!allBombs.get(i).isLiving()){
+                this.removeBomb(allBombs.get(i));
+            }
+            
         }
         for(int i = 0; i < allTowers.size(); i++){
             allTowers.get(i).action(tpf);
+            if(!allTowers.get(i).isLiving()){
+                this.removeTower(allTowers.get(i));
+            }
         }
     }
     

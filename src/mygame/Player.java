@@ -41,8 +41,10 @@ public class Player extends Entity{
     private InputListener inputListener;
     private Geometry line;
     private long shot;
+    private int money;
     
     public Player(InputListener inputListener){
+        money = 90;
         this.setLiving(true);
         this.inputListener = inputListener;
         setUpKeys();
@@ -166,6 +168,14 @@ public class Player extends Entity{
     
     public CharacterControl getCharacterControl(){
         return player;
+    }
+    
+    public int getMoney(){
+        return money;
+    }
+    
+    public void increaseMoney(int money){
+        this.money += money;
     }
     
 }

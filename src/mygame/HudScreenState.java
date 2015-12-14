@@ -40,7 +40,7 @@ public class HudScreenState extends AbstractAppState implements ScreenController
         timeElement.getRenderer(TextRenderer.class).setText("Uhrzeit: "+df.format(System.currentTimeMillis()));
         //Setze Geldmenge
         Element moneyElement = screen.findElementByName("money");
-        moneyElement.getRenderer(TextRenderer.class).setText("Geld: 100$");
+        moneyElement.getRenderer(TextRenderer.class).setText("Geld: " + Main.getWorld().getPlayer().getMoney() + "$");
         //Setzt HealthBar des Players
         Element healthPnl = screen.findElementByName("healthPnl");
         Element healthElement = screen.findElementByName("healthBar");
@@ -122,6 +122,9 @@ public class HudScreenState extends AbstractAppState implements ScreenController
                 
             case(2):
                 return new MGTower(location);
+                
+            case(3):
+                return new PyramidTower(location, 50, 10);
                 
             default:
                 return new SimpleTower(location, 50, 10);

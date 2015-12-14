@@ -97,7 +97,6 @@ public class Bomb extends Entity{
                 this.setLiving(false);
         }
         if(!this.isLiving()){
-            this.getSpatial().removeFromParent();
             Main.bulletAppState.getPhysicsSpace().remove(bombC);
         }
     }

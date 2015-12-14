@@ -50,7 +50,7 @@ public class SimpleTower extends Tower{
     }
     
     @Override
-      public void action(float tpf) {
+    public void action(float tpf) {
         for(int i = 0; i < Main.getWorld().getAllBombs().size(); i++){
             if(Main.getWorld().getAllBombs().get(i).getSpatial().getLocalTranslation().subtract(this.getSpatial().getLocalTranslation()).length() <= this.getRange() && isLiving()){
                Line l = new Line(this.getSpatial().getLocalTranslation().setY(7), Main.getWorld().getAllBombs().get(i).getSpatial().getLocalTranslation());
@@ -61,7 +61,6 @@ public class SimpleTower extends Tower{
             }
         }
         if(!this.isLiving()){
-            this.getSpatial().removeFromParent();
             Main.bulletAppState.getPhysicsSpace().remove(towerC);
         }
         if(System.currentTimeMillis()-shot >= 50){
