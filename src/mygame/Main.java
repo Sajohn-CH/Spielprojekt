@@ -38,18 +38,14 @@ import java.util.ArrayList;
 
 public class Main extends SimpleApplication implements ActionListener{
     protected static Spatial scene;
-    protected static Main app;
+    public static Main app;
+    private String str;
     protected static BulletAppState bulletAppState;
     private RigidBodyControl sceneC;
-    private Node n;     //Aufhebare Objekte
-    protected static Node bombNode;
-    protected static ArrayList<Bomb> bombs;
-    protected static Node towerNode;
-    protected static ArrayList<Tower> towers;
-    protected static Player player;
-    protected static Beacon beacon;
+    private Node n;     //Aufhebare Objekte;
     private Nifty nifty;
     private HudScreenState hudState;
+    private static World world;
     
     public static void main(String[] args) {
         app = new Main();
@@ -67,19 +63,23 @@ public class Main extends SimpleApplication implements ActionListener{
         bulletAppState = new BulletAppState();
         stateManager.attach(bulletAppState);
         
-        bombs = new ArrayList<Bomb>();
-        bombNode = new Node();
-        rootNode.attachChild(bombNode);
+//        bombNode = new Node();
+//        rootNode.attachChild(bombNode);
+//        
+//        towerNode = new Node();
+//        rootNode.attachChild(towerNode);
         
-        towers = new ArrayList<Tower>();
-        towerNode = new Node();
-        rootNode.attachChild(towerNode);
-        
-        player = new Player(this);
+        Player player = new Player(this);
         player.setDamage(100);
         player.setHealth(100);
         
-        beacon = new Beacon(new Vector3f(50, 0, 50), 100);
+        Beacon beacon = new Beacon(new Vector3f(50, 0, 50), 100);
+        world = new World(beacon, player);
+        stateManager.attach(world);
+        
+        rootNode.attachChild(world.getBombNode());
+        rootNode.attachChild(world.getTowerNode());
+        rootNode.attachChild(world.getBeacon().getSpatial());
         
         setUpKeys();
         n = new Node();             // attach to n to let disappear when player is there
@@ -90,18 +90,21 @@ public class Main extends SimpleApplication implements ActionListener{
         bomb.setHealth(100);
         bomb.setDamage(10);
         bomb.move(beacon.getLocation());
+        world.addBomb(bomb);
         
         Bomb bomb1 = new Bomb(1, new Vector3f(0, 4, 0));
         bomb1.setSpeed(3);
         bomb1.setHealth(100);
         bomb1.setDamage(10);
         bomb1.move(new Vector3f(20, 0, 100));
+        world.addBomb(bomb1);
         
         Bomb bomb2 = new Bomb(1, new Vector3f(0, 4, 0));
         bomb2.setSpeed(5);
         bomb2.setHealth(100);
         bomb2.setDamage(10);
         bomb2.move(new Vector3f(-20, 0, -100));
+        world.addBomb(bomb2);
         
         
         Box b = new Box(1, 1, 1);
@@ -145,6 +148,7 @@ public class Main extends SimpleApplication implements ActionListener{
         rootNode.attachChild(scene);
         bulletAppState.getPhysicsSpace().add(sceneC);
         bulletAppState.getPhysicsSpace().add(boxC);
+        bulletAppState.getPhysicsSpace().add(world.getPlayer().getCharacterControl());
         
         //MyStartScreen myStartScreen = new MyStartScreen();
         //stateManager.attach(myStartScreen);
@@ -164,7 +168,8 @@ public class Main extends SimpleApplication implements ActionListener{
         stateManager.attach(startState);
         
         hudState = (HudScreenState) nifty.getScreen("hud").getScreenController();
-        hudState.setPlayer(player);
+        //hudState.setPlayer(player);
+        hudState.setWorld(world);
         nifty.registerScreenController(hudState);
         stateManager.attach(hudState);
         
@@ -206,7 +211,7 @@ public class Main extends SimpleApplication implements ActionListener{
     
     @Override
     public void onAction(String binding, boolean isPressed, float tpf) {
-        player.onAction(binding, isPressed);
+        world.getPlayer().onAction(binding, isPressed);
         if (binding.equals("Menu")) {
             nifty.gotoScreen("pause");
             flyCam.setDragToRotate(true);
@@ -235,7 +240,7 @@ public class Main extends SimpleApplication implements ActionListener{
             if(!n.getChildren().isEmpty())
                 if((cam.getLocation().getX()-1 < n.getChild(i).getLocalTranslation().add(n.getLocalTranslation()).getX() && cam.getLocation().getX()+1 > n.getChild(i).getLocalTranslation().add(n.getLocalTranslation()).getX()) && (cam.getLocation().getZ()-1 < n.getChild(i).getLocalTranslation().add(n.getLocalTranslation()).getZ() && cam.getLocation().getZ()+1 > n.getChild(i).getLocalTranslation().add(n.getLocalTranslation()).getZ()))
                     n.detachChildAt(0); // If cam is in box -> detach box
-        player.walk(tpf, cam);
+       // world.getPlayer().action(tpf);
     }
 
     @Override
@@ -255,6 +260,10 @@ public class Main extends SimpleApplication implements ActionListener{
     
     public void detachCrossHairs(){
         guiNode.detachChildAt(0);
+    }
+    
+    public static World getWorld() {
+        return world;
     }
     
 }

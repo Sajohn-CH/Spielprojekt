@@ -22,32 +22,31 @@ import com.jme3.scene.shape.Box;
 public class Beacon extends Entity {
     
     private RigidBodyControl beaconC;
-    protected Spatial beacon;
     
     public Beacon(Vector3f location, int health){
         this.setLiving(true);
         this.setLocation(new Vector3f(location.x, 4, location.z));
         this.setHealth(health);
         Box b = new Box(8, 8, 8);
-        beacon = new Geometry("Box", b);
+        this.setSpatial( new Geometry("Box", b));
         Material mat = new Material(Main.app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
         mat.setColor("Color", ColorRGBA.Orange);
-        beacon.setMaterial(mat);
-        beacon.setLocalTranslation(this.getLocation());
-        Main.app.getRootNode().attachChild(beacon);
-        Main.app.getStateManager().attach(this);
+        this.getSpatial().setMaterial(mat);
+        this.getSpatial().setLocalTranslation(this.getLocation());
+        //Main.app.getRootNode().attachChild(beacon);
+        //Main.app.getStateManager().attach(this);
         
-        CollisionShape beaconShape = CollisionShapeFactory.createMeshShape(beacon);
+        CollisionShape beaconShape = CollisionShapeFactory.createMeshShape(this.getSpatial());
         beaconC = new RigidBodyControl(beaconShape, 0);
-        beacon.addControl(beaconC);
+        this.getSpatial().addControl(beaconC);
         Main.bulletAppState.getPhysicsSpace().add(beaconC);
     }
     
     @Override
-    public void update(float tpf) {
+    public void action(float tpf) {
         if(!this.isLiving()){
-            Main.player.setLiving(false);
-            this.beacon.removeFromParent();
+            Main.getWorld().getPlayer().setLiving(false);
+            this.getSpatial().removeFromParent();
             Main.bulletAppState.getPhysicsSpace().remove(beaconC);
         }
     }

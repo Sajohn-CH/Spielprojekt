@@ -31,7 +31,7 @@ import com.jme3.scene.Spatial;
  */
 public class Player extends Entity{
     
-    protected CharacterControl player;
+    private CharacterControl player;
     private Vector3f walkDirection = new Vector3f();
     private boolean left = false, right = false, up = false, down = false, shoot = false;
     private Vector3f camDir = new Vector3f();
@@ -117,9 +117,10 @@ public class Player extends Entity{
         }
     }
     
-    public void walk(float tpf, Camera cam){
-        camDir.set(cam.getDirection()).multLocal(0.6f);
-        camLeft.set(cam.getLeft()).multLocal(0.4f);
+    @Override
+    public void action(float tpf){
+        camDir.set(Main.app.getCamera().getDirection()).multLocal(0.6f);
+        camLeft.set(Main.app.getCamera().getLeft()).multLocal(0.4f);
         walkDirection.set(0, 0, 0);
         if (left) {
             walkDirection.addLocal(camLeft);
@@ -136,7 +137,7 @@ public class Player extends Entity{
 //        walkDirection.normalizeLocal();
 //        player.walkDirection.multLocal(player.getSpeed() * tpf);
         player.setWalkDirection(walkDirection);
-        cam.setLocation(player.getPhysicsLocation());
+        Main.app.getCamera().setLocation(player.getPhysicsLocation());
     }
     
     private void makeDamage(Entity e){
@@ -149,11 +150,11 @@ public class Player extends Entity{
         fire.setLocalTranslation(Main.app.getCamera().getLocation().add(ray.direction.normalize().mult(5)));
         fire.getParticleInfluencer().setInitialVelocity(ray.direction.negate());
         fire.emitAllParticles();
-        Main.bombNode.collideWith(ray, results);
+        Main.getWorld().getBombNode().collideWith(ray, results);
         if (results.size() > 0) {
           CollisionResult closest = results.getClosestCollision();
           if(closest.getGeometry().getName().equals("bomb")){
-              makeDamage(Main.bombs.get(closest.getGeometry().getParent().getChildIndex(closest.getGeometry())));
+              makeDamage(Main.getWorld().getBomb(closest.getGeometry()));
         }
       }
     }
@@ -167,8 +168,12 @@ public class Player extends Entity{
             Vector3f v = closest.getContactPoint();
             v = v.setY(4);
             if(v.subtract(Main.app.getCamera().getLocation()).length() > 4)
-            new SimpleTower(v, 50, 10);
+            Main.getWorld().addTower(new SimpleTower(v, 50, 10));
         }
+    }
+    
+    public CharacterControl getCharacterControl(){
+        return player;
     }
     
 }

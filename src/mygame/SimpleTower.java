@@ -20,7 +20,6 @@ import com.jme3.scene.shape.Box;
  */
 public class SimpleTower extends Tower{
     
-    Spatial tower;
     RigidBodyControl towerC;
     
     public SimpleTower (Vector3f location, int damage, int range){
@@ -30,30 +29,30 @@ public class SimpleTower extends Tower{
         this.setLiving(true);
         this.setLocation(new Vector3f(location.x, 4, location.z));
         Box b = new Box(2, 8, 2);
-        tower = new Geometry("Box", b);
+        this.setSpatial(new Geometry("Box", b));
         Material mat = new Material(Main.app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
         mat.setColor("Color", ColorRGBA.Yellow);
-        tower.setMaterial(mat);
-        tower.setLocalTranslation(this.getLocation());
-        Main.towers.add(this);
-        Main.towerNode.attachChild(tower);
-        Main.app.getStateManager().attach(this);
+        this.getSpatial().setMaterial(mat);
+        this.getSpatial().setLocalTranslation(this.getLocation());
+//        Main.towers.add(this);
+//        Main.towerNode.attachChild(tower);
+        //Main.app.getStateManager().attach(this);
         
-        CollisionShape towerShape = CollisionShapeFactory.createMeshShape(tower);
+        CollisionShape towerShape = CollisionShapeFactory.createMeshShape(this.getSpatial());
         towerC = new RigidBodyControl(towerShape, 0);
-        tower.addControl(towerC);
+        this.getSpatial().addControl(towerC);
         Main.bulletAppState.getPhysicsSpace().add(towerC);
     }
     
     @Override
-      public void update(float tpf) {
-        for(int i = 0; i < Main.bombs.size(); i++){
-            if(Main.bombs.get(i).bomb.getLocalTranslation().subtract(this.tower.getLocalTranslation()).length() <= this.getRange() && isLiving()){
-                    this.makeDamage(Main.bombs.get(i));
+      public void action(float tpf) {
+        for(int i = 0; i < Main.getWorld().getAllBombs().size(); i++){
+            if(Main.getWorld().getAllBombs().get(i).getSpatial().getLocalTranslation().subtract(this.getSpatial().getLocalTranslation()).length() <= this.getRange() && isLiving()){
+                    this.makeDamage(Main.getWorld().getAllBombs().get(i));
             }
         }
         if(!this.isLiving()){
-            this.tower.removeFromParent();
+            this.getSpatial().removeFromParent();
             Main.bulletAppState.getPhysicsSpace().remove(towerC);
         }
     }

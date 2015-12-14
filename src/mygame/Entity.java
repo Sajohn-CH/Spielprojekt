@@ -4,14 +4,20 @@
  */
 package mygame;
 
-import com.jme3.app.state.AbstractAppState;
+import com.jme3.bounding.BoundingVolume;
+import com.jme3.collision.Collidable;
+import com.jme3.collision.CollisionResults;
+import com.jme3.collision.UnsupportedCollisionException;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.SceneGraphVisitor;
+import com.jme3.scene.Spatial;
+import java.util.Queue;
 
 /**
  *
  * @author florian.wenk
  */
-public class Entity extends AbstractAppState{
+public class Entity {
     private int health;
     private int damage;
     private int level;
@@ -19,7 +25,12 @@ public class Entity extends AbstractAppState{
     private Vector3f location;
     private boolean living;
     protected int maxHealth = 100;
+    private Spatial spatial;
 
+    public void action(float tpf) {
+        
+    }
+    
     public int getHealth(){
         return this.health;
     }
@@ -83,4 +94,14 @@ public class Entity extends AbstractAppState{
     public void setLiving(boolean living){
         this.living = living;
     }
+
+    public Spatial getSpatial() {
+        return spatial;
+    }
+
+    public void setSpatial(Spatial spatial) {
+        this.spatial = spatial;
+    }
+    
+    
 }

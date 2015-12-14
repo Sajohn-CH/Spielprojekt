@@ -13,7 +13,7 @@ import de.lessvoid.nifty.render.NiftyImage;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
 import java.text.SimpleDateFormat;
-import static mygame.Main.player;
+
 
 /**
  *
@@ -24,10 +24,15 @@ public class HudScreenState extends AbstractAppState implements ScreenController
     private Screen screen;
     private SimpleDateFormat df = new SimpleDateFormat("HH:mm");
     private int itemSelected = 1;
-    private Player player;
+//    private Player player;
+    private World world;
     
-    public void setPlayer(Player player){
-        this.player = player;
+//    public void setPlayer(Player player){
+//        this.player = player;
+//    }
+    
+    public void setWorld(World world) {
+        this.world = world;
     }
     
     @Override
@@ -41,15 +46,15 @@ public class HudScreenState extends AbstractAppState implements ScreenController
         //Setzt HealthBar des Players
         Element healthPnl = screen.findElementByName("healthPnl");
         Element healthElement = screen.findElementByName("healthBar");
-        healthElement.setWidth((int)(player.getHealthPercentage()/100f*healthPnl.getWidth()));
+        healthElement.setWidth((int)(world.getPlayer().getHealthPercentage()/100f*healthPnl.getWidth()));
         Element healthText = screen.findElementByName("health");
-        healthText.getRenderer(TextRenderer.class).setText(player.getHealthPercentage()+"%");
+        healthText.getRenderer(TextRenderer.class).setText(world.getPlayer().getHealthPercentage()+"%");
         //Setzt HealthBar des Beacon
         Element beaconHealthBar = screen.findElementByName("beaconHealthBar");
         Element topBar = screen.findElementByName("top_bar");
-        beaconHealthBar.setWidth((int)(Main.app.beacon.getHealthPercentage()/100f*topBar.getWidth()));
+        beaconHealthBar.setWidth((int)(world.getBeacon().getHealthPercentage()/100f*topBar.getWidth()));
         Element beaconHealth = screen.findElementByName("beaconHealth");
-        beaconHealth.getRenderer(TextRenderer.class).setText(Main.app.beacon.getHealthPercentage()+"%");
+        beaconHealth.getRenderer(TextRenderer.class).setText(world.getBeacon().getHealthPercentage()+"%");
         
     }
     

@@ -15,7 +15,6 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Sphere;
-import static mygame.Main.bombs;
 
 /**
  *
@@ -23,7 +22,6 @@ import static mygame.Main.bombs;
  */
 public class Bomb extends Entity{
     
-    Spatial bomb;
     RigidBodyControl bombC;
     
     public Bomb (int level){
@@ -31,15 +29,15 @@ public class Bomb extends Entity{
 	this.setLevel(level);
         this.setSpeed(1);
         Sphere sphere = new Sphere(100, 100, 1);
-        bomb = new Geometry("bomb", sphere);
+        this.setSpatial(new Geometry("bomb", sphere));
         Material mat = new Material (Main.app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
         mat.setColor("Color", ColorRGBA.Red);
-        bomb.setMaterial(mat);
+        this.getSpatial().setMaterial(mat);
         
-        CollisionShape bombShape = CollisionShapeFactory.createMeshShape(bomb);
+        CollisionShape bombShape = CollisionShapeFactory.createMeshShape(this.getSpatial());
         bombC = new RigidBodyControl(bombShape, 0);
         bombC.setKinematic(true);
-        bomb.addControl(bombC);
+        this.getSpatial().addControl(bombC);
         Main.bulletAppState.getPhysicsSpace().add(bombC);
         
         init();
@@ -48,13 +46,13 @@ public class Bomb extends Entity{
     public Bomb(int level, Vector3f location){
             this(level);
             super.setLocation(location);
-            bomb.setLocalTranslation(location);
+            this.getSpatial().setLocalTranslation(location);
     }
 
     private void init(){
-        Main.bombs.add(this);
-        Main.bombNode.attachChildAt(bomb, Main.bombs.indexOf(this));
-        Main.app.getStateManager().attach(this);
+        //Main.bombs.add(this);
+        //Main.bombNode.attachChildAt(bomb, Main.bombs.indexOf(this));
+        //Main.app.getStateManager().attach(this);
     }
     
     @Override
@@ -79,27 +77,27 @@ public class Bomb extends Entity{
     @Override
     public void setLocation(Vector3f location){
         super.setLocation(location);
-        bomb.setLocalTranslation(location);
+        this.getSpatial().setLocalTranslation(location);
     }
     
     @Override
-    public void update(float tpf) {
-        if(this.getLocation().subtract(bomb.getLocalTranslation()).length() > 1){
-            Vector3f v = new Vector3f(this.getLocation().subtract(bomb.getLocalTranslation()));
+    public void action(float tpf) {
+        if(this.getLocation().subtract(this.getSpatial().getLocalTranslation()).length() > 1){
+            Vector3f v = new Vector3f(this.getLocation().subtract(this.getSpatial().getLocalTranslation()));
             v.divideLocal(10*v.length());
             v.multLocal(5*tpf);
-            bomb.move(v.mult(this.getSpeed()));
+            this.getSpatial().move(v.mult(this.getSpeed()));
         }
-        if(Main.app.getCamera().getLocation().subtract(this.bomb.getLocalTranslation()).length() <= 3 && this.isLiving() && Main.player.isLiving()){
-                this.makeDamage(Main.player);
+        if(Main.app.getCamera().getLocation().subtract(this.getSpatial().getLocalTranslation()).length() <= 3 && this.isLiving() && Main.getWorld().getPlayer().isLiving()){
+                this.makeDamage(Main.getWorld().getPlayer());
                 this.setLiving(false);
         }
-        if(Main.beacon.beacon.getLocalTranslation().subtract(this.bomb.getLocalTranslation()).length() <= 3 && isLiving()){
-                this.makeDamage(Main.beacon);
+        if(Main.getWorld().getBeacon().getSpatial().getLocalTranslation().subtract(this.getSpatial().getLocalTranslation()).length() <= 3 && isLiving()){
+                this.makeDamage(Main.getWorld().getBeacon());
                 this.setLiving(false);
         }
         if(!this.isLiving()){
-            this.bomb.removeFromParent();
+            this.getSpatial().removeFromParent();
             Main.bulletAppState.getPhysicsSpace().remove(bombC);
         }
     }
