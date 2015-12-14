@@ -23,7 +23,9 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.Ray;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
+import com.jme3.scene.Geometry;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.shape.Line;
 
 /**
  *
@@ -37,11 +39,8 @@ public class Player extends Entity{
     private Vector3f camDir = new Vector3f();
     private Vector3f camLeft = new Vector3f();
     private InputListener inputListener;
-    private ParticleEmitter fire;
-    private static final int COUNT_FACTOR = 1;
-    private static final float COUNT_FACTOR_F = 1f;
-    private static final boolean POINT_SPRITE = true;
-    private static final Type EMITTER_TYPE = POINT_SPRITE ? Type.Point : Type.Triangle;
+    private Geometry line;
+    private long shot;
     
     public Player(InputListener inputListener){
         this.setLiving(true);
@@ -59,26 +58,11 @@ public class Player extends Entity{
         this.setSpeed(50);
         Main.bulletAppState.getPhysicsSpace().add(player);
         
-        fire = new ParticleEmitter("Flash", EMITTER_TYPE, 24 * COUNT_FACTOR);
-        fire.setSelectRandomImage(true);
-        fire.setStartColor(new ColorRGBA(1f, 0.8f, 0.36f, (float) (1f / COUNT_FACTOR_F)));
-        fire.setEndColor(new ColorRGBA(1f, 0.8f, 0.36f, 0f));
-        fire.setStartSize(.1f);
-        fire.setEndSize(1.0f);
-        fire.setShape(new EmitterSphereShape(Vector3f.ZERO, .05f));
-        fire.setParticlesPerSec(0);
-        fire.setGravity(0, 0, 0);
-        fire.setLowLife(.2f);
-        fire.setHighLife(.2f);
-        fire.setInitialVelocity(new Vector3f(0, 1f, 0));
-        fire.setVelocityVariation(10);
-        fire.setImagesX(2);
-        fire.setImagesY(2);
-        Material mat = new Material(Main.app.getAssetManager(), "Common/MatDefs/Misc/Particle.j3md");
-        mat.setTexture("Texture", Main.app.getAssetManager().loadTexture("Effects/flash.png"));
-        mat.setBoolean("PointSprite", POINT_SPRITE);
-        fire.setMaterial(mat);
-        Main.app.getRootNode().attachChild(fire);
+        line = new Geometry("line");
+        Material mat = new Material(Main.app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
+        mat.setColor("Color", ColorRGBA.Red);
+        line.setMaterial(mat);
+        
     }
     
     private void setUpKeys() {
@@ -138,6 +122,9 @@ public class Player extends Entity{
 //        player.walkDirection.multLocal(player.getSpeed() * tpf);
         player.setWalkDirection(walkDirection);
         Main.app.getCamera().setLocation(player.getPhysicsLocation());
+        if(System.currentTimeMillis()-shot >= 50){
+            line.removeFromParent();
+        }
     }
     
     private void makeDamage(Entity e){
@@ -147,16 +134,21 @@ public class Player extends Entity{
     private void shoot(){
         CollisionResults results = new CollisionResults();
         Ray ray = new Ray(Main.app.getCamera().getLocation(), Main.app.getCamera().getDirection());
-        fire.setLocalTranslation(Main.app.getCamera().getLocation().add(ray.direction.normalize().mult(5)));
-        fire.getParticleInfluencer().setInitialVelocity(ray.direction.negate());
-        fire.emitAllParticles();
+        
+        Line l = new Line(Main.app.getCamera().getLocation().subtract(0, 1, 0), Main.app.getCamera().getLocation().add(Main.app.getCamera().getDirection().mult(100)));
+        line.setMesh(l);
+        Main.app.getRootNode().attachChild(line);
+        
         Main.getWorld().getBombNode().collideWith(ray, results);
         if (results.size() > 0) {
           CollisionResult closest = results.getClosestCollision();
+            l = new Line(Main.app.getCamera().getLocation().subtract(0, 1, 0), closest.getContactPoint());
+            line.setMesh(l);
           if(closest.getGeometry().getName().equals("bomb")){
               makeDamage(Main.getWorld().getBomb(closest.getGeometry()));
         }
       }
+        shot = System.currentTimeMillis();
     }
     
     private void placeTower(){

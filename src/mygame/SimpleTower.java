@@ -13,6 +13,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Box;
+import com.jme3.scene.shape.Line;
 
 /**
  *
@@ -21,6 +22,8 @@ import com.jme3.scene.shape.Box;
 public class SimpleTower extends Tower{
     
     RigidBodyControl towerC;
+    private Geometry line;
+    private long shot;
     
     public SimpleTower (Vector3f location, int damage, int range){
         this.setDamage(damage);
@@ -34,9 +37,11 @@ public class SimpleTower extends Tower{
         mat.setColor("Color", ColorRGBA.Yellow);
         this.getSpatial().setMaterial(mat);
         this.getSpatial().setLocalTranslation(this.getLocation());
-//        Main.towers.add(this);
-//        Main.towerNode.attachChild(tower);
-        //Main.app.getStateManager().attach(this);
+        
+        line = new Geometry("line");
+        Material matL = new Material(Main.app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
+        matL.setColor("Color", ColorRGBA.Red);
+        line.setMaterial(matL);
         
         CollisionShape towerShape = CollisionShapeFactory.createMeshShape(this.getSpatial());
         towerC = new RigidBodyControl(towerShape, 0);
@@ -48,12 +53,19 @@ public class SimpleTower extends Tower{
       public void action(float tpf) {
         for(int i = 0; i < Main.getWorld().getAllBombs().size(); i++){
             if(Main.getWorld().getAllBombs().get(i).getSpatial().getLocalTranslation().subtract(this.getSpatial().getLocalTranslation()).length() <= this.getRange() && isLiving()){
+               Line l = new Line(this.getSpatial().getLocalTranslation().setY(7), Main.getWorld().getAllBombs().get(i).getSpatial().getLocalTranslation());
+               line.setMesh(l);
+               Main.app.getRootNode().attachChild(line);
+               shot = System.currentTimeMillis();
                     this.makeDamage(Main.getWorld().getAllBombs().get(i));
             }
         }
         if(!this.isLiving()){
             this.getSpatial().removeFromParent();
             Main.bulletAppState.getPhysicsSpace().remove(towerC);
+        }
+        if(System.currentTimeMillis()-shot >= 50){
+            line.removeFromParent();
         }
     }
     
