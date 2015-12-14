@@ -266,4 +266,8 @@ public class Main extends SimpleApplication implements ActionListener{
         return world;
     }
     
+    public HudScreenState getHudState() {
+        return hudState;
+    }
+    
 }

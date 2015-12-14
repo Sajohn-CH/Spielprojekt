@@ -5,6 +5,7 @@
 package mygame;
 
 import com.jme3.app.state.AbstractAppState;
+import com.jme3.math.Vector3f;
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.elements.render.ImageRenderer;
@@ -13,6 +14,7 @@ import de.lessvoid.nifty.render.NiftyImage;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
 import java.text.SimpleDateFormat;
+import java.util.Vector;
 
 
 /**
@@ -24,12 +26,8 @@ public class HudScreenState extends AbstractAppState implements ScreenController
     private Screen screen;
     private SimpleDateFormat df = new SimpleDateFormat("HH:mm");
     private int itemSelected = 1;
-//    private Player player;
     private World world;
-    
-//    public void setPlayer(Player player){
-//        this.player = player;
-//    }
+    //private Tower[] towers = {SimpleTower, MGTower, SimpleTower, SimpleTower, SimpleTower}; //Array mit den Türmen, die in der Leiste sind.
     
     public void setWorld(World world) {
         this.world = world;
@@ -114,6 +112,19 @@ public class HudScreenState extends AbstractAppState implements ScreenController
         } else {
          int lastItem =  itemSelected-1;
         selectItem(lastItem);
+        }
+    }
+    
+    public Tower getSelectedTower(Vector3f location) {
+        switch(itemSelected) {
+            case(1):
+                return new SimpleTower(location, 50, 10);
+                
+            case(2):
+                return new MGTower(location);
+                
+            default:
+                return new SimpleTower(location, 50, 10);
         }
     }
      

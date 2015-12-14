@@ -168,7 +168,7 @@ public class Player extends Entity{
             Vector3f v = closest.getContactPoint();
             v = v.setY(4);
             if(v.subtract(Main.app.getCamera().getLocation()).length() > 4)
-            Main.getWorld().addTower(new SimpleTower(v, 50, 10));
+            Main.getWorld().addTower(Main.app.getHudState().getSelectedTower(v));
         }
     }
     
