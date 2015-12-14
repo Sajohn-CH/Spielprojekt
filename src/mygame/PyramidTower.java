@@ -47,7 +47,7 @@ public class PyramidTower extends Tower{
         CollisionShape towerShape = CollisionShapeFactory.createMeshShape(this.getSpatial());
         towerC = new RigidBodyControl(towerShape, 0);
         this.getSpatial().addControl(towerC);
-        Main.bulletAppState.getPhysicsSpace().add(towerC);
+        Main.getBulletAppState().getPhysicsSpace().add(towerC);
     }
     
     @Override
@@ -62,7 +62,7 @@ public class PyramidTower extends Tower{
             }
         }
         if(!this.isLiving()){
-            Main.bulletAppState.getPhysicsSpace().remove(towerC);
+            Main.getBulletAppState().getPhysicsSpace().remove(towerC);
         }
         if(System.currentTimeMillis()-shot >= 50){
             line.removeFromParent();

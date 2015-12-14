@@ -27,9 +27,9 @@ public class MGTower extends Tower{
     private Geometry line;
     private long shot;
     
-    public MGTower(Vector3f location) {
-        this.setDamage(10);
-        this.setRange(50);
+    public MGTower(Vector3f location, int damage, int range) {
+        this.setDamage(damage);
+        this.setRange(range);
         this.setLocation(location);
         this.setLiving(true);
         this.setLocation(new Vector3f(location.x, 4, location.z));
@@ -51,7 +51,7 @@ public class MGTower extends Tower{
         CollisionShape towerShape = CollisionShapeFactory.createMeshShape(this.getSpatial());
         towerC = new RigidBodyControl(towerShape, 0);
         this.getSpatial().addControl(towerC);
-        Main.bulletAppState.getPhysicsSpace().add(towerC);
+        Main.getBulletAppState().getPhysicsSpace().add(towerC);
     }
     
     @Override
@@ -66,7 +66,7 @@ public class MGTower extends Tower{
             }
         }
         if(!this.isLiving()){
-            Main.bulletAppState.getPhysicsSpace().remove(towerC);
+            Main.getBulletAppState().getPhysicsSpace().remove(towerC);
         }
         if(System.currentTimeMillis()-shot >= 50){
             line.removeFromParent();

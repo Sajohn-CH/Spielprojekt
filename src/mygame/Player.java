@@ -58,7 +58,7 @@ public class Player extends Entity{
         this.setDamage(0);
         setHealth(this.maxHealth);
         this.setSpeed(50);
-        Main.bulletAppState.getPhysicsSpace().add(player);
+        Main.getBulletAppState().getPhysicsSpace().add(player);
         
         line = new Geometry("line");
         Material mat = new Material(Main.app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
@@ -156,7 +156,7 @@ public class Player extends Entity{
     private void placeTower(){
         CollisionResults results = new CollisionResults();
         Ray ray = new Ray(Main.app.getCamera().getLocation(), Main.app.getCamera().getDirection());
-        Main.scene.collideWith(ray, results);
+        Main.getWorld().getScene().collideWith(ray, results);
         if (results.size() > 0) {
             CollisionResult closest = results.getClosestCollision();
             Vector3f v = closest.getContactPoint();

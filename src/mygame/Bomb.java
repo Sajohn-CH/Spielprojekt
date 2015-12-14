@@ -38,7 +38,7 @@ public class Bomb extends Entity{
         bombC = new RigidBodyControl(bombShape, 0);
         bombC.setKinematic(true);
         this.getSpatial().addControl(bombC);
-        Main.bulletAppState.getPhysicsSpace().add(bombC);
+        Main.getBulletAppState().getPhysicsSpace().add(bombC);
         
         init();
     }
@@ -97,7 +97,7 @@ public class Bomb extends Entity{
                 this.setLiving(false);
         }
         if(!this.isLiving()){
-            Main.bulletAppState.getPhysicsSpace().remove(bombC);
+            Main.getBulletAppState().getPhysicsSpace().remove(bombC);
         }
     }
     

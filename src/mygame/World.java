@@ -16,6 +16,7 @@ import java.util.HashMap;
  */
 public class World extends AbstractAppState{
     
+    private Spatial scene;
     private HashMap<Spatial, Bomb> bombs;
     private HashMap<Spatial, Tower> towers;
     private Beacon beacon;
@@ -23,9 +24,10 @@ public class World extends AbstractAppState{
     private Node bombNode;
     private Node towerNode;
     
-    public World(Beacon beacon, Player player) {
+    public World(Beacon beacon, Player player, Spatial scene) {
         this.beacon = beacon;
         this.player = player;
+        this.scene = scene;
         this.bombs = new HashMap<Spatial, Bomb>();
         this.towers = new HashMap<Spatial, Tower>();
         this.bombNode = new Node();
@@ -56,6 +58,10 @@ public class World extends AbstractAppState{
     
     public Beacon getBeacon() {
         return beacon;
+    }
+    
+    public Spatial getScene(){
+        return scene;
     }
     
     public void addTower(Tower tower) {

@@ -121,7 +121,7 @@ public class HudScreenState extends AbstractAppState implements ScreenController
                 return new SimpleTower(location, 50, 10);
                 
             case(2):
-                return new MGTower(location);
+                return new MGTower(location, 50, 10);
                 
             case(3):
                 return new PyramidTower(location, 50, 10);

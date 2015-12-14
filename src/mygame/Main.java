@@ -37,10 +37,9 @@ import java.util.ArrayList;
  */
 
 public class Main extends SimpleApplication implements ActionListener{
-    protected static Spatial scene;
     public static Main app;
     private String str;
-    protected static BulletAppState bulletAppState;
+    private static BulletAppState bulletAppState;
     private RigidBodyControl sceneC;
     private Node n;     //Aufhebare Objekte;
     private Nifty nifty;
@@ -57,24 +56,18 @@ public class Main extends SimpleApplication implements ActionListener{
         //Set this boolean true when the game loop should stop running when ever the window loses focus.
         app.setPauseOnLostFocus(true);
         
-        scene = assetManager.loadModel("Scenes/newScene.j3o");
+        Spatial scene = assetManager.loadModel("Scenes/newScene.j3o");
         scene.setLocalScale(2f);
         
         bulletAppState = new BulletAppState();
         stateManager.attach(bulletAppState);
-        
-//        bombNode = new Node();
-//        rootNode.attachChild(bombNode);
-//        
-//        towerNode = new Node();
-//        rootNode.attachChild(towerNode);
         
         Player player = new Player(this);
         player.setDamage(100);
         player.setHealth(100);
         
         Beacon beacon = new Beacon(new Vector3f(50, 0, 50), 100);
-        world = new World(beacon, player);
+        world = new World(beacon, player, scene);
         stateManager.attach(world);
         
         rootNode.attachChild(world.getBombNode());
@@ -87,21 +80,21 @@ public class Main extends SimpleApplication implements ActionListener{
                 
         Bomb bomb = new Bomb(1, new Vector3f(0, 4, 0));
         bomb.setSpeed(10);
-        bomb.setHealth(100);
+        bomb.setHealth(500);
         bomb.setDamage(10);
         bomb.move(beacon.getLocation());
         world.addBomb(bomb);
         
         Bomb bomb1 = new Bomb(1, new Vector3f(0, 4, 0));
         bomb1.setSpeed(3);
-        bomb1.setHealth(100);
+        bomb1.setHealth(500);
         bomb1.setDamage(10);
         bomb1.move(new Vector3f(20, 0, 100));
         world.addBomb(bomb1);
         
         Bomb bomb2 = new Bomb(1, new Vector3f(0, 4, 0));
         bomb2.setSpeed(5);
-        bomb2.setHealth(100);
+        bomb2.setHealth(500);
         bomb2.setDamage(10);
         bomb2.move(new Vector3f(-20, 0, -100));
         world.addBomb(bomb2);
@@ -270,4 +263,7 @@ public class Main extends SimpleApplication implements ActionListener{
         return hudState;
     }
     
+    public static BulletAppState getBulletAppState(){
+        return bulletAppState;
+    }
 }

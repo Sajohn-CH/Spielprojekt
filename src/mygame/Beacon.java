@@ -39,7 +39,7 @@ public class Beacon extends Entity {
         CollisionShape beaconShape = CollisionShapeFactory.createMeshShape(this.getSpatial());
         beaconC = new RigidBodyControl(beaconShape, 0);
         this.getSpatial().addControl(beaconC);
-        Main.bulletAppState.getPhysicsSpace().add(beaconC);
+        Main.getBulletAppState().getPhysicsSpace().add(beaconC);
     }
     
     @Override
@@ -47,7 +47,7 @@ public class Beacon extends Entity {
         if(!this.isLiving()){
             Main.getWorld().getPlayer().setLiving(false);
             this.getSpatial().removeFromParent();
-            Main.bulletAppState.getPhysicsSpace().remove(beaconC);
+            Main.getBulletAppState().getPhysicsSpace().remove(beaconC);
         }
     }
 }
