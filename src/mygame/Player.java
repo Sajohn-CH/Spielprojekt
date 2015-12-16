@@ -95,7 +95,9 @@ public class Player extends Entity{
                 this.placeTower();
             }
         } else if (binding.equals("Jump")) {
-          if (isPressed) {player.jump(); }
+          if (isPressed) {
+              player.jump();
+          }
         }
     }
     
@@ -104,8 +106,8 @@ public class Player extends Entity{
         camDir.set(Main.app.getCamera().getDirection()).multLocal(0.6f);
         camLeft.set(Main.app.getCamera().getLeft()).multLocal(0.4f);
         //Versucht y-Komponente zu entferen, damit man nicht nach oben/unten gehen kann
-        //camDir.subtractLocal(0, camDir.y, 0);
-        //camLeft.subtractLocal(0, camLeft.y, 0);
+        camDir.setY(0);
+        camLeft.setY(0);
         walkDirection.set(0, 0, 0);
         if (left) {
             walkDirection.addLocal(camLeft);
@@ -137,24 +139,28 @@ public class Player extends Entity{
         CollisionResults results = new CollisionResults();
         Ray ray = new Ray(Main.app.getCamera().getLocation(), Main.app.getCamera().getDirection());
         
+        //Schusslinie generieren
         Line l = new Line(Main.app.getCamera().getLocation().subtract(0, 1, 0), Main.app.getCamera().getLocation().add(Main.app.getCamera().getDirection().mult(100)));
         line.setMesh(l);
         Main.app.getRootNode().attachChild(line);
         
+        //Prüft, ob eine Bombe getroffen wurde
         Main.getWorld().getBombNode().collideWith(ray, results);
         if (results.size() > 0) {
-          CollisionResult closest = results.getClosestCollision();
+            CollisionResult closest = results.getClosestCollision();
             l = new Line(Main.app.getCamera().getLocation().subtract(0, 1, 0), closest.getContactPoint());
             line.setMesh(l);
-          if(closest.getGeometry().getName().equals("bomb")){
-              makeDamage(Main.getWorld().getBomb(closest.getGeometry()));
+            if(closest.getGeometry().getName().equals("bomb")){
+                makeDamage(Main.getWorld().getBomb(closest.getGeometry()));
+            }
         }
-      }
         shot = System.currentTimeMillis();
     }
     
     private void placeTower(){
         //ERROR: Being called twice
+        //System.out.println("placeTower");
+        //Nur einmal aufgerufen
         CollisionResults results = new CollisionResults();
         Ray ray = new Ray(Main.app.getCamera().getLocation(), Main.app.getCamera().getDirection());
         // trifft auf scene
