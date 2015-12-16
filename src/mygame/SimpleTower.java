@@ -23,12 +23,12 @@ public class SimpleTower extends Tower{
     
     RigidBodyControl towerC;
     private Geometry line;
-    private long shot;
     
-    public SimpleTower (Vector3f location, int damage, int range){
+    public SimpleTower (Vector3f location, int damage, int range, int shotsPerSecond){
         this.setPrice(20);
         this.setDamage(damage);
         this.setRange(range);
+        this.setShotsPerSecond(shotsPerSecond);
         this.setLocation(location);
         this.setLiving(true);
         this.setLocation(new Vector3f(location.x, 4, location.z));
@@ -53,18 +53,18 @@ public class SimpleTower extends Tower{
     @Override
     public void action(float tpf) {
         for(int i = 0; i < Main.getWorld().getAllBombs().size(); i++){
-            if(Main.getWorld().getAllBombs().get(i).getSpatial().getLocalTranslation().subtract(this.getSpatial().getLocalTranslation()).length() <= this.getRange() && isLiving()){
+            if(Main.getWorld().getAllBombs().get(i).getSpatial().getLocalTranslation().subtract(this.getSpatial().getLocalTranslation()).length() <= this.getRange() && isLiving() && canShoot()){
                Line l = new Line(this.getSpatial().getLocalTranslation().setY(7), Main.getWorld().getAllBombs().get(i).getSpatial().getLocalTranslation());
                line.setMesh(l);
                Main.app.getRootNode().attachChild(line);
-               shot = System.currentTimeMillis();
-                    this.makeDamage(Main.getWorld().getAllBombs().get(i));
+               super.shot();
+               this.makeDamage(Main.getWorld().getAllBombs().get(i));
             }
         }
         if(!this.isLiving()){
             Main.getBulletAppState().getPhysicsSpace().remove(towerC);
         }
-        if(System.currentTimeMillis()-shot >= 50){
+        if(System.currentTimeMillis()-getLastShot() >= 50){
             line.removeFromParent();
         }
     }

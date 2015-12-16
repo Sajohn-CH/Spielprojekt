@@ -126,16 +126,16 @@ public class HudScreenState extends AbstractAppState implements ScreenController
     public Tower getSelectedTower(Vector3f location) {
         switch(itemSelected) {
             case(1):
-                return new SimpleTower(location, 50, 10);
+                return new SimpleTower(location, 50, 10, 1);
                 
             case(2):
-                return new MGTower(location, 50, 10);
+                return new MGTower(location, 50, 10, 1);
                 
             case(3):
-                return new PyramidTower(location, 50, 10);
+                return new PyramidTower(location, 50, 10, 1);
                 
             default:
-                return new SimpleTower(location, 50, 10);
+                return new SimpleTower(location, 50, 10, 1);
         }
     }
     

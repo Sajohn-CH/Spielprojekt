@@ -125,6 +125,7 @@ public class Player extends Entity{
         Main.app.getCamera().setLocation(player.getPhysicsLocation());
         if(System.currentTimeMillis()-shot >= 50){
             line.removeFromParent();
+            shot = 0;
         }
     }
     
@@ -156,21 +157,38 @@ public class Player extends Entity{
         //ERROR: Being called twice
         CollisionResults results = new CollisionResults();
         Ray ray = new Ray(Main.app.getCamera().getLocation(), Main.app.getCamera().getDirection());
+        // trifft auf scene
         Main.getWorld().getScene().collideWith(ray, results);
         if (results.size() > 0) {
+            // kontrolliert ob kollision mit Beacon
+            CollisionResults resultsBeacon = new CollisionResults();
+            Main.getWorld().getBeacon().getSpatial().collideWith(ray, resultsBeacon);
+            if(resultsBeacon.size() > 0){
+                // Zu nahe an beacon -> nicht setzen
+                return;
+            }
             CollisionResult closest = results.getClosestCollision();
             Vector3f v = closest.getContactPoint();
-            v = v.setY(4);
+            v = v.setY(v.getY()+4);
             Tower tower = Main.app.getHudState().getSelectedTower(v);
             //kontrolliert ob Spieler genug Geld hat
             if(getMoney()-tower.getPrice() < 0) {
                 //Nicht genug Geld -> Turm wird nicht gesetzt.
                 return;
             }
-            //Zieht Geld 
-            increaseMoney(-tower.getPrice());
-            if(v.subtract(Main.app.getCamera().getLocation()).length() > 4)
-            Main.getWorld().addTower(tower);
+            v = v.setY(v.getY()-4);
+            Tower nearest = Main.getWorld().getNearestTower(v);
+            // konntrolliert ob Distanz zum nächsten Turm genügend gross ist
+            if(nearest != null && nearest.getLocation().subtract(v).length() < 10){
+                // Zu nahe an einem anderen Turm -> Turm wird nicht gesetzt
+                return;
+            }
+            if(v.subtract(Main.app.getCamera().getLocation()).length() > 4 && v.subtract(Main.app.getCamera().getLocation()).length() > 4){
+                //Zieht Geld 
+                increaseMoney(-tower.getPrice());
+                // plaziert Turm
+                Main.getWorld().addTower(tower);
+            }
         }
     }
     
