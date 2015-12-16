@@ -166,18 +166,18 @@ public class Player extends Entity{
             }
             CollisionResult closest = results.getClosestCollision();
             Vector3f v = closest.getContactPoint();
-            v = v.setY(4);
+            v = v.setY(v.getY()+4);
             Tower tower = Main.app.getHudState().getSelectedTower(v);
             //kontrolliert ob Spieler genug Geld hat
             if(getMoney()-tower.getPrice() < 0) {
                 //Nicht genug Geld -> Turm wird nicht gesetzt.
                 return;
             }
-            v = v.setY(v.getY()+4);
+            v = v.setY(v.getY()-4);
             Tower nearest = Main.getWorld().getNearestTower(v);
-            // konntrolliert ob Distanz zum nächsten Turm oder Beacon genügend gross ist
+            // konntrolliert ob Distanz zum nächsten Turm genügend gross ist
             if(nearest != null && nearest.getLocation().subtract(v).length() < 10){
-                // Zu nahe an einem anderen Turm/Beacon -> Turm wird nicht gesetzt
+                // Zu nahe an einem anderen Turm -> Turm wird nicht gesetzt
                 return;
             }
             if(v.subtract(Main.app.getCamera().getLocation()).length() > 4 && v.subtract(Main.app.getCamera().getLocation()).length() > 4){
