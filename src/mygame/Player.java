@@ -8,13 +8,8 @@ import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
 import com.jme3.bullet.control.CharacterControl;
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
-import com.jme3.effect.ParticleEmitter;
-import com.jme3.effect.ParticleMesh;
-import com.jme3.effect.ParticleMesh.Type;
-import com.jme3.effect.shapes.EmitterSphereShape;
 import com.jme3.input.KeyInput;
 import com.jme3.input.MouseInput;
-import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.InputListener;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.input.controls.MouseButtonTrigger;
@@ -22,9 +17,7 @@ import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Ray;
 import com.jme3.math.Vector3f;
-import com.jme3.renderer.Camera;
 import com.jme3.scene.Geometry;
-import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Line;
 
 /**
@@ -44,7 +37,7 @@ public class Player extends Entity{
     private int money;
     
     public Player(InputListener inputListener){
-        money = 90;
+        money = 100;
         this.setLiving(true);
         this.inputListener = inputListener;
         setUpKeys();
@@ -107,6 +100,9 @@ public class Player extends Entity{
     public void action(float tpf){
         camDir.set(Main.app.getCamera().getDirection()).multLocal(0.6f);
         camLeft.set(Main.app.getCamera().getLeft()).multLocal(0.4f);
+        //Versucht y-Komponente zu entferen, damit man nicht nach oben/unten gehen kann
+        //camDir.subtractLocal(0, camDir.y, 0);
+        //camLeft.subtractLocal(0, camLeft.y, 0);
         walkDirection.set(0, 0, 0);
         if (left) {
             walkDirection.addLocal(camLeft);
@@ -154,6 +150,7 @@ public class Player extends Entity{
     }
     
     private void placeTower(){
+        //ERROR: Being called twice
         CollisionResults results = new CollisionResults();
         Ray ray = new Ray(Main.app.getCamera().getLocation(), Main.app.getCamera().getDirection());
         Main.getWorld().getScene().collideWith(ray, results);
@@ -161,8 +158,16 @@ public class Player extends Entity{
             CollisionResult closest = results.getClosestCollision();
             Vector3f v = closest.getContactPoint();
             v = v.setY(4);
+            Tower tower = Main.app.getHudState().getSelectedTower(v);
+            //kontrolliert ob Spieler genug Geld hat
+            if(getMoney()-tower.getPrice() < 0) {
+                //Nicht genug Geld -> Turm wird nicht gesetzt.
+                return;
+            }
+            //Zieht Geld 
+            increaseMoney(-tower.getPrice());
             if(v.subtract(Main.app.getCamera().getLocation()).length() > 4)
-            Main.getWorld().addTower(Main.app.getHudState().getSelectedTower(v));
+            Main.getWorld().addTower(tower);
         }
     }
     

@@ -12,6 +12,7 @@ package mygame;
 public class Tower extends Entity{
     
     private int range;
+    private int price;
     
     public int getRange(){
         return range;
@@ -24,6 +25,15 @@ public class Tower extends Entity{
     public void makeDamage(Entity e){
         e.increaseHealth(-this.getDamage());
     }
+
+    public int getPrice() {
+        return price;
+    }
+
+    public void setPrice(int price) {
+        this.price = price;
+    }
+    
     
     
 }

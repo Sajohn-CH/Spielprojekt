@@ -26,6 +26,7 @@ public class SimpleTower extends Tower{
     private long shot;
     
     public SimpleTower (Vector3f location, int damage, int range){
+        this.setPrice(20);
         this.setDamage(damage);
         this.setRange(range);
         this.setLocation(location);

@@ -28,6 +28,7 @@ public class MGTower extends Tower{
     private long shot;
     
     public MGTower(Vector3f location, int damage, int range) {
+        this.setPrice(30);
         this.setDamage(damage);
         this.setRange(range);
         this.setLocation(location);

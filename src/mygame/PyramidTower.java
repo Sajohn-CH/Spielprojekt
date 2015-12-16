@@ -26,6 +26,7 @@ public class PyramidTower extends Tower{
     private long shot;
     
     public PyramidTower (Vector3f location, int damage, int range){
+        this.setPrice(40);
         this.setDamage(damage);
         this.setRange(range);
         this.setLocation(location);

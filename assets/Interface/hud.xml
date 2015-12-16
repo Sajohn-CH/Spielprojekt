@@ -1,8 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <nifty xmlns="http://nifty-gui.sourceforge.net/nifty-1.3.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://nifty-gui.sourceforge.net/nifty-1.3.xsd http://nifty-gui.sourceforge.net/nifty-1.3.xsd">
   <screen id="hud" controller="mygame.HudScreenState">
-        <layer id="background" childLayout="center">
-            <image filename="Interface/opaque-0.png" imageMode="resize:40,490,110,170,40,560,40,270,40,560,40,40" width="100%" height="100%"></image>
+        <layer id="background" childLayout="vertical">
+            <panel height="87%" width="100%" childLayout="center">
+                <image filename="Interface/opaque-0.png" imageMode="resize:40,490,110,170,40,560,40,270,40,560,40,40" width="100%" height="100%"></image>
+            </panel>
+            <panel height="13%" width="100%" childLayout="center">
+                <panel height="90%" width="50%" childLayout="horizontal" backgroundColor="#000000">
+                    <image filename="Interface/tower-1.png" width="20%" height="100%"/>
+                    <image filename="Interface/tower-2.png" width="20%" height="100%"/> 
+                    <image filename="Interface/tower-3.png" width="20%" height="100%"/>
+                    <image filename="Interface/tower-1.png" width="20%" height="100%"/>
+                    <image filename="Interface/tower-1.png" width="20%" height="100%"/>
+                </panel>
+            </panel>
         </layer>
         <layer id="foreground" childLayout="vertical">
             <panel id="top_bar" height="8%" width="100%" childLayout="vertical" backgroundColor="#000000">
@@ -20,10 +31,9 @@
                  <text id="crosshair" height="100%" width="100%" text="+" font="Interface/Fonts/Arial.fnt"/>
             </panel>
            
-            
-            <panel id="bottom" height="13%" width="100%" childLayout="horizontal" >
-               <panel id="bottom_left" height="100%" width="25%" childLayout="vertical"/>
-               <panel id="bottom_bar" height="100%" width="50%" childLayout="vertical" backgroundColor="#000f">
+            <panel id="bottom" height="13%" width="100%" childLayout="center" >
+              
+               <panel id="bottom_bar" height="100%" width="50%" childLayout="vertical" >
                     <panel id="healthPnl" height="10%" width="100%" childLayout="horizontal">
                         <panel id="healthBar" height="100%" width="100%" childLayout="horizontal" backgroundColor="#021FB0">
                             <text id="health" text="100%" height="100%" width="100%" font="Interface/Fonts/Arial.fnt" />
@@ -37,9 +47,8 @@
                         <image id="item-5" filename="Interface/item-frame.png" width="20%" height="100%"/>
                     </panel>
                </panel>
-               <panel id="bottom_right" height="100%" width="25%" childLayout="vertical"/>
+               
             </panel>
         </layer>
-     
     </screen>
 </nifty>
