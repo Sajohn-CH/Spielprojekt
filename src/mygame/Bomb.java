@@ -98,6 +98,7 @@ public class Bomb extends Entity{
         }
         if(!this.isLiving()){
             Main.getBulletAppState().getPhysicsSpace().remove(bombC);
+            Main.app.getWorld().getPlayer().increaseMoney(10);
         }
     }
     
