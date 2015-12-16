@@ -208,7 +208,6 @@ public class Main extends SimpleApplication implements ActionListener{
         if (binding.equals("Menu")) {
             nifty.gotoScreen("pause");
             flyCam.setDragToRotate(true);
-            detachCrossHairs();
         } else if(binding.equals("item_1")) {
             hudState.selectItem(1);
         } else if(binding.equals("item_2")) {
@@ -239,20 +238,6 @@ public class Main extends SimpleApplication implements ActionListener{
     @Override
     public void simpleRender(RenderManager rm) {
         //TODO: add render code
-    }
-    
-    public void initCrossHairs(){
-        guiFont = assetManager.loadFont("Interface/Fonts/Default.fnt");
-        BitmapText ch = new BitmapText(guiFont, false);
-        ch.setSize(guiFont.getCharSet().getRenderedSize() * 2);
-        ch.setText("+"); // crosshairs
-        ch.setLocalTranslation( // center
-          settings.getWidth() / 2 - ch.getLineWidth()/2, settings.getHeight() / 2 + ch.getLineHeight()/2, 0);
-        guiNode.attachChildAt(ch, 0);
-    }
-    
-    public void detachCrossHairs(){
-        guiNode.detachChildAt(0);
     }
     
     public static World getWorld() {

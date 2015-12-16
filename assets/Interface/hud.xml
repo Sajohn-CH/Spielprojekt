@@ -16,7 +16,10 @@
                 </panel>
             </panel>
             
-            <panel id="top" height="79%" width="100%" childLayout="vertical" ></panel>
+            <panel id="top" height="79%" width="100%" childLayout="center" >
+                 <text id="crosshair" height="100%" width="100%" text="+" font="Interface/Fonts/Arial.fnt"/>
+            </panel>
+           
             
             <panel id="bottom" height="13%" width="100%" childLayout="horizontal" >
                <panel id="bottom_left" height="100%" width="25%" childLayout="vertical"/>

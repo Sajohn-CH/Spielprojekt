@@ -5,6 +5,8 @@
 package mygame;
 
 import com.jme3.app.state.AbstractAppState;
+import com.jme3.font.BitmapFont;
+import com.jme3.font.BitmapText;
 import com.jme3.math.Vector3f;
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.elements.Element;
@@ -13,6 +15,7 @@ import de.lessvoid.nifty.elements.render.TextRenderer;
 import de.lessvoid.nifty.render.NiftyImage;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
+import java.awt.Font;
 import java.text.SimpleDateFormat;
 import java.util.Vector;
 
@@ -60,6 +63,15 @@ public class HudScreenState extends AbstractAppState implements ScreenController
         this.nifty = nifty;
         this.screen = screen;
         System.out.println("bind("+screen.getScreenId()+")");
+        
+//        Element hud = screen.findElementByName("top");
+//        BitmapFont guiFont = Main.app.getAssetManager().loadFont("Interface/Fonts/Default.fnt");
+//        BitmapText ch = new BitmapText(guiFont, false);
+//        ch.setSize(guiFont.getCharSet().getRenderedSize() * 2);
+//        ch.setText("+"); // crosshairs
+//        ch.setLocalTranslation( // center
+//          hud.getWidth() / 2 - ch.getLineWidth()/2, hud.getHeight() / 2 + ch.getLineHeight()/2, 0);
+        
         
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
