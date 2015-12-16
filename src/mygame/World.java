@@ -5,6 +5,7 @@
 package mygame;
 
 import com.jme3.app.state.AbstractAppState;
+import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import java.util.ArrayList;
@@ -88,6 +89,20 @@ public class World extends AbstractAppState{
 
     public Node getTowerNode() {
         return towerNode;
+    }
+    
+    public Tower getNearestTower(Vector3f location){
+        ArrayList<Tower> allTowers = this.getAllTowers();
+        if(allTowers.size() != 0){
+            Tower nearest = allTowers.get(0);
+            for(int i = 1; i < allTowers.size(); i ++){
+                if(allTowers.get(i).getLocation().subtract(location).length() < nearest.getLocation().subtract(location).length()){
+                    nearest = allTowers.get(i);
+                }
+            }
+            return nearest;
+        }
+        return null;
     }
     
     @Override
