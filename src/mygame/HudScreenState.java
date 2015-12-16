@@ -26,7 +26,8 @@ public class HudScreenState extends AbstractAppState implements ScreenController
     private SimpleDateFormat df = new SimpleDateFormat("HH:mm");
     private int itemSelected = 1;
     private World world;
-    //private Tower[] towers = {SimpleTower, MGTower, SimpleTower, SimpleTower, SimpleTower}; //Array mit den Türmen, die in der Leiste sind.
+    //private long lastSelectionChanged; //Zeit, als das letzte Mal die Auswahl geändert wurde. Wird gebraucht um die Anzeige der Turmbeschreibung nach eine Zeitspannen verschwinden zu lassen
+    private String[] descriptions = {"Preis: 20$", "Preis: 30$", "Preis: 40$", "Preis: 20$", "Preis: 20$"};
     
     public void setWorld(World world) {
         this.world = world;
@@ -52,6 +53,14 @@ public class HudScreenState extends AbstractAppState implements ScreenController
         beaconHealthBar.setWidth((int)(world.getBeacon().getHealthPercentage()/100f*topBar.getWidth()));
         Element beaconHealth = screen.findElementByName("beaconHealth");
         beaconHealth.getRenderer(TextRenderer.class).setText(world.getBeacon().getHealthPercentage()+"%");
+        //Setzt Turmbeschreibung
+        Element towerDescription = screen.findElementByName("towerDescription");
+//        if(System.currentTimeMillis()-lastSelectionChanged < 5000) {
+            towerDescription.getRenderer(TextRenderer.class).setText(descriptions[getSelectedItemNum()-1]);
+//        } else {
+//            towerDescription.getRenderer(TextRenderer.class).setText("");
+//        }
+        
         
     }
     
@@ -78,7 +87,8 @@ public class HudScreenState extends AbstractAppState implements ScreenController
      * @param num  Auszuwählender Slot
      */
     public void selectItem(int num) {
-        //
+        //Merke Zeitpunkt
+//        lastSelectionChanged = System.currentTimeMillis();
         NiftyImage img = nifty.getRenderEngine().createImage(screen, "Interface/item-frame.png", false);
         Element item = screen.findElementByName("item-"+itemSelected);
         item.getRenderer(ImageRenderer.class).setImage(img);

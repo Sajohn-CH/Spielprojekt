@@ -27,12 +27,12 @@
                 </panel>
             </panel>
             
-            <panel id="top" height="79%" width="100%" childLayout="center" >
+            <panel id="top" height="77%" width="100%" childLayout="center" >
                  <text id="crosshair" height="100%" width="100%" text="+" font="Interface/Fonts/Arial.fnt"/>
             </panel>
            
+           <text id="towerDescription" text="tower" height="2%" width="100%" font="Interface/Fonts/Arial.fnt"/>
             <panel id="bottom" height="13%" width="100%" childLayout="center" >
-              
                <panel id="bottom_bar" height="100%" width="50%" childLayout="vertical" >
                     <panel id="healthPnl" height="10%" width="100%" childLayout="horizontal">
                         <panel id="healthBar" height="100%" width="100%" childLayout="horizontal" backgroundColor="#021FB0">

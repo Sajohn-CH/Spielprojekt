@@ -90,7 +90,10 @@ public class Player extends Entity{
         } else if (binding.equals("Shoot") && this.isLiving()) {
             this.shoot();
         } else if (binding.equals("placeTower") && this.isLiving()) {
-            this.placeTower();
+            //if(!isPressed) verhindert, dass die Methode zweimal ausgeführt wird
+            if(!isPressed) {
+                this.placeTower();
+            }
         } else if (binding.equals("Jump")) {
           if (isPressed) {player.jump(); }
         }
