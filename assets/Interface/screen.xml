@@ -4,7 +4,7 @@
     <useControls filename="nifty-default-controls.xml" />
     <screen id="start" controller="mygame.MyStartScreen">
         <layer id="background" backgroundColor="#000f">
-            
+        
         </layer>
         <layer id="foreground" backgriondColor="#0000" childLayout="vertical">
             <panel id="panel_top" height="34%" width="75%" align="center" childLayout="center" backgroundColor="#f008">

@@ -12,8 +12,6 @@ import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
-import com.jme3.scene.Node;
-import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Sphere;
 
 /**
@@ -22,16 +20,16 @@ import com.jme3.scene.shape.Sphere;
  */
 public class Bomb extends Entity{
     
-    RigidBodyControl bombC;
+    private RigidBodyControl bombC;
+    private Material mat;
+    private ColorRGBA[] colors = {ColorRGBA.Blue, ColorRGBA.Cyan, ColorRGBA.Green, ColorRGBA.Magenta, ColorRGBA.Red, ColorRGBA.Pink};
     
     public Bomb (int level){
         this.setLiving(true);
-	this.setLevel(level);
         this.setSpeed(1);
         Sphere sphere = new Sphere(100, 100, 1);
         this.setSpatial(new Geometry("bomb", sphere));
-        Material mat = new Material (Main.app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
-        mat.setColor("Color", ColorRGBA.Red);
+        mat = new Material (Main.app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
         this.getSpatial().setMaterial(mat);
         
         CollisionShape bombShape = CollisionShapeFactory.createMeshShape(this.getSpatial());
@@ -39,20 +37,13 @@ public class Bomb extends Entity{
         bombC.setKinematic(true);
         this.getSpatial().addControl(bombC);
         Main.getBulletAppState().getPhysicsSpace().add(bombC);
-        
-        init();
+        this.setLevel(level);
     }
 	
     public Bomb(int level, Vector3f location){
             this(level);
             super.setLocation(location);
             this.getSpatial().setLocalTranslation(location);
-    }
-
-    private void init(){
-        //Main.bombs.add(this);
-        //Main.bombNode.attachChildAt(bomb, Main.bombs.indexOf(this));
-        //Main.app.getStateManager().attach(this);
     }
     
     @Override
@@ -67,6 +58,7 @@ public class Bomb extends Entity{
         
     public void makeDamage(Entity e){
         e.increaseHealth(-this.getDamage());
+        System.out.println("damage:" + this.getDamage());
     }
     
     public void move(Vector3f offset){
@@ -93,6 +85,7 @@ public class Bomb extends Entity{
                 this.setLiving(false);
         }
         if(Main.getWorld().getBeacon().getSpatial().getLocalTranslation().subtract(this.getSpatial().getLocalTranslation()).length() <= 3 && isLiving()){
+                Main.app.getFlyByCamera().setDragToRotate(true);
                 this.makeDamage(Main.getWorld().getBeacon());
                 this.setLiving(false);
         }
@@ -102,5 +95,24 @@ public class Bomb extends Entity{
         }
     }
     
+    @Override
+    protected void die() {
+        if(this.getLevel() == 0) {
+            super.die();
+        } else {
+            setLevel(getLevel()-1);
+        }
+    }
+    
+    @Override
+    public void setLevel(int newLevel) {
+        //setzt Leben als Funktion mit level
+        this.setHealth(50+newLevel*50);
+        this.setDamage(10+newLevel*10);
+        this.setSpeed(10);
+        
+        mat.setColor("Color", colors[newLevel%colors.length]);
+        super.setLevel(newLevel);
+    }
     
 }

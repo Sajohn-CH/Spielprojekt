@@ -1,23 +1,15 @@
 package mygame;
 
 import com.jme3.app.SimpleApplication;
-import com.jme3.asset.AssetManager;
 import com.jme3.bullet.BulletAppState;
-import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
 import com.jme3.bullet.collision.shapes.CollisionShape;
-import com.jme3.bullet.control.CharacterControl;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
-import com.jme3.collision.Collidable;
-import com.jme3.collision.CollisionResults;
-import com.jme3.collision.UnsupportedCollisionException;
-import com.jme3.font.BitmapText;
 import com.jme3.input.KeyInput;
 import com.jme3.input.MouseInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.input.controls.MouseAxisTrigger;
-import com.jme3.input.controls.MouseButtonTrigger;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
@@ -29,7 +21,6 @@ import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Box;
 import com.jme3.scene.shape.Sphere;
 import de.lessvoid.nifty.Nifty;
-import java.util.ArrayList;
 
 /**
  * test
@@ -78,24 +69,24 @@ public class Main extends SimpleApplication implements ActionListener{
         n = new Node();             // attach to n to let disappear when player is there
         Node n1 = new Node();       // attach to n1 to make collision resistant
                 
-        Bomb bomb = new Bomb(1, new Vector3f(0, 4, 0));
-        bomb.setSpeed(10);
-        bomb.setHealth(500);
-        bomb.setDamage(10);
+        Bomb bomb = new Bomb(2, new Vector3f(0, 4, 0));
+//        bomb.setSpeed(10);
+//        bomb.setHealth(500);
+//        bomb.setDamage(10);
         bomb.move(beacon.getLocation());
         world.addBomb(bomb);
         
         Bomb bomb1 = new Bomb(1, new Vector3f(0, 4, 0));
-        bomb1.setSpeed(3);
-        bomb1.setHealth(500);
-        bomb1.setDamage(10);
+//        bomb1.setSpeed(3);
+//        bomb1.setHealth(500);
+//        bomb1.setDamage(10);
         bomb1.move(new Vector3f(20, 0, 100));
         world.addBomb(bomb1);
         
         Bomb bomb2 = new Bomb(1, new Vector3f(0, 4, 0));
-        bomb2.setSpeed(5);
-        bomb2.setHealth(500);
-        bomb2.setDamage(10);
+//        bomb2.setSpeed(5);
+//        bomb2.setHealth(500);
+//        bomb2.setDamage(10);
         bomb2.move(new Vector3f(-20, 0, -100));
         world.addBomb(bomb2);
         

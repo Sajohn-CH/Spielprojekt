@@ -4,14 +4,8 @@
  */
 package mygame;
 
-import com.jme3.bounding.BoundingVolume;
-import com.jme3.collision.Collidable;
-import com.jme3.collision.CollisionResults;
-import com.jme3.collision.UnsupportedCollisionException;
 import com.jme3.math.Vector3f;
-import com.jme3.scene.SceneGraphVisitor;
 import com.jme3.scene.Spatial;
-import java.util.Queue;
 
 /**
  *
@@ -20,7 +14,7 @@ import java.util.Queue;
 public class Entity {
     private int health;
     private int damage;
-    private int level;
+    private int level; //level 0 == tot
     private int speed;
     private Vector3f location;
     private boolean living;
@@ -51,8 +45,9 @@ public class Entity {
 
     public void increaseHealth(int health){
         this.health = this.health + health;
-        if(this.health <= 0)
-                living = false;
+        if(this.health <= 0) {
+             die();
+        }     
     }
 
     public int getDamage(){
@@ -103,5 +98,7 @@ public class Entity {
         this.spatial = spatial;
     }
     
-    
+    protected void die() {
+        living = false;
+    }    
 }
