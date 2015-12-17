@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <nifty xmlns="http://nifty-gui.sourceforge.net/nifty-1.3.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://nifty-gui.sourceforge.net/nifty-1.3.xsd http://nifty-gui.sourceforge.net/nifty-1.3.xsd">
   <screen id="hud" controller="mygame.HudScreenState">
-        <layer id="background" childLayout="vertical">
+        <layer id="background" childLayout="center">
+             <text id="crosshair" height="100%" width="100%" text="+" font="Interface/Fonts/Arial.fnt"/>
+        </layer>
+        <layer childLayout="vertical">
             <panel height="87%" width="100%" childLayout="center">
                 <image filename="Interface/opaque-0.png" imageMode="resize:40,490,110,170,40,560,40,270,40,560,40,40" width="100%" height="100%"></image>
             </panel>
@@ -10,7 +13,7 @@
                     <image filename="Interface/tower-1.png" width="20%" height="100%"/>
                     <image filename="Interface/tower-2.png" width="20%" height="100%"/> 
                     <image filename="Interface/tower-3.png" width="20%" height="100%"/>
-                    <image filename="Interface/tower-1.png" width="20%" height="100%"/>
+                    <image filename="Interface/upgrade.png" width="20%" height="100%"/>
                     <image filename="Interface/tower-1.png" width="20%" height="100%"/>
                 </panel>
             </panel>
@@ -28,7 +31,7 @@
             </panel>
             
             <panel id="top" height="77%" width="100%" childLayout="center" >
-                 <text id="crosshair" height="100%" width="100%" text="+" font="Interface/Fonts/Arial.fnt"/>
+                
             </panel>
            
            <text id="towerDescription" text="tower" height="2%" width="100%" font="Interface/Fonts/Arial.fnt"/>
