@@ -45,7 +45,10 @@ public class PyramidTower extends Tower{
         Material matL = new Material(Main.app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
         matL.setColor("Color", ColorRGBA.Red);
         line.setMaterial(matL);
-        
+    }
+    
+    @Override
+    public void setCollidable(){
         CollisionShape towerShape = CollisionShapeFactory.createMeshShape(this.getSpatial());
         towerC = new RigidBodyControl(towerShape, 0);
         this.getSpatial().addControl(towerC);
