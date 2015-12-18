@@ -89,7 +89,6 @@ public class Bomb extends Entity{
                 this.setLiving(false);
         }
         if(Main.getWorld().getBeacon().getSpatial().getLocalTranslation().subtract(this.getSpatial().getLocalTranslation()).length() <= 3 && isLiving()){
-                Main.app.getFlyByCamera().setDragToRotate(true);
                 this.makeDamage(Main.getWorld().getBeacon());
                 this.setLiving(false);
         }
@@ -101,7 +100,7 @@ public class Bomb extends Entity{
     
     @Override
     protected void die() {
-        if(this.getLevel() == 0) {
+        if(this.getLevel() == 1) {
             super.die();
         } else {
             setLevel(getLevel()-1);
@@ -115,7 +114,7 @@ public class Bomb extends Entity{
         this.setDamage(10+newLevel*10);
         this.setSpeed(10);
         
-        mat.setColor("Color", colors[newLevel%colors.length]);
+        mat.setColor("Color", colors[(newLevel-1)%colors.length]);
         super.setLevel(newLevel);
     }
     

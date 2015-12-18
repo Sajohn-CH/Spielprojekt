@@ -82,6 +82,10 @@ public class Main extends SimpleApplication implements ActionListener{
         bomb.setSpeed(50);
         world.addBomb(bomb);
         
+        Bomb bomb1 = new Bomb(1);
+        bomb1.setSpeed(50);
+        world.addBomb(bomb1);
+        
         NiftyJmeDisplay niftyDisplay = new NiftyJmeDisplay( assetManager, inputManager, audioRenderer, guiViewPort);
         //Create a new NiftyGui objects
         nifty = niftyDisplay.getNifty();

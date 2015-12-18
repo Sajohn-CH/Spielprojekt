@@ -50,7 +50,6 @@
                         <image id="item-5" filename="Interface/item-frame.png" width="20%" height="100%"/>
                     </panel>
                </panel>
-               
             </panel>
         </layer>
     </screen>

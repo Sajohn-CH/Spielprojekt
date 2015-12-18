@@ -59,6 +59,9 @@ public class Tower extends Entity{
         return shot;
     }
     
+    public void increaseLevel() {
+        
+    }
     public void setCollidable(){
         
     }

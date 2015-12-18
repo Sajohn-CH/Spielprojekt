@@ -25,11 +25,9 @@ public class PyramidTower extends Tower{
     private Geometry line;
     private long shot;
     
-    public PyramidTower (Vector3f location, int damage, int range, int shotsPerSecond){
+    public PyramidTower (Vector3f location){
         this.setPrice(40);
-        this.setDamage(damage);
-        this.setRange(range);
-        this.setShotsPerSecond(shotsPerSecond);
+        this.setLevel(1);
         this.setLocation(location);
         this.setLiving(true);
         this.setLocation(new Vector3f(location.x, 0, location.z));
@@ -72,6 +70,14 @@ public class PyramidTower extends Tower{
         if(System.currentTimeMillis()-getLastShot() >= 50){
             line.removeFromParent();
         }
+    }
+    
+     @Override
+    public void setLevel(int newLevel) {
+        super.setLevel(newLevel);
+        this.setDamage(25+newLevel*25);
+        this.setHealth(50+newLevel*10);
+        this.setShotsPerSecond((newLevel/2)+1);
     }
     
 }
