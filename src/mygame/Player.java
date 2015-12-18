@@ -46,7 +46,7 @@ public class Player extends Entity{
         player.setJumpSpeed(20);
         player.setFallSpeed(90);
         player.setGravity(30);
-        player.setPhysicsLocation(new Vector3f(0, 10, 0));
+        player.setPhysicsLocation(new Vector3f(10, 10, 10));
         this.setLiving(true);
         this.setDamage(0);
         setHealth(this.maxHealth);
@@ -198,6 +198,13 @@ public class Player extends Entity{
                 // plaziert Turm
                 Main.getWorld().addTower(tower);
             }
+            if(v.subtract(Main.app.getCamera().getLocation()).length() < 15){
+                return;
+            }
+            //Zieht Geld 
+            increaseMoney(-tower.getPrice());
+            // plaziert Turm
+            Main.getWorld().addTower(tower);
         }
     }
     

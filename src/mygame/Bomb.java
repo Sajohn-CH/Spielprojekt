@@ -42,7 +42,7 @@ public class Bomb extends Entity{
 	
     public Bomb(int level, Vector3f location){
             this(level);
-            super.setLocation(location);
+            super.setLocation(location.setY(4));
             this.getSpatial().setLocalTranslation(location);
     }
     
@@ -64,6 +64,10 @@ public class Bomb extends Entity{
     public void move(Vector3f offset){
         offset.setY(0);
         super.setLocation(offset.add(this.getLocation()));
+    }
+    
+    public void moveTo(Vector3f location){
+        move(location.subtract(this.getLocation()));
     }
     
     @Override

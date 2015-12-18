@@ -62,5 +62,8 @@ public class Tower extends Entity{
     public void increaseLevel() {
         
     }
+    public void setCollidable(){
+        
+    }
     
 }

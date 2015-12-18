@@ -5,10 +5,14 @@
 package mygame;
 
 import com.jme3.app.state.AbstractAppState;
+import com.jme3.bullet.collision.shapes.CollisionShape;
+import com.jme3.bullet.control.RigidBodyControl;
+import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import java.io.File;
+import com.jme3.util.SkyFactory;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -29,11 +33,19 @@ public class World extends AbstractAppState{
     public World(Beacon beacon, Player player, Spatial scene) {
         this.beacon = beacon;
         this.player = player;
+        Main.getBulletAppState().getPhysicsSpace().add(player.getCharacterControl());
         this.scene = scene;
         this.bombs = new HashMap<Spatial, Bomb>();
         this.towers = new HashMap<Spatial, Tower>();
         this.bombNode = new Node();
         this.towerNode = new Node();
+        Main.app.getRootNode().attachChild(SkyFactory.createSky(
+            Main.app.getAssetManager(), "Textures/sky/BrightSky.dds", false));
+        Main.app.getRootNode().attachChild(scene);
+        CollisionShape sceneShape = CollisionShapeFactory.createMeshShape((Node) scene);
+        RigidBodyControl sceneC = new RigidBodyControl(sceneShape, 0);
+        scene.addControl(sceneC);
+        Main.getBulletAppState().getPhysicsSpace().add(sceneC);
     }
     
     public void addBomb(Bomb bomb) {
@@ -69,6 +81,7 @@ public class World extends AbstractAppState{
     public void addTower(Tower tower) {
         towerNode.attachChild(tower.getSpatial());
         this.towers.put(tower.getSpatial(), tower);
+        tower.setCollidable();
     }
     
     public Tower getTower (Spatial spatial) {
@@ -94,7 +107,7 @@ public class World extends AbstractAppState{
     
     public Tower getNearestTower(Vector3f location){
         ArrayList<Tower> allTowers = this.getAllTowers();
-        if(allTowers.size() != 0){
+        if(!allTowers.isEmpty()){
             Tower nearest = allTowers.get(0);
             for(int i = 1; i < allTowers.size(); i ++){
                 if(allTowers.get(i).getLocation().subtract(location).length() < nearest.getLocation().subtract(location).length()){
