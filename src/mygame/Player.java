@@ -37,7 +37,7 @@ public class Player extends Entity{
     private int money;
     
     public Player(InputListener inputListener){
-        money = 100;
+        money = 1000;
         this.setLiving(true);
         this.inputListener = inputListener;
         setUpKeys();
@@ -88,11 +88,17 @@ public class Player extends Entity{
         } else if (binding.equals("Down")) {
             down = isPressed;
         } else if (binding.equals("Shoot") && this.isLiving()) {
-            this.shoot();
+            if(isPressed) {
+                this.shoot();
+            }
         } else if (binding.equals("placeTower") && this.isLiving()) {
             //if(!isPressed) verhindert, dass die Methode zweimal ausgeführt wird
             if(!isPressed) {
-                this.placeTower();
+                  if(Main.app.getHudState().getSelectedItemNum()==4) {
+                      this.upgradeObject();
+                } else {
+                    this.placeTower();  
+                  }
             }
         } else if (binding.equals("Jump")) {
           if (isPressed) {
@@ -158,9 +164,6 @@ public class Player extends Entity{
     }
     
     private void placeTower(){
-        //ERROR: Being called twice
-        //System.out.println("placeTower");
-        //Nur einmal aufgerufen
         CollisionResults results = new CollisionResults();
         Ray ray = new Ray(Main.app.getCamera().getLocation(), Main.app.getCamera().getDirection());
         // trifft auf scene
@@ -190,10 +193,49 @@ public class Player extends Entity{
                 return;
             }
             if(v.subtract(Main.app.getCamera().getLocation()).length() > 4 && v.subtract(Main.app.getCamera().getLocation()).length() > 4){
-                //Zieht Geld 
+                //Zieht Geld ab
                 increaseMoney(-tower.getPrice());
                 // plaziert Turm
                 Main.getWorld().addTower(tower);
+            }
+        }
+    }
+    
+    public void upgradeObject() {
+//        Main.app.getFlyByCamera().setDragToRotate(true);
+        
+        CollisionResults resultsTower = new CollisionResults();
+        CollisionResults resultsBeacon = new CollisionResults();
+        Ray ray = new Ray(Main.app.getCamera().getLocation(), Main.app.getCamera().getDirection());
+        Main.getWorld().getTowerNode().collideWith(ray, resultsTower);
+        Main.getWorld().getBeacon().getSpatial().collideWith(ray, resultsBeacon);
+       if(resultsTower.size() == 0) {
+            Main.getWorld().getBeacon().increaseLevel();
+        } else {
+            //Es gibt min. einen Turm. Es wird der nächste geholt
+            Vector3f pointTower = resultsTower.getClosestCollision().getContactPoint();
+            Tower nearsetTower = Main.app.getWorld().getNearestTower(pointTower);
+            if(resultsBeacon.size() > 0) {
+                //Es gibt Türme und Beacon mit Kollision -> Hearusfinden welcher näher ist
+                Vector3f pointBeacon = resultsBeacon.getClosestCollision().getContactPoint();
+                if(nearsetTower.getLocation().subtract(pointTower).length() > Main.app.getWorld().getBeacon().getLocation().subtract(pointBeacon).length()) {
+                    //Beacon ist näher
+                    Main.getWorld().getBeacon().increaseLevel();
+                } else {
+                    //Ein Turm upgraden wenn genug Geld da ist.
+                    if(Main.app.getWorld().getPlayer().getMoney() > 20) {
+                        nearsetTower.increaseLevel();
+                        Main.app.getWorld().getPlayer().increaseMoney(-20);
+                    }
+                   
+                }
+            } else {
+               //Es gibt kein Beacon, also nur Türme.
+               //Ein Turm upgraden wenn genug Geld da ist.
+                    if(Main.app.getWorld().getPlayer().getMoney() > 20) {
+                        nearsetTower.increaseLevel();
+                        Main.app.getWorld().getPlayer().increaseMoney(-20);
+                    }
             }
         }
     }

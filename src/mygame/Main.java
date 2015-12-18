@@ -76,7 +76,7 @@ public class Main extends SimpleApplication implements ActionListener{
         bomb.move(beacon.getLocation());
         world.addBomb(bomb);
         
-        Bomb bomb1 = new Bomb(1, new Vector3f(0, 4, 0));
+        Bomb bomb1 = new Bomb(4, new Vector3f(0, 4, 0));
 //        bomb1.setSpeed(3);
 //        bomb1.setHealth(500);
 //        bomb1.setDamage(10);

@@ -32,6 +32,10 @@ public class Entity {
     public void setMaxHealth(int maxHealth) {
         this.maxHealth = maxHealth;
     }
+
+    public int getMaxHealth() {
+        return maxHealth;
+    }
     
     public int getHealthPercentage() {
         //System.out.println("healt:"+health);

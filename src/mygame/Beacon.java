@@ -50,4 +50,16 @@ public class Beacon extends Entity {
             Main.getBulletAppState().getPhysicsSpace().remove(beaconC);
         }
     }
+    
+    public void increaseLevel() {
+        int upgradePrice = (int)(this.getMaxHealth());
+        if(Main.app.getWorld().getPlayer().getMoney() >= upgradePrice) {
+            int increaseHealth;
+            increaseHealth = (int)(this.getMaxHealth()*0.1);
+            this.setMaxHealth(this.getMaxHealth()+increaseHealth);
+            this.increaseHealth(increaseHealth);
+            this.setLevel(this.getLevel()+1);
+            Main.app.getWorld().getPlayer().increaseMoney(-upgradePrice);
+        }
+    }
 }

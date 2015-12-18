@@ -11,7 +11,6 @@ import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
-import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Box;
 import com.jme3.scene.shape.Line;
 
@@ -24,11 +23,9 @@ public class SimpleTower extends Tower{
     RigidBodyControl towerC;
     private Geometry line;
     
-    public SimpleTower (Vector3f location, int damage, int range, int shotsPerSecond){
+    public SimpleTower (Vector3f location){
         this.setPrice(20);
-        this.setDamage(damage);
-        this.setRange(range);
-        this.setShotsPerSecond(shotsPerSecond);
+        this.setLevel(1);
         this.setLocation(location);
         this.setLiving(true);
         this.setLocation(new Vector3f(location.x, 4, location.z));
@@ -69,4 +66,16 @@ public class SimpleTower extends Tower{
         }
     }
     
+    @Override
+    public void setLevel(int newLevel) {
+        super.setLevel(newLevel);
+        this.setDamage(25+newLevel*25);
+        this.setHealth(50+newLevel*10);
+        this.setShotsPerSecond((newLevel/2)+1);
+    }
+    
+    @Override
+    public void increaseLevel() {
+        setLevel(this.getLevel()+1);
+    }
 }
