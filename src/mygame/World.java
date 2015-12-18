@@ -11,6 +11,7 @@ import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.texture.Texture;
 import java.io.File;
 import com.jme3.util.SkyFactory;
 import java.util.ArrayList;
@@ -39,8 +40,20 @@ public class World extends AbstractAppState{
         this.towers = new HashMap<Spatial, Tower>();
         this.bombNode = new Node();
         this.towerNode = new Node();
-        Main.app.getRootNode().attachChild(SkyFactory.createSky(
-            Main.app.getAssetManager(), "Textures/sky/BrightSky.dds", false));
+//        Main.app.getRootNode().attachChild(SkyFactory.createSky(
+//            Main.app.getAssetManager(), "Textures/sky/BrightSky","Textures/sky/BrightSky", "Textures/sky/BrightSky", "Textures/sky/BrightSky", "Textures/sky/BrightSky"
+//                ,"Textures/sky/BrightSky", ));
+        //TODO: weitermachen
+        
+        Texture west = Main.app.getAssetManager().loadTexture("Textures/sky/BrightSky/west.jpg");
+        Texture east = Main.app.getAssetManager().loadTexture("Textures/sky/BrightSky/east.jpg");
+        Texture north = Main.app.getAssetManager().loadTexture("Textures/sky/BrightSky/north.jpg");
+        Texture south = Main.app.getAssetManager().loadTexture("Textures/sky/BrightSky/south.jpg");
+        Texture up = Main.app.getAssetManager().loadTexture("Textures/sky/BrightSky/up.jpg");
+        Texture down = Main.app.getAssetManager().loadTexture("Textures/sky/BrightSky/down.jpg");
+        Main.app.getRootNode().attachChild(SkyFactory.createSky(Main.app.getAssetManager(), west, east, north, south, up, down));
+                
+                
         Main.app.getRootNode().attachChild(scene);
         CollisionShape sceneShape = CollisionShapeFactory.createMeshShape((Node) scene);
         RigidBodyControl sceneC = new RigidBodyControl(sceneShape, 0);
