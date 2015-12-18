@@ -8,12 +8,25 @@ import com.jme3.app.state.AbstractAppState;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
+import com.jme3.material.Material;
+import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.shape.Box;
 import com.jme3.util.SkyFactory;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 /**
  *
@@ -28,6 +41,8 @@ public class World extends AbstractAppState{
     private Player player;
     private Node bombNode;
     private Node towerNode;
+    private Node wayNode;
+    private File cornersFile = new File("assets/Scenes/scene_1.xml");
     
     public World(Beacon beacon, Player player, Spatial scene) {
         this.beacon = beacon;
@@ -38,6 +53,8 @@ public class World extends AbstractAppState{
         this.towers = new HashMap<Spatial, Tower>();
         this.bombNode = new Node();
         this.towerNode = new Node();
+        this.wayNode = new Node();
+        generateWayGeometries();
         Main.app.getRootNode().attachChild(SkyFactory.createSky(
             Main.app.getAssetManager(), "Textures/sky/BrightSky.dds", false));
         Main.app.getRootNode().attachChild(scene);
@@ -140,4 +157,48 @@ public class World extends AbstractAppState{
         }
     }
     
+    public ArrayList<Vector3f> getAllCorners(){
+        ArrayList<Vector3f> corners = new ArrayList<Vector3f>();
+        try {
+            DocumentBuilderFactory dbFacotry = DocumentBuilderFactory.newInstance();
+            DocumentBuilder dBuilder = dbFacotry.newDocumentBuilder();
+            Document doc = dBuilder.parse(cornersFile);
+            dBuilder = dbFacotry.newDocumentBuilder();
+            doc.getDocumentElement().normalize();
+            
+            NodeList list = doc.getElementsByTagName("corner");
+            for(int i = 0; i < list.getLength(); i++) {
+                Element element = getElement(i, list);
+                
+                Vector3f vector = new Vector3f();
+                vector.setX(Float.valueOf(element.getAttribute("x")));
+                vector.setY(Float.valueOf(element.getAttribute("y")));
+                vector.setZ(Float.valueOf(element.getAttribute("z")));
+                corners.add(vector);
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(World.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return corners;
+    }
+    
+    private Element getElement(int id, NodeList list) {
+        for(int i = 0; i < list.getLength(); i++) {
+            Element element = (Element) list.item(i);
+            if(element.getAttribute("id").equals(String.valueOf(id))) {
+                return element;
+            }
+        }
+        return null;
+    }
+    
+    private void generateWayGeometries(){
+        ArrayList<Vector3f> corners = getAllCorners();
+        for(int i = 1; i < corners.size(); i++){
+            Geometry geom = new Geometry("WayPiece " + i, new Box(corners.get(i).add(corners.get(i-1)), corners.get(i).subtract(corners.get(i-1)).x+4, 8, corners.get(i).subtract(corners.get(i-1)).z+4));
+            geom.setMaterial(new Material());
+            wayNode.attachChild(geom);
+        }
+    }
 }
+ 

@@ -22,6 +22,7 @@ import com.jme3.scene.shape.Box;
 import com.jme3.scene.shape.Sphere;
 import com.jme3.system.AppSettings;
 import de.lessvoid.nifty.Nifty;
+import java.util.ArrayList;
 
 /**
  * @author Samuel Martin und Florian Wenk
@@ -77,20 +78,9 @@ public class Main extends SimpleApplication implements ActionListener{
 //        n = new Node();             // attach to n to let disappear when player is there
 //        Node n1 = new Node();       // attach to n1 to make collision resistant
                 
-        Bomb bomb = new Bomb(1, new Vector3f(-81.5f, 4f, 255f).mult(2));
-        bomb.setSpeed(20);
-        bomb.moveTo(beacon.getLocation().mult(2));
+        Bomb bomb = new Bomb(1);
+        bomb.setSpeed(50);
         world.addBomb(bomb);
-        
-        Bomb bomb1 = new Bomb(1, new Vector3f(-81.5f, 4f, 255f).mult(2));
-        bomb1.setSpeed(20);
-        bomb1.moveTo(new Vector3f(-81.5f, 0f, 82f).mult(2));
-        world.addBomb(bomb1);
-        
-        Bomb bomb2 = new Bomb(1, new Vector3f(-81.5f, 4f, 255f).mult(2));
-        bomb2.setSpeed(10);
-        bomb2.moveTo(new Vector3f(-81.5f, 4f, 255f).mult(2));
-        world.addBomb(bomb2);
         
         NiftyJmeDisplay niftyDisplay = new NiftyJmeDisplay( assetManager, inputManager, audioRenderer, guiViewPort);
         //Create a new NiftyGui objects

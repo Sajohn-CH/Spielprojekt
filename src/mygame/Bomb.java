@@ -23,6 +23,7 @@ public class Bomb extends Entity{
     private RigidBodyControl bombC;
     private Material mat;
     private ColorRGBA[] colors = {ColorRGBA.Blue, ColorRGBA.Cyan, ColorRGBA.Green, ColorRGBA.Magenta, ColorRGBA.Red, ColorRGBA.Pink};
+    private Way way;
     
     public Bomb (int level){
         this.setLiving(true);
@@ -31,6 +32,9 @@ public class Bomb extends Entity{
         this.setSpatial(new Geometry("bomb", sphere));
         mat = new Material (Main.app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
         this.getSpatial().setMaterial(mat);
+        way = new Way();
+        super.setLocation(way.getStartPoint().setY(2));
+        this.getSpatial().setLocalTranslation(way.getStartPoint());
         
         CollisionShape bombShape = CollisionShapeFactory.createMeshShape(this.getSpatial());
         bombC = new RigidBodyControl(bombShape, 0);
@@ -38,12 +42,6 @@ public class Bomb extends Entity{
         this.getSpatial().addControl(bombC);
         Main.getBulletAppState().getPhysicsSpace().add(bombC);
         this.setLevel(level);
-    }
-	
-    public Bomb(int level, Vector3f location){
-            this(level);
-            super.setLocation(location.setY(4));
-            this.getSpatial().setLocalTranslation(location);
     }
     
     @Override
@@ -66,7 +64,7 @@ public class Bomb extends Entity{
         super.setLocation(offset.add(this.getLocation()));
     }
     
-    public void moveTo(Vector3f location){
+    private void moveTo(Vector3f location){
         move(location.subtract(this.getLocation()));
     }
     
@@ -83,6 +81,8 @@ public class Bomb extends Entity{
             v.divideLocal(10*v.length());
             v.multLocal(5*tpf);
             this.getSpatial().move(v.mult(this.getSpeed()));
+        } else {
+            moveTo(way.getNextCorner());
         }
         if(Main.app.getCamera().getLocation().subtract(this.getSpatial().getLocalTranslation()).length() <= 3 && this.isLiving() && Main.getWorld().getPlayer().isLiving()){
                 this.makeDamage(Main.getWorld().getPlayer());
