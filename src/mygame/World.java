@@ -57,8 +57,9 @@ public class World extends AbstractAppState{
         this.towerNode = new Node();
         this.wayNode = new Node();
         generateWayGeometries();
-        Main.app.getRootNode().attachChild(SkyFactory.createSky(
-            Main.app.getAssetManager(), "Textures/sky/BrightSky.dds", false));
+        Main.app.getRootNode().attachChild(wayNode);
+//        Main.app.getRootNode().attachChild(SkyFactory.createSky(
+//            Main.app.getAssetManager(), "Textures/sky/BrightSky.dds", false));
 //        Main.app.getRootNode().attachChild(SkyFactory.createSky(
 //            Main.app.getAssetManager(), "Textures/sky/BrightSky","Textures/sky/BrightSky", "Textures/sky/BrightSky", "Textures/sky/BrightSky", "Textures/sky/BrightSky"
 //                ,"Textures/sky/BrightSky", ));
@@ -209,9 +210,16 @@ public class World extends AbstractAppState{
     
     private void generateWayGeometries(){
         ArrayList<Vector3f> corners = getAllCorners();
+        Geometry geom1C = new Geometry("Corner0", new Box(corners.get(0).mult(2), 6, 0, 6));
+        Material mat = new Material();
+        geom1C.setMaterial(mat);
+        wayNode.attachChild(geom1C);
         for(int i = 1; i < corners.size(); i++){
-            Geometry geom = new Geometry("WayPiece " + i, new Box(corners.get(i).add(corners.get(i-1)), corners.get(i).subtract(corners.get(i-1)).x+4, 8, corners.get(i).subtract(corners.get(i-1)).z+4));
-            geom.setMaterial(new Material());
+            Geometry geomC = new Geometry("Corner" + i, new Box(corners.get(i).mult(2), 6, 0, 6));
+            geomC.setMaterial(mat);
+            wayNode.attachChild(geomC);
+            Geometry geom = new Geometry("WayPiece " + i, new Box(corners.get(i).add(corners.get(i-1)), corners.get(i).subtract(corners.get(i-1)).x+6, 0, corners.get(i).subtract(corners.get(i-1)).z+6));
+            geom.setMaterial(mat);
             wayNode.attachChild(geom);
         }
     }

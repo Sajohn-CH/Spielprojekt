@@ -72,6 +72,7 @@ public class SimpleTower extends Tower{
     @Override
     public void setLevel(int newLevel) {
         super.setLevel(newLevel);
+        this.setRange(10+newLevel*5);
         this.setDamage(25+newLevel*25);
         this.setHealth(50+newLevel*10);
         this.setShotsPerSecond((newLevel/2)+1);
