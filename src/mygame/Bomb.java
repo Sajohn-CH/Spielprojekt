@@ -37,11 +37,11 @@ public class Bomb extends Entity{
         super.setLocation(way.getStartPoint().setY(2));
         this.getSpatial().setLocalTranslation(way.getStartPoint());
         
-        CollisionShape bombShape = CollisionShapeFactory.createMeshShape(this.getSpatial());
-        bombC = new RigidBodyControl(bombShape, 0);
-        bombC.setKinematic(true);
-        this.getSpatial().addControl(bombC);
-        Main.getBulletAppState().getPhysicsSpace().add(bombC);
+//        CollisionShape bombShape = CollisionShapeFactory.createMeshShape(this.getSpatial());
+//        bombC = new RigidBodyControl(bombShape, 0);
+//        bombC.setKinematic(true);
+//        this.getSpatial().addControl(bombC);
+//        Main.getBulletAppState().getPhysicsSpace().add(bombC);
     }
     
     @Override
@@ -93,7 +93,7 @@ public class Bomb extends Entity{
                 this.setLiving(false);
         }
         if(!this.isLiving()){
-            Main.getBulletAppState().getPhysicsSpace().remove(bombC);
+//            Main.getBulletAppState().getPhysicsSpace().remove(bombC);
             Main.app.getWorld().getPlayer().increaseMoney(10);
         }
     }

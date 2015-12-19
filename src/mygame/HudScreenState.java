@@ -38,6 +38,7 @@ public class HudScreenState extends AbstractAppState implements ScreenController
         //Setzt Text im HUD
         updateText("time", ("Uhrzeit: "+df.format(System.currentTimeMillis())));
         updateText("money", ("Geld: " + Main.getWorld().getPlayer().getMoney() + "$"));
+        updateText("wave", ("Welle: " + Main.getGame().getWave()));
         updateText("towerDescription", descriptions[getSelectedItemNum()-1]);
         updateText("beaconHealth", (world.getBeacon().getHealth()+"/"+world.getBeacon().getMaxHealth()));
         updateText("health", world.getPlayer().getHealth()+"/"+world.getPlayer().getMaxHealth());

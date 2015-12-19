@@ -215,8 +215,10 @@ public class Player extends Entity{
         Ray ray = new Ray(Main.app.getCamera().getLocation(), Main.app.getCamera().getDirection());
         Main.getWorld().getTowerNode().collideWith(ray, resultsTower);
         Main.getWorld().getBeacon().getSpatial().collideWith(ray, resultsBeacon);
-       if(resultsTower.size() == 0) {
-            Main.getWorld().getBeacon().increaseLevel();
+        if(resultsTower.size() == 0) {
+            if(resultsBeacon.size() != 0){
+                Main.getWorld().getBeacon().increaseLevel();
+            }
         } else {
             //Es gibt min. einen Turm. Es wird der nächste geholt
             Vector3f pointTower = resultsTower.getClosestCollision().getContactPoint();
