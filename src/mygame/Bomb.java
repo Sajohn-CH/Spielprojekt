@@ -31,6 +31,7 @@ public class Bomb extends Entity{
         Sphere sphere = new Sphere(100, 100, 1);
         this.setSpatial(new Geometry("bomb", sphere));
         mat = new Material (Main.app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
+        this.setLevel(level);
         this.getSpatial().setMaterial(mat);
         way = new Way();
         super.setLocation(way.getStartPoint().setY(2));
@@ -41,7 +42,6 @@ public class Bomb extends Entity{
         bombC.setKinematic(true);
         this.getSpatial().addControl(bombC);
         Main.getBulletAppState().getPhysicsSpace().add(bombC);
-        this.setLevel(level);
     }
     
     @Override
@@ -112,7 +112,7 @@ public class Bomb extends Entity{
         //setzt Leben als Funktion mit level
         this.setHealth(50+newLevel*50);
         this.setDamage(10+newLevel*10);
-        this.setSpeed(10);
+        this.setSpeed(50-newLevel*2+Main.getGame().getWave()*2);
         
         mat.setColor("Color", colors[(newLevel-1)%colors.length]);
         super.setLevel(newLevel);

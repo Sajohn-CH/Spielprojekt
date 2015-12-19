@@ -61,6 +61,7 @@ public class MyStartScreen extends AbstractAppState implements ScreenController,
     public void startGame(String nextScreen) {
         nifty.gotoScreen(nextScreen);
         Main.app.getFlyByCamera().setDragToRotate(false);
+        Main.getWorld().setPaused(false);
     }
     
     public void quitGame() {

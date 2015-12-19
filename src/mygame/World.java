@@ -57,7 +57,6 @@ public class World extends AbstractAppState{
         this.towerNode = new Node();
         this.wayNode = new Node();
         generateWayGeometries();
-        Main.app.getRootNode().attachChild(wayNode);
 //        Main.app.getRootNode().attachChild(SkyFactory.createSky(
 //            Main.app.getAssetManager(), "Textures/sky/BrightSky.dds", false));
 //        Main.app.getRootNode().attachChild(SkyFactory.createSky(
@@ -226,6 +225,10 @@ public class World extends AbstractAppState{
     
     public Node getWayNode(){
         return this.wayNode;
+    }
+    
+    public void setPaused(boolean pause){
+        this.setEnabled(!pause);
     }
 }
  

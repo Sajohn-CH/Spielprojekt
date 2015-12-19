@@ -37,6 +37,7 @@ public class Main extends SimpleApplication implements ActionListener{
     private Nifty nifty;
     private HudScreenState hudState;
     private static World world;
+    private static Game game;
     
     public static void main(String[] args) {
         app = new Main();
@@ -69,22 +70,26 @@ public class Main extends SimpleApplication implements ActionListener{
         Beacon beacon = new Beacon(new Vector3f(0, 0, 0), 100);
         world = new World(beacon, player, scene);
         stateManager.attach(world);
+        world.setPaused(true);
         
         rootNode.attachChild(world.getBombNode());
         rootNode.attachChild(world.getTowerNode());
         rootNode.attachChild(world.getBeacon().getSpatial());
         
         setUpKeys();
+        
+        game = new Game(1);
+        game.startWave();
 //        n = new Node();             // attach to n to let disappear when player is there
 //        Node n1 = new Node();       // attach to n1 to make collision resistant
                 
-        Bomb bomb = new Bomb(1);
-        bomb.setSpeed(50);
-        world.addBomb(bomb);
-        
-        Bomb bomb1 = new Bomb(1);
-        bomb1.setSpeed(50);
-        world.addBomb(bomb1);
+//        Bomb bomb = new Bomb(1);
+//        bomb.setSpeed(50);
+//        world.addBomb(bomb);
+//        
+//        Bomb bomb1 = new Bomb(1);
+//        bomb1.setSpeed(50);
+//        world.addBomb(bomb1);
         
         NiftyJmeDisplay niftyDisplay = new NiftyJmeDisplay( assetManager, inputManager, audioRenderer, guiViewPort);
         //Create a new NiftyGui objects
@@ -145,6 +150,7 @@ public class Main extends SimpleApplication implements ActionListener{
         if (binding.equals("Menu")) {
             nifty.gotoScreen("pause");
             flyCam.setDragToRotate(true);
+            world.setPaused(true);
         } else if(binding.equals("item_1")) {
             hudState.selectItem(1);
         } else if(binding.equals("item_2")) {
@@ -165,6 +171,11 @@ public class Main extends SimpleApplication implements ActionListener{
 
     @Override
     public void simpleUpdate(float tpf) {
+        if(!game.bombLeft() && world.getAllBombs().isEmpty()){
+            game.nextWave();
+        } else if (game.bombLeft()){
+            game.action(tpf);
+        }
 //        for (int i = 0; i < n.getChildren().size(); i++)
 //            if(!n.getChildren().isEmpty())
 //                if((cam.getLocation().getX()-1 < n.getChild(i).getLocalTranslation().add(n.getLocalTranslation()).getX() && cam.getLocation().getX()+1 > n.getChild(i).getLocalTranslation().add(n.getLocalTranslation()).getX()) && (cam.getLocation().getZ()-1 < n.getChild(i).getLocalTranslation().add(n.getLocalTranslation()).getZ() && cam.getLocation().getZ()+1 > n.getChild(i).getLocalTranslation().add(n.getLocalTranslation()).getZ()))
@@ -187,5 +198,9 @@ public class Main extends SimpleApplication implements ActionListener{
     
     public static BulletAppState getBulletAppState(){
         return bulletAppState;
+    }
+    
+    public static Game getGame(){
+        return game;
     }
 }

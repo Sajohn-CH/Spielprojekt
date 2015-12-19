@@ -22,7 +22,7 @@ public class Way {
     }
     
     public Vector3f getStartPoint(){
-        return corners.get(0);
+        return corners.get(0).mult(2);
     }
     
     public Vector3f getNextCorner(){
