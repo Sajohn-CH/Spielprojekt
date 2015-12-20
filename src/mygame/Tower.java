@@ -59,9 +59,18 @@ public class Tower extends Entity{
         return shot;
     }
     
+    /**
+     * Upgradet den Turm auf das nächste Level, dafür wird die Methode {@link SimpleTower#setLevel(int)} aufgerufen. Davor wird überpüft, ob der Spieler dafür genung Geld hat. 
+     * Wenn dies der Fall ist wird ihm dies abgezogen.
+     */
     public void increaseLevel() {
         
     }
+    
+    public void upgrade() {
+        
+    }
+    
     public void setCollidable(){
         
     }
