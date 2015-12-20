@@ -148,11 +148,11 @@ public class HudScreenState extends AbstractAppState implements ScreenController
    public void showUpgradeTower(Tower tower) {
        this.tower = tower;
        int newLevel = tower.getLevel()+1;
-       String price = tower.getUpgradePrice()+"$";
-       String damage = tower.getDamage()+"+"+(tower.getNewDamage(newLevel)-tower.getDamage());
-       String health = tower.getHealth()+"+"+(tower.getNewHealth(newLevel)-tower.getHealth());
-       String sps = tower.getShotsPerSecond()+"+"+(tower.getNewSPS(newLevel)-tower.getShotsPerSecond());
-       String range = tower.getRange()+"+"+(tower.getNewRange(newLevel)-tower.getRange());
+       String price = "Preis: " + tower.getUpgradePrice()+"$";
+       String damage = "Schaden: " + tower.getDamage()+"+"+(tower.getNewDamage(newLevel)-tower.getDamage());
+       String health = "Leben: " +tower.getHealth()+"+"+(tower.getNewHealth(newLevel)-tower.getHealth());
+       String sps = "Schussrate: " + tower.getShotsPerSecond()+"+"+(tower.getNewSPS(newLevel)-tower.getShotsPerSecond());
+       String range = "Reichweite: " + tower.getRange()+"+"+(tower.getNewRange(newLevel)-tower.getRange());
        
        Main.app.getFlyByCamera().setDragToRotate(true);
        popup = nifty.createPopup("niftyPopupTower");

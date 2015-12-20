@@ -24,6 +24,7 @@ public class Bomb extends Entity{
     private Material mat;
     private ColorRGBA[] colors = {ColorRGBA.Blue, ColorRGBA.Cyan, ColorRGBA.Green, ColorRGBA.Magenta, ColorRGBA.Red, ColorRGBA.Pink};
     private Way way;
+    private int money;
     
     public Bomb (int level){
         this.setLiving(true);
@@ -36,6 +37,7 @@ public class Bomb extends Entity{
         way = new Way();
         super.setLocation(way.getStartPoint().setY(2));
         this.getSpatial().setLocalTranslation(way.getStartPoint());
+        money = 5;
         
 //        CollisionShape bombShape = CollisionShapeFactory.createMeshShape(this.getSpatial());
 //        bombC = new RigidBodyControl(bombShape, 0);
@@ -84,17 +86,19 @@ public class Bomb extends Entity{
         } else {
             moveTo(way.getNextCorner());
         }
-        if(Main.app.getCamera().getLocation().subtract(this.getSpatial().getLocalTranslation()).length() <= 3 && this.isLiving() && Main.getWorld().getPlayer().isLiving()){
+        if(Main.app.getCamera().getLocation().subtract(this.getSpatial().getLocalTranslation()).length() <= 5 && this.isLiving() && Main.getWorld().getPlayer().isLiving()){
                 this.makeDamage(Main.getWorld().getPlayer());
                 this.setLiving(false);
+                money = 0;
         }
         if(Main.getWorld().getBeacon().getSpatial().getLocalTranslation().subtract(this.getSpatial().getLocalTranslation()).length() <= 3 && isLiving()){
                 this.makeDamage(Main.getWorld().getBeacon());
                 this.setLiving(false);
+                money = 0;
         }
         if(!this.isLiving()){
 //            Main.getBulletAppState().getPhysicsSpace().remove(bombC);
-            Main.app.getWorld().getPlayer().increaseMoney(10);
+            Main.app.getWorld().getPlayer().increaseMoney(money);
         }
     }
     
@@ -105,6 +109,7 @@ public class Bomb extends Entity{
         } else {
             setLevel(getLevel()-1);
         }
+        Main.getWorld().getPlayer().increaseMoney(money);
     }
     
     @Override
@@ -116,6 +121,14 @@ public class Bomb extends Entity{
         
         mat.setColor("Color", colors[(newLevel-1)%colors.length]);
         super.setLevel(newLevel);
+    }
+    
+    public void decreaseSpeed (int speed){
+        if(this.getSpeed() > speed){
+            this.setSpeed(this.getSpeed() - speed);
+            return;
+        }
+        this.setSpeed(1);
     }
     
 }

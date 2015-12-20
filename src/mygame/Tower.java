@@ -27,7 +27,7 @@ public class Tower extends Entity{
     public void makeDamage(Entity e){
         e.increaseHealth(-this.getDamage());
     }
-
+    
     public int getPrice() {
         return price;
     }

@@ -57,6 +57,10 @@ public class MGTower extends Tower{
         Main.getBulletAppState().getPhysicsSpace().add(towerC);
     }
     
+    private void decreaseSpeed(Bomb b){
+        b.decreaseSpeed(this.getDamage());
+    }
+    
     @Override
     public void action(float tpf) {
         for(int i = 0; i < Main.getWorld().getAllBombs().size(); i++){
@@ -65,7 +69,7 @@ public class MGTower extends Tower{
                line.setMesh(l);
                Main.app.getRootNode().attachChild(line);
                super.shot();
-               this.makeDamage(Main.getWorld().getAllBombs().get(i));
+               this.decreaseSpeed(Main.getWorld().getAllBombs().get(i));
             }
         }
         if(!this.isLiving()){
@@ -76,11 +80,16 @@ public class MGTower extends Tower{
         }
     }
     
-     @Override
+    @Override
+    public int getNewDamage(int newLevel) {
+        return 5+newLevel*5;
+    }
+    
+    @Override
     public void setLevel(int newLevel) {
         super.setLevel(newLevel);
         this.setRange(10+newLevel*5);
-        this.setDamage(25+newLevel*25);
+        this.setDamage(5+newLevel*5);
         this.setHealth(50+newLevel*10);
         this.setShotsPerSecond((newLevel/2)+1);
     }
