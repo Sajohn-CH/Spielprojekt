@@ -67,6 +67,26 @@ public class Tower extends Entity{
         
     }
     
+     public int getNewRange(int newLevel) {
+        return 10+newLevel*5;
+    }
+    
+    public int getNewDamage(int newLevel) {
+        return 25+newLevel*25;
+    }
+    
+    public int getNewHealth(int newLevel) {
+        return 50+newLevel*10;
+    }
+    
+    public int getNewSPS(int newLevel) {
+        return (newLevel/2)+1;
+    }
+    
+    public int getUpgradePrice() {
+        return this.getMaxHealth();
+    }
+    
     public void upgrade() {
         
     }

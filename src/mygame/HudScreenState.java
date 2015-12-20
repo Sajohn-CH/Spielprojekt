@@ -10,13 +10,11 @@ import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.elements.render.ImageRenderer;
 import de.lessvoid.nifty.elements.render.TextRenderer;
-import de.lessvoid.nifty.input.NiftyInputEvent;
 import de.lessvoid.nifty.render.NiftyImage;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
-import de.lessvoid.xml.xpp3.Attributes;
+import java.awt.Color;
 import java.text.SimpleDateFormat;
-import java.util.Properties;
 
 
 /**
@@ -30,9 +28,10 @@ public class HudScreenState extends AbstractAppState implements ScreenController
     private int itemSelected = 1;
     private World world;
     //private long lastSelectionChanged; //Zeit, als das letzte Mal die Auswahl geändert wurde. Wird gebraucht um die Anzeige der Turmbeschreibung nach eine Zeitspannen verschwinden zu lassen
-    private String[] descriptions = {"Preis: 20$", "Preis: 30$", "Preis: 40$", "Preis: ???$", "Preis: 20$"};
+    private String[] descriptions = {"Preis: 20$", "Preis: 30$", "Preis: 40$", "Upgraden", "Preis: 20$"};
     private Element popup;
     private Tower tower;
+    private boolean cameraDragToRotate = false;     //Ist nur dann true, wenn bei der aktuellen anzeige DragToRotate der FlyByCamera true ist (z.B: bei Popup)
     
     public void setWorld(World world) {
         this.world = world;
@@ -142,28 +141,49 @@ public class HudScreenState extends AbstractAppState implements ScreenController
    public int getSelectedItemNum() {
        return itemSelected;
    }
-   
-   public void showUpgradeTower(Tower tower, String price, String damage, String health, String sps, String range) {
+   /**
+    * Zeigt das Popup für ein Turmupgrade an. 
+    * @param tower  Referenz auf den zu upgradenden Turm
+    */
+   public void showUpgradeTower(Tower tower) {
        this.tower = tower;
+       int newLevel = tower.getLevel()+1;
+       String price = tower.getUpgradePrice()+"$";
+       String damage = tower.getDamage()+"+"+(tower.getNewDamage(newLevel)-tower.getDamage());
+       String health = tower.getHealth()+"+"+(tower.getNewHealth(newLevel)-tower.getHealth());
+       String sps = tower.getShotsPerSecond()+"+"+(tower.getNewSPS(newLevel)-tower.getShotsPerSecond());
+       String range = tower.getRange()+"+"+(tower.getNewRange(newLevel)-tower.getRange());
+       
        Main.app.getFlyByCamera().setDragToRotate(true);
        popup = nifty.createPopup("niftyPopupTower");
-       popup.findElementByName("price").getRenderer(TextRenderer.class).setText("Preis: "+price);
-       popup.findElementByName("damage").getRenderer(TextRenderer.class).setText("Schaden: +"+damage);
-       popup.findElementByName("health").getRenderer(TextRenderer.class).setText("Lebenspunkte: +"+health);
-       popup.findElementByName("sps").getRenderer(TextRenderer.class).setText("Schüsse pro Sekunde: +"+sps);
-       popup.findElementByName("range").getRenderer(TextRenderer.class).setText("Reichweite: +"+range);
+       popup.findElementByName("title").getRenderer(TextRenderer.class).setText("Turm Stufe "+tower.getLevel());
+       popup.findElementByName("price").getRenderer(TextRenderer.class).setText(price);
+       popup.findElementByName("damage").getRenderer(TextRenderer.class).setText(damage);
+       popup.findElementByName("health").getRenderer(TextRenderer.class).setText(health);
+       popup.findElementByName("sps").getRenderer(TextRenderer.class).setText(sps);
+       popup.findElementByName("range").getRenderer(TextRenderer.class).setText(range);
        nifty.showPopup(nifty.getCurrentScreen(), popup.getId(), null);  
+       Main.app.getWorld().setPaused(true);
+       cameraDragToRotate = true;
    }
    
+   /**
+    * Schliesst das Popup, welches mit {@link HudScreenState#showUpgradeTower(mygame.Tower, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)} geöffnet, wurde wieder.
+    * @param upgrade Gibt an ob der Turm upgegradet werden soll. Wenn der String "true" entspricht wird upgegradet.
+    */
    public void closePopup(String upgrade) {
        if(upgrade.equals("true")) {
            tower.upgrade();
        }
-       System.out.println("Upgrade: "+upgrade);
        nifty.closePopup(popup.getId());
-       System.out.println("close");
        popup.disable();
        Main.app.getFlyByCamera().setDragToRotate(false);
+       Main.app.getWorld().setPaused(false);
+       cameraDragToRotate = false;
+   }
+   
+   public boolean isCameraDragToRotate() {
+       return cameraDragToRotate;
    }
      
 }

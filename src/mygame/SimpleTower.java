@@ -83,23 +83,28 @@ public class SimpleTower extends Tower{
         this.setShotsPerSecond((newLevel/2)+1);
     }
     
-    private int getNewRange(int newLevel) {
+    @Override
+    public int getNewRange(int newLevel) {
         return 10+newLevel*5;
     }
     
-    private int getNewDamage(int newLevel) {
+    @Override
+    public int getNewDamage(int newLevel) {
         return 25+newLevel*25;
     }
     
-    private int getNewHealth(int newLevel) {
+    @Override
+    public int getNewHealth(int newLevel) {
         return 50+newLevel*10;
     }
     
-    private int getNewSPS(int newLevel) {
+    @Override
+    public int getNewSPS(int newLevel) {
         return (newLevel/2)+1;
     }
     
-    private int getUpgradePrice() {
+    @Override
+    public int getUpgradePrice() {
         return this.getMaxHealth();
     }
     
@@ -109,7 +114,8 @@ public class SimpleTower extends Tower{
     @Override
     public void increaseLevel() {
         int newLevel = this.getLevel()+1;
-        Main.app.getHudState().showUpgradeTower(this, getUpgradePrice()+"$", String.valueOf(getNewDamage(newLevel)), String.valueOf(getNewHealth(newLevel)), String.valueOf(getNewSPS(newLevel)), String.valueOf(getNewRange(newLevel)));
+        
+        Main.app.getHudState().showUpgradeTower(this);
     }
     
     /**
