@@ -45,6 +45,7 @@ public class Beacon extends Entity {
     @Override
     public void action(float tpf) {
         if(!this.isLiving()){
+            Main.getWorld().setPaused(true);
             Main.getWorld().getPlayer().setLiving(false);
             this.getSpatial().removeFromParent();
             Main.getBulletAppState().getPhysicsSpace().remove(beaconC);

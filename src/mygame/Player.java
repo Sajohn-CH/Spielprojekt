@@ -37,7 +37,7 @@ public class Player extends Entity{
     private int money;
     
     public Player(InputListener inputListener){
-        money = 1000;
+        money = 100;
         this.setLiving(true);
         this.inputListener = inputListener;
         setUpKeys();
@@ -222,17 +222,17 @@ public class Player extends Entity{
         } else {
             //Es gibt min. einen Turm. Es wird der nächste geholt
             Vector3f pointTower = resultsTower.getClosestCollision().getContactPoint();
-            Tower nearsetTower = Main.app.getWorld().getNearestTower(pointTower);
+            Tower nearestTower = Main.app.getWorld().getNearestTower(pointTower);
             if(resultsBeacon.size() > 0) {
                 //Es gibt Türme und Beacon mit Kollision -> Hearusfinden welcher näher ist
                 Vector3f pointBeacon = resultsBeacon.getClosestCollision().getContactPoint();
-                if(nearsetTower.getLocation().subtract(pointTower).length() > Main.app.getWorld().getBeacon().getLocation().subtract(pointBeacon).length()) {
+                if(nearestTower.getLocation().subtract(pointTower).length() > Main.app.getWorld().getBeacon().getLocation().subtract(pointBeacon).length()) {
                     //Beacon ist näher
                     Main.getWorld().getBeacon().increaseLevel();
                 } else {
                     //Ein Turm upgraden wenn genug Geld da ist.
-                    if(Main.app.getWorld().getPlayer().getMoney() > 20) {
-                        nearsetTower.increaseLevel();
+                    if(Main.app.getWorld().getPlayer().getMoney() >= 20) {
+                        nearestTower.increaseLevel();
                         Main.app.getWorld().getPlayer().increaseMoney(-20);
                     }
                    
@@ -241,7 +241,7 @@ public class Player extends Entity{
                //Es gibt kein Beacon, also nur Türme.
                //Ein Turm upgraden wenn genug Geld da ist.
                     if(Main.app.getWorld().getPlayer().getMoney() > 20) {
-                        nearsetTower.increaseLevel();
+                        nearestTower.increaseLevel();
                         Main.app.getWorld().getPlayer().increaseMoney(-20);
                     }
             }

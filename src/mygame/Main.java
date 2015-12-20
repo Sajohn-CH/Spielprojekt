@@ -38,6 +38,7 @@ public class Main extends SimpleApplication implements ActionListener{
     private HudScreenState hudState;
     private static World world;
     private static Game game;
+    private long waveEnded = 0;
     
     public static void main(String[] args) {
         app = new Main();
@@ -171,8 +172,12 @@ public class Main extends SimpleApplication implements ActionListener{
 
     @Override
     public void simpleUpdate(float tpf) {
-        if(!game.bombLeft() && world.getAllBombs().isEmpty()){
+        if(!game.bombLeft() && world.getAllBombs().isEmpty() && waveEnded == 0){
+            waveEnded = System.currentTimeMillis();
+        }
+        if(!game.bombLeft() && world.getAllBombs().isEmpty() && System.currentTimeMillis() - waveEnded >= 10000){
             game.nextWave();
+            waveEnded = 0;
         } else if (game.bombLeft()){
             game.action(tpf);
         }

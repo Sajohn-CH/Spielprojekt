@@ -31,8 +31,8 @@ public class Bomb extends Entity{
         Sphere sphere = new Sphere(100, 100, 1);
         this.setSpatial(new Geometry("bomb", sphere));
         mat = new Material (Main.app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
-        this.setLevel(level);
         this.getSpatial().setMaterial(mat);
+        this.setLevel(level);
         way = new Way();
         super.setLocation(way.getStartPoint().setY(2));
         this.getSpatial().setLocalTranslation(way.getStartPoint());
