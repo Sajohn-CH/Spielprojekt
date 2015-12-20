@@ -2,27 +2,22 @@ package mygame;
 
 import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.BulletAppState;
-import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
-import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.input.KeyInput;
 import com.jme3.input.MouseInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.input.controls.MouseAxisTrigger;
-import com.jme3.material.Material;
-import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.niftygui.NiftyJmeDisplay;
 import com.jme3.renderer.RenderManager;
-import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import com.jme3.scene.shape.Box;
-import com.jme3.scene.shape.Sphere;
 import com.jme3.system.AppSettings;
 import de.lessvoid.nifty.Nifty;
-import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.prefs.BackingStoreException;
 
 /**
  * @author Samuel Martin und Florian Wenk
@@ -47,6 +42,7 @@ public class Main extends SimpleApplication implements ActionListener{
         //Titel setzen
         appSettings.put("Title", "First-Person-View TowerDefense Game");
         //AppSettings hinzufügen
+        //appSettings.setResolution(1920, 1080);
         app.setSettings(appSettings);
         
         app.start();

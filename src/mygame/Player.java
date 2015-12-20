@@ -230,20 +230,16 @@ public class Player extends Entity{
                     //Beacon ist näher
                     Main.getWorld().getBeacon().increaseLevel();
                 } else {
-                    //Ein Turm upgraden wenn genug Geld da ist.
-                    if(Main.app.getWorld().getPlayer().getMoney() > 20) {
-                        nearsetTower.increaseLevel();
-                        Main.app.getWorld().getPlayer().increaseMoney(-20);
-                    }
+                    //Ein Turm upgraden
+                   nearsetTower.increaseLevel();
+
                    
                 }
             } else {
                //Es gibt kein Beacon, also nur Türme.
-               //Ein Turm upgraden wenn genug Geld da ist.
-                    if(Main.app.getWorld().getPlayer().getMoney() > 20) {
-                        nearsetTower.increaseLevel();
-                        Main.app.getWorld().getPlayer().increaseMoney(-20);
-                    }
+               //Ein Turm upgraden
+               nearsetTower.increaseLevel();
+
             }
         }
     }

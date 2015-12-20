@@ -68,18 +68,57 @@ public class SimpleTower extends Tower{
             line.removeFromParent();
         }
     }
-    
+  
+    /**
+     * Setzt das Level des Turms auf den übergebenen Wert. Dies erhört die Reichweite, den Schaden, die Lebenspunkte und die Schussrate des Turmes.
+     * @param newLevel  neues Level 
+     */
     @Override
     public void setLevel(int newLevel) {
         super.setLevel(newLevel);
         this.setRange(10+newLevel*5);
         this.setDamage(25+newLevel*25);
         this.setHealth(50+newLevel*10);
+        this.setMaxHealth(50+newLevel*10);
         this.setShotsPerSecond((newLevel/2)+1);
     }
     
+    private int getNewRange(int newLevel) {
+        return 10+newLevel*5;
+    }
+    
+    private int getNewDamage(int newLevel) {
+        return 25+newLevel*25;
+    }
+    
+    private int getNewHealth(int newLevel) {
+        return 50+newLevel*10;
+    }
+    
+    private int getNewSPS(int newLevel) {
+        return (newLevel/2)+1;
+    }
+    
+    private int getUpgradePrice() {
+        return this.getMaxHealth();
+    }
+    
+    /**
+     * Wird aufgerufen wenn der Turm upgegradet werden soll. Ruft zuerst Dialog zum bestätigen auf.
+     */
     @Override
     public void increaseLevel() {
-        setLevel(this.getLevel()+1);
+        int newLevel = this.getLevel()+1;
+        Main.app.getHudState().showUpgradeTower(this, getUpgradePrice()+"$", String.valueOf(getNewDamage(newLevel)), String.valueOf(getNewHealth(newLevel)), String.valueOf(getNewSPS(newLevel)), String.valueOf(getNewRange(newLevel)));
+    }
+    
+    /**
+     * Upgradet Turm.
+     */
+    public void upgrade() {
+         if(Main.app.getWorld().getPlayer().getMoney() >= getUpgradePrice()) {
+           setLevel(this.getLevel()+1);
+           Main.app.getWorld().getPlayer().increaseMoney(-getUpgradePrice());
+        }
     }
 }
