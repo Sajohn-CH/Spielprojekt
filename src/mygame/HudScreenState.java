@@ -13,7 +13,6 @@ import de.lessvoid.nifty.elements.render.TextRenderer;
 import de.lessvoid.nifty.render.NiftyImage;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
-import java.awt.Color;
 import java.text.SimpleDateFormat;
 
 
@@ -148,11 +147,11 @@ public class HudScreenState extends AbstractAppState implements ScreenController
    public void showUpgradeTower(Tower tower) {
        this.tower = tower;
        int newLevel = tower.getLevel()+1;
-       String price = "Preis: " + tower.getUpgradePrice()+"$";
-       String damage = "Schaden: " + tower.getDamage()+"+"+(tower.getNewDamage(newLevel)-tower.getDamage());
-       String health = "Leben: " +tower.getHealth()+"+"+(tower.getNewHealth(newLevel)-tower.getHealth());
-       String sps = "Schussrate: " + tower.getShotsPerSecond()+"+"+(tower.getNewSPS(newLevel)-tower.getShotsPerSecond());
-       String range = "Reichweite: " + tower.getRange()+"+"+(tower.getNewRange(newLevel)-tower.getRange());
+       String price = tower.getUpgradePrice()+"$";
+       String damage = tower.getDamage()+"+"+(tower.getNewDamage(newLevel)-tower.getDamage());
+       String health = tower.getHealth()+"+"+(tower.getNewHealth(newLevel)-tower.getHealth());
+       String sps = tower.getShotsPerSecond()+"+"+(tower.getNewSPS(newLevel)-tower.getShotsPerSecond());
+       String range = tower.getRange()+"+"+(tower.getNewRange(newLevel)-tower.getRange());
        
        Main.app.getFlyByCamera().setDragToRotate(true);
        popup = nifty.createPopup("niftyPopupTower");
