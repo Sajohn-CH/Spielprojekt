@@ -7,6 +7,8 @@ package mygame;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.math.Vector3f;
 import de.lessvoid.nifty.Nifty;
+import de.lessvoid.nifty.controls.Button;
+import de.lessvoid.nifty.controls.Label;
 import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.elements.render.ImageRenderer;
 import de.lessvoid.nifty.elements.render.TextRenderer;
@@ -28,7 +30,7 @@ public class HudScreenState extends AbstractAppState implements ScreenController
     private World world;
     //private long lastSelectionChanged; //Zeit, als das letzte Mal die Auswahl geändert wurde. Wird gebraucht um die Anzeige der Turmbeschreibung nach eine Zeitspannen verschwinden zu lassen
 
-    private String[] descriptions = {"Zerstört Bomben: 20$", "Verlangsamt Bomben: 30$", "Macht schiessenden Bomben schiessunfähig: 100$", "Upgraden", "Heilen: 1$ pro Lebenspunkt"};
+    private String[] descriptions = {"Zerstört Bomben: 20$", "Verlangsamt Bomben: 30$", "Macht schiessende Bomben schiessunfähig: 100$", "Upgraden", "Heilen: 1$ pro Lebenspunkt"};
 
     private Element towerPopup;
     private Tower tower;
@@ -163,6 +165,9 @@ public class HudScreenState extends AbstractAppState implements ScreenController
        int newLevel = tower.getLevel()+1;
        String price = tower.getUpgradePrice()+"$";
        String damage = tower.getDamage()+"+"+(tower.getNewDamage(newLevel)-tower.getDamage());
+       if(tower.getSpatial().getName().equals("PyramidTower")){
+            damage = "Macht schiessunfähig";
+       }
        String health = tower.getHealth()+"/"+tower.getMaxHealth()+"+"+(tower.getNewHealth(newLevel)-tower.getHealth());
        String sps = tower.getShotsPerSecond()+"+"+Math.round((tower.getNewSPS(newLevel)-tower.getShotsPerSecond())*100)/100.0;
        String range = tower.getRange()+"+"+(tower.getNewRange(newLevel)-tower.getRange());
@@ -204,7 +209,26 @@ public class HudScreenState extends AbstractAppState implements ScreenController
        cameraDragToRotate = true;
        endWavePopup = nifty.createPopup("waveEndPopup");
        nifty.showPopup(screen, endWavePopup.getId(), null);
+       Player player = Main.app.getWorld().getPlayer();
+       Beacon beacon = Main.app.getWorld().getBeacon();
+       String health = player.getMaxHealth()+"+"+(player.getNewMaxHealth()-player.getMaxHealth());
+       String damage = player.getDamage() + "+" + (player.getNewDamage() - player.getDamage());
+       String sps = Math.round(player.getSPS()*1000.0)/1000.0 + "+" + Math.round((player.getNewSPS()-player.getSPS())*1000.0)/1000.0;
+       String range = player.getRange()+"+"+(player.getNewRange()-player.getRange());
+       String speed = player.getSpeed()+"+"+(player.getNewSpeed()-player.getSpeed());
+       String beaconHealth = beacon.getMaxHealth()+"+"+(beacon.getNewMaxHealth()-beacon.getMaxHealth());
+       
        endWavePopup.findElementByName("waveEnd").getRenderer(TextRenderer.class).setText("Ende der Welle "+(Main.app.getGame().getWave()-1));
+       endWavePopup.findElementByName("PLHealth").getRenderer(TextRenderer.class).setText(health);
+       endWavePopup.findElementByName("PLDamage").getRenderer(TextRenderer.class).setText(damage);
+       endWavePopup.findElementByName("PLSPS").getRenderer(TextRenderer.class).setText(sps);
+       endWavePopup.findElementByName("PLRange").getRenderer(TextRenderer.class).setText(range);
+       endWavePopup.findElementByName("PLSpeed").getRenderer(TextRenderer.class).setText(speed);
+       endWavePopup.findElementByName("BeaconUpgrade").getRenderer(TextRenderer.class).setText(beaconHealth);
+   }
+   
+   private void loadEndWavePopup() {
+       
    }
    
    public void nextWave() {
@@ -226,6 +250,68 @@ public class HudScreenState extends AbstractAppState implements ScreenController
         return buildPhase;
     }
    
+    public String getHealthPrice() {
+        return String.valueOf(Main.app.getWorld().getPlayer().getNewMaxHealthPrice());
+    }
+    
+    public String getDamagePrice() {
+        return String.valueOf(Main.app.getWorld().getPlayer().getNewDamagePrice());
+    }
+    
+    public String getSPSPrice() {
+        return String.valueOf(Main.app.getWorld().getPlayer().getNewSPSPrice());
+    }
+    
+    public String getRangePrice() {
+        return String.valueOf(Main.app.getWorld().getPlayer().getNewRangePrice());
+    }
+    
+    public String getSpeedPrice() {
+        return String.valueOf(Main.app.getWorld().getPlayer().getNewSpeedPrice());
+    }
+    
+    public void upgradePlayerHealth() {
+        Main.app.getWorld().getPlayer().increaseMaxHealth();
+        reloadEndWavePopup();
+    }
+    
+    public void upgradePlayerDamage() {
+        Main.app.getWorld().getPlayer().increaseDamage();
+        reloadEndWavePopup();
+    }
+    
+    public void upgradePlayerSPS() {
+        Main.app.getWorld().getPlayer().increaseSPS();
+        reloadEndWavePopup();
+    }
+    
+    public void upgradePlayerRange() {
+        Main.app.getWorld().getPlayer().increaseRange();
+        reloadEndWavePopup();
+    }
+    
+    public void upgradePlayerSpeed() {
+        Main.app.getWorld().getPlayer().increaseSpeed();
+        reloadEndWavePopup();
+    }
+    
+    public void upgradeBeacon() {
+        Main.app.getWorld().getBeacon().increaseLevel();
+        reloadEndWavePopup();
+    }
+    
+    public String getBeaconUpgradePrice() {
+        return String.valueOf(Main.app.getWorld().getBeacon().getNewHealthPrice());
+    }
+    
+    private void reloadEndWavePopup() {
+        //Popup erneut laden, damit neue Werte gesetzt werden. Dafür muss es geschlossen werden, damit die Beschriftungen
+        //der Knöpfe im xml neu geladen wird, da mir keine Methode bekannt ist die Beschriftung er Knöpfe im Java-Code
+        //zu ändern
+        nifty.closePopup(endWavePopup.getId());
+        endWavePopup.disable();
+        showEndWavePopup();
+    }
    
      
 }

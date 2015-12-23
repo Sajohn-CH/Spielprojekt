@@ -38,7 +38,7 @@ public class Player extends Entity{
     private int money;
     private boolean isHealing = false;
     
-    private double shotsPerSecond = 0.05;
+    private double shotsPerSecond = 1;
     private int range = 30;
     
     public Player(InputListener inputListener){
@@ -53,12 +53,12 @@ public class Player extends Entity{
         player.setGravity(30);
         player.setPhysicsLocation(new Vector3f(10, 10, 10));
         this.setLiving(true);
-        this.setDamage(1);
+        this.setDamage(2);
         setHealth(this.maxHealth);
         this.setSpeed(50);
         Main.getBulletAppState().getPhysicsSpace().add(player);
         
-        line = new Geometry("line");
+        line = new Geometry("line", new Line());
         Material mat = new Material(Main.app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
         mat.setColor("Color", ColorRGBA.Red);
         line.setMaterial(mat);
@@ -123,7 +123,7 @@ public class Player extends Entity{
     }
    
    private boolean canShoot(){
-        if(System.currentTimeMillis()-shot >= 1000/shotsPerSecond){
+        if(System.currentTimeMillis()-shot >= 1/shotsPerSecond){
             shot = 0;
             return true;
         }
@@ -169,7 +169,9 @@ public class Player extends Entity{
     }
     
     private void makeDamage(Entity e){
+        System.out.println(e.getHealth());
         e.increaseHealth(-this.getDamage());
+        System.out.println(e.getHealth());
     }
     
     private void shoot(){
@@ -186,11 +188,12 @@ public class Player extends Entity{
             CollisionResult closest = results.getClosestCollision();
             l = new Line(Main.app.getCamera().getLocation().subtract(0, 1, 0), closest.getContactPoint());
             line.setMesh(l);
-            if(closest.getGeometry().getName().equals("bomb") || closest.getGeometry().getName().equals("shootingBomb") && closest.getContactPoint().subtract(Main.app.getCamera().getLocation()).length() <= range && canShoot()){
+            if(closest.getContactPoint().subtract(Main.app.getCamera().getLocation()).length() <= range && canShoot()){
+                System.out.println("Test successful");
                 makeDamage(Main.getWorld().getBomb(closest.getGeometry()));
             }
+            shot = System.currentTimeMillis();
         }
-        shot = System.currentTimeMillis();
     }
     
     private void placeTower(){
@@ -337,6 +340,14 @@ public class Player extends Entity{
     public int getMoney(){
         return money;
     }
+
+    public double getSPS() {
+        return shotsPerSecond;
+    }
+
+    public int getRange() {
+        return range;
+    }
     
     public void increaseMoney(int money){
         this.money += money;
@@ -347,30 +358,75 @@ public class Player extends Entity{
     }
     
     public void increaseRange(){
-        range = getNewRange();
+        if(this.getMoney() >= this.getNewRangePrice()) {
+           this.increaseMoney(-this.getNewRangePrice());
+           range = getNewRange(); 
+        }
     }
     
     public int getNewRangePrice(){
         return (int) (getNewRange()*0.75);
     }
     
-    public double getNewSPS(){
-        return range*1.2;
+    public int getNewDamage(){
+        return (int)(this.getDamage() + Math.sqrt(this.getDamage()));
+    }
+    
+    public void increaseDamage(){
+        if(this.getMoney() >= this.getNewDamagePrice()) {
+           this.increaseMoney(-this.getNewDamagePrice());
+           this.setDamage(getNewDamage()); 
+        }
+    }
+    
+    public int getNewDamagePrice(){
+        return getNewDamage()*50;
+    }
+    
+    public double getNewSPS(){   
+        return shotsPerSecond + Math.sqrt(shotsPerSecond)/10;
     }
     
     public void increaseSPS(){
-        shotsPerSecond = getNewSPS();
+        if(this.getMoney() >= this.getNewSPSPrice()) {
+            this.increaseMoney(-this.getNewSPSPrice());
+            shotsPerSecond = getNewSPS();
+        }
+        
     }
     
     public int getNewSPSPrice(){
-        return (int) (getNewSPS()*1000);
+        return (int) (getNewSPS()*100);
     }
     
     public int getNewSpeed(){
         return (int) (this.getSpeed()*1.05);
     }
     
+    public int getNewSpeedPrice() {
+        return (int) (getNewSpeed()*1.5);
+    }
+    
     public void increaseSpeed(){
-        this.setSpeed(getNewSpeed());
+        if(this.getMoney() >= this.getNewSpeedPrice()) {
+         this.increaseMoney(-this.getNewSpeedPrice());
+         this.setSpeed(getNewSpeed());   
+        }
+    }
+    
+    public int getNewMaxHealth() {
+        return (int)(this.maxHealth*1.1);
+    }
+    
+    public int getNewMaxHealthPrice() {
+        return (int)(getNewMaxHealth()*1.5);
+    }
+    
+    public void increaseMaxHealth() {
+        if(this.getMoney() >= this.getNewMaxHealthPrice()) {
+            this.increaseMoney(-this.getNewMaxHealthPrice());
+            this.setHealth(this.getNewMaxHealth()-this.getHealth());
+            this.setMaxHealth(this.getNewMaxHealth());
+        }
     }
 }

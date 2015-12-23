@@ -33,7 +33,7 @@ public class PyramidTower extends Tower{
         this.setLocation(new Vector3f(location.x, 0, location.z));
         
         Dome b = new Dome(Vector3f.ZERO, 2, 4, 1f,false); 
-        this.setSpatial(new Geometry("Pyramid", b));
+        this.setSpatial(new Geometry("PyramidTower", b));
         this.getSpatial().setLocalScale(2f, 15f, 2f);
         Material mat = new Material(Main.app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
         mat.setColor("Color", ColorRGBA.Magenta);
@@ -125,8 +125,8 @@ public class PyramidTower extends Tower{
      */
     public void upgrade() {
          if(Main.app.getWorld().getPlayer().getMoney() >= getUpgradePrice()) {
-           setLevel(this.getLevel()+1);
            Main.app.getWorld().getPlayer().increaseMoney(-getUpgradePrice());
+           setLevel(this.getLevel()+1);
         }
     }
 }

@@ -56,14 +56,22 @@ public class Beacon extends Entity {
     }
     
     public void increaseLevel() {
-        int upgradePrice = (int)(this.getMaxHealth());
+        int upgradePrice = getNewHealthPrice();
         if(Main.app.getWorld().getPlayer().getMoney() >= upgradePrice) {
             int increaseHealth;
-            increaseHealth = (int)(this.getMaxHealth()*0.1);
+            increaseHealth = getNewMaxHealth()-getMaxHealth();
             this.setMaxHealth(this.getMaxHealth()+increaseHealth);
             this.increaseHealth(increaseHealth);
             this.setLevel(this.getLevel()+1);
             Main.app.getWorld().getPlayer().increaseMoney(-upgradePrice);
         }
+    }
+    
+    public int getNewHealthPrice() {
+        return (int)(this.getMaxHealth());
+    }
+    
+    public int getNewMaxHealth() {
+        return (int)(this.getMaxHealth()*1.1);
     }
 }

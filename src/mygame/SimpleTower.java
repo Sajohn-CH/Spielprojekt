@@ -30,7 +30,7 @@ public class SimpleTower extends Tower{
         this.setLiving(true);
         this.setLocation(new Vector3f(location.x, 4, location.z));
         Box b = new Box(2, 8, 2);
-        this.setSpatial(new Geometry("Box", b));
+        this.setSpatial(new Geometry("SimpleTower", b));
         
         Material mat = new Material(Main.app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
         mat.setColor("Color", ColorRGBA.Yellow);
@@ -125,8 +125,8 @@ public class SimpleTower extends Tower{
      */
     public void upgrade() {
          if(Main.app.getWorld().getPlayer().getMoney() >= getUpgradePrice()) {
-           setLevel(this.getLevel()+1);
            Main.app.getWorld().getPlayer().increaseMoney(-getUpgradePrice());
+           setLevel(this.getLevel()+1);
         }
     }
 }
