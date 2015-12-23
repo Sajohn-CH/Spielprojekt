@@ -37,7 +37,7 @@ public class Player extends Entity{
     private int money;
     
     public Player(InputListener inputListener){
-        money = 100;
+        money = 1000;
         this.setLiving(true);
         this.inputListener = inputListener;
         setUpKeys();
@@ -156,7 +156,7 @@ public class Player extends Entity{
             CollisionResult closest = results.getClosestCollision();
             l = new Line(Main.app.getCamera().getLocation().subtract(0, 1, 0), closest.getContactPoint());
             line.setMesh(l);
-            if(closest.getGeometry().getName().equals("bomb")){
+            if(closest.getGeometry().getName().equals("bomb") || closest.getGeometry().getName().equals("shootingBomb")){
                 makeDamage(Main.getWorld().getBomb(closest.getGeometry()));
             }
         }

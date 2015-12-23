@@ -15,9 +15,9 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.system.AppSettings;
 import de.lessvoid.nifty.Nifty;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.prefs.BackingStoreException;
+import java.awt.DisplayMode;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 
 /**
  * @author Samuel Martin und Florian Wenk
@@ -41,9 +41,15 @@ public class Main extends SimpleApplication implements ActionListener{
         //AppSettings initialisieren
         AppSettings appSettings = new AppSettings(true);
         //Titel setzen
-        appSettings.put("Title", "First-Person-View TowerDefense Game");
+//        appSettings.put("Title", "First-Person-View TowerDefense Game");
+        appSettings.setTitle("First-Person-View TowerDefense Game");
+        //Fullscreen
+        GraphicsDevice device = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+        DisplayMode[] modes = device.getDisplayModes();
+        int i=0; // note: there are usually several, let's pick the first
+        appSettings.setResolution(1920,1080);
+        appSettings.setFullscreen(device.isFullScreenSupported());
         //AppSettings hinzufügen
-//        appSettings.setResolution(1920, 1080);
         app.setSettings(appSettings);
         
         app.start();
@@ -121,7 +127,7 @@ public class Main extends SimpleApplication implements ActionListener{
     
     private void setUpKeys() {
         //Allgemeine Tasten
-        inputManager.addMapping("Menu", new KeyTrigger(KeyInput.KEY_ESCAPE));
+        inputManager.addMapping("Menu", new KeyTrigger(KeyInput.KEY_ESCAPE), new KeyTrigger(KeyInput.KEY_PAUSE));
         inputManager.addListener(this, "Menu");
         //Tasten für SchnelleisteSlots
         inputManager.addMapping("item_1", new KeyTrigger(KeyInput.KEY_1));

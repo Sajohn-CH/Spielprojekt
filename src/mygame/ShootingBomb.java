@@ -6,9 +6,13 @@ package mygame;
 
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.Quaternion;
+import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
+import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Line;
 import com.jme3.scene.shape.PQTorus;
+import com.jme3.scene.shape.Torus;
 
 /**
  *
@@ -20,20 +24,36 @@ public class ShootingBomb extends Bomb{
     private long shot;
     private int shotsPerSecond;
     private int range;
+    private boolean shooting;
     
     public ShootingBomb(int level){
         super(level);
         line = new Geometry("line");
         Material matL = new Material(Main.app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
-        matL.setColor("Color", ColorRGBA.Red);
+        matL.setColor("Color", ColorRGBA.Yellow);
         line.setMaterial(matL);
+        
+        shooting = true;
+        
+        Torus t = new Torus(100, 100, 0.75f, 2f);
+        this.setSpatial(new Geometry("shootingBomb", t));
+        this.getSpatial().setMaterial(this.getMaterial());
+        this.getSpatial().setLocalTranslation(this.getLocation());
+        
+        Quaternion q = new Quaternion();
+        q.fromAngleAxis((float) Math.PI/2 , new Vector3f(1,0,0));
+        this.getSpatial().setLocalRotation(q);
     }
     
     public boolean canShoot(){
-        if(System.currentTimeMillis() - shot >= 1000/shotsPerSecond){
+        if(System.currentTimeMillis() - shot >= 1000/shotsPerSecond && shooting){
             return true;
         }
         return false;
+    }
+    
+    public boolean isShooting(){
+        return shooting;
     }
     
     public void shot(){
@@ -61,6 +81,9 @@ public class ShootingBomb extends Bomb{
                 }
             }
         }
+        if(!this.isLiving()){
+            line.removeFromParent();
+        }
         if(System.currentTimeMillis()-shot>= 50){
             line.removeFromParent();
         }
@@ -77,4 +100,7 @@ public class ShootingBomb extends Bomb{
         this.shotsPerSecond = (newLevel/2)+1;
     }
     
+    public void disableShooting(){
+        shooting = false;
+    }
 }

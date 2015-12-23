@@ -13,7 +13,7 @@ public class Tower extends Entity{
     
     private int range;
     private int price;
-    private int shotsPerSecond;
+    private double shotsPerSecond;
     private long shot;
     
     public int getRange(){
@@ -36,11 +36,11 @@ public class Tower extends Entity{
         this.price = price;
     }
     
-    public int getShotsPerSecond(){
+    public double getShotsPerSecond(){
         return shotsPerSecond;
     }
     
-    public void setShotsPerSecond(int shotsPerSecond){
+    public void setShotsPerSecond(double shotsPerSecond){
         this.shotsPerSecond = shotsPerSecond;
     }
     

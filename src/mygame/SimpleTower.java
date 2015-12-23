@@ -31,8 +31,10 @@ public class SimpleTower extends Tower{
         this.setLocation(new Vector3f(location.x, 4, location.z));
         Box b = new Box(2, 8, 2);
         this.setSpatial(new Geometry("Box", b));
+        
         Material mat = new Material(Main.app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
         mat.setColor("Color", ColorRGBA.Yellow);
+        
         this.getSpatial().setMaterial(mat);
         this.getSpatial().setLocalTranslation(this.getLocation());
         
@@ -63,6 +65,7 @@ public class SimpleTower extends Tower{
         }
         if(!this.isLiving()){
             Main.getBulletAppState().getPhysicsSpace().remove(towerC);
+            line.removeFromParent();
         }
         if(System.currentTimeMillis()-getLastShot() >= 50){
             line.removeFromParent();
@@ -113,8 +116,6 @@ public class SimpleTower extends Tower{
      */
     @Override
     public void increaseLevel() {
-        int newLevel = this.getLevel()+1;
-        
         Main.app.getHudState().showUpgradeTower(this);
     }
     
