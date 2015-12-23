@@ -27,6 +27,9 @@ public class Beacon extends Entity {
         this.setLiving(true);
         this.setLocation(new Vector3f(location.x, 4, location.z));
         this.setHealth(health);
+        
+//        this.setSpatial(Main.app.getAssetManager().loadModel("Objects/"));
+        
         Box b = new Box(8, 8, 8);
         this.setSpatial( new Geometry("Box", b));
         Material mat = new Material(Main.app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");

@@ -25,6 +25,7 @@ public class Bomb extends Entity{
     private ColorRGBA[] colors = {ColorRGBA.Blue, ColorRGBA.Cyan, ColorRGBA.Green, ColorRGBA.Magenta, ColorRGBA.Red, ColorRGBA.Pink};
     private Way way;
     private int money;
+    private int decreasedSpeed;
     
     public Bomb (int level){
         this.setLiving(true);
@@ -117,18 +118,21 @@ public class Bomb extends Entity{
         //setzt Leben als Funktion mit level
         this.setHealth(50+newLevel*50);
         this.setDamage(10+newLevel*10);
-        this.setSpeed(50-newLevel*2+Main.getGame().getWave()*2);
+        this.setSpeed(50-newLevel*2+Main.getGame().getWave()*2-decreasedSpeed);
         
         mat.setColor("Color", colors[(newLevel-1)%colors.length]);
         super.setLevel(newLevel);
     }
     
     public void decreaseSpeed (int speed){
-        if(this.getSpeed() > speed){
-            this.setSpeed(this.getSpeed() - speed);
-            return;
+        this.decreasedSpeed += speed;
+        if(decreasedSpeed >= 50-this.getLevel()*2+Main.getGame().getWave()*2){
+            decreasedSpeed = (50-this.getLevel()*2+Main.getGame().getWave()*2)-1;
         }
-        this.setSpeed(1);
+        this.setSpeed((50-this.getLevel()*2+Main.getGame().getWave()*2) - decreasedSpeed);
     }
     
+    public Material getMaterial(){
+        return mat;
+    }
 }

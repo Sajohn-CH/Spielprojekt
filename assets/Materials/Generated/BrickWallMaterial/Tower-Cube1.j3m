@@ -1,0 +1,42 @@
+Material MyMaterial : Common/MatDefs/Light/Lighting.j3md {
+    MaterialParameters {
+        Minnaert : false
+        Specular : 1.0 0.2 0.4 1.0
+        Diffuse : 0.4 0.4 0.4 1.0
+        UseMaterialColors : true
+        ParallaxHeight : 0.0
+        Ambient : 1.0 1.0 1.0 1.0
+        Shininess : 20.0
+        WardIso : false
+        DiffuseMap : Textures/Terrain/BrickWall/BrickWall.jpg
+        NormalMap : Textures/Terrain/BrickWall/BrickWall_normal.jpg
+        ParallaxMap : Textures/Terrain/BrickWall/BrickWall_normal_parallax.dds
+        AlphaMap : Textures/Terrain/BrickWall/BrickWall_height.jpg
+        PackedNormalParallax : true
+        EnvMapAsSphereMap : true
+        AlphaDiscardThreshold : 0.0
+        FilterMode : 0
+        ShadowIntensity : 0.0
+        HighQuality : true
+        UseAlpha : true
+        VertexLighting : false
+        LATC : false
+        VTangent : false
+        SteepParallax : false
+        UseVertexColor : false
+        SeparateTexCoord : false
+        LowQuality : false
+        HardwareShadows : false
+    }
+    AdditionalRenderState {
+      FaceCull Back
+      Wireframe Off
+      DepthWrite On
+      PolyOffset 0.0 0.0
+      AlphaTestFalloff 0.0
+      Blend Off
+      PointSprite Off
+      ColorWrite On
+      DepthTest On
+    }
+}

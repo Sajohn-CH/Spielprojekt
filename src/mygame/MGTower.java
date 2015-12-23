@@ -33,6 +33,7 @@ public class MGTower extends Tower{
         this.setLocation(location);
         this.setLiving(true);
         this.setLocation(new Vector3f(location.x, 4, location.z));
+        
         Cylinder b = new Cylinder(32, 32, 2, 8, true);
         this.setSpatial(new Geometry("Cylinder", b));
         Quaternion q = new Quaternion();
@@ -41,11 +42,12 @@ public class MGTower extends Tower{
         Material mat = new Material(Main.app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
         mat.setColor("Color", ColorRGBA.Cyan);
         this.getSpatial().setMaterial(mat);
+        
         this.getSpatial().setLocalTranslation(this.getLocation());
        
         line = new Geometry("line");
         Material matL = new Material(Main.app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
-        matL.setColor("Color", ColorRGBA.Red);
+        matL.setColor("Color", ColorRGBA.Blue);
         line.setMaterial(matL);
     }
     
@@ -81,16 +83,55 @@ public class MGTower extends Tower{
     }
     
     @Override
-    public int getNewDamage(int newLevel) {
-        return 5+newLevel*5;
-    }
-    
-    @Override
     public void setLevel(int newLevel) {
         super.setLevel(newLevel);
         this.setRange(10+newLevel*5);
         this.setDamage(5+newLevel*5);
         this.setHealth(50+newLevel*10);
+        this.setMaxHealth(50+newLevel*10);
         this.setShotsPerSecond((newLevel/2)+1);
+    }
+    
+    @Override
+    public int getNewRange(int newLevel) {
+        return 10+newLevel*5;
+    }
+    
+    @Override
+    public int getNewDamage(int newLevel) {
+        return 5+newLevel*5;
+    }
+    
+    @Override
+    public int getNewHealth(int newLevel) {
+        return 50+newLevel*10;
+    }
+    
+    @Override
+    public double getNewSPS(int newLevel) {
+        return (newLevel/2)+1;
+    }
+    
+    @Override
+    public int getUpgradePrice() {
+        return this.getMaxHealth();
+    }
+    
+    /**
+     * Wird aufgerufen wenn der Turm upgegradet werden soll. Ruft zuerst Dialog zum bestätigen auf.
+     */
+    @Override
+    public void increaseLevel() {
+        Main.app.getHudState().showUpgradeTower(this);
+    }
+    
+    /**
+     * Upgradet Turm.
+     */
+    public void upgrade() {
+         if(Main.app.getWorld().getPlayer().getMoney() >= getUpgradePrice()) {
+           setLevel(this.getLevel()+1);
+           Main.app.getWorld().getPlayer().increaseMoney(-getUpgradePrice());
+        }
     }
 }
