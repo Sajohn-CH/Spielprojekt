@@ -232,7 +232,13 @@ public class Player extends Entity{
             }                
         } else if(resultsTower.size() == 0) {
             if(resultsBeacon.size() != 0){
-                Main.getWorld().getBeacon().increaseLevel();
+                Beacon beacon = Main.getWorld().getBeacon();
+                    if(beacon.getHealth() < beacon.getMaxHealth() && this.getMoney() > 0) {
+                        beacon.setHealth(beacon.getHealth()+1);
+                        this.increaseMoney(-1);
+                    } else {
+                        isHealing = false;
+                    }
             }
         } else {
             //Es gibt min. einen Turm. Es wird der nächste geholt
