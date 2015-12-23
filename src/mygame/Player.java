@@ -38,7 +38,7 @@ public class Player extends Entity{
     private boolean isHealing = false;
     
     public Player(InputListener inputListener){
-        money = 1000;
+        money = 100;
         this.setLiving(true);
         this.inputListener = inputListener;
         setUpKeys();
