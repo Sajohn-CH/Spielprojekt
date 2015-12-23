@@ -253,7 +253,6 @@ public class HudScreenState extends AbstractAppState implements ScreenController
     public String getHealthPrice() {
         return String.valueOf(Main.app.getWorld().getPlayer().getNewMaxHealthPrice());
     }
-    
     public String getDamagePrice() {
         return String.valueOf(Main.app.getWorld().getPlayer().getNewDamagePrice());
     }
@@ -277,7 +276,6 @@ public class HudScreenState extends AbstractAppState implements ScreenController
     
     public void upgradePlayerDamage() {
         Main.app.getWorld().getPlayer().increaseDamage();
-        reloadEndWavePopup();
     }
     
     public void upgradePlayerSPS() {

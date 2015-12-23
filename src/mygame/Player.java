@@ -42,7 +42,7 @@ public class Player extends Entity{
     private int range = 30;
     
     public Player(InputListener inputListener){
-        money = 100;
+        money = 1000;
         this.setLiving(true);
         this.inputListener = inputListener;
         setUpKeys();
@@ -360,7 +360,7 @@ public class Player extends Entity{
     public void increaseRange(){
         if(this.getMoney() >= this.getNewRangePrice()) {
            this.increaseMoney(-this.getNewRangePrice());
-           range = getNewRange(); 
+           range = getNewRange();
         }
     }
     
