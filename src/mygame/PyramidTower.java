@@ -85,12 +85,10 @@ public class PyramidTower extends Tower{
     @Override
     public void setLevel(int newLevel) {
         super.setLevel(newLevel);
-        this.setRange(10+newLevel*5);
-        this.setHealth(100+newLevel*25);
-        this.setMaxHealth(100+newLevel*25);
-        double i = Math.round(newLevel/20.0*100.0)/100.0;
-        System.out.println(i);
-        this.setShotsPerSecond(i);
+        this.setRange(getNewRange(newLevel));
+        this.setHealth(getNewHealth(newLevel));
+        this.setMaxHealth(getNewHealth(newLevel));
+        this.setShotsPerSecond(getNewSPS(newLevel));
     }
     
     @Override
@@ -106,9 +104,7 @@ public class PyramidTower extends Tower{
     
     @Override
     public double getNewSPS(int newLevel) {
-        double i = Math.round(newLevel/20.0*100)/100.0;
-        System.out.println(i);
-        return i;
+        return Math.round(newLevel/20.0*100)/100.0;
     }
     
     @Override

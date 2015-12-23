@@ -27,7 +27,7 @@ public class HudScreenState extends AbstractAppState implements ScreenController
     private int itemSelected = 1;
     private World world;
     //private long lastSelectionChanged; //Zeit, als das letzte Mal die Auswahl geändert wurde. Wird gebraucht um die Anzeige der Turmbeschreibung nach eine Zeitspannen verschwinden zu lassen
-    private String[] descriptions = {"Zerstört Bomben: 20$", "Verlangsamt Bomben: 30$", "Macht schiessenden Bomben schiessunfähig: 40$", "Upgraden", "Heilen: 1$ pro Lebenspunkt"};
+    private String[] descriptions = {"Zerstört Bomben: 20$", "Verlangsamt Bomben: 30$", "Macht schiessenden Bomben schiessunfähig: 100$", "Upgraden", "Heilen: 1$ pro Lebenspunkt"};
     private Element towerPopup;
     private Tower tower;
     private Element endWavePopup;
@@ -162,7 +162,7 @@ public class HudScreenState extends AbstractAppState implements ScreenController
        String price = tower.getUpgradePrice()+"$";
        String damage = tower.getDamage()+"+"+(tower.getNewDamage(newLevel)-tower.getDamage());
        String health = tower.getHealth()+"/"+tower.getMaxHealth()+"+"+(tower.getNewHealth(newLevel)-tower.getHealth());
-       String sps = tower.getShotsPerSecond()+"+"+(tower.getNewSPS(newLevel)-tower.getShotsPerSecond());
+       String sps = tower.getShotsPerSecond()+"+"+Math.round((tower.getNewSPS(newLevel)-tower.getShotsPerSecond())*100)/100.0;
        String range = tower.getRange()+"+"+(tower.getNewRange(newLevel)-tower.getRange());
        
        Main.app.getFlyByCamera().setDragToRotate(true);

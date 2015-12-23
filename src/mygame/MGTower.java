@@ -85,11 +85,11 @@ public class MGTower extends Tower{
     @Override
     public void setLevel(int newLevel) {
         super.setLevel(newLevel);
-        this.setRange(10+newLevel*5);
-        this.setDamage(5+newLevel*5);
-        this.setHealth(50+newLevel*10);
-        this.setMaxHealth(50+newLevel*10);
-        this.setShotsPerSecond((newLevel/2)+1);
+        this.setRange(getNewRange(newLevel));
+        this.setDamage(getNewDamage(newLevel));
+        this.setHealth(getNewHealth(newLevel));
+        this.setMaxHealth(getNewHealth(newLevel));
+        this.setShotsPerSecond(getNewSPS(newLevel));
     }
     
     @Override
@@ -109,7 +109,7 @@ public class MGTower extends Tower{
     
     @Override
     public double getNewSPS(int newLevel) {
-        return (newLevel/2)+1;
+        return 0.5+newLevel*0.5;
     }
     
     @Override
