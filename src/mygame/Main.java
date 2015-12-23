@@ -41,17 +41,14 @@ public class Main extends SimpleApplication implements ActionListener{
         //AppSettings initialisieren
         AppSettings appSettings = new AppSettings(true);
         //Titel setzen
-//        appSettings.put("Title", "First-Person-View TowerDefense Game");
         appSettings.setTitle("First-Person-View TowerDefense Game");
-        //Fullscreen
+        //Start into Fullscreen
+        //Get the Resolution of the main/defautl display
         GraphicsDevice device = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
-        DisplayMode[] modes = device.getDisplayModes();
-        int i=0; // note: there are usually several, let's pick the first
-        appSettings.setResolution(1920,1080);
+        appSettings.setResolution(device.getDisplayMode().getWidth(), device.getDisplayMode().getHeight());
+        //set the found resolution of the monitor as the resolution of the game.
         appSettings.setFullscreen(device.isFullScreenSupported());
         //AppSettings hinzufügen
-//        appSettings.setResolution(1920, 1080);
-
         app.setSettings(appSettings);
         
         app.start();
