@@ -13,6 +13,7 @@ import de.lessvoid.nifty.elements.render.TextRenderer;
 import de.lessvoid.nifty.render.NiftyImage;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
 
@@ -28,10 +29,13 @@ public class HudScreenState extends AbstractAppState implements ScreenController
     private World world;
     //private long lastSelectionChanged; //Zeit, als das letzte Mal die Auswahl geändert wurde. Wird gebraucht um die Anzeige der Turmbeschreibung nach eine Zeitspannen verschwinden zu lassen
     private String[] descriptions = {"Preis: 20$", "Preis: 30$", "Preis: 40$", "Upgraden", "Preis: 20$"};
-    private Element popup;
+    private Element towerPopup;
     private Tower tower;
+    private Element endWavePopup;
     private boolean cameraDragToRotate = false;     //Ist nur dann true, wenn bei der aktuellen anzeige DragToRotate der FlyByCamera true ist (z.B: bei Popup)
-    
+    long startWaveTime =  0;
+    private boolean buildPhase = false;
+   
     public void setWorld(World world) {
         this.world = world;
     }
@@ -39,9 +43,14 @@ public class HudScreenState extends AbstractAppState implements ScreenController
     @Override
     public void update(float tpf) {
         //Setzt Text im HUD
+        if(buildPhase) {
+            long time = startWaveTime-System.currentTimeMillis();
+            updateText("wave", "Nächste Welle in "+(time/1000));
+        } else {
+            updateText("wave", ("Welle: " + Main.getGame().getWave()));
+        }
         updateText("time", ("Uhrzeit: "+df.format(System.currentTimeMillis())));
         updateText("money", ("Geld: " + Main.getWorld().getPlayer().getMoney() + "$"));
-        updateText("wave", ("Welle: " + Main.getGame().getWave()));
         updateText("towerDescription", descriptions[getSelectedItemNum()-1]);
         updateText("beaconHealth", (world.getBeacon().getHealth()+"/"+world.getBeacon().getMaxHealth()));
         updateText("health", world.getPlayer().getHealth()+"/"+world.getPlayer().getMaxHealth());
@@ -54,6 +63,12 @@ public class HudScreenState extends AbstractAppState implements ScreenController
         Element beaconHealthBar = screen.findElementByName("beaconHealthBar");
         Element topBar = screen.findElementByName("top_bar");
         beaconHealthBar.setWidth((int)(world.getBeacon().getHealthPercentage()/100f*topBar.getWidth()));
+        
+        if(startWaveTime != 0 && startWaveTime <= System.currentTimeMillis()) {
+            System.out.println("StartWaveTime: "+startWaveTime);
+            System.out.println("CurrentTime: "+System.currentTimeMillis());
+            startNextWave();
+        }
         
         
     }
@@ -154,28 +169,28 @@ public class HudScreenState extends AbstractAppState implements ScreenController
        String range = tower.getRange()+"+"+(tower.getNewRange(newLevel)-tower.getRange());
        
        Main.app.getFlyByCamera().setDragToRotate(true);
-       popup = nifty.createPopup("niftyPopupTower");
-       popup.findElementByName("title").getRenderer(TextRenderer.class).setText("Turm Stufe "+tower.getLevel());
-       popup.findElementByName("price").getRenderer(TextRenderer.class).setText(price);
-       popup.findElementByName("damage").getRenderer(TextRenderer.class).setText(damage);
-       popup.findElementByName("health").getRenderer(TextRenderer.class).setText(health);
-       popup.findElementByName("sps").getRenderer(TextRenderer.class).setText(sps);
-       popup.findElementByName("range").getRenderer(TextRenderer.class).setText(range);
-       nifty.showPopup(nifty.getCurrentScreen(), popup.getId(), null);  
-       Main.app.getWorld().setPaused(true);
        cameraDragToRotate = true;
+       towerPopup = nifty.createPopup("niftyPopupTower");
+       towerPopup.findElementByName("title").getRenderer(TextRenderer.class).setText("Turm Stufe "+tower.getLevel());
+       towerPopup.findElementByName("price").getRenderer(TextRenderer.class).setText(price);
+       towerPopup.findElementByName("damage").getRenderer(TextRenderer.class).setText(damage);
+       towerPopup.findElementByName("health").getRenderer(TextRenderer.class).setText(health);
+       towerPopup.findElementByName("sps").getRenderer(TextRenderer.class).setText(sps);
+       towerPopup.findElementByName("range").getRenderer(TextRenderer.class).setText(range);
+       nifty.showPopup(screen, towerPopup.getId(), null);  
+       Main.app.getWorld().setPaused(true);
    }
    
    /**
     * Schliesst das Popup, welches mit {@link HudScreenState#showUpgradeTower(mygame.Tower, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)} geöffnet, wurde wieder.
     * @param upgrade Gibt an ob der Turm upgegradet werden soll. Wenn der String "true" entspricht wird upgegradet.
     */
-   public void closePopup(String upgrade) {
+   public void closeTowerPopup(String upgrade) {
        if(upgrade.equals("true")) {
            tower.upgrade();
        }
-       nifty.closePopup(popup.getId());
-       popup.disable();
+       nifty.closePopup(towerPopup.getId());
+       towerPopup.disable();
        Main.app.getFlyByCamera().setDragToRotate(false);
        Main.app.getWorld().setPaused(false);
        cameraDragToRotate = false;
@@ -184,5 +199,35 @@ public class HudScreenState extends AbstractAppState implements ScreenController
    public boolean isCameraDragToRotate() {
        return cameraDragToRotate;
    }
+   
+   public void showEndWavePopup() {
+       Main.app.getFlyByCamera().setDragToRotate(true);
+       cameraDragToRotate = true;
+       endWavePopup = nifty.createPopup("waveEndPopup");
+       nifty.showPopup(screen, endWavePopup.getId(), null);
+       endWavePopup.findElementByName("waveEnd").getRenderer(TextRenderer.class).setText("Ende der Welle "+(Main.app.getGame().getWave()-1));
+   }
+   
+   public void nextWave() {
+       nifty.closePopup(endWavePopup.getId());
+       endWavePopup.disable();
+       Main.app.getFlyByCamera().setDragToRotate(false);
+       cameraDragToRotate = false;
+       startWaveTime = System.currentTimeMillis()+10000;
+       buildPhase = true;
+   }
+   
+   private void startNextWave() {
+       Main.app.getGame().startWave();
+       System.out.println("Next Wave");
+       startWaveTime = 0;
+       buildPhase = false;  
+   }
+
+    public boolean isBuildPhase() {
+        return buildPhase;
+    }
+   
+   
      
 }

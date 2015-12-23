@@ -34,6 +34,7 @@ public class SimpleTower extends Tower{
         Material mat = new Material(Main.app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
         mat.setColor("Color", ColorRGBA.Yellow);
         this.getSpatial().setMaterial(mat);
+//        this.setSpatial(Main.app.getAssetManager().loadModel("Objects/SimpleTower/SimpleTower.j3o").scale(3f));
         this.getSpatial().setLocalTranslation(this.getLocation());
         
         line = new Geometry("line");

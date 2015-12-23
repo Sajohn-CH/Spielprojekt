@@ -22,7 +22,7 @@
             <panel id="top_bar" height="8%" width="100%" childLayout="vertical" backgroundColor="#000000">
                 <panel id="bar" height="85%" width="100%" childLayout="horizontal">
                     <text id="money" text="Geld:" font="Interface/Fonts/Arial.fnt" width="25%" height="100%"/>
-                    <text id ="wave" text="Welle: ${CALL.getScore()}" font="Interface/Fonts/Arial.fnt" width="25%" height="100%" />
+                    <text id ="wave" text="" font="Interface/Fonts/Arial.fnt" width="25%" height="100%" />
                     <text id="time" text="Time" font="Interface/Fonts/Arial.fnt" width="50%" height="100%" align="left"/>
                 </panel>
                 <panel id="beaconHealthBar" height="15%" width="100%" childLayout="horizontal" backgroundColor="#FF0000">
@@ -76,12 +76,22 @@
              </panel>
             <panel childLayout="vertical" width="100%" height="20%">
                 <control id="upgrade" name="button" label="Upgraden" align="center" valign="center" color="#000" visibleToMouse="true">
-                    <interact onClick="closePopup(true)"/>
+                    <interact onClick="closeTowerPopup(true)"/>
                 </control>
                 <control id="cancel" name="button" label="Abbrechen" align="center" valign="center" color="#ffffff" visibleToMouse="true">
-                    <interact onClick="closePopup(false)"/>
+                    <interact onClick="closeTowerPopup(false)"/>
                 </control>
             </panel>
+        </panel>
+    </popup>
+    
+    <popup id="waveEndPopup" childLayout="center" controller="mygame.HudScreenState" width="100%" height="100%">
+        <image filename="Interface/opaque-0.png" width="100%" height="100%"/>
+        <panel width="50%" height="50%" childLayout="vertical" backgroundColor="#00FFFF">
+            <text text="Ende der Welle" id="waveEnd" font="Interface/Fonts/Arial.fnt" width="100%" height="10%"/>
+            <control id="nextWave" name="button" label="nächste Welle" align="center" valign="center" visibleToMouse="true">
+                <interact onClick="nextWave()"/>
+            </control>
         </panel>
     </popup>
     

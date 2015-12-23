@@ -56,7 +56,8 @@ public class Game {
     
     public void nextWave(){
         this.wave += 1;
-        startWave();
+        Main.app.getHudState().showEndWavePopup();
+        //startWave();
     }
     
     public int getWave(){
