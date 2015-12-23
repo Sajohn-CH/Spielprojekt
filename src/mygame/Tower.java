@@ -79,7 +79,7 @@ public class Tower extends Entity{
         return 50+newLevel*10;
     }
     
-    public int getNewSPS(int newLevel) {
+    public double getNewSPS(int newLevel) {
         return (newLevel/2)+1;
     }
     

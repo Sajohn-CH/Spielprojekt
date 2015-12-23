@@ -174,12 +174,14 @@ public class Main extends SimpleApplication implements ActionListener{
 
     @Override
     public void simpleUpdate(float tpf) {
-        if(!game.bombLeft() && world.getAllBombs().isEmpty() && waveEnded == 0){
-            waveEnded = System.currentTimeMillis();
-        }
-        if(!game.bombLeft() && world.getAllBombs().isEmpty() && System.currentTimeMillis() - waveEnded >= 10000){
+//        if(!game.bombLeft() && world.getAllBombs().isEmpty() && waveEnded == 0){
+//            waveEnded = System.currentTimeMillis();
+//        }
+        //Wenn Kamera DragToRotate ist, dann wird ein Menu angezeigt (Menu für Wellenende muss nicht angezeigt werden)
+        if(!game.bombLeft() && world.getAllBombs().isEmpty() && !hudState.isCameraDragToRotate() && !hudState.isBuildPhase()){
+            System.out.println("nextWave");
             game.nextWave();
-            waveEnded = 0;
+//            waveEnded = 0;
         } else if (game.bombLeft()){
             game.action(tpf);
         }

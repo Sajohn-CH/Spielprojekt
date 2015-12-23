@@ -36,6 +36,7 @@ public class SimpleTower extends Tower{
         mat.setColor("Color", ColorRGBA.Yellow);
         
         this.getSpatial().setMaterial(mat);
+//        this.setSpatial(Main.app.getAssetManager().loadModel("Objects/SimpleTower/SimpleTower.j3o").scale(3f));
         this.getSpatial().setLocalTranslation(this.getLocation());
         
         line = new Geometry("line");
@@ -102,7 +103,7 @@ public class SimpleTower extends Tower{
     }
     
     @Override
-    public int getNewSPS(int newLevel) {
+    public double getNewSPS(int newLevel) {
         return (newLevel/2)+1;
     }
     

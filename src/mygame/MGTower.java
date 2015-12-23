@@ -83,11 +83,6 @@ public class MGTower extends Tower{
     }
     
     @Override
-    public int getNewDamage(int newLevel) {
-        return 5+newLevel*5;
-    }
-    
-    @Override
     public void setLevel(int newLevel) {
         super.setLevel(newLevel);
         this.setRange(10+newLevel*5);
@@ -103,12 +98,17 @@ public class MGTower extends Tower{
     }
     
     @Override
+    public int getNewDamage(int newLevel) {
+        return 5+newLevel*5;
+    }
+    
+    @Override
     public int getNewHealth(int newLevel) {
         return 50+newLevel*10;
     }
     
     @Override
-    public int getNewSPS(int newLevel) {
+    public double getNewSPS(int newLevel) {
         return (newLevel/2)+1;
     }
     

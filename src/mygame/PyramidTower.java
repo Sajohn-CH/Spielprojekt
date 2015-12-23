@@ -31,7 +31,6 @@ public class PyramidTower extends Tower{
         this.setLocation(location);
         this.setLiving(true);
         this.setLocation(new Vector3f(location.x, 0, location.z));
-        this.setShotsPerSecond((1.0/15.0));
         
         Dome b = new Dome(Vector3f.ZERO, 2, 4, 1f,false); 
         this.setSpatial(new Geometry("Pyramid", b));
@@ -89,7 +88,9 @@ public class PyramidTower extends Tower{
         this.setRange(10+newLevel*5);
         this.setHealth(100+newLevel*25);
         this.setMaxHealth(100+newLevel*25);
-        this.setShotsPerSecond((newLevel/30));
+        double i = Math.round(newLevel/20.0*100.0)/100.0;
+        System.out.println(i);
+        this.setShotsPerSecond(i);
     }
     
     @Override
@@ -100,12 +101,14 @@ public class PyramidTower extends Tower{
         
     @Override
     public int getNewHealth(int newLevel) {
-        return 50+newLevel*10;
+        return 100+newLevel*25;
     }
     
     @Override
-    public int getNewSPS(int newLevel) {
-        return (newLevel/2)+1;
+    public double getNewSPS(int newLevel) {
+        double i = Math.round(newLevel/20.0*100)/100.0;
+        System.out.println(i);
+        return i;
     }
     
     @Override
