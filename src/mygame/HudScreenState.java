@@ -7,6 +7,8 @@ package mygame;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.math.Vector3f;
 import de.lessvoid.nifty.Nifty;
+import de.lessvoid.nifty.controls.Button;
+import de.lessvoid.nifty.controls.Label;
 import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.elements.render.ImageRenderer;
 import de.lessvoid.nifty.elements.render.TextRenderer;
@@ -204,7 +206,24 @@ public class HudScreenState extends AbstractAppState implements ScreenController
        cameraDragToRotate = true;
        endWavePopup = nifty.createPopup("waveEndPopup");
        nifty.showPopup(screen, endWavePopup.getId(), null);
+       Player player = Main.app.getWorld().getPlayer();
+       Beacon beacon = Main.app.getWorld().getBeacon();
+       String health = player.getMaxHealth()+"+"+(player.getNewMaxHealth()-player.getMaxHealth());
+       String sps = player.getSPS()+"+"+Math.round(player.getNewSPS()-player.getSPS()*1000)/1000;
+       String range = player.getRange()+"+"+(player.getNewRange()-player.getRange());
+       String speed = player.getSpeed()+"+"+(player.getNewSpeed()-player.getSpeed());
+       String beaconHealth = beacon.getMaxHealth()+"+"+(beacon.getNewMaxHealth()-beacon.getMaxHealth());
+       
        endWavePopup.findElementByName("waveEnd").getRenderer(TextRenderer.class).setText("Ende der Welle "+(Main.app.getGame().getWave()-1));
+       endWavePopup.findElementByName("PLHealth").getRenderer(TextRenderer.class).setText(health);
+       endWavePopup.findElementByName("PLSPS").getRenderer(TextRenderer.class).setText(sps);
+       endWavePopup.findElementByName("PLRange").getRenderer(TextRenderer.class).setText(range);
+       endWavePopup.findElementByName("PLSpeed").getRenderer(TextRenderer.class).setText(speed);
+       endWavePopup.findElementByName("BeaconUpgrade").getRenderer(TextRenderer.class).setText(beaconHealth);
+   }
+   
+   private void loadEndWavePopup() {
+       
    }
    
    public void nextWave() {
@@ -226,6 +245,59 @@ public class HudScreenState extends AbstractAppState implements ScreenController
         return buildPhase;
     }
    
+    public String getHealthPrice() {
+        return String.valueOf(Main.app.getWorld().getPlayer().getNewMaxHealthPrice());
+    }
+    
+    public String getSPSPrice() {
+        return String.valueOf(Main.app.getWorld().getPlayer().getNewSPSPrice());
+    }
+    
+    public String getRangePrice() {
+        return String.valueOf(Main.app.getWorld().getPlayer().getNewRangePrice());
+    }
+    
+    public String getSpeedPrice() {
+        return String.valueOf(Main.app.getWorld().getPlayer().getNewSpeedPrice());
+    }
+    
+    public void upgradePlayerHealth() {
+        Main.app.getWorld().getPlayer().increasMaxHealth();
+        reloadEndWavePopup();
+    }
+    
+    public void upgradePlayerSPS() {
+        Main.app.getWorld().getPlayer().increaseSPS();
+        reloadEndWavePopup();
+    }
+    
+    public void upgradePlayerRange() {
+        Main.app.getWorld().getPlayer().increaseRange();
+        reloadEndWavePopup();
+    }
+    
+    public void upgradePlayerSpeed() {
+        Main.app.getWorld().getPlayer().increaseSpeed();
+        reloadEndWavePopup();
+    }
+    
+    public void upgradeBeacon() {
+        Main.app.getWorld().getBeacon().increaseLevel();
+        reloadEndWavePopup();
+    }
+    
+    public String getBeaconUpgradePrice() {
+        return String.valueOf(Main.app.getWorld().getBeacon().getNewHealthPrice());
+    }
+    
+    private void reloadEndWavePopup() {
+        //Popup erneut laden, damit neue Werte gesetzt werden. Dafür muss es geschlossen werden, damit die Beschriftungen
+        //der Knöpfe im xml neu geladen wird, da mir keine Methode bekannt ist die Beschriftung er Knöpfe im Java-Code
+        //zu ändern
+        nifty.closePopup(endWavePopup.getId());
+        endWavePopup.disable();
+        showEndWavePopup();
+    }
    
      
 }

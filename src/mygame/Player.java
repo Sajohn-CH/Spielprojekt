@@ -42,7 +42,7 @@ public class Player extends Entity{
     private int range = 30;
     
     public Player(InputListener inputListener){
-        money = 100;
+        money = 1000;
         this.setLiving(true);
         this.inputListener = inputListener;
         setUpKeys();
@@ -337,6 +337,14 @@ public class Player extends Entity{
     public int getMoney(){
         return money;
     }
+
+    public double getSPS() {
+        return shotsPerSecond;
+    }
+
+    public int getRange() {
+        return range;
+    }
     
     public void increaseMoney(int money){
         this.money += money;
@@ -347,19 +355,26 @@ public class Player extends Entity{
     }
     
     public void increaseRange(){
-        range = getNewRange();
+        if(this.getMoney() >= this.getNewRangePrice()) {
+           range = getNewRange(); 
+           this.increaseMoney(-this.getNewRangePrice());
+        }
     }
     
     public int getNewRangePrice(){
         return (int) (getNewRange()*0.75);
     }
     
-    public double getNewSPS(){
-        return range*1.2;
+    public double getNewSPS(){   
+        return shotsPerSecond*1.2;
     }
     
     public void increaseSPS(){
-        shotsPerSecond = getNewSPS();
+        if(this.getMoney() >= this.getNewSPSPrice()) {
+            shotsPerSecond = getNewSPS();
+            this.increaseMoney(-this.getNewSPSPrice());
+        }
+        
     }
     
     public int getNewSPSPrice(){
@@ -370,7 +385,30 @@ public class Player extends Entity{
         return (int) (this.getSpeed()*1.05);
     }
     
+    public int getNewSpeedPrice() {
+        return (int) (getNewSpeed()*1.5);
+    }
+    
     public void increaseSpeed(){
-        this.setSpeed(getNewSpeed());
+        if(this.getMoney() >= this.getNewSpeedPrice()) {
+         this.setSpeed(getNewSpeed());   
+         this.increaseMoney(-this.getNewSpeedPrice());
+        }
+    }
+    
+    public int getNewMaxHealth() {
+        return (int)(this.maxHealth*1.1);
+    }
+    
+    public int getNewMaxHealthPrice() {
+        return (int)(getNewMaxHealth()*1.5);
+    }
+    
+    public void increasMaxHealth() {
+        if(this.getMoney() >= this.getNewMaxHealthPrice()) {
+            this.setMaxHealth(this.getNewMaxHealth());
+            this.setHealth(this.getMaxHealth());
+            this.increaseMoney(-this.getNewMaxHealthPrice());
+        }
     }
 }
