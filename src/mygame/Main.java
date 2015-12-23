@@ -40,7 +40,7 @@ public class Main extends SimpleApplication implements ActionListener{
         //Titel setzen
         appSettings.put("Title", "First-Person-View TowerDefense Game");
         //AppSettings hinzufügen
-//        appSettings.setResolution(1920, 1080);
+        appSettings.setResolution(1920, 1080);
         app.setSettings(appSettings);
         
         app.start();

@@ -35,6 +35,7 @@ public class Player extends Entity{
     private Geometry line;
     private long shot;
     private int money;
+    private boolean isHealing = false;
     
     public Player(InputListener inputListener){
         money = 100;
@@ -93,9 +94,14 @@ public class Player extends Entity{
             }
         } else if (binding.equals("placeTower") && this.isLiving()) {
             //if(!isPressed) verhindert, dass die Methode zweimal ausgeführt wird
+            if(isPressed && Main.app.getHudState().getSelectedItemNum() == 5) {
+                isHealing = true;
+            }
             if(!isPressed) {
                   if(Main.app.getHudState().getSelectedItemNum()==4) {
                       this.upgradeObject();
+                  } else if(Main.app.getHudState().getSelectedItemNum() == 5) {
+                    isHealing = false;
                   } else {
                     this.placeTower();  
                   }
@@ -134,6 +140,9 @@ public class Player extends Entity{
         if(System.currentTimeMillis()-shot >= 50){
             line.removeFromParent();
             shot = 0;
+        }
+        if(isHealing) {
+            heal();
         }
     }
     
@@ -207,9 +216,62 @@ public class Player extends Entity{
         }
     }
     
+    private void heal() {
+        CollisionResults resultsTower = new CollisionResults();
+        CollisionResults resultsBeacon = new CollisionResults();
+        Ray ray = new Ray(Main.app.getCamera().getLocation(), Main.app.getCamera().getDirection());
+        Main.getWorld().getTowerNode().collideWith(ray, resultsTower);
+        Main.getWorld().getBeacon().getSpatial().collideWith(ray, resultsBeacon);
+        if(resultsTower.size() == 0 && resultsBeacon.size() == 0) {
+            //Es wird auf nichts gezeigt -> Spieler heilen
+            if(this.getHealth() < this.getMaxHealth() && this.getMoney() > 0) {
+                this.increaseMoney(-1);
+                this.increaseHealth(1);
+            } else {
+                isHealing = false;
+            }                
+        } else if(resultsTower.size() == 0) {
+            if(resultsBeacon.size() != 0){
+                Main.getWorld().getBeacon().increaseLevel();
+            }
+        } else {
+            //Es gibt min. einen Turm. Es wird der nächste geholt
+            Vector3f pointTower = resultsTower.getClosestCollision().getContactPoint();
+            Tower nearestTower = Main.app.getWorld().getNearestTower(pointTower);
+            if(resultsBeacon.size() > 0) {
+                //Es gibt Türme und Beacon mit Kollision -> Hearusfinden welcher näher ist
+                Vector3f pointBeacon = resultsBeacon.getClosestCollision().getContactPoint();
+                if(nearestTower.getLocation().subtract(pointTower).length() > Main.app.getWorld().getBeacon().getLocation().subtract(pointBeacon).length()) {
+                    //Beacon ist näher
+                    Beacon beacon = Main.getWorld().getBeacon();
+                    if(beacon.getHealth() < beacon.getMaxHealth() && this.getMoney() > 0) {
+                        beacon.setHealth(beacon.getHealth()+1);
+                        this.increaseMoney(-1);
+                    } else {
+                        isHealing = false;
+                    }
+                } else {
+                    //ein Turm heilen
+                    if(nearestTower.getHealth() < nearestTower.getMaxHealth() && this.getMoney() > 0) {
+                        nearestTower.setHealth(nearestTower.getHealth()+1);
+                        this.increaseMoney(-1);
+                    } else {
+                        isHealing = false;
+                    }
+                }
+            } else {
+                //ein Turm heilen
+                if(nearestTower.getHealth() < nearestTower.getMaxHealth() && this.getMoney() > 0) {
+                    nearestTower.setHealth(nearestTower.getHealth()+1);
+                    this.increaseMoney(-1);
+                } else {
+                    isHealing = false;
+                }
+            }
+        }
+    }
+    
     public void upgradeObject() {
-//        Main.app.getFlyByCamera().setDragToRotate(true);
-        
         CollisionResults resultsTower = new CollisionResults();
         CollisionResults resultsBeacon = new CollisionResults();
         Ray ray = new Ray(Main.app.getCamera().getLocation(), Main.app.getCamera().getDirection());
@@ -230,11 +292,6 @@ public class Player extends Entity{
                     //Beacon ist näher
                     Main.getWorld().getBeacon().increaseLevel();
                 } else {
-                    //Ein Turm upgraden wenn genug Geld da ist.
-                    if(Main.app.getWorld().getPlayer().getMoney() >= 20) {
-                        nearestTower.increaseLevel();
-                        Main.app.getWorld().getPlayer().increaseMoney(-20);
-                    }
                     //Ein Turm upgraden
                    nearestTower.increaseLevel();
                    

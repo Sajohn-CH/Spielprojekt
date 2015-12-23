@@ -13,7 +13,6 @@ import de.lessvoid.nifty.elements.render.TextRenderer;
 import de.lessvoid.nifty.render.NiftyImage;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
 
@@ -28,7 +27,7 @@ public class HudScreenState extends AbstractAppState implements ScreenController
     private int itemSelected = 1;
     private World world;
     //private long lastSelectionChanged; //Zeit, als das letzte Mal die Auswahl geändert wurde. Wird gebraucht um die Anzeige der Turmbeschreibung nach eine Zeitspannen verschwinden zu lassen
-    private String[] descriptions = {"Preis: 20$", "Preis: 30$", "Preis: 40$", "Upgraden", "Preis: 20$"};
+    private String[] descriptions = {"Zerstört Bomben: 20$", "Verlangsamt Bomben: 30$", "Macht schiessenden Bomben schiessunfähig: 40$", "Upgraden", "Heilen: 1$ pro Lebenspunkt"};
     private Element towerPopup;
     private Tower tower;
     private Element endWavePopup;
@@ -65,8 +64,6 @@ public class HudScreenState extends AbstractAppState implements ScreenController
         beaconHealthBar.setWidth((int)(world.getBeacon().getHealthPercentage()/100f*topBar.getWidth()));
         
         if(startWaveTime != 0 && startWaveTime <= System.currentTimeMillis()) {
-            System.out.println("StartWaveTime: "+startWaveTime);
-            System.out.println("CurrentTime: "+System.currentTimeMillis());
             startNextWave();
         }
         
@@ -164,7 +161,7 @@ public class HudScreenState extends AbstractAppState implements ScreenController
        int newLevel = tower.getLevel()+1;
        String price = tower.getUpgradePrice()+"$";
        String damage = tower.getDamage()+"+"+(tower.getNewDamage(newLevel)-tower.getDamage());
-       String health = tower.getHealth()+"+"+(tower.getNewHealth(newLevel)-tower.getHealth());
+       String health = tower.getHealth()+"/"+tower.getMaxHealth()+"+"+(tower.getNewHealth(newLevel)-tower.getHealth());
        String sps = tower.getShotsPerSecond()+"+"+(tower.getNewSPS(newLevel)-tower.getShotsPerSecond());
        String range = tower.getRange()+"+"+(tower.getNewRange(newLevel)-tower.getRange());
        
@@ -219,7 +216,6 @@ public class HudScreenState extends AbstractAppState implements ScreenController
    
    private void startNextWave() {
        Main.app.getGame().startWave();
-       System.out.println("Next Wave");
        startWaveTime = 0;
        buildPhase = false;  
    }
