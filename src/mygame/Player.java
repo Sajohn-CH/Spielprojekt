@@ -161,6 +161,11 @@ public class Player extends Entity{
         if(isShooting){
             shoot();
         }
+        if(!isLiving() && (isHealing || isShooting)){
+            isHealing = false;
+            isShooting = false;
+            line.removeFromParent();
+        }
     }
     
     private void makeDamage(Entity e){
