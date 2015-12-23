@@ -165,7 +165,11 @@ public class HudScreenState extends AbstractAppState implements ScreenController
        String price = tower.getUpgradePrice()+"$";
        String damage = tower.getDamage()+"+"+(tower.getNewDamage(newLevel)-tower.getDamage());
        String health = tower.getHealth()+"+"+(tower.getNewHealth(newLevel)-tower.getHealth());
-       String sps = tower.getShotsPerSecond()+"+"+(tower.getNewSPS(newLevel)-tower.getShotsPerSecond());
+       double i = tower.getNewSPS(newLevel)-tower.getShotsPerSecond();
+       if((i * 100) % 100 != 0){
+           i = Math.round(i * 100.0) / 100.0;
+       }
+       String sps = tower.getShotsPerSecond()+"+"+ i;
        String range = tower.getRange()+"+"+(tower.getNewRange(newLevel)-tower.getRange());
        
        Main.app.getFlyByCamera().setDragToRotate(true);
