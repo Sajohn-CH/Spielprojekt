@@ -132,6 +132,10 @@ public class Bomb extends Entity{
         this.setSpeed((50-this.getLevel()*2+Main.getGame().getWave()*2) - decreasedSpeed);
     }
     
+    public int getDecreasedSpeed(){
+        return decreasedSpeed;
+    }
+    
     public Material getMaterial(){
         return mat;
     }

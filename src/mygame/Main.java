@@ -50,6 +50,8 @@ public class Main extends SimpleApplication implements ActionListener{
         appSettings.setResolution(1920,1080);
         appSettings.setFullscreen(device.isFullScreenSupported());
         //AppSettings hinzufügen
+//        appSettings.setResolution(1920, 1080);
+
         app.setSettings(appSettings);
         
         app.start();

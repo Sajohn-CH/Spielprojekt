@@ -66,7 +66,8 @@ public class MGTower extends Tower{
     @Override
     public void action(float tpf) {
         for(int i = 0; i < Main.getWorld().getAllBombs().size(); i++){
-            if(Main.getWorld().getAllBombs().get(i).getSpatial().getLocalTranslation().subtract(this.getSpatial().getLocalTranslation()).length() <= this.getRange() && isLiving() && canShoot()){
+            Bomb bomb = Main.getWorld().getAllBombs().get(i);
+            if(bomb.getSpatial().getLocalTranslation().subtract(this.getSpatial().getLocalTranslation()).length() <= this.getRange() && isLiving() && canShoot() && bomb.getDecreasedSpeed() < bomb.getSpeed()-1){
                Line l = new Line(this.getSpatial().getLocalTranslation().setY(7), Main.getWorld().getAllBombs().get(i).getSpatial().getLocalTranslation());
                line.setMesh(l);
                Main.app.getRootNode().attachChild(line);
