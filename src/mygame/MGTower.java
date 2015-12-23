@@ -35,7 +35,7 @@ public class MGTower extends Tower{
         this.setLocation(new Vector3f(location.x, 4, location.z));
         
         Cylinder b = new Cylinder(32, 32, 2, 8, true);
-        this.setSpatial(new Geometry("Cylinder", b));
+        this.setSpatial(new Geometry("MGTower", b));
         Quaternion q = new Quaternion();
         q.fromAngleAxis((float) Math.PI/2 , new Vector3f(1,0,0));
         this.getSpatial().setLocalRotation(q);

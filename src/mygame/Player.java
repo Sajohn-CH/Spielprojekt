@@ -177,7 +177,7 @@ public class Player extends Entity{
         Ray ray = new Ray(Main.app.getCamera().getLocation(), Main.app.getCamera().getDirection());
         
         //Schusslinie generieren
-        Line l = new Line(Main.app.getCamera().getLocation().subtract(0, 1, 0), Main.app.getCamera().getLocation().add(Main.app.getCamera().getDirection().mult(100)));
+        Line l = new Line(Main.app.getCamera().getLocation().subtract(0, 1, 0), Main.app.getCamera().getLocation().add(Main.app.getCamera().getDirection().normalize().mult(range)));
         line.setMesh(l);
         
         //Prüft, ob eine Bombe getroffen wurde

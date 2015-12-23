@@ -138,10 +138,10 @@ public class Main extends SimpleApplication implements ActionListener{
         inputManager.addMapping("item_5", new KeyTrigger(KeyInput.KEY_5));
         inputManager.addListener(this, "item_5");
         //Mausrad
-        inputManager.addMapping("item_scroll_up", new MouseAxisTrigger(MouseInput.AXIS_WHEEL, false));
-        inputManager.addListener(this, "item_scroll_up");
-        inputManager.addMapping("item_scroll_down", new MouseAxisTrigger(MouseInput.AXIS_WHEEL, true));
-        inputManager.addListener(this, "item_scroll_down");
+//        inputManager.addMapping("item_scroll_up", new MouseAxisTrigger(MouseInput.AXIS_WHEEL, false));
+//        inputManager.addListener(this, "item_scroll_up");
+//        inputManager.addMapping("item_scroll_down", new MouseAxisTrigger(MouseInput.AXIS_WHEEL, true));
+//        inputManager.addListener(this, "item_scroll_down");
     }
     
     @Override
