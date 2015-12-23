@@ -34,8 +34,12 @@ public class Player extends Entity{
     private InputListener inputListener;
     private Geometry line;
     private long shot;
+    private boolean isShooting = false;
     private int money;
     private boolean isHealing = false;
+    
+    private double shotsPerSecond = 0.05;
+    private int range = 30;
     
     public Player(InputListener inputListener){
         money = 100;
@@ -49,7 +53,7 @@ public class Player extends Entity{
         player.setGravity(30);
         player.setPhysicsLocation(new Vector3f(10, 10, 10));
         this.setLiving(true);
-        this.setDamage(0);
+        this.setDamage(1);
         setHealth(this.maxHealth);
         this.setSpeed(50);
         Main.getBulletAppState().getPhysicsSpace().add(player);
@@ -90,7 +94,12 @@ public class Player extends Entity{
             down = isPressed;
         } else if (binding.equals("Shoot") && this.isLiving()) {
             if(isPressed) {
-                this.shoot();
+                isShooting = true;
+                Main.app.getRootNode().attachChild(line);
+            }
+            if(!isPressed){
+                isShooting = false;
+                line.removeFromParent();
             }
         } else if (binding.equals("placeTower") && this.isLiving()) {
             //if(!isPressed) verhindert, dass die Methode zweimal ausgeführt wird
@@ -112,6 +121,14 @@ public class Player extends Entity{
           }
         }
     }
+   
+   private boolean canShoot(){
+        if(System.currentTimeMillis()-shot >= 1000/shotsPerSecond){
+            shot = 0;
+            return true;
+        }
+        return false;
+   }
     
     @Override
     public void action(float tpf){
@@ -137,12 +154,12 @@ public class Player extends Entity{
 //        player.walkDirection.multLocal(player.getSpeed() * tpf);
         player.setWalkDirection(walkDirection);
         Main.app.getCamera().setLocation(player.getPhysicsLocation());
-        if(System.currentTimeMillis()-shot >= 50){
-            line.removeFromParent();
-            shot = 0;
-        }
+        
         if(isHealing) {
             heal();
+        }
+        if(isShooting){
+            shoot();
         }
     }
     
@@ -157,7 +174,6 @@ public class Player extends Entity{
         //Schusslinie generieren
         Line l = new Line(Main.app.getCamera().getLocation().subtract(0, 1, 0), Main.app.getCamera().getLocation().add(Main.app.getCamera().getDirection().mult(100)));
         line.setMesh(l);
-        Main.app.getRootNode().attachChild(line);
         
         //Prüft, ob eine Bombe getroffen wurde
         Main.getWorld().getBombNode().collideWith(ray, results);
@@ -165,7 +181,7 @@ public class Player extends Entity{
             CollisionResult closest = results.getClosestCollision();
             l = new Line(Main.app.getCamera().getLocation().subtract(0, 1, 0), closest.getContactPoint());
             line.setMesh(l);
-            if(closest.getGeometry().getName().equals("bomb") || closest.getGeometry().getName().equals("shootingBomb")){
+            if(closest.getGeometry().getName().equals("bomb") || closest.getGeometry().getName().equals("shootingBomb") && closest.getContactPoint().subtract(Main.app.getCamera().getLocation()).length() <= range && canShoot()){
                 makeDamage(Main.getWorld().getBomb(closest.getGeometry()));
             }
         }
@@ -321,4 +337,35 @@ public class Player extends Entity{
         this.money += money;
     }
     
+    public int getNewRange(){
+        return (int)(range * 1.1);
+    }
+    
+    public void increaseRange(){
+        range = getNewRange();
+    }
+    
+    public int getNewRangePrice(){
+        return (int) (getNewRange()*0.75);
+    }
+    
+    public double getNewSPS(){
+        return range*1.2;
+    }
+    
+    public void increaseSPS(){
+        shotsPerSecond = getNewSPS();
+    }
+    
+    public int getNewSPSPrice(){
+        return (int) (getNewSPS()*1000);
+    }
+    
+    public int getNewSpeed(){
+        return (int) (this.getSpeed()*1.05);
+    }
+    
+    public void increaseSpeed(){
+        this.setSpeed(getNewSpeed());
+    }
 }

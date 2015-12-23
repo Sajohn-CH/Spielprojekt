@@ -66,8 +66,6 @@ public class Main extends SimpleApplication implements ActionListener{
         stateManager.attach(bulletAppState);
         
         Player player = new Player(this);
-        player.setDamage(100);
-        player.setHealth(100);
         
         Beacon beacon = new Beacon(new Vector3f(0, 0, 0), 100);
         world = new World(beacon, player, scene);
