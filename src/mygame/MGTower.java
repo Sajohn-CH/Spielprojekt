@@ -1,13 +1,20 @@
 package mygame;
 
+import com.jme3.animation.AnimChannel;
+import com.jme3.animation.AnimControl;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
+import com.jme3.light.AmbientLight;
+import com.jme3.light.Light;
+import com.jme3.light.PointLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
+import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Box;
 import com.jme3.scene.shape.Cylinder;
 import com.jme3.scene.shape.Line;
@@ -25,23 +32,34 @@ public class MGTower extends Tower{
     
     RigidBodyControl towerC;
     private Geometry line;
-    private long shot;
     
     public MGTower(Vector3f location) {
         this.setPrice(30);
         this.setLevel(1);
         this.setLocation(location);
         this.setLiving(true);
-        this.setLocation(new Vector3f(location.x, 4, location.z));
+        this.setLocation(new Vector3f(location.x, 0, location.z));
         
-        Cylinder b = new Cylinder(32, 32, 2, 8, true);
-        this.setSpatial(new Geometry("MGTower", b));
-        Quaternion q = new Quaternion();
-        q.fromAngleAxis((float) Math.PI/2 , new Vector3f(1,0,0));
-        this.getSpatial().setLocalRotation(q);
-        Material mat = new Material(Main.app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
-        mat.setColor("Color", ColorRGBA.Cyan);
-        this.getSpatial().setMaterial(mat);
+        this.setSpatial(Main.app.getAssetManager().loadModel("Objects/MGTower.j3o"));
+        
+        PointLight light1 = new PointLight();
+        light1.setPosition(new Vector3f(location.x +10 ,20, location.z +10));
+        light1.setRadius(10000);
+        PointLight light2 = new PointLight();
+        light2.setPosition(new Vector3f(location.x -10 ,5, location.z -10));
+        light2.setRadius(10000);
+        
+        this.getSpatial().addLight(light1);
+        this.getSpatial().addLight(light2);
+        
+//        Cylinder b = new Cylinder(32, 32, 2, 8, true);
+//        this.setSpatial(new Geometry("MGTower", b));
+//        Quaternion q = new Quaternion();
+//        q.fromAngleAxis((float) Math.PI/2 , new Vector3f(1,0,0));
+//        this.getSpatial().setLocalRotation(q);
+//        Material mat = new Material(Main.app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
+//        mat.setColor("Color", ColorRGBA.Cyan);
+//        this.getSpatial().setMaterial(mat);
         
         this.getSpatial().setLocalTranslation(this.getLocation());
        
@@ -53,7 +71,7 @@ public class MGTower extends Tower{
     
     @Override
     public void setCollidable(){
-        CollisionShape towerShape = CollisionShapeFactory.createMeshShape(this.getSpatial());
+        CollisionShape towerShape = CollisionShapeFactory.createBoxShape(this.getSpatial());
         towerC = new RigidBodyControl(towerShape, 0);
         this.getSpatial().addControl(towerC);
         Main.getBulletAppState().getPhysicsSpace().add(towerC);
@@ -67,8 +85,12 @@ public class MGTower extends Tower{
     public void action(float tpf) {
         for(int i = 0; i < Main.getWorld().getAllBombs().size(); i++){
             Bomb bomb = Main.getWorld().getAllBombs().get(i);
+            if(bomb.getSpatial().getLocalTranslation().subtract(this.getSpatial().getLocalTranslation()).length() <= this.getRange()){
+                this.getSpatial().lookAt(bomb.getSpatial().getLocalTranslation().add(Main.getWorld().getBombNode().getLocalTranslation()).setY(0), new Vector3f(0,1,0));
+            }
             if(bomb.getSpatial().getLocalTranslation().subtract(this.getSpatial().getLocalTranslation()).length() <= this.getRange() && isLiving() && canShoot() && bomb.getDecreasedSpeed() < bomb.getSpeed()-1){
-               Line l = new Line(this.getSpatial().getLocalTranslation().setY(7), Main.getWorld().getAllBombs().get(i).getSpatial().getLocalTranslation());
+               Vector3f vec = bomb.getSpatial().getLocalTranslation().subtract(this.getSpatial().getLocalTranslation()).normalize().mult(3.15f).setY(5.925f);
+               Line l = new Line(this.getSpatial().getLocalTranslation().add(vec), bomb.getSpatial().getLocalTranslation());
                line.setMesh(l);
                Main.app.getRootNode().attachChild(line);
                super.shot();

@@ -7,6 +7,8 @@ package mygame;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
+import com.jme3.light.AmbientLight;
+import com.jme3.light.PointLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
@@ -32,12 +34,44 @@ public class PyramidTower extends Tower{
         this.setLiving(true);
         this.setLocation(new Vector3f(location.x, 0, location.z));
         
-        Dome b = new Dome(Vector3f.ZERO, 2, 4, 1f,false); 
-        this.setSpatial(new Geometry("PyramidTower", b));
-        this.getSpatial().setLocalScale(2f, 15f, 2f);
-        Material mat = new Material(Main.app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
-        mat.setColor("Color", ColorRGBA.Magenta);
-        this.getSpatial().setMaterial(mat);
+        this.setSpatial(Main.app.getAssetManager().loadModel("Objects/PyramidTower.j3o").scale(0.5f));
+        
+        
+        PointLight light1 = new PointLight();
+        light1.setPosition(new Vector3f(location.x ,100, location.z));
+        light1.setRadius(1000f);
+        this.getSpatial().addLight(light1);
+        
+        PointLight light2 = new PointLight();
+        light2.setPosition(new Vector3f(location.x ,1, location.z +100));
+        light2.setRadius(1000f);
+        this.getSpatial().addLight(light2);
+        
+        PointLight light3 = new PointLight();
+        light3.setPosition(new Vector3f(location.x,1, location.z-100));
+        light3.setRadius(1000f);
+        this.getSpatial().addLight(light3);
+        
+        PointLight light4 = new PointLight();
+        light4.setPosition(new Vector3f(location.x +100, 1, location.z));
+        light4.setRadius(1000f);
+        this.getSpatial().addLight(light4);
+        
+        PointLight light5 = new PointLight();
+        light5.setPosition(new Vector3f(location.x -100, 1, location.z));
+        light5.setRadius(1000f);
+        this.getSpatial().addLight(light5);
+        
+//        Dome b = new Dome(Vector3f.ZERO, 2, 4, 1f,false); 
+//        this.setSpatial(new Geometry("PyramidTower", b));
+//        this.getSpatial().setLocalScale(2f, 15f, 2f);
+//        Material mat = new Material(Main.app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
+//        mat.setBoolean("UseMaterialColors",true);
+//        mat.setColor("Ambient",ColorRGBA.White);
+//        mat.setColor("Diffuse",ColorRGBA.White);
+//        mat.setColor("Specular",ColorRGBA.White);
+//        this.getSpatial().setMaterial(mat);
+        
         this.getSpatial().setLocalTranslation(this.getLocation());
         
         line = new Geometry("line");
@@ -58,10 +92,13 @@ public class PyramidTower extends Tower{
     public void action(float tpf) {
         for(int i = 0; i < Main.getWorld().getAllBombs().size(); i++){
             Bomb bomb = Main.getWorld().getAllBombs().get(i);
+            if(bomb.getSpatial().getLocalTranslation().subtract(this.getSpatial().getLocalTranslation()).length() <= this.getRange() && bomb.getSpatial().getName().equals("shootingBomb")){
+                this.getSpatial().lookAt(bomb.getSpatial().getLocalTranslation().add(Main.getWorld().getBombNode().getLocalTranslation()), new Vector3f(0,1,0));
+            }
             if(bomb.getSpatial().getLocalTranslation().subtract(this.getSpatial().getLocalTranslation()).length() <= this.getRange() && isLiving() && canShoot() && bomb.getSpatial().getName().equals("shootingBomb")){
                ShootingBomb sBomb = (ShootingBomb) bomb;
                 if(sBomb.isShooting()){
-                    Line l = new Line(this.getSpatial().getLocalTranslation().setY(7), Main.getWorld().getAllBombs().get(i).getSpatial().getLocalTranslation());
+                    Line l = new Line(this.getSpatial().getLocalTranslation().setY(7), bomb.getSpatial().getLocalTranslation());
                     line.setMesh(l);
                     Main.app.getRootNode().attachChild(line);
                     super.shot();
