@@ -40,7 +40,7 @@ public class Player extends Entity{
     private int money;
     private boolean isHealing = false;
     
-    private double shotsPerSecond = 1;
+    private double shotsPerSecond = 20;
     private int range = 30;
     
     public Player(InputListener inputListener){
@@ -125,7 +125,7 @@ public class Player extends Entity{
     }
    
    private boolean canShoot(){
-        if(System.currentTimeMillis()-shot >= 1/shotsPerSecond){
+        if(System.currentTimeMillis()-shot >= 1000/shotsPerSecond){
             shot = 0;
             return true;
         }
@@ -395,7 +395,7 @@ public class Player extends Entity{
     }
     
     public double getNewSPS(){   
-        return shotsPerSecond + Math.sqrt(shotsPerSecond)/10;
+        return (int) shotsPerSecond + Math.sqrt(shotsPerSecond);
     }
     
     public void increaseSPS(){
@@ -407,7 +407,7 @@ public class Player extends Entity{
     }
     
     public int getNewSPSPrice(){
-        return (int) (getNewSPS()*100);
+        return (int) (getNewSPS()*10);
     }
     
     public int getNewSpeed(){
