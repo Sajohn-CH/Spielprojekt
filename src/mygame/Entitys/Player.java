@@ -2,8 +2,9 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package mygame;
+package mygame.Entitys;
 
+import mygame.Entitys.Tower;
 import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
 import com.jme3.bullet.control.CharacterControl;
 import com.jme3.collision.CollisionResult;
@@ -19,6 +20,7 @@ import com.jme3.math.Ray;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.shape.Line;
+import mygame.Main;
 
 /**
  *
@@ -42,7 +44,7 @@ public class Player extends Entity{
     private int range = 30;
     
     public Player(InputListener inputListener){
-        money = 1000;
+        money = 100;
         this.setLiving(true);
         this.inputListener = inputListener;
         setUpKeys();
@@ -169,9 +171,7 @@ public class Player extends Entity{
     }
     
     private void makeDamage(Entity e){
-        System.out.println(e.getHealth());
         e.increaseHealth(-this.getDamage());
-        System.out.println(e.getHealth());
     }
     
     private void shoot(){
@@ -189,7 +189,6 @@ public class Player extends Entity{
             l = new Line(Main.app.getCamera().getLocation().subtract(0, 1, 0), closest.getContactPoint());
             line.setMesh(l);
             if(closest.getContactPoint().subtract(Main.app.getCamera().getLocation()).length() <= range && canShoot()){
-                System.out.println("Test successful");
                 makeDamage(Main.getWorld().getBomb(closest.getGeometry()));
             }
             shot = System.currentTimeMillis();
@@ -348,6 +347,18 @@ public class Player extends Entity{
     public int getRange() {
         return range;
     }
+
+    public void setShotsPerSecond(double shotsPerSecond) {
+        this.shotsPerSecond = shotsPerSecond;
+    }
+
+    public void setRange(int range) {
+        this.range = range;
+    }
+
+    public void setMoney(int money) {
+        this.money = money;
+    }
     
     public void increaseMoney(int money){
         this.money += money;
@@ -428,5 +439,16 @@ public class Player extends Entity{
             this.setHealth(this.getNewMaxHealth()-this.getHealth());
             this.setMaxHealth(this.getNewMaxHealth());
         }
+    }
+    
+    @Override
+    public Vector3f getLocation() {
+        return Main.app.getCamera().getLocation();
+    }
+    
+    @Override 
+    public void setLocation(Vector3f location) {
+        player.setPhysicsLocation(location);
+        Main.app.getCamera().setLocation(location);
     }
 }

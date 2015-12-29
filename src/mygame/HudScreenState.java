@@ -4,6 +4,12 @@
  */
 package mygame;
 
+import mygame.Entitys.Beacon;
+import mygame.Entitys.SimpleTower;
+import mygame.Entitys.Player;
+import mygame.Entitys.MGTower;
+import mygame.Entitys.PyramidTower;
+import mygame.Entitys.Tower;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.math.Vector3f;
 import de.lessvoid.nifty.Nifty;
@@ -227,10 +233,6 @@ public class HudScreenState extends AbstractAppState implements ScreenController
        endWavePopup.findElementByName("BeaconUpgrade").getRenderer(TextRenderer.class).setText(beaconHealth);
    }
    
-   private void loadEndWavePopup() {
-       
-   }
-   
    public void nextWave() {
        nifty.closePopup(endWavePopup.getId());
        endWavePopup.disable();
@@ -253,6 +255,7 @@ public class HudScreenState extends AbstractAppState implements ScreenController
     public String getHealthPrice() {
         return String.valueOf(Main.app.getWorld().getPlayer().getNewMaxHealthPrice());
     }
+    
     public String getDamagePrice() {
         return String.valueOf(Main.app.getWorld().getPlayer().getNewDamagePrice());
     }
@@ -276,6 +279,7 @@ public class HudScreenState extends AbstractAppState implements ScreenController
     
     public void upgradePlayerDamage() {
         Main.app.getWorld().getPlayer().increaseDamage();
+        reloadEndWavePopup();
     }
     
     public void upgradePlayerSPS() {

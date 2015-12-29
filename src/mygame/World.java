@@ -4,6 +4,10 @@
  */
 package mygame;
 
+import mygame.Entitys.Bomb;
+import mygame.Entitys.Beacon;
+import mygame.Entitys.Player;
+import mygame.Entitys.Tower;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;

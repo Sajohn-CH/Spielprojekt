@@ -1,5 +1,7 @@
 package mygame;
 
+import mygame.Entitys.Beacon;
+import mygame.Entitys.Player;
 import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.control.RigidBodyControl;
@@ -176,7 +178,6 @@ public class Main extends SimpleApplication implements ActionListener{
 //        }
         //Wenn Kamera DragToRotate ist, dann wird ein Menu angezeigt (Menu für Wellenende muss nicht angezeigt werden)
         if(!game.bombLeft() && world.getAllBombs().isEmpty() && !hudState.isCameraDragToRotate() && !hudState.isBuildPhase()){
-            System.out.println("nextWave");
             game.nextWave();
 //            waveEnded = 0;
         } else if (game.bombLeft()){
