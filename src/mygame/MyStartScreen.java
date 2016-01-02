@@ -234,4 +234,12 @@ public class MyStartScreen extends AbstractAppState implements ScreenController,
             e.printStackTrace();
         }
     }
+    
+    /**
+     * Gibt die aktuelle Welle zurück. Wird gebraucht, damit beim GameOver-Screen angezeigt werden kann, wie viele Wellen man überlebt hat.
+     * @return Aktuelle Welle
+     */
+   public int getCurrentWave() {
+       return Main.app.getGame().getWave();
+   }
 }

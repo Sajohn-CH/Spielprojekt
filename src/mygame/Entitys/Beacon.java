@@ -53,6 +53,7 @@ public class Beacon extends Entity {
             Main.getWorld().getPlayer().setLiving(false);
             this.getSpatial().removeFromParent();
             Main.getBulletAppState().getPhysicsSpace().remove(beaconC);
+            Main.app.gameOver();
         }
     }
     

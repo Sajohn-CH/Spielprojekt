@@ -48,4 +48,25 @@
             </panel> 
         </layer>
     </screen>
+    
+    <screen id="gameOver" childLayout="vertical" controller="mygame.MyStartScreen">
+        <layer id="background" childLayout="center">
+            <panel width="100%" height="100%" childLayout="center" backgroundColor="#ff0000A0">
+                
+            </panel>
+        </layer>
+        <layer id="foreground" childLayout="center">
+            <panel childLayout="vertical">
+                <text text="GAME OVER" font="Interface/Fonts/Arial.fnt" align="center"/>
+                <text text="Der Beacon wurde zerstört" font="Interface/Fonts/Arial.fnt" align="center"/>
+                <text text="Du hast es bist zur Welle ${CALL.getCurrentWave()} geschaft" font="Interface/Fonts/Arial.fnt" align="center"/>
+                <control name="button" label="Zurück zum Startmenu" align="center" valign="center" visibleToMouse="true" width="20%">
+                    <interact onClick="toStart()"/>
+                </control>
+                 <control name="button" label="Spiel beenden" align="center" valign="center" visibleToMouse="true" width="20%">
+                    <interact onClick="quitGame()"/>
+                </control>
+            </panel>
+        </layer>
+    </screen>
 </nifty>
