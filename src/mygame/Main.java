@@ -118,7 +118,6 @@ public class Main extends SimpleApplication implements ActionListener{
         flyCam.setZoomSpeed(0);
         
         changeDebugMode();
-        
     }
     
     private void setUpKeys() {

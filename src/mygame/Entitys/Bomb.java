@@ -37,7 +37,6 @@ public class Bomb extends Entity{
         mat = new Material (Main.app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
         this.getSpatial().setMaterial(mat);
         this.setLevel(level);
-        this.setSpeed(5000);
         way = new Way();
         super.setLocation(way.getStartPoint().setY(2));
         this.getSpatial().setLocalTranslation(way.getStartPoint());
