@@ -4,6 +4,8 @@
  */
 package mygame;
 
+import mygame.Entitys.Bomb;
+import mygame.Entitys.ShootingBomb;
 import java.util.ArrayList;
 
 /**
@@ -52,6 +54,11 @@ public class Game {
                 shootingBombsLeftPerLevel.add(i);
             }
         }
+    }
+    
+    public void startWave(int wave) {
+        this.wave = wave;
+        startWave();
     }
     
     public void nextWave(){

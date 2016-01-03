@@ -4,6 +4,10 @@
  */
 package mygame;
 
+import mygame.Entitys.Bomb;
+import mygame.Entitys.Beacon;
+import mygame.Entitys.Player;
+import mygame.Entitys.Tower;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.collision.shapes.CollisionShape;
@@ -231,6 +235,10 @@ public class World extends AbstractAppState{
     
     public void setPaused(boolean pause){
         this.setEnabled(!pause);
+    }
+    
+    public boolean isPaused(){
+        return !this.isEnabled();
     }
 }
  

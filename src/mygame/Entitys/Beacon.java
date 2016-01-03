@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package mygame;
+package mygame.Entitys;
 
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
@@ -15,6 +15,7 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Box;
+import mygame.Main;
 
 /**
  *
@@ -82,6 +83,7 @@ public class Beacon extends Entity {
             Main.getWorld().getPlayer().setLiving(false);
             this.getSpatial().removeFromParent();
             Main.getBulletAppState().getPhysicsSpace().remove(beaconC);
+            Main.app.gameOver();
         }
     }
     

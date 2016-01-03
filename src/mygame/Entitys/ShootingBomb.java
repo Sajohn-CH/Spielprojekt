@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package mygame;
+package mygame.Entitys;
 
 import com.jme3.light.PointLight;
 import com.jme3.material.Material;
@@ -17,6 +17,7 @@ import com.jme3.scene.shape.Line;
 import com.jme3.scene.shape.PQTorus;
 import com.jme3.scene.shape.Sphere;
 import com.jme3.scene.shape.Torus;
+import mygame.Main;
 
 /**
  *

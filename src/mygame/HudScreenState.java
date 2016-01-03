@@ -4,6 +4,12 @@
  */
 package mygame;
 
+import mygame.Entitys.Beacon;
+import mygame.Entitys.SimpleTower;
+import mygame.Entitys.Player;
+import mygame.Entitys.MGTower;
+import mygame.Entitys.PyramidTower;
+import mygame.Entitys.Tower;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.math.Vector3f;
 import de.lessvoid.nifty.Nifty;
@@ -38,6 +44,7 @@ public class HudScreenState extends AbstractAppState implements ScreenController
     private boolean cameraDragToRotate = false;     //Ist nur dann true, wenn bei der aktuellen anzeige DragToRotate der FlyByCamera true ist (z.B: bei Popup)
     long startWaveTime =  0;
     private boolean buildPhase = false;
+    private boolean debugMode = true;
    
     public void setWorld(World world) {
         this.world = world;
@@ -67,11 +74,17 @@ public class HudScreenState extends AbstractAppState implements ScreenController
         Element topBar = screen.findElementByName("top_bar");
         beaconHealthBar.setWidth((int)(world.getBeacon().getHealthPercentage()/100f*topBar.getWidth()));
         
-        if(startWaveTime != 0 && startWaveTime <= System.currentTimeMillis()) {
-            startNextWave();
+        if(debugMode) {
+            Player player = Main.app.getWorld().getPlayer();
+            double x = Math.round(player.getLocation().x*10.0)/10.0;
+            double y = Math.round(player.getLocation().y*10.0)/10.0;
+            double z = Math.round(player.getLocation().z*10.0)/10.0;
+            updateText("PlayerPos", "x: "+x+" y: "+y+" z: "+z);
         }
         
-        
+        if(startWaveTime != 0 && startWaveTime <= System.currentTimeMillis()) {
+            startNextWave();
+        }        
     }
     
     private void updateText(String element, String text) {
@@ -205,6 +218,15 @@ public class HudScreenState extends AbstractAppState implements ScreenController
    }
    
    public void showEndWavePopup() {
+       //EndWavePopup wird nicht ausgeführt, wenn der Beacon tot ist -> gameOver. Der Beacon ruft eine entsprechende Methode auf, wenn er stirbt.
+       if(!Main.app.getWorld().getBeacon().isLiving()) {
+           return;
+       }
+       //Schliesst ein evtl. geöffnetes TowerUpgradePopup
+       if(towerPopup != null && towerPopup.isVisible()) {
+           closeTowerPopup("false");
+       }
+       Main.app.getWorld().setPaused(true);
        Main.app.getFlyByCamera().setDragToRotate(true);
        cameraDragToRotate = true;
        endWavePopup = nifty.createPopup("waveEndPopup");
@@ -227,11 +249,8 @@ public class HudScreenState extends AbstractAppState implements ScreenController
        endWavePopup.findElementByName("BeaconUpgrade").getRenderer(TextRenderer.class).setText(beaconHealth);
    }
    
-   private void loadEndWavePopup() {
-       
-   }
-   
    public void nextWave() {
+       Main.app.getWorld().setPaused(false);
        nifty.closePopup(endWavePopup.getId());
        endWavePopup.disable();
        Main.app.getFlyByCamera().setDragToRotate(false);
@@ -253,6 +272,7 @@ public class HudScreenState extends AbstractAppState implements ScreenController
     public String getHealthPrice() {
         return String.valueOf(Main.app.getWorld().getPlayer().getNewMaxHealthPrice());
     }
+    
     public String getDamagePrice() {
         return String.valueOf(Main.app.getWorld().getPlayer().getNewDamagePrice());
     }
@@ -312,5 +332,10 @@ public class HudScreenState extends AbstractAppState implements ScreenController
         showEndWavePopup();
     }
    
+    public void setDebugModeEnabled(boolean flag) {
+        Element debugLayer =  screen.findElementByName("debug");
+        debugLayer.setVisible(flag);
+        debugMode = flag;
+    }
      
 }

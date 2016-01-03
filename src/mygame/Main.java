@@ -1,13 +1,13 @@
 package mygame;
 
+import mygame.Entitys.Beacon;
+import mygame.Entitys.Player;
 import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.input.KeyInput;
-import com.jme3.input.MouseInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
-import com.jme3.input.controls.MouseAxisTrigger;
 import com.jme3.math.Vector3f;
 import com.jme3.niftygui.NiftyJmeDisplay;
 import com.jme3.renderer.RenderManager;
@@ -15,9 +15,10 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.system.AppSettings;
 import de.lessvoid.nifty.Nifty;
-import java.awt.DisplayMode;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author Samuel Martin und Florian Wenk
@@ -34,23 +35,29 @@ public class Main extends SimpleApplication implements ActionListener{
     private static World world;
     private static Game game;
     private long waveEnded = 0;
+    private boolean debugMode = true;
     
     public static void main(String[] args) {
         app = new Main();
         
         //AppSettings initialisieren
         AppSettings appSettings = new AppSettings(true);
+        
         //Titel setzen
         appSettings.setTitle("First-Person-View TowerDefense Game");
         //Start into Fullscreen
         //Get the Resolution of the main/defautl display
         GraphicsDevice device = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
         appSettings.setResolution(device.getDisplayMode().getWidth(), device.getDisplayMode().getHeight());
+        appSettings.setResolution(2560, 1440);
+        appSettings.setFrequency(device.getDisplayMode().getRefreshRate());
+        appSettings.setBitsPerPixel(device.getDisplayMode().getBitDepth());
         //set the found resolution of the monitor as the resolution of the game.
         appSettings.setFullscreen(device.isFullScreenSupported());
+
         //AppSettings hinzufügen
         app.setSettings(appSettings);
-        
+
         app.start();
     }
 
@@ -102,9 +109,9 @@ public class Main extends SimpleApplication implements ActionListener{
         NiftyJmeDisplay niftyDisplay = new NiftyJmeDisplay( assetManager, inputManager, audioRenderer, guiViewPort);
         //Create a new NiftyGui objects
         nifty = niftyDisplay.getNifty();
-        //Read yout XML and initialize your custom Screen Controller
-        nifty.addXml("Interface/hud.xml");
-        nifty.addXml("Interface/screen.xml");
+        //Lädt die benötigten XML-Dateien (diese werden dabei überprüft)
+        addXmlFile("Interface/hud.xml");
+        addXmlFile("Interface/screen.xml"); 
         MyStartScreen startState = (MyStartScreen) nifty.getScreen("start").getScreenController();
         nifty.registerScreenController(startState);
         nifty.gotoScreen("hud");
@@ -127,7 +134,10 @@ public class Main extends SimpleApplication implements ActionListener{
         inputManager.deleteMapping(SimpleApplication.INPUT_MAPPING_EXIT);
         //Setzt Scrollgeschwindigkeit auf null, so dass man mit dem Mausrad nicht scrollen kann.
         flyCam.setZoomSpeed(0);
+        //Setzt standardbewegung der Kamera ausser Kraft, damit man im pausemenu nicht laufen kann.
+        flyCam.setMoveSpeed(0);
         
+        changeDebugMode();
     }
     
     private void setUpKeys() {
@@ -145,6 +155,8 @@ public class Main extends SimpleApplication implements ActionListener{
         inputManager.addListener(this, "item_4");
         inputManager.addMapping("item_5", new KeyTrigger(KeyInput.KEY_5));
         inputManager.addListener(this, "item_5");
+        inputManager.addMapping("debug", new KeyTrigger(KeyInput.KEY_F4));
+        inputManager.addListener(this, "debug");
         //Mausrad
 //        inputManager.addMapping("item_scroll_up", new MouseAxisTrigger(MouseInput.AXIS_WHEEL, false));
 //        inputManager.addListener(this, "item_scroll_up");
@@ -154,27 +166,30 @@ public class Main extends SimpleApplication implements ActionListener{
     
     @Override
     public void onAction(String binding, boolean isPressed, float tpf) {
-        world.getPlayer().onAction(binding, isPressed);
-        if (binding.equals("Menu")) {
-            nifty.gotoScreen("pause");
-            flyCam.setDragToRotate(true);
-            world.setPaused(true);
-        } else if(binding.equals("item_1")) {
-            hudState.selectItem(1);
-        } else if(binding.equals("item_2")) {
-            hudState.selectItem(2);
-        } else if(binding.equals("item_3")) {
-            hudState.selectItem(3);
-        } else if(binding.equals("item_4")) {
-            hudState.selectItem(4);
-        } else if(binding.equals("item_5")) {
-            hudState.selectItem(5);
-        } else if(binding.equals("item_scroll_up")) {
-            hudState.nextSelectedItem();
-        } else if(binding.equals("item_scroll_down")) {
-            hudState.lastSelectedItem();
-        }
-    
+        if(!getWorld().isPaused()){
+            world.getPlayer().onAction(binding, isPressed);
+            if (binding.equals("Menu")) {
+                nifty.gotoScreen("pause");
+                flyCam.setDragToRotate(true);
+                world.setPaused(true);
+            } else if(binding.equals("item_1")) {
+                hudState.selectItem(1);
+            } else if(binding.equals("item_2")) {
+                hudState.selectItem(2);
+            } else if(binding.equals("item_3")) {
+                hudState.selectItem(3);
+            } else if(binding.equals("item_4")) {
+                hudState.selectItem(4);
+            } else if(binding.equals("item_5")) {
+                hudState.selectItem(5);
+            } else if(binding.equals("item_scroll_up")) {
+                hudState.nextSelectedItem();
+            } else if(binding.equals("item_scroll_down")) {
+                hudState.lastSelectedItem();
+            } else if(binding.equals("debug") && isPressed) {
+                changeDebugMode();
+            }
+        }    
     }
 
     @Override
@@ -184,7 +199,6 @@ public class Main extends SimpleApplication implements ActionListener{
 //        }
         //Wenn Kamera DragToRotate ist, dann wird ein Menu angezeigt (Menu für Wellenende muss nicht angezeigt werden)
         if(!game.bombLeft() && world.getAllBombs().isEmpty() && !hudState.isCameraDragToRotate() && !hudState.isBuildPhase()){
-            System.out.println("nextWave");
             game.nextWave();
 //            waveEnded = 0;
         } else if (game.bombLeft()){
@@ -218,4 +232,29 @@ public class Main extends SimpleApplication implements ActionListener{
         return game;
     }
     
+    private void changeDebugMode() {
+        debugMode = !debugMode;
+        hudState.setDebugModeEnabled(debugMode);
+    }
+    
+    public void gameOver() {
+        getWorld().setPaused(true);
+        getFlyByCamera().setDragToRotate(true);
+        nifty.gotoScreen("gameOver");
+    }
+   
+    /**
+     * Fügt eine XML-Datei zu nifty hinzu und überprüft die übergebene xm-Datei auf Fehler. Dabei werden die Methoden nifty.validateXml() 
+     * und nifty.addXml() gebraucht. Es wird der Pfad zur Datei übergeben. So wie er auch bei den Methoden nifty.validateXml(), 
+     * nifty.addXml() etc. gebraucht wird.
+     * @param file Pfad zur Datei.
+     */
+    private void addXmlFile(String file) {
+         try {
+            nifty.validateXml(file);
+        } catch (Exception ex) {
+            System.out.println("[FEHLER] Datei "+file+" enthält Fehler");
+        }
+         nifty.addXml(file);
+    } 
 }
