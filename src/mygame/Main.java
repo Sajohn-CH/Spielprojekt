@@ -72,6 +72,8 @@ public class Main extends SimpleApplication implements ActionListener{
         stateManager.attach(world);
         world.setPaused(true);
         
+        beacon.turn();
+        
         rootNode.attachChild(world.getBombNode());
         rootNode.attachChild(world.getTowerNode());
         rootNode.attachChild(world.getBeacon().getSpatial());
@@ -80,6 +82,12 @@ public class Main extends SimpleApplication implements ActionListener{
         
         game = new Game(1);
         game.startWave();
+        
+        //Test, ob es dann beim ersten Setzen eines Turms nicht lange braucht
+        app.getAssetManager().loadModel("Objects/SimpleTower.j3o");
+        app.getAssetManager().loadModel("Objects/MGTower.j3o");
+        app.getAssetManager().loadModel("Objects/PyramidTower.j3o");
+        
 //        n = new Node();             // attach to n to let disappear when player is there
 //        Node n1 = new Node();       // attach to n1 to make collision resistant
                 
@@ -96,7 +104,7 @@ public class Main extends SimpleApplication implements ActionListener{
         nifty = niftyDisplay.getNifty();
         //Read yout XML and initialize your custom Screen Controller
         nifty.addXml("Interface/hud.xml");
-        nifty.addXml("Interface/screen.xml"); 
+        nifty.addXml("Interface/screen.xml");
         MyStartScreen startState = (MyStartScreen) nifty.getScreen("start").getScreenController();
         nifty.registerScreenController(startState);
         nifty.gotoScreen("hud");

@@ -13,6 +13,7 @@ import com.jme3.input.MouseInput;
 import com.jme3.input.controls.InputListener;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.input.controls.MouseButtonTrigger;
+import com.jme3.light.PointLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Ray;
@@ -38,11 +39,11 @@ public class Player extends Entity{
     private int money;
     private boolean isHealing = false;
     
-    private double shotsPerSecond = 20;
-    private int range = 30;
+    private double shotsPerSecond = 50;
+    private int range = 100;
     
     public Player(InputListener inputListener){
-        money = 1000;
+        money = 250;
         this.setLiving(true);
         this.inputListener = inputListener;
         setUpKeys();
@@ -55,13 +56,21 @@ public class Player extends Entity{
         this.setLiving(true);
         this.setDamage(2);
         setHealth(this.maxHealth);
-        this.setSpeed(50);
+        this.setSpeed(100);
         Main.getBulletAppState().getPhysicsSpace().add(player);
         
         line = new Geometry("line", new Line());
         Material mat = new Material(Main.app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
         mat.setColor("Color", ColorRGBA.Red);
         line.setMaterial(mat);
+        
+        this.setSpatial(Main.app.getAssetManager().loadModel("Objects/Gun.j3o").scale(.2f));
+        this.getSpatial().setLocalTranslation(Main.app.getCamera().getLocation().add(0, -1.75f, 0).add(Main.app.getCamera().getDirection().normalize().mult(1.5f)));
+        PointLight light = new PointLight();
+        light.setPosition(new Vector3f(0, 1000, 0));
+        light.setRadius(100000);
+        this.getSpatial().addLight(light);
+        Main.app.getRootNode().attachChild(this.getSpatial());
         
     }
     
@@ -123,11 +132,11 @@ public class Player extends Entity{
     }
    
    private boolean canShoot(){
-        if(System.currentTimeMillis()-shot >= 1000/shotsPerSecond){
-            shot = 0;
-            return true;
-        }
-        return false;
+       if(System.currentTimeMillis()-shot >= 1000/shotsPerSecond){
+           shot = 0;
+           return true;
+       }
+       return false;
    }
     
     @Override
@@ -150,10 +159,13 @@ public class Player extends Entity{
         if (down) {
             walkDirection.addLocal(camDir.negate());
         }
-//        walkDirection.normalizeLocal();
-//        player.walkDirection.multLocal(player.getSpeed() * tpf);
+        walkDirection.normalizeLocal();
+        walkDirection.multLocal(this.getSpeed() * tpf);
         player.setWalkDirection(walkDirection);
         Main.app.getCamera().setLocation(player.getPhysicsLocation());
+        
+        this.getSpatial().setLocalTranslation(Main.app.getCamera().getLocation().add(Main.app.getCamera().getUp().normalize().mult(-1.75f)).add(Main.app.getCamera().getLeft().normalize().mult(-.75f)).add(Main.app.getCamera().getDirection().normalize().mult(1.9f)));
+        this.getSpatial().lookAt(Main.app.getCamera().getDirection().mult(range).add(Main.app.getCamera().getLocation()), new Vector3f(0,1,0));
         
         if(isHealing) {
             heal();
@@ -166,12 +178,13 @@ public class Player extends Entity{
             isShooting = false;
             line.removeFromParent();
         }
+        if(!isLiving() && this.getSpatial().hasAncestor(Main.app.getRootNode())){
+            this.getSpatial().removeFromParent();
+        }
     }
     
     private void makeDamage(Entity e){
-        System.out.println(e.getHealth());
         e.increaseHealth(-this.getDamage());
-        System.out.println(e.getHealth());
     }
     
     private void shoot(){
@@ -179,18 +192,17 @@ public class Player extends Entity{
         Ray ray = new Ray(Main.app.getCamera().getLocation(), Main.app.getCamera().getDirection());
         
         //Schusslinie generieren
-        Line l = new Line(Main.app.getCamera().getLocation().subtract(0, 1, 0), Main.app.getCamera().getLocation().add(Main.app.getCamera().getDirection().normalize().mult(range)));
+        Line l = new Line(this.getSpatial().getLocalTranslation().add(Main.app.getCamera().getUp().normalize().mult(1.3f)), Main.app.getCamera().getLocation().add(Main.app.getCamera().getDirection().normalize().mult(range)));
         line.setMesh(l);
         
         //Prüft, ob eine Bombe getroffen wurde
         Main.getWorld().getBombNode().collideWith(ray, results);
-        if (results.size() > 0) {
+        if (canShoot() && results.size() > 0) {
             CollisionResult closest = results.getClosestCollision();
-            l = new Line(Main.app.getCamera().getLocation().subtract(0, 1, 0), closest.getContactPoint());
+            l = new Line(this.getSpatial().getLocalTranslation().add(Main.app.getCamera().getUp().normalize().mult(1.3f)), closest.getContactPoint());
             line.setMesh(l);
-            if(closest.getContactPoint().subtract(Main.app.getCamera().getLocation()).length() <= range && canShoot()){
-                System.out.println("Test successful");
-                makeDamage(Main.getWorld().getBomb(closest.getGeometry()));
+            if(closest.getContactPoint().add(Main.getWorld().getBombNode().getLocalTranslation()).subtract(Main.app.getCamera().getLocation()).length() <= range){
+                makeDamage(Main.getWorld().getBomb(closest.getGeometry().getParent()));
             }
             shot = System.currentTimeMillis();
         }

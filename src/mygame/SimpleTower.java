@@ -7,6 +7,8 @@ package mygame;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
+import com.jme3.effect.ParticleEmitter;
+import com.jme3.effect.ParticleMesh;
 import com.jme3.light.PointLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
@@ -37,8 +39,12 @@ public class SimpleTower extends Tower{
         PointLight light1 = new PointLight();
         light1.setPosition(new Vector3f(location.x ,20, location.z));
         light1.setRadius(100f);
-        
         this.getSpatial().addLight(light1);
+        
+        PointLight light2 = new PointLight();
+        light2.setPosition(new Vector3f(location.x +1,2, location.z-1));
+        light2.setRadius(100f);
+        this.getSpatial().addLight(light2);
         
 //        Box b = new Box(2, 8, 2);
 //        this.setSpatial(new Geometry("SimpleTower", b));
@@ -68,7 +74,7 @@ public class SimpleTower extends Tower{
     public void action(float tpf) {
         for(int i = 0; i < Main.getWorld().getAllBombs().size(); i++){
             Bomb bomb = Main.getWorld().getAllBombs().get(i);
-            if(bomb.getSpatial().getLocalTranslation().subtract(this.getSpatial().getLocalTranslation()).length() <= this.getRange()){
+            if(bomb.getSpatial().getLocalTranslation().subtract(this.getSpatial().getLocalTranslation()).length() <= this.getRange() && this.canShoot()){
                 this.getSpatial().lookAt(bomb.getSpatial().getLocalTranslation().add(Main.getWorld().getBombNode().getLocalTranslation()).setY(0), new Vector3f(0,1,0));
             }
             if(bomb.getSpatial().getLocalTranslation().subtract(this.getSpatial().getLocalTranslation()).length() <= this.getRange() && isLiving() && canShoot()){

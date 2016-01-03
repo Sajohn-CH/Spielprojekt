@@ -55,6 +55,8 @@ public class Game {
     }
     
     public void nextWave(){
+        // Bonus für welle überstanden
+        Main.getWorld().getPlayer().increaseMoney(this.wave * 50);
         this.wave += 1;
         Main.app.getHudState().showEndWavePopup();
         //startWave();

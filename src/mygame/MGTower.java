@@ -5,6 +5,8 @@ import com.jme3.animation.AnimControl;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
+import com.jme3.effect.ParticleEmitter;
+import com.jme3.effect.ParticleMesh;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.Light;
 import com.jme3.light.PointLight;
@@ -43,14 +45,22 @@ public class MGTower extends Tower{
         this.setSpatial(Main.app.getAssetManager().loadModel("Objects/MGTower.j3o"));
         
         PointLight light1 = new PointLight();
-        light1.setPosition(new Vector3f(location.x +10 ,20, location.z +10));
+        light1.setPosition(new Vector3f(location.x +10 ,20, location.z));
         light1.setRadius(10000);
         PointLight light2 = new PointLight();
-        light2.setPosition(new Vector3f(location.x -10 ,5, location.z -10));
+        light2.setPosition(new Vector3f(location.x -10 ,5, location.z));
         light2.setRadius(10000);
+        PointLight light3 = new PointLight();
+        light3.setPosition(new Vector3f(location.x ,20, location.z +10));
+        light3.setRadius(10000);
+        PointLight light4 = new PointLight();
+        light4.setPosition(new Vector3f(location.x ,5, location.z -10));
+        light4.setRadius(10000);
         
         this.getSpatial().addLight(light1);
         this.getSpatial().addLight(light2);
+        this.getSpatial().addLight(light3);
+        this.getSpatial().addLight(light4);
         
 //        Cylinder b = new Cylinder(32, 32, 2, 8, true);
 //        this.setSpatial(new Geometry("MGTower", b));
@@ -85,7 +95,7 @@ public class MGTower extends Tower{
     public void action(float tpf) {
         for(int i = 0; i < Main.getWorld().getAllBombs().size(); i++){
             Bomb bomb = Main.getWorld().getAllBombs().get(i);
-            if(bomb.getSpatial().getLocalTranslation().subtract(this.getSpatial().getLocalTranslation()).length() <= this.getRange()){
+            if(bomb.getSpatial().getLocalTranslation().subtract(this.getSpatial().getLocalTranslation()).length() <= this.getRange() && this.canShoot()){
                 this.getSpatial().lookAt(bomb.getSpatial().getLocalTranslation().add(Main.getWorld().getBombNode().getLocalTranslation()).setY(0), new Vector3f(0,1,0));
             }
             if(bomb.getSpatial().getLocalTranslation().subtract(this.getSpatial().getLocalTranslation()).length() <= this.getRange() && isLiving() && canShoot() && bomb.getDecreasedSpeed() < bomb.getSpeed()-1){

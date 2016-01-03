@@ -5,6 +5,7 @@
 package mygame;
 
 import com.jme3.app.state.AbstractAppState;
+import com.jme3.asset.AssetManager;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
@@ -61,6 +62,7 @@ public class World extends AbstractAppState{
 //                ,"Textures/sky/BrightSky", ));
         //TODO: weitermachen
         
+        // Himmel laden
         Texture west = Main.app.getAssetManager().loadTexture("Textures/sky/BrightSky/west.jpg");
         Texture east = Main.app.getAssetManager().loadTexture("Textures/sky/BrightSky/east.jpg");
         Texture north = Main.app.getAssetManager().loadTexture("Textures/sky/BrightSky/north.jpg");
@@ -68,7 +70,8 @@ public class World extends AbstractAppState{
         Texture up = Main.app.getAssetManager().loadTexture("Textures/sky/BrightSky/up.jpg");
         Texture down = Main.app.getAssetManager().loadTexture("Textures/sky/BrightSky/down.jpg");
         Main.app.getRootNode().attachChild(SkyFactory.createSky(Main.app.getAssetManager(), west, east, north, south, up, down));
-             
+         
+        // Scene collidable machen
         Main.app.getRootNode().attachChild(scene);
         CollisionShape sceneShape = CollisionShapeFactory.createMeshShape((Node) scene);
         RigidBodyControl sceneC = new RigidBodyControl(sceneShape, 0);
@@ -170,6 +173,7 @@ public class World extends AbstractAppState{
     }
     
     public ArrayList<Vector3f> getAllCorners(){
+        //Corners xml-file auslesen
         ArrayList<Vector3f> corners = new ArrayList<Vector3f>();
         try {
             DocumentBuilderFactory dbFacotry = DocumentBuilderFactory.newInstance();
@@ -205,6 +209,7 @@ public class World extends AbstractAppState{
     }
     
     private void generateWayGeometries(){
+        //Unsichtbare Geometries auf den Weg legen, damit dort nichts gebaut werden kann.
         ArrayList<Vector3f> corners = getAllCorners();
         Geometry geom1C = new Geometry("Corner0", new Box(corners.get(0).mult(2), 6, 0, 6));
         Material mat = new Material();

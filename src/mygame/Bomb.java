@@ -10,8 +10,11 @@ import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
+import com.jme3.scene.Node;
+import com.jme3.scene.shape.Cylinder;
 import com.jme3.scene.shape.Sphere;
 
 /**
@@ -26,14 +29,28 @@ public class Bomb extends Entity{
     private Way way;
     private int money;
     private int decreasedSpeed;
+    private Node n;
     
     public Bomb (int level){
         this.setLiving(true);
         this.setSpeed(1);
+        
+        //Spatial erstellen
+        n = new Node("bomb");
         Sphere sphere = new Sphere(100, 100, 1);
-        this.setSpatial(new Geometry("bomb", sphere));
+        Cylinder cylinder = new Cylinder(50, 50, 1.01f, .25f);
+        n.attachChild(new Geometry("bomb",sphere));
+        n.attachChild(new Geometry("color",cylinder));
+        Quaternion q = new Quaternion();
+        q.fromAngleAxis((float) Math.PI/2 , new Vector3f(1,0,0));
+        n.getChild("color").rotate(q);
+//        this.setSpatial(new Geometry("bomb", sphere));
         mat = new Material (Main.app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
-        this.getSpatial().setMaterial(mat);
+//        this.getSpatial().setMaterial(mat);
+        n.getChild("bomb").setMaterial(Main.app.getAssetManager().loadMaterial("Materials/Black.j3m"));
+        n.getChild("color").setMaterial(mat);
+        this.setSpatial(n);
+        
         this.setLevel(level);
         way = new Way();
         super.setLocation(way.getStartPoint().setY(2));
@@ -59,7 +76,7 @@ public class Bomb extends Entity{
         
     public void makeDamage(Entity e){
         e.increaseHealth(-this.getDamage());
-        System.out.println("damage:" + this.getDamage());
+//        System.out.println("damage:" + this.getDamage());
     }
     
     public void move(Vector3f offset){
@@ -139,4 +156,9 @@ public class Bomb extends Entity{
     public Material getMaterial(){
         return mat;
     }
+    
+    public Way getWay(){
+        return way;
+    }
+    
 }

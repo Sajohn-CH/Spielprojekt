@@ -30,4 +30,8 @@ public class Way {
         return corners.get(positionID-1).mult(2);
     }
     
+    public Vector3f getThisCorner(){
+        return corners.get(positionID-1).mult(2);
+    }
+    
 }

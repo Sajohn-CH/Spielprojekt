@@ -36,7 +36,6 @@ public class PyramidTower extends Tower{
         
         this.setSpatial(Main.app.getAssetManager().loadModel("Objects/PyramidTower.j3o").scale(0.5f));
         
-        
         PointLight light1 = new PointLight();
         light1.setPosition(new Vector3f(location.x ,100, location.z));
         light1.setRadius(1000f);
@@ -92,13 +91,13 @@ public class PyramidTower extends Tower{
     public void action(float tpf) {
         for(int i = 0; i < Main.getWorld().getAllBombs().size(); i++){
             Bomb bomb = Main.getWorld().getAllBombs().get(i);
-            if(bomb.getSpatial().getLocalTranslation().subtract(this.getSpatial().getLocalTranslation()).length() <= this.getRange() && bomb.getSpatial().getName().equals("shootingBomb")){
+            if(bomb.getSpatial().getLocalTranslation().subtract(this.getSpatial().getLocalTranslation()).length() <= this.getRange() && bomb.getSpatial().getName().equals("shootingBomb") && this.canShoot()){
                 this.getSpatial().lookAt(bomb.getSpatial().getLocalTranslation().add(Main.getWorld().getBombNode().getLocalTranslation()), new Vector3f(0,1,0));
             }
             if(bomb.getSpatial().getLocalTranslation().subtract(this.getSpatial().getLocalTranslation()).length() <= this.getRange() && isLiving() && canShoot() && bomb.getSpatial().getName().equals("shootingBomb")){
                ShootingBomb sBomb = (ShootingBomb) bomb;
                 if(sBomb.isShooting()){
-                    Line l = new Line(this.getSpatial().getLocalTranslation().setY(7), bomb.getSpatial().getLocalTranslation());
+                    Line l = new Line(this.getSpatial().getLocalTranslation().add(0,4,0), bomb.getSpatial().getLocalTranslation());
                     line.setMesh(l);
                     Main.app.getRootNode().attachChild(line);
                     super.shot();

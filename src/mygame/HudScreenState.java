@@ -276,6 +276,7 @@ public class HudScreenState extends AbstractAppState implements ScreenController
     
     public void upgradePlayerDamage() {
         Main.app.getWorld().getPlayer().increaseDamage();
+        reloadEndWavePopup();
     }
     
     public void upgradePlayerSPS() {
