@@ -316,6 +316,7 @@ public class Player extends Entity{
     }
     
     public void upgradeObject() {
+        Main.getWorld().getPlayer().setNotWalking();
         CollisionResults resultsTower = new CollisionResults();
         CollisionResults resultsBeacon = new CollisionResults();
         Ray ray = new Ray(Main.app.getCamera().getLocation(), Main.app.getCamera().getDirection());
@@ -465,5 +466,12 @@ public class Player extends Entity{
     public void setLocation(Vector3f location) {
         player.setPhysicsLocation(location);
         Main.app.getCamera().setLocation(location);
+    }
+    
+    public void setNotWalking(){
+        left = false;
+        right = false;
+        up = false;
+        down = false;
     }
 }

@@ -169,8 +169,10 @@ public class Main extends SimpleApplication implements ActionListener{
         if(!getWorld().isPaused()){
             world.getPlayer().onAction(binding, isPressed);
             if (binding.equals("Menu")) {
+                world.getPlayer().setNotWalking();
                 nifty.gotoScreen("pause");
                 flyCam.setDragToRotate(true);
+                flyCam.setRotationSpeed(0);
                 world.setPaused(true);
             } else if(binding.equals("item_1")) {
                 hudState.selectItem(1);
@@ -200,6 +202,7 @@ public class Main extends SimpleApplication implements ActionListener{
         //Wenn Kamera DragToRotate ist, dann wird ein Menu angezeigt (Menu für Wellenende muss nicht angezeigt werden)
         if(!game.bombLeft() && world.getAllBombs().isEmpty() && !hudState.isCameraDragToRotate() && !hudState.isBuildPhase()){
             game.nextWave();
+            world.getPlayer().setNotWalking();
 //            waveEnded = 0;
         } else if (game.bombLeft()){
             game.action(tpf);
@@ -244,7 +247,7 @@ public class Main extends SimpleApplication implements ActionListener{
     }
    
     /**
-     * Fügt eine XML-Datei zu nifty hinzu und überprüft die übergebene xm-Datei auf Fehler. Dabei werden die Methoden nifty.validateXml() 
+     * Fügt eine XML-Datei zu nifty hinzu und überprüft die übergebene xml-Datei auf Fehler. Dabei werden die Methoden nifty.validateXml() 
      * und nifty.addXml() gebraucht. Es wird der Pfad zur Datei übergeben. So wie er auch bei den Methoden nifty.validateXml(), 
      * nifty.addXml() etc. gebraucht wird.
      * @param file Pfad zur Datei.
