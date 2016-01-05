@@ -105,7 +105,7 @@ public class ShootingBomb extends Bomb{
         }
         if(canShoot() && this.isLiving() && !Main.getWorld().getAllTowers().isEmpty()){
             for(int i = 0; i < Main.getWorld().getAllTowers().size(); i++){
-                if(Main.getWorld().getAllTowers().get(i).getSpatial().getLocalTranslation().subtract(this.getSpatial().getLocalTranslation()).length() <= this.range && canShoot()){
+                if(Main.getWorld().getAllTowers().get(i).getSpatial().getLocalTranslation().subtract(this.getSpatial().getLocalTranslation()).length() <= this.range && canShoot() && Main.getWorld().getAllTowers().get(i).isLiving()){
                    n.getChild("gun").lookAt(Main.getWorld().getAllTowers().get(i).getSpatial().getLocalTranslation(), new Vector3f(0,1,0));
                    Line l = new Line(this.getSpatial().getLocalTranslation(), Main.getWorld().getAllTowers().get(i).getSpatial().getLocalTranslation());
                    line.setMesh(l);

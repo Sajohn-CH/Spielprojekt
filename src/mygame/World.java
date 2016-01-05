@@ -128,6 +128,9 @@ public class World extends AbstractAppState{
     }
     
     public void removeTower(Tower tower){
+        if(tower.isDead()){
+            tower.removeFireEffect();
+        }
         towerNode.detachChild(tower.getSpatial());
         this.towers.remove(tower.getSpatial());
     }
@@ -170,7 +173,7 @@ public class World extends AbstractAppState{
         }
         for(int i = 0; i < allTowers.size(); i++){
             allTowers.get(i).action(tpf);
-            if(!allTowers.get(i).isLiving()){
+            if(!allTowers.get(i).isLiving() && allTowers.get(i).canRemove()){
                 this.removeTower(allTowers.get(i));
             }
         }

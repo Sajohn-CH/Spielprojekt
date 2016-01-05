@@ -1,25 +1,13 @@
 package mygame.Entitys;
 
-import mygame.Entitys.Tower;
-import com.jme3.animation.AnimChannel;
-import com.jme3.animation.AnimControl;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
-import com.jme3.effect.ParticleEmitter;
-import com.jme3.effect.ParticleMesh;
-import com.jme3.light.AmbientLight;
-import com.jme3.light.Light;
 import com.jme3.light.PointLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
-import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
-import com.jme3.scene.Node;
-import com.jme3.scene.Spatial;
-import com.jme3.scene.shape.Box;
-import com.jme3.scene.shape.Cylinder;
 import com.jme3.scene.shape.Line;
 import mygame.Main;
 
@@ -63,16 +51,7 @@ public class MGTower extends Tower{
         this.getSpatial().addLight(light2);
         this.getSpatial().addLight(light3);
         this.getSpatial().addLight(light4);
-        
-//        Cylinder b = new Cylinder(32, 32, 2, 8, true);
-//        this.setSpatial(new Geometry("MGTower", b));
-//        Quaternion q = new Quaternion();
-//        q.fromAngleAxis((float) Math.PI/2 , new Vector3f(1,0,0));
-//        this.getSpatial().setLocalRotation(q);
-//        Material mat = new Material(Main.app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
-//        mat.setColor("Color", ColorRGBA.Cyan);
-//        this.getSpatial().setMaterial(mat);
-        
+                
         this.getSpatial().setLocalTranslation(this.getLocation());
        
         line = new Geometry("line");
@@ -109,8 +88,10 @@ public class MGTower extends Tower{
                this.decreaseSpeed(Main.getWorld().getAllBombs().get(i));
             }
         }
-        if(!this.isLiving()){
+        if(!this.isLiving() && !this.isDead()){
+            died();
             Main.getBulletAppState().getPhysicsSpace().remove(towerC);
+            line.removeFromParent();
         }
         if(System.currentTimeMillis()-getLastShot() >= 50){
             line.removeFromParent();

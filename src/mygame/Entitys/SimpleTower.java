@@ -88,7 +88,8 @@ public class SimpleTower extends Tower{
                this.makeDamage(Main.getWorld().getAllBombs().get(i));
             }
         }
-        if(!this.isLiving()){
+        if(!this.isLiving() && !this.isDead()){
+            died();
             Main.getBulletAppState().getPhysicsSpace().remove(towerC);
             line.removeFromParent();
         }

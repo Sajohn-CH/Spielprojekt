@@ -103,7 +103,7 @@ public class Entity {
     }
 
     public void setSpatial(Spatial spatial) {
-        this.spatial = spatial;
+        this.spatial = spatial.clone();
     }
     
     protected void die() {

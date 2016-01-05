@@ -107,7 +107,8 @@ public class PyramidTower extends Tower{
                 }
             }
         }
-        if(!this.isLiving()){
+        if(!this.isLiving() && !this.isDead()){
+            died();
             Main.getBulletAppState().getPhysicsSpace().remove(towerC);
             line.removeFromParent();
         }

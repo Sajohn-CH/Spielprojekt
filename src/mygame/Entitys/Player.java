@@ -5,7 +5,6 @@
 package mygame.Entitys;
 
 import com.jme3.audio.AudioNode;
-import mygame.Entitys.Tower;
 import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
 import com.jme3.bullet.control.CharacterControl;
 import com.jme3.collision.CollisionResult;
