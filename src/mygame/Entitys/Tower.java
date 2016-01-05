@@ -4,6 +4,13 @@
  */
 package mygame.Entitys;
 
+import com.jme3.effect.ParticleEmitter;
+import com.jme3.effect.ParticleMesh;
+import com.jme3.material.Material;
+import com.jme3.math.ColorRGBA;
+import com.jme3.math.Vector3f;
+import mygame.Main;
+
 
 /**
  *
@@ -15,6 +22,7 @@ public class Tower extends Entity{
     private int price;
     private double shotsPerSecond;
     private long shot;
+    private long died;
     
     public int getRange(){
         return range;
@@ -94,5 +102,4 @@ public class Tower extends Entity{
     public void setCollidable(){
         
     }
-    
 }

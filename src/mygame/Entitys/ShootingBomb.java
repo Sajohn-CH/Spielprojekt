@@ -102,7 +102,8 @@ public class ShootingBomb extends Bomb{
                 shot();
                 Main.getWorld().getPlayer().increaseHealth(-this.getDamage());
             }
-        } else if(canShoot() && this.isLiving() && !Main.getWorld().getAllTowers().isEmpty()){
+        }
+        if(canShoot() && this.isLiving() && !Main.getWorld().getAllTowers().isEmpty()){
             for(int i = 0; i < Main.getWorld().getAllTowers().size(); i++){
                 if(Main.getWorld().getAllTowers().get(i).getSpatial().getLocalTranslation().subtract(this.getSpatial().getLocalTranslation()).length() <= this.range && canShoot()){
                    n.getChild("gun").lookAt(Main.getWorld().getAllTowers().get(i).getSpatial().getLocalTranslation(), new Vector3f(0,1,0));

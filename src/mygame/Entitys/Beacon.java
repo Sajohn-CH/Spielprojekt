@@ -27,42 +27,43 @@ public class Beacon extends Entity {
     
     public Beacon(Vector3f location, int health){
         this.setLiving(true);
-        this.setLocation(new Vector3f(location.x, 0, location.z));
+        this.setLocation(new Vector3f(location.x, 4, location.z));
         this.setHealth(health);
         
-//        this.setSpatial(Main.app.getAssetManager().loadModel("Objects/Beacon.j3o").scale(.25f));
-//        
-//        PointLight light1 = new PointLight();
-//        light1.setPosition(new Vector3f(location.x ,1000, location.z));
-//        light1.setRadius(10000f);
-//        this.getSpatial().addLight(light1);
-//        
-//        PointLight light2 = new PointLight();
-//        light2.setPosition(new Vector3f(location.x ,1, location.z +1000));
-//        light2.setRadius(10000f);
-//        this.getSpatial().addLight(light2);
-//        
-//        PointLight light3 = new PointLight();
-//        light3.setPosition(new Vector3f(location.x,1, location.z-1000));
-//        light3.setRadius(10000f);
-//        this.getSpatial().addLight(light3);
-//        
-//        PointLight light4 = new PointLight();
-//        light4.setPosition(new Vector3f(location.x +1000, 1, location.z));
-//        light4.setRadius(10000f);
-//        this.getSpatial().addLight(light4);
-//        
-//        PointLight light5 = new PointLight();
-//        light5.setPosition(new Vector3f(location.x -1000, 1, location.z));
-//        light5.setRadius(10000f);
-//        this.getSpatial().addLight(light5);
-        
-        Box b = new Box(8, 8, 8);
-        this.setSpatial( new Geometry("Box", b));
-        Material mat = new Material(Main.app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
-        mat.setColor("Color", ColorRGBA.Orange);
-        this.getSpatial().setMaterial(mat);
+        this.setSpatial(Main.app.getAssetManager().loadModel("Objects/Beacon.j3o").scale(2f));
         this.getSpatial().setLocalTranslation(this.getLocation());
+        
+        PointLight light1 = new PointLight();
+        light1.setPosition(new Vector3f(location.x ,1000, location.z));
+        light1.setRadius(10000f);
+        this.getSpatial().addLight(light1);
+        
+        PointLight light2 = new PointLight();
+        light2.setPosition(new Vector3f(location.x ,1, location.z +1000));
+        light2.setRadius(10000f);
+        this.getSpatial().addLight(light2);
+        
+        PointLight light3 = new PointLight();
+        light3.setPosition(new Vector3f(location.x,1, location.z-1000));
+        light3.setRadius(10000f);
+        this.getSpatial().addLight(light3);
+        
+        PointLight light4 = new PointLight();
+        light4.setPosition(new Vector3f(location.x +1000, 1, location.z));
+        light4.setRadius(10000f);
+        this.getSpatial().addLight(light4);
+        
+        PointLight light5 = new PointLight();
+        light5.setPosition(new Vector3f(location.x -1000, 1, location.z));
+        light5.setRadius(10000f);
+        this.getSpatial().addLight(light5);
+        
+//        Box b = new Box(8, 8, 8);
+//        this.setSpatial( new Geometry("Box", b));
+//        Material mat = new Material(Main.app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
+//        mat.setColor("Color", ColorRGBA.Orange);
+//        this.getSpatial().setMaterial(mat);
+//        this.getSpatial().setLocalTranslation(this.getLocation());
         //Main.app.getRootNode().attachChild(beacon);
         //Main.app.getStateManager().attach(this);
         

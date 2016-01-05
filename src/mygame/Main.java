@@ -5,9 +5,13 @@ import mygame.Entitys.Player;
 import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.control.RigidBodyControl;
+import com.jme3.effect.ParticleEmitter;
+import com.jme3.effect.ParticleMesh;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
+import com.jme3.material.Material;
+import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.niftygui.NiftyJmeDisplay;
 import com.jme3.renderer.RenderManager;
@@ -54,7 +58,8 @@ public class Main extends SimpleApplication implements ActionListener{
         appSettings.setBitsPerPixel(device.getDisplayMode().getBitDepth());
         //set the found resolution of the monitor as the resolution of the game.
         appSettings.setFullscreen(device.isFullScreenSupported());
-
+        // Frame rate limitieren
+        appSettings.setFrameRate(60);
         //AppSettings hinzufügen
         app.setSettings(appSettings);
 
@@ -169,6 +174,7 @@ public class Main extends SimpleApplication implements ActionListener{
         if(!getWorld().isPaused()){
             world.getPlayer().onAction(binding, isPressed);
             if (binding.equals("Menu")) {
+                world.getPlayer().stopAudio();
                 world.getPlayer().setNotWalking();
                 nifty.gotoScreen("pause");
                 flyCam.setDragToRotate(true);
@@ -202,6 +208,7 @@ public class Main extends SimpleApplication implements ActionListener{
         //Wenn Kamera DragToRotate ist, dann wird ein Menu angezeigt (Menu für Wellenende muss nicht angezeigt werden)
         if(!game.bombLeft() && world.getAllBombs().isEmpty() && !hudState.isCameraDragToRotate() && !hudState.isBuildPhase()){
             game.nextWave();
+            world.getPlayer().stopAudio();
             world.getPlayer().setNotWalking();
 //            waveEnded = 0;
         } else if (game.bombLeft()){

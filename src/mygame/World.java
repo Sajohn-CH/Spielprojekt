@@ -74,7 +74,7 @@ public class World extends AbstractAppState{
         Texture up = Main.app.getAssetManager().loadTexture("Textures/sky/BrightSky/up.jpg");
         Texture down = Main.app.getAssetManager().loadTexture("Textures/sky/BrightSky/down.jpg");
         Main.app.getRootNode().attachChild(SkyFactory.createSky(Main.app.getAssetManager(), west, east, north, south, up, down));
-         
+                 
         // Scene collidable machen
         Main.app.getRootNode().attachChild(scene);
         CollisionShape sceneShape = CollisionShapeFactory.createMeshShape((Node) scene);

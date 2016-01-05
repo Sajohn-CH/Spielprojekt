@@ -4,6 +4,7 @@
  */
 package mygame.Entitys;
 
+import com.jme3.audio.AudioNode;
 import mygame.Entitys.Tower;
 import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
 import com.jme3.bullet.control.CharacterControl;
@@ -44,6 +45,11 @@ public class Player extends Entity{
     private double shotsPerSecond = 50;
     private int range = 100;
     
+    private AudioNode shootAudio;
+    private AudioNode walkAudio;
+    private AudioNode buyAudio;
+    private AudioNode notEnoughMoneyAudio;
+    
     public Player(InputListener inputListener){
         money = 250;
         this.setLiving(true);
@@ -58,7 +64,7 @@ public class Player extends Entity{
         this.setLiving(true);
         this.setDamage(2);
         setHealth(this.maxHealth);
-        this.setSpeed(100);
+        this.setSpeed(50);
         Main.getBulletAppState().getPhysicsSpace().add(player);
         
         line = new Geometry("line", new Line());
@@ -74,6 +80,29 @@ public class Player extends Entity{
         this.getSpatial().addLight(light);
         Main.app.getRootNode().attachChild(this.getSpatial());
         
+        shootAudio = new AudioNode(Main.app.getAssetManager(), "Audio/shootAudio.wav", false);
+        shootAudio.setPositional(false);
+        shootAudio.setLooping(true);
+        shootAudio.setVolume(2);
+        Main.app.getRootNode().attachChild(shootAudio);
+        
+        walkAudio = new AudioNode(Main.app.getAssetManager(), "Audio/walkAudio.wav", false);
+        walkAudio.setPositional(false);
+        walkAudio.setLooping(true);
+        walkAudio.setVolume(.5f);
+        Main.app.getRootNode().attachChild(walkAudio);
+        
+        buyAudio = new AudioNode(Main.app.getAssetManager(), "Audio/buyAudio.wav", false);
+        buyAudio.setPositional(false);
+        buyAudio.setLooping(false);
+        buyAudio.setVolume(2f);
+        Main.app.getRootNode().attachChild(buyAudio);
+        
+        notEnoughMoneyAudio = new AudioNode(Main.app.getAssetManager(), "Audio/notEnoughMoneyAudio.wav", false);
+        notEnoughMoneyAudio.setPositional(false);
+        notEnoughMoneyAudio.setLooping(false);
+        notEnoughMoneyAudio.setVolume(2f);
+        Main.app.getRootNode().attachChild(notEnoughMoneyAudio);
     }
     
     private void setUpKeys() {
@@ -141,8 +170,8 @@ public class Player extends Entity{
        return false;
    }
     
-    @Override
-    public void action(float tpf){
+   @Override
+   public void action(float tpf){
         camDir.set(Main.app.getCamera().getDirection()).multLocal(0.6f);
         camLeft.set(Main.app.getCamera().getLeft()).multLocal(0.4f);
         //Versucht y-Komponente zu entferen, damit man nicht nach oben/unten gehen kann
@@ -163,6 +192,11 @@ public class Player extends Entity{
         }
         walkDirection.normalizeLocal();
         walkDirection.multLocal(this.getSpeed() * tpf);
+        if(walkDirection.length() != 0){
+            walkAudio.play();
+        } else {
+            walkAudio.stop();
+        }
         player.setWalkDirection(walkDirection);
         Main.app.getCamera().setLocation(player.getPhysicsLocation());
         
@@ -173,7 +207,10 @@ public class Player extends Entity{
             heal();
         }
         if(isShooting){
+            shootAudio.play();
             shoot();
+        } else {
+            shootAudio.stop();
         }
         if(!isLiving() && (isHealing || isShooting)){
             isHealing = false;
@@ -186,7 +223,9 @@ public class Player extends Entity{
     }
     
     private void makeDamage(Entity e){
-        e.increaseHealth(-this.getDamage());
+        if(e.isLiving()){
+            e.increaseHealth(-this.getDamage());
+        }
     }
     
     private void shoot(){
@@ -316,7 +355,8 @@ public class Player extends Entity{
     }
     
     public void upgradeObject() {
-        Main.getWorld().getPlayer().setNotWalking();
+        setNotWalking();
+        stopAudio();
         CollisionResults resultsTower = new CollisionResults();
         CollisionResults resultsBeacon = new CollisionResults();
         Ray ray = new Ray(Main.app.getCamera().getLocation(), Main.app.getCamera().getDirection());
@@ -378,6 +418,9 @@ public class Player extends Entity{
     
     public void increaseMoney(int money){
         this.money += money;
+        if(money < 0){
+            playAudioBought();
+        }
     }
     
     public int getNewRange(){
@@ -473,5 +516,18 @@ public class Player extends Entity{
         right = false;
         up = false;
         down = false;
+    }
+    
+    public void stopAudio(){
+        shootAudio.stop();
+        walkAudio.stop();
+    }
+    
+    public void playAudioBought(){
+        buyAudio.playInstance();
+    }
+    
+    public void playAudioNotEnoughMoney(){
+        notEnoughMoneyAudio.playInstance();
     }
 }

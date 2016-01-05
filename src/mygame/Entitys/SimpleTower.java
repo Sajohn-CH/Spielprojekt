@@ -151,6 +151,8 @@ public class SimpleTower extends Tower{
          if(Main.app.getWorld().getPlayer().getMoney() >= getUpgradePrice()) {
            Main.app.getWorld().getPlayer().increaseMoney(-getUpgradePrice());
            setLevel(this.getLevel()+1);
-        }
+         } else {
+           Main.app.getWorld().getPlayer().playAudioNotEnoughMoney();
+         }
     }
 }
