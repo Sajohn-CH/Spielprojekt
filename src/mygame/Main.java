@@ -85,6 +85,7 @@ public class Main extends SimpleApplication implements ActionListener{
         world.setPaused(true);
         
         beacon.turn();
+        player.turn();
         
         rootNode.attachChild(world.getBombNode());
         rootNode.attachChild(world.getTowerNode());

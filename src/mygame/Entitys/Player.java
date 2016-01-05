@@ -41,6 +41,7 @@ public class Player extends Entity{
     private boolean isShooting = false;
     private int money;
     private boolean isHealing = false;
+    private boolean hasHealed = false;
     
     private double shotsPerSecond = 50;
     private int range = 100;
@@ -60,7 +61,7 @@ public class Player extends Entity{
         player.setJumpSpeed(20);
         player.setFallSpeed(90);
         player.setGravity(30);
-        player.setPhysicsLocation(new Vector3f(10, 10, 10));
+        player.setPhysicsLocation(new Vector3f(0,10,0));
         this.setLiving(true);
         this.setDamage(2);
         setHealth(this.maxHealth);
@@ -103,6 +104,10 @@ public class Player extends Entity{
         notEnoughMoneyAudio.setLooping(false);
         notEnoughMoneyAudio.setVolume(2f);
         Main.app.getRootNode().attachChild(notEnoughMoneyAudio);
+    }
+    
+    public void turn(){
+        Main.app.getCamera().lookAt(Main.getWorld().getAllCorners().get(0), new Vector3f(0, 1, 0));
     }
     
     private void setUpKeys() {
@@ -150,9 +155,13 @@ public class Player extends Entity{
                   if(Main.app.getHudState().getSelectedItemNum()==4) {
                       this.upgradeObject();
                   } else if(Main.app.getHudState().getSelectedItemNum() == 5) {
-                    isHealing = false;
+                      isHealing = false;
+                      if(hasHealed){
+                        playAudioBought();
+                        hasHealed = false;
+                      }
                   } else {
-                    this.placeTower();  
+                      this.placeTower();  
                   }
             }
         } else if (binding.equals("Jump")) {
@@ -205,7 +214,7 @@ public class Player extends Entity{
         
         if(isHealing) {
             heal();
-        }
+        } 
         if(isShooting){
             shootAudio.play();
             shoot();
@@ -230,7 +239,7 @@ public class Player extends Entity{
     
     private void shoot(){
         CollisionResults results = new CollisionResults();
-        Ray ray = new Ray(Main.app.getCamera().getLocation(), Main.app.getCamera().getDirection());
+        Ray ray = new Ray(this.getSpatial().getLocalTranslation().add(Main.app.getCamera().getUp().normalize().mult(1.3f)), Main.app.getCamera().getLocation().add(Main.app.getCamera().getDirection().normalize().mult(range)).subtract(this.getSpatial().getLocalTranslation().add(Main.app.getCamera().getUp().normalize().mult(1.3f))));
         
         //Schusslinie generieren
         Line l = new Line(this.getSpatial().getLocalTranslation().add(Main.app.getCamera().getUp().normalize().mult(1.3f)), Main.app.getCamera().getLocation().add(Main.app.getCamera().getDirection().normalize().mult(range)));
@@ -274,6 +283,7 @@ public class Player extends Entity{
             //kontrolliert ob Spieler genug Geld hat
             if(getMoney()-tower.getPrice() < 0) {
                 //Nicht genug Geld -> Turm wird nicht gesetzt.
+                playAudioNotEnoughMoney();
                 return;
             }
             v = v.setY(v.getY()-4);
@@ -288,6 +298,7 @@ public class Player extends Entity{
             }
             //Zieht Geld 
             increaseMoney(-tower.getPrice());
+            playAudioBought();
             // plaziert Turm
             Main.getWorld().addTower(tower);
         }
@@ -304,6 +315,7 @@ public class Player extends Entity{
             if(this.getHealth() < this.getMaxHealth() && this.getMoney() > 0) {
                 this.increaseMoney(-1);
                 this.increaseHealth(1);
+                hasHealed = true;
             } else {
                 isHealing = false;
             }                
@@ -313,6 +325,7 @@ public class Player extends Entity{
                     if(beacon.getHealth() < beacon.getMaxHealth() && this.getMoney() > 0) {
                         beacon.setHealth(beacon.getHealth()+1);
                         this.increaseMoney(-1);
+                        hasHealed = true;
                     } else {
                         isHealing = false;
                     }
@@ -330,6 +343,7 @@ public class Player extends Entity{
                     if(beacon.getHealth() < beacon.getMaxHealth() && this.getMoney() > 0) {
                         beacon.setHealth(beacon.getHealth()+1);
                         this.increaseMoney(-1);
+                        hasHealed = true;
                     } else {
                         isHealing = false;
                     }
@@ -338,6 +352,7 @@ public class Player extends Entity{
                     if(nearestTower.getHealth() < nearestTower.getMaxHealth() && this.getMoney() > 0) {
                         nearestTower.setHealth(nearestTower.getHealth()+1);
                         this.increaseMoney(-1);
+                        hasHealed = true;
                     } else {
                         isHealing = false;
                     }
@@ -347,6 +362,7 @@ public class Player extends Entity{
                 if(nearestTower.getHealth() < nearestTower.getMaxHealth() && this.getMoney() > 0) {
                     nearestTower.setHealth(nearestTower.getHealth()+1);
                     this.increaseMoney(-1);
+                    hasHealed = true;
                 } else {
                     isHealing = false;
                 }
@@ -418,9 +434,6 @@ public class Player extends Entity{
     
     public void increaseMoney(int money){
         this.money += money;
-        if(money < 0){
-            playAudioBought();
-        }
     }
     
     public int getNewRange(){
@@ -431,6 +444,9 @@ public class Player extends Entity{
         if(this.getMoney() >= this.getNewRangePrice()) {
            this.increaseMoney(-this.getNewRangePrice());
            range = getNewRange();
+           playAudioBought();
+        } else {
+            playAudioNotEnoughMoney();
         }
     }
     
@@ -446,6 +462,9 @@ public class Player extends Entity{
         if(this.getMoney() >= this.getNewDamagePrice()) {
            this.increaseMoney(-this.getNewDamagePrice());
            this.setDamage(getNewDamage()); 
+            playAudioBought();
+        } else {
+            playAudioNotEnoughMoney();
         }
     }
     
@@ -461,6 +480,9 @@ public class Player extends Entity{
         if(this.getMoney() >= this.getNewSPSPrice()) {
             this.increaseMoney(-this.getNewSPSPrice());
             shotsPerSecond = getNewSPS();
+            playAudioBought();
+        } else {
+            playAudioNotEnoughMoney();
         }
         
     }
@@ -481,6 +503,9 @@ public class Player extends Entity{
         if(this.getMoney() >= this.getNewSpeedPrice()) {
          this.increaseMoney(-this.getNewSpeedPrice());
          this.setSpeed(getNewSpeed());   
+            playAudioBought();
+        } else {
+            playAudioNotEnoughMoney();
         }
     }
     
@@ -498,6 +523,9 @@ public class Player extends Entity{
             int diff = this.getNewMaxHealth()-this.getMaxHealth();
             this.setMaxHealth(this.getNewMaxHealth());
             this.increaseHealth(diff);
+            playAudioBought();
+        } else {
+            playAudioNotEnoughMoney();
         }
     }
     

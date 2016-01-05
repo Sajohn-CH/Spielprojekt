@@ -97,6 +97,9 @@ public class Beacon extends Entity {
             this.increaseHealth(increaseHealth);
             this.setLevel(this.getLevel()+1);
             Main.app.getWorld().getPlayer().increaseMoney(-upgradePrice);
+            Main.app.getWorld().getPlayer().playAudioBought();
+        } else {
+           Main.app.getWorld().getPlayer().playAudioNotEnoughMoney();
         }
     }
     
