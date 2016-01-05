@@ -165,6 +165,7 @@ public class PyramidTower extends Tower{
          if(Main.app.getWorld().getPlayer().getMoney() >= getUpgradePrice()) {
            Main.app.getWorld().getPlayer().increaseMoney(-getUpgradePrice());
            setLevel(this.getLevel()+1);
+           Main.app.getWorld().getPlayer().playAudioBought();
          } else {
            Main.app.getWorld().getPlayer().playAudioNotEnoughMoney();
          }
