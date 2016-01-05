@@ -48,6 +48,10 @@ public class Entity {
     }
 
     public void increaseHealth(int health){
+        if(this.health+health > this.getMaxHealth()) {
+            this.health = this.maxHealth;
+            return;
+        }
         this.health = this.health + health;
         if(this.health <= 0) {
              die();

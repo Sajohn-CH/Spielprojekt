@@ -495,8 +495,9 @@ public class Player extends Entity{
     public void increaseMaxHealth() {
         if(this.getMoney() >= this.getNewMaxHealthPrice()) {
             this.increaseMoney(-this.getNewMaxHealthPrice());
-            this.setHealth(this.getNewMaxHealth()-this.getHealth());
+            int diff = this.getNewMaxHealth()-this.getMaxHealth();
             this.setMaxHealth(this.getNewMaxHealth());
+            this.increaseHealth(diff);
         }
     }
     
