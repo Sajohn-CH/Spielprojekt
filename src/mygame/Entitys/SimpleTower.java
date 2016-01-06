@@ -30,6 +30,7 @@ public class SimpleTower extends Tower{
     
     public SimpleTower (Vector3f location){
         this.setPrice(20);
+        this.increaseTotalPaidMoney(this.getPrice());
         this.setLevel(1);
         this.setLocation(location);
         this.setLiving(true);
@@ -150,6 +151,7 @@ public class SimpleTower extends Tower{
      */
     public void upgrade() {
          if(Main.app.getWorld().getPlayer().getMoney() >= getUpgradePrice()) {
+           this.increaseTotalPaidMoney(getUpgradePrice());
            Main.app.getWorld().getPlayer().increaseMoney(-getUpgradePrice());
            setLevel(this.getLevel()+1);
            Main.app.getWorld().getPlayer().playAudioBought();

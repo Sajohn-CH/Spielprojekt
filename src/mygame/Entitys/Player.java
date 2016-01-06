@@ -52,7 +52,6 @@ public class Player extends Entity{
     
     public Player(InputListener inputListener){
         money = 250;
-        this.setLiving(true);
         this.inputListener = inputListener;
         setUpKeys();
         CapsuleCollisionShape capsuleShape = new CapsuleCollisionShape(1.5f, 6f, 1);

@@ -28,6 +28,7 @@ public class Tower extends Entity{
     private long shot;
     private long died = 0;
     private ParticleEmitter flame;
+    private int totalPaidMoney = 0;
     
     public int getRange(){
         return range;
@@ -153,5 +154,14 @@ public class Tower extends Entity{
             return true;
         }
         return false;
+    }
+    
+    public void remove(){
+        Main.app.getWorld().getPlayer().increaseMoney((int) (totalPaidMoney * 0.75));
+        Main.app.getWorld().removeTower(this);
+    }
+    
+    public void increaseTotalPaidMoney(int money){
+        this.totalPaidMoney += money;
     }
 }

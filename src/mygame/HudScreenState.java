@@ -212,6 +212,11 @@ public class HudScreenState extends AbstractAppState implements ScreenController
        Main.app.getWorld().setPaused(false);
        cameraDragToRotate = false;
    }
+     
+    public void removeTower(){
+        closeTowerPopup("false");
+        tower.remove();
+    }
    
    public boolean isCameraDragToRotate() {
        return cameraDragToRotate;
