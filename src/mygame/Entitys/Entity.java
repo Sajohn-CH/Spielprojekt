@@ -18,7 +18,7 @@ public class Entity {
     private int speed;
     private Vector3f location;
     private boolean living;
-    protected int maxHealth = 100;
+    protected int maxHealth = 20;
     private Spatial spatial;
 
     public void action(float tpf) {

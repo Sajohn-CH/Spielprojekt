@@ -497,6 +497,10 @@ public class Player extends Entity{
         return (int) (getNewSpeed()*1.5);
     }
     
+    public int getRevivePrice(){
+        return (int) (Math.sqrt(Main.app.getGame().getWave()) * 50);
+    }
+    
     public void increaseSpeed(){
         if(this.getMoney() >= this.getNewSpeedPrice()) {
          this.increaseMoney(-this.getNewSpeedPrice());
@@ -521,6 +525,23 @@ public class Player extends Entity{
             int diff = this.getNewMaxHealth()-this.getMaxHealth();
             this.setMaxHealth(this.getNewMaxHealth());
             this.increaseHealth(diff);
+            playAudioBought();
+        } else {
+            playAudioNotEnoughMoney();
+        }
+    }
+    
+    public void revive(){
+        if(this.getMoney() >= this.getRevivePrice()){
+            this.increaseMoney(-getRevivePrice());
+            this.setLiving(true);
+            this.setMaxHealth(100);
+            setHealth(this.maxHealth);
+            this.setDamage(2);
+            this.setSpeed(50);
+            this.setShotsPerSecond(50);
+            this.setRange(100);
+            Main.app.getRootNode().attachChild(this.getSpatial());
             playAudioBought();
         } else {
             playAudioNotEnoughMoney();
