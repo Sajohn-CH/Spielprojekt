@@ -14,21 +14,25 @@ import com.jme3.app.state.AbstractAppState;
 import com.jme3.math.Vector3f;
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.controls.Button;
+import de.lessvoid.nifty.controls.Controller;
 import de.lessvoid.nifty.controls.Label;
 import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.elements.render.ImageRenderer;
 import de.lessvoid.nifty.elements.render.TextRenderer;
+import de.lessvoid.nifty.input.NiftyInputEvent;
 import de.lessvoid.nifty.render.NiftyImage;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
+import de.lessvoid.xml.xpp3.Attributes;
 import java.text.SimpleDateFormat;
+import java.util.Properties;
 
 
 /**
  *
  * @author samuel
  */
-public class HudScreenState extends AbstractAppState implements ScreenController{
+public class HudScreenState extends AbstractAppState implements ScreenController, Controller{
     private Nifty nifty;
     private Screen screen;
     private SimpleDateFormat df = new SimpleDateFormat("HH:mm");
@@ -48,6 +52,7 @@ public class HudScreenState extends AbstractAppState implements ScreenController
    
     public void setWorld(World world) {
         this.world = world;
+        
     }
     
     @Override
@@ -73,7 +78,7 @@ public class HudScreenState extends AbstractAppState implements ScreenController
         Element beaconHealthBar = screen.findElementByName("beaconHealthBar");
         Element topBar = screen.findElementByName("top_bar");
         beaconHealthBar.setWidth((int)(world.getBeacon().getHealthPercentage()/100f*topBar.getWidth()));
-        
+                
         if(debugMode) {
             Player player = Main.app.getWorld().getPlayer();
             double x = Math.round(player.getLocation().x*10.0)/10.0;
@@ -188,7 +193,7 @@ public class HudScreenState extends AbstractAppState implements ScreenController
        Main.app.getFlyByCamera().setDragToRotate(true);
        cameraDragToRotate = true;
        towerPopup = nifty.createPopup("niftyPopupTower");
-       towerPopup.findElementByName("title").getRenderer(TextRenderer.class).setText("Turm Stufe "+tower.getLevel());
+       towerPopup.findElementByName("#title").getRenderer(TextRenderer.class).setText("Turm Stufe "+tower.getLevel());
        towerPopup.findElementByName("price").getRenderer(TextRenderer.class).setText(price);
        towerPopup.findElementByName("damage").getRenderer(TextRenderer.class).setText(damage);
        towerPopup.findElementByName("health").getRenderer(TextRenderer.class).setText(health);
@@ -203,8 +208,13 @@ public class HudScreenState extends AbstractAppState implements ScreenController
     * @param upgrade Gibt an ob der Turm upgegradet werden soll. Wenn der String "true" entspricht wird upgegradet.
     */
    public void closeTowerPopup(String upgrade) {
+       //Abfrage ob tower == null ist, da es einen Aufruf gibt, bei dem tower und nifty == null sind. Das führt zu einer entsprechenden Fehlermeldung. Es ist unbekannt woher dieser Aufruf kommt, da darauf ein zweiten Aufruf
+       //folgt bei dem tower != null ist. tower sollte auch != null sein, da er zuvor bei showUpgradeTower gesetzt wurde und dies dazwischen nicht mehr aufgerufen wurde.
+       if(tower == null) {
+           return;
+       }
        if(upgrade.equals("true")) {
-           tower.upgrade();
+           this.tower.upgrade();
        }
        nifty.closePopup(towerPopup.getId());
        towerPopup.disable();
@@ -240,16 +250,20 @@ public class HudScreenState extends AbstractAppState implements ScreenController
        String speed = player.getSpeed()+"+"+(player.getNewSpeed()-player.getSpeed());
        String beaconHealth = beacon.getMaxHealth()+"+"+(beacon.getNewMaxHealth()-beacon.getMaxHealth());
        
-       endWavePopup.findElementByName("waveEnd").getRenderer(TextRenderer.class).setText("Ende der Welle "+(Main.app.getGame().getWave()-1));
-       endWavePopup.findElementByName("PLHealth").getRenderer(TextRenderer.class).setText(health);
-       endWavePopup.findElementByName("PLDamage").getRenderer(TextRenderer.class).setText(damage);
-       endWavePopup.findElementByName("PLSPS").getRenderer(TextRenderer.class).setText(sps);
-       endWavePopup.findElementByName("PLRange").getRenderer(TextRenderer.class).setText(range);
-       endWavePopup.findElementByName("PLSpeed").getRenderer(TextRenderer.class).setText(speed);
-       endWavePopup.findElementByName("BeaconUpgrade").getRenderer(TextRenderer.class).setText(beaconHealth);
+       endWavePopup.findElementByName("#waveEnd").getRenderer(TextRenderer.class).setText("Ende der Welle "+(Main.app.getGame().getWave()-1));
+       endWavePopup.findElementByName("#PLHealth").getRenderer(TextRenderer.class).setText(health);
+       endWavePopup.findElementByName("#PLDamage").getRenderer(TextRenderer.class).setText(damage);
+       endWavePopup.findElementByName("#PLSPS").getRenderer(TextRenderer.class).setText(sps);
+       endWavePopup.findElementByName("#PLRange").getRenderer(TextRenderer.class).setText(range);
+       endWavePopup.findElementByName("#PLSpeed").getRenderer(TextRenderer.class).setText(speed);
+       endWavePopup.findElementByName("#BeaconUpgrade").getRenderer(TextRenderer.class).setText(beaconHealth);
    }
    
    public void nextWave() {
+       //Erster Aufruf hat nifty == null. Herkunft unbekannt
+       if(nifty == null) {
+           return;
+       }
        Main.app.getWorld().setPaused(false);
        nifty.closePopup(endWavePopup.getId());
        endWavePopup.disable();
@@ -337,5 +351,29 @@ public class HudScreenState extends AbstractAppState implements ScreenController
         debugLayer.setVisible(flag);
         debugMode = flag;
     }
-     
+    
+    public void setBuildPhase(boolean buildPhase) {
+        this.buildPhase = buildPhase;
+    }
+    
+    public void setStartWaveTime(long startWaveTime) {
+        this.startWaveTime = startWaveTime;
+    }
+
+    public void bind(Nifty nifty, Screen screen, Element element, Properties parameter, Attributes controlDefinitionAttributes) {
+//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public void init(Properties parameter, Attributes controlDefinitionAttributes) {
+//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public void onFocus(boolean getFocus) {
+//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public boolean inputEvent(NiftyInputEvent inputEvent) {
+//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return true;
+    }
 }
