@@ -241,7 +241,7 @@ public class HudScreenState extends AbstractAppState implements ScreenController
            return;
        }
        //Schliesst ein evtl. geöffnetes TowerUpgradePopup
-       if(towerPopup != null && towerPopup.isVisible()) {
+       if(towerPopup != null && towerPopup.isEnabled()) {
            closeTowerPopup("false");
        }
        Main.app.getWorld().setPaused(true);
