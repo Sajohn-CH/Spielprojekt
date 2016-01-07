@@ -4,30 +4,30 @@
  */
 package mygame.Entitys;
 
-import mygame.Entitys.Tower;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
-import com.jme3.effect.ParticleEmitter;
-import com.jme3.effect.ParticleMesh;
 import com.jme3.light.PointLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
-import com.jme3.scene.shape.Box;
 import com.jme3.scene.shape.Line;
 import mygame.Main;
 
 /**
- *
- * @author florianwenk
+ * Turm, der Schaden zufügt. Erstellt und kontrolliert einen Turm, der Schaden zufügt.
+ * @author Florian Wenk
  */
 public class SimpleTower extends Tower{
     
     RigidBodyControl towerC;
     private Geometry line;
     
+    /**
+     * Initialisiert den Turm. Setzt Grundattribute, ladet das Modell und erstellt die Schusslinie.
+     * @param location Ort
+     */
     public SimpleTower (Vector3f location){
         this.setPrice(20);
         this.increaseTotalPaidMoney(this.getPrice());
@@ -35,7 +35,8 @@ public class SimpleTower extends Tower{
         this.setLocation(location);
         this.setLiving(true);
         this.setLocation(new Vector3f(location.x, 0, location.z));
-        // Modell laden
+        //Modell von: http://www.blendswap.com/blends/view/2611 (User: RH2) 
+        //Bearbeitet von: Florian Wenk
         this.setSpatial(Main.app.getAssetManager().loadModel("Objects/SimpleTower.j3o").scale(2f, 2f, 2f));
         
         // Licht hinzufügen
@@ -49,14 +50,6 @@ public class SimpleTower extends Tower{
         light2.setRadius(100f);
         this.getSpatial().addLight(light2);
         
-//        Box b = new Box(2, 8, 2);
-//        this.setSpatial(new Geometry("SimpleTower", b));
-//        
-//        Material mat = new Material(Main.app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
-//        mat.setColor("Color", ColorRGBA.Yellow);
-//        
-//        this.getSpatial().setMaterial(mat);
-////        this.setSpatial(Main.app.getAssetManager().loadModel("Objects/SimpleTower/SimpleTower.j3o").scale(3f));
         this.getSpatial().setLocalTranslation(this.getLocation());
         
         line = new Geometry("line");
@@ -65,6 +58,9 @@ public class SimpleTower extends Tower{
         line.setMaterial(matL);
     }
     
+    /**
+     * {@inheritDoc }
+     */
     @Override
     public void setCollidable(){
         CollisionShape towerShape = CollisionShapeFactory.createMeshShape(this.getSpatial());
@@ -73,6 +69,9 @@ public class SimpleTower extends Tower{
         Main.getBulletAppState().getPhysicsSpace().add(towerC);
     }
     
+    /**
+     * {@inheritDoc }
+     */
     @Override
     public void action(float tpf) {
         for(int i = 0; i < Main.getWorld().getAllBombs().size(); i++){
@@ -113,26 +112,41 @@ public class SimpleTower extends Tower{
         this.setShotsPerSecond(getNewSPS(newLevel));
     }
     
+    /**
+     * {@inheritDoc }
+     */
     @Override
     public int getNewRange(int newLevel) {
         return 10+newLevel*5;
     }
     
+    /**
+     * {@inheritDoc }
+     */
     @Override
     public int getNewDamage(int newLevel) {
         return 25+newLevel*25;
     }
     
+    /**
+     * {@inheritDoc }
+     */
     @Override
     public int getNewHealth(int newLevel) {
         return 50+newLevel*10;
     }
     
+    /**
+     * {@inheritDoc }
+     */
     @Override
     public double getNewSPS(int newLevel) {
         return 0.5+newLevel*0.5;
     }
     
+    /**
+     * {@inheritDoc }
+     */
     @Override
     public int getUpgradePrice() {
         return this.getMaxHealth();

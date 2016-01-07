@@ -4,7 +4,6 @@
  */
 package mygame.Entitys;
 
-import com.jme3.light.PointLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Quaternion;
@@ -14,14 +13,12 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Cylinder;
 import com.jme3.scene.shape.Line;
-import com.jme3.scene.shape.PQTorus;
 import com.jme3.scene.shape.Sphere;
-import com.jme3.scene.shape.Torus;
 import mygame.Main;
 
 /**
- *
- * @author florianwenk
+ *Eine Schiessende Bombe. Erstellt und kontrolliert eine Schiessende Bombe, eine {@link Bomb}, die zusätzlich noch auf den Player und Türme Schiessen kann.
+ * @author Florian Wenk
  */
 public class ShootingBomb extends Bomb{
     
@@ -32,6 +29,10 @@ public class ShootingBomb extends Bomb{
     private int range;
     private boolean shooting;
     
+    /**
+     * Erstellt eine ShootingBomb. Eine ShootingBomb wird erstellt und die Schusslinie geladen.
+     * @param level Das Level, das die Bombe haben soll.
+     */
     public ShootingBomb(int level){
         super(level);
         line = new Geometry("line");
@@ -46,6 +47,8 @@ public class ShootingBomb extends Bomb{
                 
         Sphere sphere = new Sphere(100, 100, 1);
         Cylinder cylinder = new Cylinder(50, 50, 1.01f, .25f);
+        //Modell von: http://www.blendswap.com/blends/view/67733 (User: genx473)
+        //Beatrbeitet von: Florian Wenk
         Spatial gun = Main.app.getAssetManager().loadModel("Objects/Gun.j3o").scale(.2f);
         gun.setName("gun");
         gun.setLocalTranslation(0, .5f, 0);
@@ -61,20 +64,12 @@ public class ShootingBomb extends Bomb{
         this.setSpatial(n);
         this.getSpatial().setLocalTranslation(this.getLocation());
         
-//        Torus t = new Torus(100, 100, 0.75f, 2f);
-//        n.attachChild(new Geometry("shootingBomb", t));
-//        n.getChild("shootingBomb").setMaterial(this.getMaterial());
-//        n.getChild("shootingBomb").setLocalTranslation(this.getLocation());
-//        
-//        Quaternion q = new Quaternion();
-//        q.fromAngleAxis((float) Math.PI/2 , new Vector3f(1,0,0));
-//        n.getChild("shootingBomb").setLocalRotation(q);
-//        
-//        this.setSpatial(n);
-        
-//        Vector3f location = this.getLocation();
     }
     
+    /**
+     * 
+     * @return Ob die Zeit verstrichen ist, dass die Bombe wieder schiessen kann.
+     */
     public boolean canShoot(){
         if(System.currentTimeMillis() - shot >= 1000/shotsPerSecond && shooting){
             return true;
@@ -82,14 +77,24 @@ public class ShootingBomb extends Bomb{
         return false;
     }
     
+    /**
+     * 
+     * @return Ob die Bombe noch schiessen kann.
+     */
     public boolean isShooting(){
         return shooting;
     }
     
+    /**
+     * Speichert den Zeitpunkt des letzten Schusses.
+     */
     public void shot(){
         this.shot = System.currentTimeMillis();
     }
         
+    /**
+     * {@inheritDoc }
+     */
     @Override
     public void action(float tpf) {
         super.action(tpf);
@@ -137,8 +142,11 @@ public class ShootingBomb extends Bomb{
         this.shotsPerSecond = (newLevel/2)+1;
     }
     
+    /**
+     * Entzieht die Fähigkeit des Schiessens.
+     */
     public void disableShooting(){
         shooting = false;
-        n.detachChildNamed("gun");
+        n.getChild("gun").removeFromParent();
     }
 }

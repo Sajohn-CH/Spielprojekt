@@ -115,7 +115,6 @@
                     <text text="Schüsse pro Sekunde:" font="Interface/Fonts/Arial.fnt" width="100%"/>
                     <text text="Reichweite:" font="Interface/Fonts/Arial.fnt" width="100%"/>
                     <text text="Geschwindigkeit:" font="Interface/Fonts/Arial.fnt" width="100%"/>
-                    <text text="Spieler wiederbeleben:" font="Interface/Fonts/Arial.fnt" width="100%"/>
                 </panel>
                 <panel id="#values" width="40%" height="100%" childLayout="vertical">
                     <text id="#PLHealth" text="" font="Interface/Fonts/Arial.fnt" width="100%"/>
@@ -139,9 +138,6 @@
                     </control>
                     <control name="button" id="#PLSpeedPrice" width="100%" label="${CALL.getSpeedPrice()}$">
                         <interact onClick="upgradePlayerSpeed()"/>
-                    </control>
-                    <control name="button" id="#PLRevive" width="100%" label="${CALL.getRevivePrice()}$">
-                        <interact onClick="revivePlayer()"/>
                     </control>
                 </panel> 
             </panel>

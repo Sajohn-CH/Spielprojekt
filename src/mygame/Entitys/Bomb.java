@@ -5,9 +5,7 @@
 package mygame.Entitys;
 
 
-import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
-import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Quaternion;
@@ -20,8 +18,8 @@ import mygame.Main;
 import mygame.Way;
 
 /**
- *
- * @author florian.wenk
+ * Eine Bombe. Erstellt eine Bombe und kontrolliert diese. {@link Entity}
+ * @author Florian Wenk
  */
 public class Bomb extends Entity{
     
@@ -33,9 +31,12 @@ public class Bomb extends Entity{
     private int decreasedSpeed;
     private Node n;
     
+    /**
+     * Erstellt die Bombe. Erstellt den Spatial der Bombe und setzt den Weg.
+     * @param level 
+     */
     public Bomb (int level){
         this.setLiving(true);
-        this.setSpeed(1);
         
         //Spatial erstellen
         n = new Node("bomb");
@@ -46,26 +47,24 @@ public class Bomb extends Entity{
         Quaternion q = new Quaternion();
         q.fromAngleAxis((float) Math.PI/2 , new Vector3f(1,0,0));
         n.getChild("color").rotate(q);
-//        this.setSpatial(new Geometry("bomb", sphere));
+        
         mat = new Material (Main.app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
-//        this.getSpatial().setMaterial(mat);
+        this.setLevel(level);
+        
         n.getChild("bomb").setMaterial(Main.app.getAssetManager().loadMaterial("Materials/Black.j3m"));
         n.getChild("color").setMaterial(mat);
         this.setSpatial(n);
         
-        this.setLevel(level);
         way = new Way();
         super.setLocation(way.getStartPoint().setY(2));
         this.getSpatial().setLocalTranslation(way.getStartPoint());
         money = 5;
-        
-//        CollisionShape bombShape = CollisionShapeFactory.createMeshShape(this.getSpatial());
-//        bombC = new RigidBodyControl(bombShape, 0);
-//        bombC.setKinematic(true);
-//        this.getSpatial().addControl(bombC);
-//        Main.getBulletAppState().getPhysicsSpace().add(bombC);
     }
     
+    /**
+     * {@inheritDoc }
+     *
+     */
     @Override
     public void increaseHealth(int health){
         super.increaseHealth(health);
@@ -76,26 +75,43 @@ public class Bomb extends Entity{
             }
     }
         
+    /**
+     * Fügt einem Gegenstand Schaden zu.
+     * @param e Der Gegenstand dem Schadenzugefügt werden soll.
+     */
     public void makeDamage(Entity e){
         e.increaseHealth(-this.getDamage());
-//        System.out.println("damage:" + this.getDamage());
     }
     
+    /**
+     * Bewegt die Bombe. Lässt die Bombe zu dem neuen Platz schweben.
+     * @param offset Vektor wie weit und in welche Richtung.
+     */
     public void move(Vector3f offset){
         offset.setY(0);
         super.setLocation(offset.add(this.getLocation()));
     }
     
+    /**
+     * Lässt die Bombe zu einem bestimmten Ort wandern. Sorgt dafür dass die Bombe sich langsam zum Zielort bewegt.
+     * @param location Der Ort zu dem die Bombe gehen soll.
+     */
     private void moveTo(Vector3f location){
         move(location.subtract(this.getLocation()));
     }
     
+    /**
+     * {@inheritDoc }
+     */
     @Override
     public void setLocation(Vector3f location){
         super.setLocation(location);
         this.getSpatial().setLocalTranslation(location);
     }
     
+    /**
+     * {@inheritDoc }
+     */
     @Override
     public void action(float tpf) {
         if(this.getLocation().subtract(this.getSpatial().getLocalTranslation()).length() > 1){
@@ -122,6 +138,9 @@ public class Bomb extends Entity{
         }
     }
     
+    /**
+     * {@inheritDoc }
+     */
     @Override
     protected void die() {
         if(this.getLevel() == 1) {
@@ -132,6 +151,9 @@ public class Bomb extends Entity{
         Main.getWorld().getPlayer().increaseMoney(money);
     }
     
+    /**
+     * {@inheritDoc }
+     */
     @Override
     public void setLevel(int newLevel) {
         //setzt Leben als Funktion mit level
@@ -142,7 +164,10 @@ public class Bomb extends Entity{
         mat.setColor("Color", colors[(newLevel-1)%colors.length]);
         super.setLevel(newLevel);
     }
-    
+     /**
+      * Verlangsamt die Bombe. Verringert das Tempo der Bombe.
+      * @param speed Die Anzahl der Tempopunkte, die abezogen werden sollen.
+      */
     public void decreaseSpeed (int speed){
         this.decreasedSpeed += speed;
         if(decreasedSpeed >= 50-this.getLevel()*2+Main.getGame().getWave()*2){
@@ -151,14 +176,26 @@ public class Bomb extends Entity{
         this.setSpeed((50-this.getLevel()*2+Main.getGame().getWave()*2) - decreasedSpeed);
     }
     
+    /**
+     * 
+     * @return Um wieviel die Bombe verlangsamt ist.
+     */
     public int getDecreasedSpeed(){
         return decreasedSpeed;
     }
     
+    /**
+     * 
+     * @return Das Material der Bombe
+     */
     public Material getMaterial(){
         return mat;
     }
     
+    /**
+     * 
+     * @return Der Weg der Bombe
+     */
     public Way getWay(){
         return way;
     }

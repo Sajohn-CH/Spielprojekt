@@ -4,32 +4,32 @@
  */
 package mygame.Entitys;
 
-import mygame.Entitys.Tower;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
-import com.jme3.light.AmbientLight;
 import com.jme3.light.PointLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
-import com.jme3.scene.shape.Box;
-import com.jme3.scene.shape.Dome;
 import com.jme3.scene.shape.Line;
 import mygame.Main;
 
 /**
- *
- * @author florianwenk
+ * Turm, der Schiessende Bomben in normale umwandelt. Erstellt einen Turm der Schiessenden Bomben die Fähigkeit zu schiessen entzieht und kontrolliert diesen.
+ * @author Florian Wenk
  */
-public class PyramidTower extends Tower{
+public class DeactivationTower extends Tower{
       
     RigidBodyControl towerC;
     private Geometry line;
     private long shot;
     
-    public PyramidTower (Vector3f location){
+    /**
+     * Erstellt den Tower. Setzt wichtige Attribute des Turmes, ladet das Modell und erstellt die Schusslinie.
+     * @param location 
+     */
+    public DeactivationTower (Vector3f location){
         this.setPrice(100);
         this.increaseTotalPaidMoney(this.getPrice());
         this.setLevel(1);
@@ -37,6 +37,8 @@ public class PyramidTower extends Tower{
         this.setLiving(true);
         this.setLocation(new Vector3f(location.x, 0, location.z));
         
+        //Modell von: http://www.blendswap.com/blends/view/77840 (User: thanhkhmt1)
+        //Bearbeitet von: Florian Wenk
         this.setSpatial(Main.app.getAssetManager().loadModel("Objects/PyramidTower.j3o").scale(0.5f));
         
         PointLight light1 = new PointLight();
@@ -64,16 +66,6 @@ public class PyramidTower extends Tower{
         light5.setRadius(1000f);
         this.getSpatial().addLight(light5);
         
-//        Dome b = new Dome(Vector3f.ZERO, 2, 4, 1f,false); 
-//        this.setSpatial(new Geometry("PyramidTower", b));
-//        this.getSpatial().setLocalScale(2f, 15f, 2f);
-//        Material mat = new Material(Main.app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
-//        mat.setBoolean("UseMaterialColors",true);
-//        mat.setColor("Ambient",ColorRGBA.White);
-//        mat.setColor("Diffuse",ColorRGBA.White);
-//        mat.setColor("Specular",ColorRGBA.White);
-//        this.getSpatial().setMaterial(mat);
-        
         this.getSpatial().setLocalTranslation(this.getLocation());
         
         line = new Geometry("line");
@@ -82,6 +74,9 @@ public class PyramidTower extends Tower{
         line.setMaterial(matL);
     }
     
+    /**
+     * {@inheritDoc }
+     */
     @Override
     public void setCollidable(){
         CollisionShape towerShape = CollisionShapeFactory.createMeshShape(this.getSpatial());
@@ -90,6 +85,9 @@ public class PyramidTower extends Tower{
         Main.getBulletAppState().getPhysicsSpace().add(towerC);
     }
     
+    /**
+     * {@inheritDoc }
+     */
     @Override
     public void action(float tpf) {
         for(int i = 0; i < Main.getWorld().getAllBombs().size(); i++){
@@ -118,10 +116,17 @@ public class PyramidTower extends Tower{
         }
     }
     
+    /**
+     * Entzieht der Bombe die Fähigkeit zu schiessen, indem die Methode {@link ShootingBomb#disableShooting() } aufgerufen wird.
+     * @param b ShootingBomb der die Fähigkeit entzogen werden soll.
+     */
     private void disableShooting(ShootingBomb b){
         b.disableShooting();
     }
         
+    /**
+     * {@inheritDoc }
+     */
     @Override
     public void setLevel(int newLevel) {
         super.setLevel(newLevel);
@@ -130,30 +135,41 @@ public class PyramidTower extends Tower{
         this.setMaxHealth(getNewHealth(newLevel));
         this.setShotsPerSecond(getNewSPS(newLevel));
     }
-    
+        
+    /**
+     * {@inheritDoc }
+     */
     @Override
     public int getNewRange(int newLevel) {
         return 10+newLevel*5;
     }
-    
         
+    /**
+     * {@inheritDoc }
+     */
     @Override
     public int getNewHealth(int newLevel) {
         return 100+newLevel*25;
     }
-    
+        
+    /**
+     * {@inheritDoc }
+     */
     @Override
     public double getNewSPS(int newLevel) {
         return Math.round(newLevel/20.0*100)/100.0;
     }
-    
+        
+    /**
+     * {@inheritDoc }
+     */
     @Override
     public int getUpgradePrice() {
         return this.getMaxHealth();
     }
-    
+        
     /**
-     * Wird aufgerufen wenn der Turm upgegradet werden soll. Ruft zuerst Dialog zum bestätigen auf.
+     * {@inheritDoc }
      */
     @Override
     public void increaseLevel() {
@@ -161,11 +177,11 @@ public class PyramidTower extends Tower{
     }
     
     /**
-     * Upgradet Turm.
+     * Upgradet Turm. Überprüft, ob der Spieler genügend Geld hat, und falls das der Fall ist, wird das Geld abgezogen und derTurm upgegraded.
      */
     public void upgrade() {
          if(Main.app.getWorld().getPlayer().getMoney() >= getUpgradePrice()) {
-             this.increaseTotalPaidMoney(getUpgradePrice());
+           this.increaseTotalPaidMoney(getUpgradePrice());
            Main.app.getWorld().getPlayer().increaseMoney(-getUpgradePrice());
            setLevel(this.getLevel()+1);
            Main.app.getWorld().getPlayer().playAudioBought();

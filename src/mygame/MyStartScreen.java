@@ -22,9 +22,9 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import mygame.Entitys.MGTower;
+import mygame.Entitys.SloweringTower;
 import mygame.Entitys.Player;
-import mygame.Entitys.PyramidTower;
+import mygame.Entitys.DeactivationTower;
 import mygame.Entitys.SimpleTower;
 import mygame.Entitys.Tower;
 import org.w3c.dom.Document;
@@ -127,9 +127,9 @@ public class MyStartScreen extends AbstractAppState implements ScreenController,
                 if(towerElement.getAttribute("Type").equals("mygame.Entitys.SimpleTower")) {
                     tower = new SimpleTower(position);
                 } else if(towerElement.getAttribute("Type").equals("mygame.Entitys.MGTower")) {
-                    tower = new MGTower(position);
+                    tower = new SloweringTower(position);
                 } else {
-                    tower = new PyramidTower(position);
+                    tower = new DeactivationTower(position);
                 }
                 Main.app.getWorld().addTower(tower);
                 tower.setLevel(Integer.valueOf(towerElement.getAttribute("Level")));
