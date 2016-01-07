@@ -188,7 +188,7 @@ public class Tower extends Entity{
         flame.setStartSize(1.3f);
         flame.setEndSize(2f);
         flame.setShape(new EmitterSphereShape(Vector3f.ZERO, 1f));
-        flame.setParticlesPerSec(0);
+        flame.setParticlesPerSec(25);
         flame.setGravity(0, -5, 0);
         flame.setLowLife(.4f);
         flame.setHighLife(.5f);
@@ -221,8 +221,7 @@ public class Tower extends Entity{
      * Den Feuereffekt entfernen.
      */
     public void removeFireEffect(){
-        flame.killAllParticles();
-        flame.removeFromParent();
+        flame.setParticlesPerSec(0);
     }
     
     /**

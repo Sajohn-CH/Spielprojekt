@@ -25,7 +25,7 @@ public class Bomb extends Entity{
     
     private RigidBodyControl bombC;
     private Material mat;
-    private ColorRGBA[] colors = {ColorRGBA.Blue, ColorRGBA.Cyan, ColorRGBA.Green, ColorRGBA.Magenta, ColorRGBA.Red, ColorRGBA.Pink};
+    private ColorRGBA[] colors = {ColorRGBA.Blue, ColorRGBA.Cyan, ColorRGBA.Green, ColorRGBA.Magenta, ColorRGBA.Red, ColorRGBA.Orange, ColorRGBA.Yellow, ColorRGBA.Green, ColorRGBA.Pink, ColorRGBA.Brown};
     private Way way;
     private int money;
     private int decreasedSpeed;
@@ -199,5 +199,5 @@ public class Bomb extends Entity{
     public Way getWay(){
         return way;
     }
-    
+        
 }

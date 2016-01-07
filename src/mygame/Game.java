@@ -79,11 +79,11 @@ public class Game {
         // Bonus für welle überstanden
         Main.getWorld().getPlayer().increaseMoney(this.wave * 50);
         this.wave += 1;
-        Main.app.getHudState().showEndWavePopup();
         //Wenn Player tot, wiederbeleben.
         if(!Main.app.getWorld().getPlayer().isLiving()){
             Main.app.getWorld().getPlayer().revive();
         }
+        Main.app.getHudState().showEndWavePopup();
     }
     
     /**
