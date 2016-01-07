@@ -265,6 +265,7 @@ public class Main extends SimpleApplication implements ActionListener{
             nifty.validateXml(file);
         } catch (Exception ex) {
             System.out.println("[FEHLER] Datei "+file+" enthält Fehler");
+            ex.printStackTrace();
         }
          nifty.addXml(file);
     } 

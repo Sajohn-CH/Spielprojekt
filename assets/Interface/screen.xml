@@ -26,7 +26,7 @@
         </layer>
     </screen>
     
-    <screen id="pause" childLayout="vertical" controller="mygame.MyStartScreen">
+    <screen id="pause" controller="mygame.MyStartScreen">
         <layer id="background" childLayout="center">
             <image filename="Interface/opaque-60.png" imageMode="resize:40,490,110,170,40,560,40,270,40,560,40,40" width="100%" height="100%"></image>
         </layer>
@@ -49,9 +49,9 @@
         </layer>
     </screen>
     
-    <screen id="gameOver" childLayout="vertical" controller="mygame.MyStartScreen">
+    <screen id="gameOver" controller="mygame.MyStartScreen">
         <layer id="background" childLayout="center">
-            <panel width="100%" height="100%" childLayout="center" backgroundColor="#ff0000A0">
+            <panel width="100%" height="100%" childLayout="center" backgroundColor="#ff0000a0">
                 
             </panel>
         </layer>

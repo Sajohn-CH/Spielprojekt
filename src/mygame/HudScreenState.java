@@ -224,6 +224,9 @@ public class HudScreenState extends AbstractAppState implements ScreenController
    }
      
     public void removeTower(){
+        if(tower == null) {
+            return;
+        }
         closeTowerPopup("false");
         tower.remove();
     }
@@ -357,6 +360,9 @@ public class HudScreenState extends AbstractAppState implements ScreenController
         //Popup erneut laden, damit neue Werte gesetzt werden. Dafür muss es geschlossen werden, damit die Beschriftungen
         //der Knöpfe im xml neu geladen wird, da mir keine Methode bekannt ist die Beschriftung er Knöpfe im Java-Code
         //zu ändern
+        if(nifty == null) {
+            return;
+        }
         nifty.closePopup(endWavePopup.getId());
         endWavePopup.disable();
         showEndWavePopup();
