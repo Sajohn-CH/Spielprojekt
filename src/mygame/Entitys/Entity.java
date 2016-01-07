@@ -179,7 +179,7 @@ public class Entity {
      * @param spatial Spatial des Objektes
      */
     public void setSpatial(Spatial spatial) {
-        this.spatial = spatial.clone();
+        this.spatial = spatial;
     }
     
     /**

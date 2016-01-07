@@ -94,15 +94,13 @@ public class DeactivationTower extends Tower{
             Bomb bomb = Main.getWorld().getAllBombs().get(i);
             if(bomb.getSpatial().getLocalTranslation().subtract(this.getSpatial().getLocalTranslation()).length() <= this.getRange() && bomb.getSpatial().getName().equals("shootingBomb") && this.canShoot()){
                 this.getSpatial().lookAt(bomb.getSpatial().getLocalTranslation().add(Main.getWorld().getBombNode().getLocalTranslation()), new Vector3f(0,1,0));
-            }
-            if(bomb.getSpatial().getLocalTranslation().subtract(this.getSpatial().getLocalTranslation()).length() <= this.getRange() && isLiving() && canShoot() && bomb.getSpatial().getName().equals("shootingBomb")){
-               ShootingBomb sBomb = (ShootingBomb) bomb;
+                ShootingBomb sBomb = (ShootingBomb) bomb;
                 if(sBomb.isShooting()){
+                    this.disableShooting(sBomb);
                     Line l = new Line(this.getSpatial().getLocalTranslation().add(0,4,0), bomb.getSpatial().getLocalTranslation());
                     line.setMesh(l);
                     Main.app.getRootNode().attachChild(line);
                     super.shot();
-                    this.disableShooting((ShootingBomb) Main.getWorld().getAllBombs().get(i));
                 }
             }
         }
@@ -181,12 +179,12 @@ public class DeactivationTower extends Tower{
      */
     public void upgrade() {
          if(Main.app.getWorld().getPlayer().getMoney() >= getUpgradePrice()) {
-           this.increaseTotalPaidMoney(getUpgradePrice());
-           Main.app.getWorld().getPlayer().increaseMoney(-getUpgradePrice());
-           setLevel(this.getLevel()+1);
-           Main.app.getWorld().getPlayer().playAudioBought();
+            this.increaseTotalPaidMoney(getUpgradePrice());
+            Main.app.getWorld().getPlayer().increaseMoney(-getUpgradePrice());
+            setLevel(this.getLevel()+1);
+            Main.app.getWorld().getPlayer().playAudioBought();
          } else {
-           Main.app.getWorld().getPlayer().playAudioNotEnoughMoney();
+            Main.app.getWorld().getPlayer().playAudioNotEnoughMoney();
          }
     }
 }
