@@ -34,7 +34,7 @@ import org.w3c.dom.NodeList;
 
 /**
  *
- * @author samuel
+ * @author Samuel Martin
  */
 public class World extends AbstractAppState{
     

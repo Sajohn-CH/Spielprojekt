@@ -9,9 +9,6 @@ import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.math.Vector3f;
 import de.lessvoid.nifty.Nifty;
-import de.lessvoid.nifty.elements.render.TextRenderer;
-import de.lessvoid.nifty.input.NiftyInputEvent;
-import de.lessvoid.nifty.screen.KeyInputHandler;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
 import java.io.File;
@@ -32,14 +29,17 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 /**
- *
- * @author samuel
+ * Kontrolliert den Start und Pause-Bildschirm. Er ist der ScreenController vom Start- und dem Pausebildschirm. Er stellt die Methoden zur Verfügung, welche diese
+ * Bildschirme aufrufen müssen (Spiel starten, beenden etc.).
+ * @author Samuel Martin
  */
-public class MyStartScreen extends AbstractAppState implements ScreenController, KeyInputHandler{
+public class MyStartScreen extends AbstractAppState implements ScreenController{
     private Nifty nifty;
     
     
-    
+    /**
+     * {@inheritDoc }
+     */
     @Override
     public void initialize(AppStateManager stateManager, Application app) {
         super.initialize(stateManager, app);
@@ -47,11 +47,17 @@ public class MyStartScreen extends AbstractAppState implements ScreenController,
         //this is called on the OpenGL thread after the AppState has been attached
     }
     
+    /**
+     * {@inheritDoc } 
+     */
     @Override
     public void update(float tpf) {
          //TODO: implement behavior during runtime
     }
     
+    /**
+     * {@inheritDoc }
+     */
     @Override
     public void cleanup() {
         super.cleanup();
@@ -60,22 +66,34 @@ public class MyStartScreen extends AbstractAppState implements ScreenController,
         //this is called on the OpenGL thread after the AppState has been detached
     }
 
+    /**
+     * {@inheritDoc }
+     */
     public void bind(Nifty nifty, Screen screen) {
         this.nifty = nifty;
         System.out.println("bind " + screen.getScreenId());
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    /**
+     * {@inheritDoc }
+     */
     public void onStartScreen() {
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    /**
+     * {@inheritDoc }
+     */
     public void onEndScreen() {
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    /** custom methods */
-    public void startGame(String nextScreen) {
-        nifty.gotoScreen(nextScreen);
+    
+    /**
+     * Startet das Spiel.
+     */
+    public void startGame() {
+        nifty.gotoScreen("hud");
         Main.app.getFlyByCamera().setDragToRotate(Main.app.getHudState().isCameraDragToRotate());
         if(!Main.app.getFlyByCamera().isDragToRotate()){
             Main.app.getFlyByCamera().setRotationSpeed(1);
@@ -83,28 +101,25 @@ public class MyStartScreen extends AbstractAppState implements ScreenController,
         Main.getWorld().setPaused(false);
     }
     
+    /**
+     * Beendet das Spiel.
+     */
     public void quitGame() {
        saveGame();
        Main.app.stop();
     }
     
-    public String getPlayerName() {
-        return String.valueOf(System.currentTimeMillis());
-    }
-    
+    /**
+     * Wechsel zum Startbildschirm.
+     */
     public void toStart() {
         nifty.gotoScreen("start");
     }
-
-    //From KeyInputHandler
-    public boolean keyEvent(NiftyInputEvent inputEvent) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
     
-    public String getScore() {
-        return "0";
-    }
-    
+    /**
+     * Lädt einen Spielstand von einer XML-Datei. Diese Datei ist aktuel immer "saveGame.xml". 
+     */
+    //TODO: Schauen ob Player tod ist.
     public void loadGame() {
         File saveGame = new File("saveGame.xml");
         try{
@@ -168,11 +183,11 @@ public class MyStartScreen extends AbstractAppState implements ScreenController,
             e.printStackTrace();
         }
         
-        startGame("hud");
+        startGame();
     }
     
     /**
-     * Speichert den aktuellen Spielstand
+     * Speichert den aktuellen Spielstand. Der wird immer in die Datei "saveGame.xml".
      */
     private void saveGame() {
          File saveGame = new File("saveGame.xml");

@@ -5,13 +5,9 @@ import mygame.Entitys.Player;
 import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.control.RigidBodyControl;
-import com.jme3.effect.ParticleEmitter;
-import com.jme3.effect.ParticleMesh;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
-import com.jme3.material.Material;
-import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.niftygui.NiftyJmeDisplay;
 import com.jme3.renderer.RenderManager;
@@ -21,10 +17,9 @@ import com.jme3.system.AppSettings;
 import de.lessvoid.nifty.Nifty;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
+ * Die Hauptklasse des Spiels. Sie initialisert alle Komponenten.
  * @author Samuel Martin und Florian Wenk
  */
 
@@ -41,6 +36,10 @@ public class Main extends SimpleApplication implements ActionListener{
     private long waveEnded = 0;
     private boolean debugMode = true;
     
+    /**
+     * Startet das Spiel bzw. die Simple-Application und legt gewisse Einstellungen fest.
+     * @param args 
+     */
     public static void main(String[] args) {
         app = new Main();
         
@@ -66,6 +65,11 @@ public class Main extends SimpleApplication implements ActionListener{
         app.start();
     }
 
+    /**
+     * Initialisiert das Spiel. Es Werden alle nötigen Objekte initialisiert: Die Welt ({@link World}) mit dem Spieler und Beacon, das Spiel ({@link Game}) und die 
+     * GUI mit den xml-Dateien und den zwei Controllers und Appstates ({@link HudScreenState}, {@link MyStartScreen}). Auch wird die Szenen gesetzt und die Kamera
+     * initialisiert.
+     */
     @Override
     public void simpleInitApp() {
         //Set this boolean true when the game loop should stop running when ever the window loses focus.
@@ -101,17 +105,6 @@ public class Main extends SimpleApplication implements ActionListener{
         app.getAssetManager().loadModel("Objects/MGTower.j3o");
         app.getAssetManager().loadModel("Objects/PyramidTower.j3o");
         
-//        n = new Node();             // attach to n to let disappear when player is there
-//        Node n1 = new Node();       // attach to n1 to make collision resistant
-                
-//        Bomb bomb = new Bomb(1);
-//        bomb.setSpeed(50);
-//        world.addBomb(bomb);
-//        
-//        Bomb bomb1 = new Bomb(1);
-//        bomb1.setSpeed(50);
-//        world.addBomb(bomb1);
-        
         NiftyJmeDisplay niftyDisplay = new NiftyJmeDisplay( assetManager, inputManager, audioRenderer, guiViewPort);
         //Create a new NiftyGui objects
         nifty = niftyDisplay.getNifty();
@@ -125,7 +118,6 @@ public class Main extends SimpleApplication implements ActionListener{
         
         hudState = (HudScreenState) nifty.getScreen("hud").getScreenController();
         //hudState.setPlayer(player);
-        hudState.setWorld(world);
         nifty.registerScreenController(hudState);
         stateManager.attach(hudState);
         
@@ -146,6 +138,9 @@ public class Main extends SimpleApplication implements ActionListener{
         changeDebugMode();
     }
     
+    /**
+     * Fügt Tastenbelegungen hinzu.
+     */
     private void setUpKeys() {
         //Allgemeine Tasten
         inputManager.addMapping("Menu", new KeyTrigger(KeyInput.KEY_ESCAPE), new KeyTrigger(KeyInput.KEY_PAUSE));
@@ -170,6 +165,10 @@ public class Main extends SimpleApplication implements ActionListener{
 //        inputManager.addListener(this, "item_scroll_down");
     }
     
+    /**
+     * {@inheritDoc}
+     * Definiert was bei welcher Tastenbelegung gemacht werden soll.
+     */
     @Override
     public void onAction(String binding, boolean isPressed, float tpf) {
         if(!getWorld().isPaused()){
@@ -201,53 +200,72 @@ public class Main extends SimpleApplication implements ActionListener{
         }    
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void simpleUpdate(float tpf) {
-//        if(!game.bombLeft() && world.getAllBombs().isEmpty() && waveEnded == 0){
-//            waveEnded = System.currentTimeMillis();
-//        }
         //Wenn Kamera DragToRotate ist, dann wird ein Menu angezeigt (Menu für Wellenende muss nicht angezeigt werden)
         if(!game.bombLeft() && world.getAllBombs().isEmpty() && !hudState.isCameraDragToRotate() && !hudState.isBuildPhase()){
             game.nextWave();
             world.getPlayer().stopAudio();
             world.getPlayer().setNotWalking();
-//            waveEnded = 0;
         } else if (game.bombLeft()){
             game.action(tpf);
         }
-//        for (int i = 0; i < n.getChildren().size(); i++)
-//            if(!n.getChildren().isEmpty())
-//                if((cam.getLocation().getX()-1 < n.getChild(i).getLocalTranslation().add(n.getLocalTranslation()).getX() && cam.getLocation().getX()+1 > n.getChild(i).getLocalTranslation().add(n.getLocalTranslation()).getX()) && (cam.getLocation().getZ()-1 < n.getChild(i).getLocalTranslation().add(n.getLocalTranslation()).getZ() && cam.getLocation().getZ()+1 > n.getChild(i).getLocalTranslation().add(n.getLocalTranslation()).getZ()))
-//                    n.detachChildAt(0); // If cam is in box -> detach box
-       // world.getPlayer().action(tpf);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void simpleRender(RenderManager rm) {
         //TODO: add render code
     }
     
+    /**
+     * Gibt die Welt ({@link World}) zurück.
+     * @return  Welt
+     */
     public static World getWorld() {
         return world;
     }
     
+    /**
+     * Gibt den HudScreenState zurück, der den HUD kontrolliert.
+     * @return HudScreenState
+     */
     public HudScreenState getHudState() {
         return hudState;
     }
     
+    /**
+     * Gibt BulletAppState zurück, der für Kollision zuständig ist.
+     * @return BulletAppState
+     */
     public static BulletAppState getBulletAppState(){
         return bulletAppState;
     }
     
+    /**
+     * Gibt das Game ({@link Game}) zurück. Dies steuert die Spielmechanik
+     * @return 
+     */
     public static Game getGame(){
         return game;
     }
     
+    /**
+     * Ändert die Debugmodus. Schaltet ihn aus, wenn er an war und umgekehrt.
+     */
     private void changeDebugMode() {
         debugMode = !debugMode;
         hudState.setDebugModeEnabled(debugMode);
     }
     
+    /**
+     * Wird aufgerufen, wenn das Spiel vorbei ist. Ruft den entsprechenden Bildschirm auf.
+     */
     public void gameOver() {
         getWorld().setPaused(true);
         getFlyByCamera().setDragToRotate(true);
