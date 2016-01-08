@@ -43,7 +43,7 @@
             <panel id="panel_top" height="34%" width="75%" align="center" childLayout="center">
                 <!-- Knopf zum Spiel fortsetzen -->
                 <control name="button" label="Fortsetzen" id="StartButton" align="center" valign="center" visibleToMouse="true">
-                    <interact onClick="startGame()"/>
+                    <interact onClick="continueGame()"/>
                 </control>
              </panel>
             <panel id="panel_mid" height="33%" width="75%" align="center" childLayout="center">

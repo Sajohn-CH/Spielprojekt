@@ -35,6 +35,7 @@ public class Main extends SimpleApplication implements ActionListener{
     private static Game game;
     private long waveEnded = 0;
     private boolean debugMode = true;
+    private Spatial scene;
     
     /**
      * Startet das Spiel bzw. die Simple-Application und legt gewisse Einstellungen fest.
@@ -75,7 +76,7 @@ public class Main extends SimpleApplication implements ActionListener{
         //Set this boolean true when the game loop should stop running when ever the window loses focus.
         app.setPauseOnLostFocus(true);
         
-        Spatial scene = assetManager.loadModel("Scenes/scene_1.j3o");
+        scene = assetManager.loadModel("Scenes/scene_1.j3o");
         scene.setLocalScale(2f);
         
         bulletAppState = new BulletAppState();
@@ -287,4 +288,27 @@ public class Main extends SimpleApplication implements ActionListener{
         }
          nifty.addXml(file);
     } 
+    
+    public void restartGame() {
+//        bulletAppState = new BulletAppState();
+//        stateManager.attach(bulletAppState);
+        
+        world.getPlayer().revive();
+        world.getPlayer().setMoney(250);
+        
+        Beacon beacon = new Beacon(new Vector3f(0, 0, 0), 100);
+        world = new World(beacon, world.getPlayer(), scene);
+        stateManager.attach(world);
+        world.setPaused(true);
+        
+        beacon.turn();
+        world.getPlayer().turn();
+        
+        rootNode.attachChild(world.getBombNode());
+        rootNode.attachChild(world.getTowerNode());
+        rootNode.attachChild(world.getBeacon().getSpatial());
+        
+        game = new Game(1);
+        game.startWave();
+    }
 }

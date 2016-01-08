@@ -19,6 +19,7 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import mygame.Entitys.Beacon;
 import mygame.Entitys.SloweringTower;
 import mygame.Entitys.Player;
 import mygame.Entitys.DeactivationTower;
@@ -90,6 +91,18 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
     }
     
     /**
+     * Führt das Spiel weiter aus.
+     */
+    public void continueGame() {
+        nifty.gotoScreen("hud");
+        Main.app.getFlyByCamera().setDragToRotate(Main.app.getHudState().isCameraDragToRotate());
+         if(!Main.app.getFlyByCamera().isDragToRotate()){
+            Main.app.getFlyByCamera().setRotationSpeed(1);
+        }
+        Main.getWorld().setPaused(false);
+    }
+    
+    /**
      * Startet das Spiel.
      */
     public void startGame() {
@@ -99,6 +112,24 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
             Main.app.getFlyByCamera().setRotationSpeed(1);
         }
         Main.getWorld().setPaused(false);
+        
+        //Spiel zurücksetzen.
+//        Main.app.restartGame();
+        Main.app.getWorld().getPlayer().setLocation(new Vector3f(0,10,0));
+        Main.app.getWorld().getPlayer().revive();
+        Main.app.getWorld().getPlayer().setMoney(250);
+        //Alle Türme zurücksetzen
+        for(int i = Main.app.getWorld().getAllTowers().size()-1; i >= 0; i--) {
+            Main.app.getWorld().removeTower(Main.app.getWorld().getAllTowers().get(i));
+        }
+        //Alle Bomben zurücksetzen
+        for(int i = Main.app.getWorld().getAllBombs().size()-1; i >= 0; i--) {
+            System.out.println("Bombe entfernt");
+            Main.app.getWorld().removeBomb(Main.app.getWorld().getAllBombs().get(i));
+        }
+        //Welle 1 starten
+        Main.app.getGame().startWave(1);
+        
     }
     
     /**
@@ -119,7 +150,7 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
     /**
      * Lädt einen Spielstand von einer XML-Datei. Diese Datei ist aktuel immer "saveGame.xml". 
      */
-    //TODO: Schauen ob Player tod ist.
+    //TODO: Geht nicht. Lädt nicht.
     public void loadGame() {
         File saveGame = new File("saveGame.xml");
         try{
@@ -169,6 +200,10 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
             pos.setZ(Float.valueOf(posEle.getAttribute("z")));
             System.out.println("Set pos of Player at: "+pos);
             player.setLocation(pos);
+            //Schaut ob Player tot ist
+            if(player.getHealth() <= 0) {
+                player.setLiving(false);
+            } 
             
             //Setzt Beacon
             Element beaconEle = (Element) doc.getElementsByTagName("Beacon").item(0);
@@ -183,7 +218,7 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
             e.printStackTrace();
         }
         
-        startGame();
+        continueGame();
     }
     
     /**

@@ -59,6 +59,7 @@ public class Player extends Entity{
     public Player(InputListener inputListener){
         money = 250;
         this.inputListener = inputListener;
+        //Ob Tastaturbelgung gesetzt werden soll. Dies ist nur beim ersten Starten des Spiels notwendig, nicht bei Neustarten
         setUpKeys();
         CapsuleCollisionShape capsuleShape = new CapsuleCollisionShape(1.5f, 6f, 1);
         player = new CharacterControl(capsuleShape, 0.05f);
