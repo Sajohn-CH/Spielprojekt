@@ -21,11 +21,12 @@ import com.jme3.math.Ray;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.shape.Line;
+import mygame.HudScreenState;
 import mygame.Main;
 
 /**
- *
- * @author florianwenk
+ * Der Spieler. Erstellt und konntrolliert den Spieler und seine Aktionen.
+ * @author Florian Wenk und Samuel Martin
  */
 public class Player extends Entity{
     
@@ -49,7 +50,12 @@ public class Player extends Entity{
     private AudioNode walkAudio;
     private AudioNode buyAudio;
     private AudioNode notEnoughMoneyAudio;
+    private AudioNode earnMoneyAudio;
     
+    /**
+     * Initialisiert den Spieler. Setzt Grundattribute des Spielers, erstellt die Waffe und Schusslinie und lädt die Töne.
+     * @param inputListener Für Tasteneingaben benötigt
+     */
     public Player(InputListener inputListener){
         money = 250;
         this.inputListener = inputListener;
@@ -71,6 +77,8 @@ public class Player extends Entity{
         mat.setColor("Color", ColorRGBA.Red);
         line.setMaterial(mat);
         
+        //Modell von: http://www.blendswap.com/blends/view/67733 (User: genx473)
+        //Beatrbeitet von: Florian Wenk
         this.setSpatial(Main.app.getAssetManager().loadModel("Objects/Gun.j3o").scale(.2f));
         this.getSpatial().setLocalTranslation(Main.app.getCamera().getLocation().add(0, -1.75f, 0).add(Main.app.getCamera().getDirection().normalize().mult(1.5f)));
         PointLight light = new PointLight();
@@ -79,35 +87,57 @@ public class Player extends Entity{
         this.getSpatial().addLight(light);
         Main.app.getRootNode().attachChild(this.getSpatial());
         
+        //Sound von: https://freesound.org/people/cormi/sounds/93979/ (User: cormi)
+        //Bearbeitet von: Florian Wenk
         shootAudio = new AudioNode(Main.app.getAssetManager(), "Audio/shootAudio.wav", false);
         shootAudio.setPositional(false);
         shootAudio.setLooping(true);
         shootAudio.setVolume(2);
         Main.app.getRootNode().attachChild(shootAudio);
         
+        //Sound von: https://freesound.org/people/Shadowedhunter/sounds/155920/ (User: Shadowedhunter)
+        //Bearbeitet von: Florian Wenk
         walkAudio = new AudioNode(Main.app.getAssetManager(), "Audio/walkAudio.wav", false);
         walkAudio.setPositional(false);
         walkAudio.setLooping(true);
         walkAudio.setVolume(.5f);
         Main.app.getRootNode().attachChild(walkAudio);
         
+        //Sound von: https://freesound.org/people/jact878787/sounds/323809/ (User: jact878787)
+        //Bearbeitet von: Florian Wenk
         buyAudio = new AudioNode(Main.app.getAssetManager(), "Audio/buyAudio.wav", false);
         buyAudio.setPositional(false);
         buyAudio.setLooping(false);
         buyAudio.setVolume(2f);
         Main.app.getRootNode().attachChild(buyAudio);
         
+        //Sound von: https://freesound.org/people/clairinski/sounds/184372/ (User: clairinski)
+        //Bearbeitet von: Florian Wenk
         notEnoughMoneyAudio = new AudioNode(Main.app.getAssetManager(), "Audio/notEnoughMoneyAudio.wav", false);
         notEnoughMoneyAudio.setPositional(false);
         notEnoughMoneyAudio.setLooping(false);
         notEnoughMoneyAudio.setVolume(2f);
         Main.app.getRootNode().attachChild(notEnoughMoneyAudio);
+        
+        //Sound von: https://freesound.org/people/severaltimes/sounds/173989/ (User: severaltimes)
+        //Bearbeitet von: Florian Wenk
+        earnMoneyAudio = new AudioNode(Main.app.getAssetManager(), "Audio/earnMoneyAudio.wav", false);
+        earnMoneyAudio.setPositional(false);
+        earnMoneyAudio.setLooping(false);
+        earnMoneyAudio.setVolume(2f);
+        Main.app.getRootNode().attachChild(earnMoneyAudio);
     }
     
+    /**
+     * Lässt den Spieler zum Anfangsort des Weges schauen(Von wo die Bomben erscheinen).
+     */
     public void turn(){
         Main.app.getCamera().lookAt(Main.getWorld().getAllCorners().get(0), new Vector3f(0, 1, 0));
     }
     
+    /**
+     * Initialisiert die Tasten.
+     */
     private void setUpKeys() {
         //Tasten um Spieler zu Steuern
         Main.app.getInputManager().addMapping("Left", new KeyTrigger(KeyInput.KEY_A));
@@ -126,6 +156,11 @@ public class Player extends Entity{
         Main.app.getInputManager().addListener(this.inputListener, "placeTower");
     }
     
+    /**
+     * Reagiert auf die Tasteneingaben. {@link Main#onAction(java.lang.String, boolean, float) }
+     * @param binding Welche Taste gedrückt wurde.
+     * @param isPressed Ob die Taste gedrückt oder losgelassen wurde.
+     */
    public void onAction(String binding, boolean isPressed){
         if (binding.equals("Left")) {
             left = isPressed;
@@ -169,6 +204,10 @@ public class Player extends Entity{
         }
     }
    
+   /**
+    * Gibt zurück, ob genügend Zeit vergangen ist, um wieder zu schiessen.
+    * @return Ob wieder geschossen werden kann.
+    */
    private boolean canShoot(){
        if(System.currentTimeMillis()-shot >= 1000/shotsPerSecond){
            shot = 0;
@@ -177,6 +216,9 @@ public class Player extends Entity{
        return false;
    }
     
+   /**
+    * {@inheritDoc }
+    */
    @Override
    public void action(float tpf){
         camDir.set(Main.app.getCamera().getDirection()).multLocal(0.6f);
@@ -229,12 +271,19 @@ public class Player extends Entity{
         }
     }
     
+   /**
+    * Fügt einem Objekt Schaden zu.
+    * @param e Objekt, welchem Schadenzugefügt werden soll.
+    */
     private void makeDamage(Entity e){
         if(e.isLiving()){
             e.increaseHealth(-this.getDamage());
         }
     }
     
+    /**
+     * Schiessen. Generiert die Schusslinie; Schaut wer getroffen wurde und fügt allenfals Schaden zu.
+     */
     private void shoot(){
         CollisionResults results = new CollisionResults();
         Ray ray = new Ray(this.getSpatial().getLocalTranslation().add(Main.app.getCamera().getUp().normalize().mult(1.3f)), Main.app.getCamera().getLocation().add(Main.app.getCamera().getDirection().normalize().mult(range)).subtract(this.getSpatial().getLocalTranslation().add(Main.app.getCamera().getUp().normalize().mult(1.3f))));
@@ -256,6 +305,10 @@ public class Player extends Entity{
         }
     }
     
+    /**
+     * Plaziert einen Turm. Überprüft, wo der Turm gesetzt werden soll, ob dies dort möglich ist (noch kein anderer Turm, nicht beim Beacon, nicht auf dem Weg, nicht zunahe beim Spieler) 
+     * und Plaziert den Turm, der unten ausgewählt wurde{@link HudScreenState#getSelectedTower(com.jme3.math.Vector3f) }.
+     */
     private void placeTower(){
         CollisionResults results = new CollisionResults();
         Ray ray = new Ray(Main.app.getCamera().getLocation(), Main.app.getCamera().getDirection());
@@ -302,6 +355,9 @@ public class Player extends Entity{
         }
     }
     
+    /**
+     * Heilt ein Objekt. Überprüft welches Objekt(Turm, Beacon oder Player), Heilt dieses und zieht Geld ab.
+     */
     private void heal() {
         CollisionResults resultsTower = new CollisionResults();
         CollisionResults resultsBeacon = new CollisionResults();
@@ -368,6 +424,9 @@ public class Player extends Entity{
         }
     }
     
+    /**
+     * Objekt wird upgegraded. Überprüft welches Objekt, falls es Ein Turm ist, wird ein Popup aufgerufen, erhöht das Level des Objektes ({@link Tower#increaseLevel() }/{@link Beacon#increaseLevel() }.
+     */
     public void upgradeObject() {
         setNotWalking();
         stopAudio();
@@ -402,42 +461,84 @@ public class Player extends Entity{
         }
     }
     
+    /**
+     * 
+     * @return CharacterControl des Players
+     */
     public CharacterControl getCharacterControl(){
         return player;
     }
     
+    /**
+     * 
+     * @return Wieviel Geld der Spieler hat
+     */
     public int getMoney(){
         return money;
     }
 
+    /**
+     * 
+     * @return Schüsse pro Sekunde, mit denen der Player schiesst
+     */
     public double getSPS() {
         return shotsPerSecond;
     }
 
+    /**
+     * 
+     * @return Reichweite des Players
+     */
     public int getRange() {
         return range;
     }
 
+    /**
+     * Setzt Schüsse pro Sekunde.
+     * @param shotsPerSecond Neue Schüsse pro Sekunde
+     */
     public void setShotsPerSecond(double shotsPerSecond) {
         this.shotsPerSecond = shotsPerSecond;
     }
 
+    /**
+     * Setzt die Reichweite
+     * @param range Neue Reichweite
+     */
     public void setRange(int range) {
         this.range = range;
     }
 
+    /**
+     * Setzt das Geld des Spielers.
+     * @param money Neues Geld
+     */
     public void setMoney(int money) {
         this.money = money;
     }
     
+    /**
+     * Erhöht das Geld des Spielers
+     * @param money Hinzuzufügendes Geld
+     */
     public void increaseMoney(int money){
         this.money += money;
+        if(money > 0){
+            playAudioEarnMoney();
+        }
     }
     
+    /**
+     * Berechnet Reichweite. Berechnet die Reichweite, die der Spieler nach einem Upgrade der Reichweite hätte.
+     * @return Neue Reichweite
+     */
     public int getNewRange(){
         return (int)(range * 1.1);
     }
     
+    /**
+     * Erhöht die Reichweite. Erhöht die Reichweite des Spielers, sofern sich dieser das Leisten kann, und zieht das Geld ab.
+     */
     public void increaseRange(){
         if(this.getMoney() >= this.getNewRangePrice()) {
            this.increaseMoney(-this.getNewRangePrice());
@@ -448,14 +549,25 @@ public class Player extends Entity{
         }
     }
     
+    /**
+     * Berechenet upgradekosten eines Upgrades der Reichweite
+     * @return 
+     */
     public int getNewRangePrice(){
         return (int) (getNewRange()*0.75);
     }
     
+    /**
+     * Berechnet Schaden. Berechnet den neuen Schaden, den der Player nach einem upgrade des Schadens machen würde.
+     * @return Neuer Schaden
+     */
     public int getNewDamage(){
         return (int)(this.getDamage() + Math.sqrt(this.getDamage()));
     }
     
+    /**
+     * Erhöht den Schaden. Erhöht den Schaden des Spielers, wenn dieser genügend Geld hat, und zieht das Geld ab.
+     */
     public void increaseDamage(){
         if(this.getMoney() >= this.getNewDamagePrice()) {
            this.increaseMoney(-this.getNewDamagePrice());
@@ -466,14 +578,25 @@ public class Player extends Entity{
         }
     }
     
+    /**
+     * Berechnet den Preis eines Upgrades des Schadens.
+     * @return Preis eines Schadensupgrades
+     */
     public int getNewDamagePrice(){
         return getNewDamage()*50;
     }
     
+    /**
+     * Berechnet Schüsse pro Sekunde. Berechnet wieviele Schüsse por Sekunde der Spieler nach einem Upgrade abgeben könnte.
+     * @return 
+     */
     public double getNewSPS(){   
         return (int) shotsPerSecond + Math.sqrt(shotsPerSecond);
     }
     
+    /**
+     * Erhöht die Anzahl Schüsse pro Sekunde. Falls der Spieler genügend Geld hat werden die Schüsse Pro Sekunde upgegraded und das Geld abgezogen.
+     */
     public void increaseSPS(){
         if(this.getMoney() >= this.getNewSPSPrice()) {
             this.increaseMoney(-this.getNewSPSPrice());
@@ -485,22 +608,33 @@ public class Player extends Entity{
         
     }
     
+    /**
+     * Berechnet den Preis eines Upgrades der Schüsse pro Sekunde
+     * @return Preis eines Upgrades
+     */
     public int getNewSPSPrice(){
-        return (int) (getNewSPS()*10);
+        return (int) (getNewSPS()*5);
     }
     
+    /**
+     * Berechnet Geschwindigkeit. Berechnet die Geschwindigkeit, die ein Spieler nach einem Upgrade hätte.
+     * @return Neue Geschwindigkeit
+     */
     public int getNewSpeed(){
         return (int) (this.getSpeed()*1.05);
     }
     
+    /**
+     * Berechnet den Preis eines Geschwindigkeitsupgrades.
+     * @return Preis des Upgrades
+     */
     public int getNewSpeedPrice() {
         return (int) (getNewSpeed()*1.5);
     }
     
-    public int getRevivePrice(){
-        return (int) (Math.sqrt(Main.app.getGame().getWave()) * 50);
-    }
-    
+    /**
+     * Erhöht die Geschwindigkeit des Spielers. Erhöht die Geschwindigkeit des Spielers und zieht diesem die Kosten ab, sofern er genügend Geld hat.
+     */
     public void increaseSpeed(){
         if(this.getMoney() >= this.getNewSpeedPrice()) {
          this.increaseMoney(-this.getNewSpeedPrice());
@@ -511,14 +645,25 @@ public class Player extends Entity{
         }
     }
     
+    /**
+     * Berechnet Maximales Leben. Berechnet das Maximale Leben, das der Spieler nach einem Upgrade des Lebens hätte.
+     * @return Neues Maximales Leben
+     */
     public int getNewMaxHealth() {
         return (int)(this.maxHealth*1.1);
     }
     
+    /**
+     * Berechnet Preis eines Upgrades des Maximalen Lebens.
+     * @return Preis des Upgrades
+     */
     public int getNewMaxHealthPrice() {
         return (int)(getNewMaxHealth()*1.5);
     }
     
+    /**
+     * Maximales Leben wird Upgegraded. Das Maximale Leben wird erhöht und das hinzukommende auch dem effektiven Leben hinzugefügt. Die Kosten für das Upgrade werden abgezogen.
+     */
     public void increaseMaxHealth() {
         if(this.getMoney() >= this.getNewMaxHealthPrice()) {
             this.increaseMoney(-this.getNewMaxHealthPrice());
@@ -531,8 +676,11 @@ public class Player extends Entity{
         }
     }
     
+    /**
+     * Wiederbelebt den Spieler. Der Spieler wird wiederbelebt, falls er genügend Geld hat. Das Geld wird abgezogen und alle Upgrades werden zurückgesetzt. 
+     */
     public void revive(){
-        if(this.getMoney() >= this.getRevivePrice()){
+        if(this.getRevivePrice() <= this.getMoney()){
             this.increaseMoney(-getRevivePrice());
             this.setLiving(true);
             this.setMaxHealth(100);
@@ -548,17 +696,34 @@ public class Player extends Entity{
         }
     }
     
+    /**
+     * Berechnet den Preis zum Wiederbeleben.
+     * @return Preis zum Wiederbeleben
+     */
+    public int getRevivePrice(){
+        return (int) (Math.sqrt(Main.app.getGame().getWave()) * 50);
+    }
+    
+    /**
+     * {@inheritDoc }
+     */
     @Override
     public Vector3f getLocation() {
         return Main.app.getCamera().getLocation();
     }
     
+    /**
+     * {@inheritDoc }
+     */
     @Override 
     public void setLocation(Vector3f location) {
         player.setPhysicsLocation(location);
         Main.app.getCamera().setLocation(location);
     }
     
+    /**
+     * Stoppt das gehen des Spielers.
+     */
     public void setNotWalking(){
         left = false;
         right = false;
@@ -566,16 +731,32 @@ public class Player extends Entity{
         down = false;
     }
     
+    /**
+     * Stoppt die Wiedergabe der langanhaltenden Soundeffekte.
+     */
     public void stopAudio(){
         shootAudio.stop();
         walkAudio.stop();
     }
     
+    /**
+     * Spielt den Effekt ab, der beim kaufen abgespielt werden soll, ab.
+     */
     public void playAudioBought(){
         buyAudio.playInstance();
     }
     
+    /**
+     * Spielt den Effekt ab, der bei zu wenig Geld zum kaufen abgespielt werden soll, ab.
+     */
     public void playAudioNotEnoughMoney(){
         notEnoughMoneyAudio.playInstance();
+    }
+
+    /**
+     * Spielt den Effekt ab, der beim verdienen von Geld abgespielt werden soll, ab.
+     */
+    public void playAudioEarnMoney(){
+        earnMoneyAudio.playInstance();
     }
 }

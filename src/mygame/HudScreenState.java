@@ -4,15 +4,13 @@ package mygame;
 import mygame.Entitys.Beacon;
 import mygame.Entitys.SimpleTower;
 import mygame.Entitys.Player;
-import mygame.Entitys.MGTower;
-import mygame.Entitys.PyramidTower;
+import mygame.Entitys.SloweringTower;
+import mygame.Entitys.DeactivationTower;
 import mygame.Entitys.Tower;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.math.Vector3f;
 import de.lessvoid.nifty.Nifty;
-import de.lessvoid.nifty.controls.Button;
 import de.lessvoid.nifty.controls.Controller;
-import de.lessvoid.nifty.controls.Label;
 import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.elements.render.ImageRenderer;
 import de.lessvoid.nifty.elements.render.TextRenderer;
@@ -46,7 +44,6 @@ public class HudScreenState extends AbstractAppState implements ScreenController
     long startWaveTime =  0;
     private boolean buildPhase = false;
     private boolean debugMode = true;
-    
     /**
      * {@inheritDoc}
      */
@@ -173,10 +170,10 @@ public class HudScreenState extends AbstractAppState implements ScreenController
                 return new SimpleTower(location);
                 
             case(2):
-                return new MGTower(location);
+                return new SloweringTower(location);
                 
             case(3):
-                return new PyramidTower(location);
+                return new DeactivationTower(location);
                 
             default:
                 return new SimpleTower(location);
@@ -293,6 +290,7 @@ public class HudScreenState extends AbstractAppState implements ScreenController
        endWavePopup.findElementByName("#PLRange").getRenderer(TextRenderer.class).setText(range);
        endWavePopup.findElementByName("#PLSpeed").getRenderer(TextRenderer.class).setText(speed);
        endWavePopup.findElementByName("#BeaconUpgrade").getRenderer(TextRenderer.class).setText(beaconHealth);
+       
    }
    
    /**

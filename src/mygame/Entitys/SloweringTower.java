@@ -11,21 +11,20 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.shape.Line;
 import mygame.Main;
 
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 /**
- *
- * @author samuel
+ * Turm, der Bomben verlangsamt. Erstellt und kontrolliert einen Turm, der Bomben verlangsamt.
+ * @author Florian Wenk
  */
-public class MGTower extends Tower{
+public class SloweringTower extends Tower{
     
     RigidBodyControl towerC;
     private Geometry line;
     
-    public MGTower(Vector3f location) {
+    /**
+     * Initialisierung des Turmes. Setzt Grundattribute des Turmes, ladet das Modell und erstellt die Schusslinie.
+     * @param location Ort
+     */
+    public SloweringTower(Vector3f location) {
         this.setPrice(30);
         this.increaseTotalPaidMoney(this.getPrice());
         this.setLevel(1);
@@ -33,6 +32,8 @@ public class MGTower extends Tower{
         this.setLiving(true);
         this.setLocation(new Vector3f(location.x, 0, location.z));
         
+        //Modell von: http://www.blendswap.com/blends/view/71401 (User: zagony)
+        //Bearbeitet von: Florian Wenk
         this.setSpatial(Main.app.getAssetManager().loadModel("Objects/MGTower.j3o"));
         
         PointLight light1 = new PointLight();
@@ -61,6 +62,9 @@ public class MGTower extends Tower{
         line.setMaterial(matL);
     }
     
+    /**
+     * {@inheritDoc }
+     */
     @Override
     public void setCollidable(){
         CollisionShape towerShape = CollisionShapeFactory.createBoxShape(this.getSpatial());
@@ -69,10 +73,17 @@ public class MGTower extends Tower{
         Main.getBulletAppState().getPhysicsSpace().add(towerC);
     }
     
+    /**
+     * Verlangsamt eine Bombe.
+     * @param b Bombe, die verlangsamt werden soll.
+     */
     private void decreaseSpeed(Bomb b){
         b.decreaseSpeed(this.getDamage());
     }
     
+    /**
+     * {@inheritDoc }
+     */
     @Override
     public void action(float tpf) {
         for(int i = 0; i < Main.getWorld().getAllBombs().size(); i++){
@@ -99,6 +110,9 @@ public class MGTower extends Tower{
         }
     }
     
+    /**
+     * {@inheritDoc }
+     */
     @Override
     public void setLevel(int newLevel) {
         super.setLevel(newLevel);
@@ -109,26 +123,41 @@ public class MGTower extends Tower{
         this.setShotsPerSecond(getNewSPS(newLevel));
     }
     
+    /**
+     * {@inheritDoc }
+     */
     @Override
     public int getNewRange(int newLevel) {
         return 10+newLevel*5;
     }
     
+    /**
+     * {@inheritDoc }
+     */
     @Override
     public int getNewDamage(int newLevel) {
         return 5+newLevel*5;
     }
     
+    /**
+     * {@inheritDoc }
+     */
     @Override
     public int getNewHealth(int newLevel) {
         return 50+newLevel*10;
     }
     
+    /**
+     * {@inheritDoc }
+     */
     @Override
     public double getNewSPS(int newLevel) {
         return 0.5+newLevel*0.5;
     }
     
+    /**
+     * {@inheritDoc }
+     */
     @Override
     public int getUpgradePrice() {
         return this.getMaxHealth();

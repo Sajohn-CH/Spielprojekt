@@ -9,8 +9,8 @@ import mygame.Entitys.ShootingBomb;
 import java.util.ArrayList;
 
 /**
- *
- * @author florianwenk
+ * Das grundsätzliche Spielprinzip. Es werden die Wellen kontrolliert und die Bomben, die in einer solchen kommen generiert.
+ * @author Florian Wenk
  */
 public class Game {
     private int wave;
@@ -19,6 +19,10 @@ public class Game {
     private long lastTime;
     private long nextTime;
    
+    /**
+     * Initialisiert das Spielprinzip. Sorgt dafür, dass Bomben erstellt werden.
+     * @param wave Welche Welle es ist.
+     */
     public Game(int wave){
         this.wave = wave;
         this.bombsLeftPerLevel = new ArrayList<Integer>();
@@ -27,6 +31,9 @@ public class Game {
         nextTime = 100;
     }
     
+    /**
+     * Setzt wieviele Bomben generiert werden sollen.
+     */
     public void startWave(){
         // Mehrere Levels Bomben generieren
         int bombsLeft = (int) (wave*Math.pow(wave,0.5));
@@ -56,27 +63,49 @@ public class Game {
         }
     }
     
+    /**
+     * {@link startWave()}
+     * @param wave Setzt die Welle.
+     */
     public void startWave(int wave) {
         this.wave = wave;
         startWave();
     }
     
+    /**
+     * Startet die nächste Welle. Öffnet das EndWavePopup und startet die neue Welle.
+     */
     public void nextWave(){
         // Bonus für welle überstanden
         Main.getWorld().getPlayer().increaseMoney(this.wave * 50);
         this.wave += 1;
+        //Wenn Player tot, wiederbeleben.
+        if(!Main.app.getWorld().getPlayer().isLiving()){
+            Main.app.getWorld().getPlayer().revive();
+        }
         Main.app.getHudState().showEndWavePopup();
-        //startWave();
     }
     
+    /**
+     * Gibt zurück, welche Welle zurzeit ist.
+     * @return Die wievielte Welle
+     */
     public int getWave(){
         return this.wave;
     }
     
+    /**
+     * Gibt zurück ob noch Bomben zu generieren sind.
+     * @return Ob schon alle Bomben generiert sind.
+     */
     public boolean bombLeft(){
-        return !bombsLeftPerLevel.isEmpty();
+        return !bombsLeftPerLevel.isEmpty() || !shootingBombsLeftPerLevel.isEmpty();
     }
     
+    /**
+     * Wird bei jedem Update ausgeführt, erstellt die Bomben.
+     * @param tpf Time per Frame
+     */
     public void action(float tpf){
         if(System.currentTimeMillis()-lastTime >= nextTime){
             if(Math.random() < 0.5 || shootingBombsLeftPerLevel.isEmpty()){
