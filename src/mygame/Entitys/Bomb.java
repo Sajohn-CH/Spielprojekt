@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package mygame.Entitys;
 
 
@@ -23,7 +19,6 @@ import mygame.Way;
  */
 public class Bomb extends Entity{
     
-    private RigidBodyControl bombC;
     private Material mat;
     private ColorRGBA[] colors = {ColorRGBA.Blue, ColorRGBA.Cyan, ColorRGBA.Green, ColorRGBA.Magenta, ColorRGBA.Red, ColorRGBA.Orange, ColorRGBA.Yellow, ColorRGBA.Green, ColorRGBA.Pink, ColorRGBA.Brown};
     private Way way;

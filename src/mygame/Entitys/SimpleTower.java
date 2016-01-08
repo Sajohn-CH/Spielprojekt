@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package mygame.Entitys;
 
 import com.jme3.bullet.collision.shapes.CollisionShape;
@@ -21,7 +17,7 @@ import mygame.Main;
  */
 public class SimpleTower extends Tower{
     
-    RigidBodyControl towerC;
+    private RigidBodyControl towerC;
     private Geometry line;
     
     /**

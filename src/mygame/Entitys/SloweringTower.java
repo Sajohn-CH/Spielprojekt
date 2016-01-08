@@ -17,7 +17,7 @@ import mygame.Main;
  */
 public class SloweringTower extends Tower{
     
-    RigidBodyControl towerC;
+    private RigidBodyControl towerC;
     private Geometry line;
     
     /**
