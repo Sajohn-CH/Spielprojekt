@@ -28,6 +28,7 @@ public class ShootingBomb extends Bomb{
     private int shotsPerSecond;
     private int range;
     private boolean shooting;
+    private int shotDamage;
     
     /**
      * Erstellt eine ShootingBomb. Eine ShootingBomb wird erstellt und die Schusslinie geladen.
@@ -42,6 +43,7 @@ public class ShootingBomb extends Bomb{
         
         shooting = true;
         shot = System.currentTimeMillis();
+        shotDamage = 10;
         
         n = new Node("shootingBomb");
                 
@@ -105,7 +107,7 @@ public class ShootingBomb extends Bomb{
                 line.setMesh(l);
                 Main.app.getRootNode().attachChild(line);
                 shot();
-                Main.getWorld().getPlayer().increaseHealth(-this.getDamage());
+                Main.getWorld().getPlayer().increaseHealth(-this.getShotDamage());
             }
         }
         if(canShoot() && this.isLiving() && !Main.getWorld().getAllTowers().isEmpty()){
@@ -116,7 +118,7 @@ public class ShootingBomb extends Bomb{
                    line.setMesh(l);
                    Main.app.getRootNode().attachChild(line);
                    shot();
-                   this.makeDamage(Main.getWorld().getAllTowers().get(i));
+                   Main.getWorld().getAllTowers().get(i).increaseHealth(-this.getShotDamage());
                 }
             }
         }
@@ -140,6 +142,7 @@ public class ShootingBomb extends Bomb{
         super.setLevel(newLevel);
         this.range = 10+newLevel*5;
         this.shotsPerSecond = (newLevel/2)+1;
+        this.shotDamage = 10+newLevel;
     }
     
     /**
@@ -148,5 +151,13 @@ public class ShootingBomb extends Bomb{
     public void disableShooting(){
         shooting = false;
         n.getChild("gun").removeFromParent();
+    }
+    
+    /**
+     * Gibt den Schaden zurück, den ein Schuss der Bombe zufügt.
+     * @return Schuss Schaden
+     */
+    public int getShotDamage(){
+        return shotDamage;
     }
 }

@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package mygame.Entitys;
 
 import com.jme3.audio.AudioNode;
@@ -523,9 +519,6 @@ public class Player extends Entity{
      */
     public void increaseMoney(int money){
         this.money += money;
-        if(money > 0){
-            playAudioEarnMoney();
-        }
     }
     
     /**

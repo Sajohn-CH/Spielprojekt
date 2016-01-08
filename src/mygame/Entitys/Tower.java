@@ -26,6 +26,7 @@ public class Tower extends Entity{
     private long died = 0;
     private ParticleEmitter flame;
     private int totalPaidMoney = 0;
+    private String name = "Turm";
     
     /**
      * Gibt die Reichweite des Turmes zurück.
@@ -240,6 +241,7 @@ public class Tower extends Entity{
      */
     public void remove(){
         Main.app.getWorld().getPlayer().increaseMoney((int) (totalPaidMoney * 0.75));
+        Main.app.getWorld().getPlayer().playAudioEarnMoney();
         Main.app.getWorld().removeTower(this);
     }
     
@@ -249,5 +251,21 @@ public class Tower extends Entity{
      */
     public void increaseTotalPaidMoney(int money){
         this.totalPaidMoney += money;
+    }
+    
+    /**
+     * Gibt den Turmnamen zurück.
+     * @return Turmname
+     */
+    public String getName(){
+        return this.name;
+    }
+    
+    /**
+     * Setzt den Turmnamen.
+     * @param name Turmname
+     */
+    public void setName(String name){
+        this.name = name;
     }
 }

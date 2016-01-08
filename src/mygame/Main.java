@@ -5,13 +5,9 @@ import mygame.Entitys.Player;
 import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.control.RigidBodyControl;
-import com.jme3.effect.ParticleEmitter;
-import com.jme3.effect.ParticleMesh;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
-import com.jme3.material.Material;
-import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.niftygui.NiftyJmeDisplay;
 import com.jme3.renderer.RenderManager;
@@ -21,8 +17,6 @@ import com.jme3.system.AppSettings;
 import de.lessvoid.nifty.Nifty;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * @author Samuel Martin und Florian Wenk
@@ -30,39 +24,36 @@ import java.util.logging.Logger;
 
 public class Main extends SimpleApplication implements ActionListener{
     public static Main app;
-    private String str;
     private static BulletAppState bulletAppState;
-    private RigidBodyControl sceneC;
-    private Node n;     //Aufhebare Objekte;
     private Nifty nifty;
     private HudScreenState hudState;
     private static World world;
     private static Game game;
-    private long waveEnded = 0;
     private boolean debugMode = true;
+    private static AppSettings appSettings;
     
     public static void main(String[] args) {
         app = new Main();
         
         //AppSettings initialisieren
-        AppSettings appSettings = new AppSettings(true);
+        appSettings = new AppSettings(true);
         
         //Titel setzen
         appSettings.setTitle("First-Person-View TowerDefense Game");
-        //Start into Fullscreen
-        //Get the Resolution of the main/defautl display
+        //Get the Resolution of the main/default display
         GraphicsDevice device = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+        //set the found resolution of the monitor as the resolution of the game.
         appSettings.setResolution(device.getDisplayMode().getWidth(), device.getDisplayMode().getHeight());
-        appSettings.setResolution(2560, 1440);
         appSettings.setFrequency(device.getDisplayMode().getRefreshRate());
         appSettings.setBitsPerPixel(device.getDisplayMode().getBitDepth());
-        //set the found resolution of the monitor as the resolution of the game.
-        appSettings.setFullscreen(device.isFullScreenSupported());
         // Frame rate limitieren
         appSettings.setFrameRate(60);
         //AppSettings hinzufügen
         app.setSettings(appSettings);
-
+//        app.setShowSettings(false);
+        //Start into Fullscreen
+        appSettings.setFullscreen(device.isFullScreenSupported());
+        
         app.start();
     }
 
@@ -268,5 +259,5 @@ public class Main extends SimpleApplication implements ActionListener{
             ex.printStackTrace();
         }
          nifty.addXml(file);
-    } 
+    }
 }

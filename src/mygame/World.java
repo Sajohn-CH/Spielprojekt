@@ -9,7 +9,6 @@ import mygame.Entitys.Beacon;
 import mygame.Entitys.Player;
 import mygame.Entitys.Tower;
 import com.jme3.app.state.AbstractAppState;
-import com.jme3.asset.AssetManager;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
@@ -248,4 +247,3 @@ public class World extends AbstractAppState{
         return !this.isEnabled();
     }
 }
- 

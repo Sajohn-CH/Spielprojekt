@@ -65,6 +65,7 @@ public class Game {
     
     /**
      * {@link startWave()}
+     * Setzt die Welle auf den übergebenen Wert.
      * @param wave Setzt die Welle.
      */
     public void startWave(int wave) {
@@ -77,7 +78,8 @@ public class Game {
      */
     public void nextWave(){
         // Bonus für welle überstanden
-        Main.getWorld().getPlayer().increaseMoney(this.wave * 50);
+        Main.app.getWorld().getPlayer().increaseMoney(this.wave * 50);
+        Main.app.getWorld().getPlayer().playAudioEarnMoney();
         this.wave += 1;
         //Wenn Player tot, wiederbeleben.
         if(!Main.app.getWorld().getPlayer().isLiving()){

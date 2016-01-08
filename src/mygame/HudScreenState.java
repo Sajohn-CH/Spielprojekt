@@ -180,7 +180,7 @@ public class HudScreenState extends AbstractAppState implements ScreenController
        int newLevel = tower.getLevel()+1;
        String price = tower.getUpgradePrice()+"$";
        String damage = tower.getDamage()+"+"+(tower.getNewDamage(newLevel)-tower.getDamage());
-       if(tower.getSpatial().getName().equals("PyramidTower")){
+       if(tower.getSpatial().getName().equals("DeactivationTower")){
             damage = "Macht schiessunfähig";
        }
        String health = tower.getHealth()+"/"+tower.getMaxHealth()+"+"+(tower.getNewHealth(newLevel)-tower.getHealth());
@@ -190,9 +190,17 @@ public class HudScreenState extends AbstractAppState implements ScreenController
        Main.app.getFlyByCamera().setDragToRotate(true);
        cameraDragToRotate = true;
        towerPopup = nifty.createPopup("niftyPopupTower");
-       towerPopup.findElementByName("#title").getRenderer(TextRenderer.class).setText("Turm Stufe "+tower.getLevel());
+       if(tower.getLevel() >= 30){
+           towerPopup.findElementByName("upgrade").setVisible(false);
+       }
+       towerPopup.findElementByName("#title").getRenderer(TextRenderer.class).setText(tower.getName() + " Stufe " + tower.getLevel());
        towerPopup.findElementByName("price").getRenderer(TextRenderer.class).setText(price);
-       towerPopup.findElementByName("damage").getRenderer(TextRenderer.class).setText(damage);
+       if(!tower.getSpatial().getName().equals("DeactivationTower")){
+           towerPopup.findElementByName("damage").getRenderer(TextRenderer.class).setText(damage);
+       } else {
+           towerPopup.findElementByName("textDamage").getRenderer(TextRenderer.class).setText(damage);
+           towerPopup.findElementByName("damage").getRenderer(TextRenderer.class).setText("");
+       }
        towerPopup.findElementByName("health").getRenderer(TextRenderer.class).setText(health);
        towerPopup.findElementByName("sps").getRenderer(TextRenderer.class).setText(sps);
        towerPopup.findElementByName("range").getRenderer(TextRenderer.class).setText(range);

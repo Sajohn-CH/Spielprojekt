@@ -49,6 +49,10 @@ public class Bomb extends Entity{
         n.getChild("color").rotate(q);
         
         mat = new Material (Main.app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
+        // Setzt das Maximale Level auf Level 40
+        if(level > 40){
+            level = 40;
+        }
         this.setLevel(level);
         
         n.getChild("bomb").setMaterial(Main.app.getAssetManager().loadMaterial("Materials/Black.j3m"));
@@ -171,7 +175,7 @@ public class Bomb extends Entity{
     public void decreaseSpeed (int speed){
         this.decreasedSpeed += speed;
         if(decreasedSpeed >= 50-this.getLevel()*2+Main.getGame().getWave()*2){
-            decreasedSpeed = (50-this.getLevel()*2+Main.getGame().getWave()*2)-5;
+            decreasedSpeed = (50-this.getLevel()*2+Main.getGame().getWave()*2)-10;
         }
         this.setSpeed((50-this.getLevel()*2+Main.getGame().getWave()*2) - decreasedSpeed);
     }
