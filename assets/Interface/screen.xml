@@ -2,23 +2,30 @@
 <nifty xmlns="http://nifty-gui.sourceforge.net/nifty-1.3.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://nifty-gui.sourceforge.net/nifty-1.3.xsd http://nifty-gui.sourceforge.net/nifty-1.3.xsd">
     <useStyles filename="nifty-default-styles.xml" />
     <useControls filename="nifty-default-controls.xml" />
+    <!-- Startbildschirm -->
     <screen id="start" controller="mygame.MyStartScreen">
+        <!-- Hintergrundbild -->
         <layer id="background" childLayout="center">
             <image filename="Interface/backgroundStartPage.png" width="100%" height="100%"/>
         </layer>
         <layer id="foreground" childLayout="vertical">
+            <!-- Vordergrund-->
             <panel id="panel_top" height="34%" width="75%" align="center" childLayout="center" >
+                <!-- Name des Spiels-->
                 <text text="Spielname" font="Interface/Fonts/Arial.fnt" width="100%" height="100%" />
             </panel>
             <panel id="panel_mid" height="33%" width="75%" align="center" childLayout="horizontal" >
+                <!-- Knopf zum Starten des Spiels-->
                 <control name="button" label="Start" id="StartButton" align="center" valign="center" visibleToMouse="true" width="50%">
-                    <interact onClick="startGame(hud)"/>
+                    <interact onClick="startGame()"/>
                 </control>
-                <control name="button" label="Letzter Spielstand laden" id="loadgame" align="center" valign="center" visibleToMouse="true" width="50%">
+                <!-- Knopf zum Laden des letzen Spielstandes-->
+                <control name="button" label="Letzten Spielstand laden" id="loadgame" align="center" valign="center" visibleToMouse="true" width="50%">
                     <interact onClick="loadGame()"/>
                 </control>
             </panel>
             <panel id="panel_bottom" height="33%" width="75%" align="center" childLayout="center" >
+                <!-- Knopf zum Beenden des Spiels -->
                 <control name="button" label="Beenden" id="QuitButton" align="center" valign="center" visibleToMouse="true">
                     <interact onClick="quitGame()"/>
                 </control>
@@ -26,22 +33,27 @@
         </layer>
     </screen>
     
+    <!-- Pausebildschirm -->
     <screen id="pause" controller="mygame.MyStartScreen">
+        <!-- Halbtransparenter (60%) Hintergrund -->
         <layer id="background" childLayout="center">
             <image filename="Interface/opaque-60.png" imageMode="resize:40,490,110,170,40,560,40,270,40,560,40,40" width="100%" height="100%"></image>
         </layer>
         <layer id="foreground" backgroundColor="#0000" childLayout="vertical">
             <panel id="panel_top" height="34%" width="75%" align="center" childLayout="center">
+                <!-- Knopf zum Spiel fortsetzen -->
                 <control name="button" label="Fortsetzen" id="StartButton" align="center" valign="center" visibleToMouse="true">
-                    <interact onClick="startGame(hud)"/>
+                    <interact onClick="continueGame()"/>
                 </control>
              </panel>
             <panel id="panel_mid" height="33%" width="75%" align="center" childLayout="center">
+                <!-- Knopf um zum Startmenu/bildschirm zu gelangen -->
                 <control name="button" label="Startmenu" id="MenuButton" align="center" valign="center" visibleToMouse="true">
                     <interact onClick="toStart()"/>
                 </control>
             </panel>
             <panel id="panel_bottom" height="33%" width="75%" align="center" childLayout="center">
+                <!--Knopf zum Beenden -->
                 <control name="button" label="Beenden" id="QuitButton" align="center" valign="center" visibleToMouse="true">
                     <interact onClick="quitGame()"/>
                 </control>
@@ -49,21 +61,26 @@
         </layer>
     </screen>
     
+    <!-- Bildschirm der angezeigt wird wenn man das Spiel verloren hat (Beacon tot)-->
     <screen id="gameOver" controller="mygame.MyStartScreen">
         <layer id="background" childLayout="center">
+            <!-- roter Hintergrund, welcher nur teilweise transparent ist.-->
             <panel width="100%" height="100%" childLayout="center" backgroundColor="#ff0000a0">
                 
             </panel>
         </layer>
         <layer id="foreground" childLayout="center">
+            <!-- Anzeige mit dem Text "GAME OVER", bis zur welcher Welle man es geschaft hat und einen Knopf zum Beenden des Spiels und einem um zum Startmenu zu gelangen-->
             <panel childLayout="vertical">
                 <text text="GAME OVER" font="Interface/Fonts/Arial.fnt" align="center"/>
                 <text text="Der Beacon wurde zerstört" font="Interface/Fonts/Arial.fnt" align="center"/>
                 <text text="Du hast es bist zur Welle ${CALL.getCurrentWave()} geschaft" font="Interface/Fonts/Arial.fnt" align="center"/>
                 <control name="button" label="Zurück zum Startmenu" align="center" valign="center" visibleToMouse="true" width="20%">
+                    <!-- Zum Startmenu-->
                     <interact onClick="toStart()"/>
                 </control>
                  <control name="button" label="Spiel beenden" align="center" valign="center" visibleToMouse="true" width="20%">
+                    <!-- Spiel beenden-->
                     <interact onClick="quitGame()"/>
                 </control>
             </panel>

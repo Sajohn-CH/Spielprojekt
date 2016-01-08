@@ -1,7 +1,4 @@
-/*t
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package mygame;
 
 import mygame.Entitys.Beacon;
@@ -27,15 +24,15 @@ import java.util.Properties;
 
 
 /**
- *
- * @author samuel
+ * Kontrolliert das HUD während das Spiel läuft. Es ist der ScreenController von allen Screens und Popups im hud.xml. Es öffnet und schliesst die Popups zum Turmupgraden
+ * und am Ende jeder Welle. Auch ändert es Anzeigen im HUD und den Popups damit diese aktuelle Werte anzeigen. 
+ * @author Samuel Martin 
  */
 public class HudScreenState extends AbstractAppState implements ScreenController, Controller{
     private Nifty nifty;
     private Screen screen;
     private SimpleDateFormat df = new SimpleDateFormat("HH:mm");
     private int itemSelected = 1;
-    private World world;
     //private long lastSelectionChanged; //Zeit, als das letzte Mal die Auswahl geändert wurde. Wird gebraucht um die Anzeige der Turmbeschreibung nach eine Zeitspannen verschwinden zu lassen
 
     private String[] descriptions = {"Zerstört Bomben: 20$", "Verlangsamt Bomben: 30$", "Macht schiessende Bomben schiessunfähig: 100$", "Upgraden", "Heilen: 1$ pro Lebenspunkt"};
@@ -47,11 +44,9 @@ public class HudScreenState extends AbstractAppState implements ScreenController
     long startWaveTime =  0;
     private boolean buildPhase = false;
     private boolean debugMode = true;
-       
-    public void setWorld(World world) {
-        this.world = world;
-    }
-    
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void update(float tpf) {
         //Setzt Text im HUD
@@ -62,19 +57,19 @@ public class HudScreenState extends AbstractAppState implements ScreenController
             updateText("wave", ("Welle: " + Main.getGame().getWave()));
         }
         updateText("time", ("Uhrzeit: "+df.format(System.currentTimeMillis())));
-        updateText("money", ("Geld: " + Main.getWorld().getPlayer().getMoney() + "$"));
+        updateText("money", ("Geld: " + Main.app.getWorld().getPlayer().getMoney() + "$"));
         updateText("towerDescription", descriptions[getSelectedItemNum()-1]);
-        updateText("beaconHealth", (world.getBeacon().getHealth()+"/"+world.getBeacon().getMaxHealth()));
-        updateText("health", world.getPlayer().getHealth()+"/"+world.getPlayer().getMaxHealth());
+        updateText("beaconHealth", (Main.app.getWorld().getBeacon().getHealth()+"/"+Main.app.getWorld().getBeacon().getMaxHealth()));
+        updateText("health", Main.app.getWorld().getPlayer().getHealth()+"/"+Main.app.getWorld().getPlayer().getMaxHealth());
         
         //Setzt HealthBar des Players
         Element healthPnl = screen.findElementByName("healthPnl");
         Element healthElement = screen.findElementByName("healthBar");
-        healthElement.setWidth((int)(world.getPlayer().getHealthPercentage()/100f*healthPnl.getWidth()));
+        healthElement.setWidth((int)(Main.app.getWorld().getPlayer().getHealthPercentage()/100f*healthPnl.getWidth()));
         //Setzt HealthBar des Beacon
         Element beaconHealthBar = screen.findElementByName("beaconHealthBar");
         Element topBar = screen.findElementByName("top_bar");
-        beaconHealthBar.setWidth((int)(world.getBeacon().getHealthPercentage()/100f*topBar.getWidth()));
+        beaconHealthBar.setWidth((int)(Main.app.getWorld().getBeacon().getHealthPercentage()/100f*topBar.getWidth()));
                 
         if(debugMode) {
             Player player = Main.app.getWorld().getPlayer();
@@ -89,10 +84,18 @@ public class HudScreenState extends AbstractAppState implements ScreenController
         }        
     }
     
+    /**
+     * Ändert den Text eins bestimment Elements in der GUI.
+     * @param element String der Elementid
+     * @param text Text, welche das Element anzeigen soll.
+     */
     private void updateText(String element, String text) {
         screen.findElementByName(element).getRenderer(TextRenderer.class).setText(text);
     }
     
+    /**
+     * {@inheritDoc}
+     */
     public void bind(Nifty nifty, Screen screen) {
         this.nifty = nifty;
         this.screen = screen;
@@ -100,28 +103,31 @@ public class HudScreenState extends AbstractAppState implements ScreenController
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void onStartScreen() {
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void onEndScreen() {
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
-    public String getScore() {
-        return "0";
-    }
     /**
-     * Setzt Auswahl/Slot des Items in der Leiste auf die gegeben Zahl
+     * Setzt Auswahl/Slot des Items in der Leiste auf die gegeben Zahl. Dies geschieht dadurch dass der Rahmen (ein Bild) des Itemslots geändert wird.
      * @param num  Auszuwählender Slot
      */
     public void selectItem(int num) {
-        //Merke Zeitpunkt
-//        lastSelectionChanged = System.currentTimeMillis();
+        //Ersetzt zuletzt gewähltes Item mit einem normalen Rahmen
         NiftyImage img = nifty.getRenderEngine().createImage(screen, "Interface/item-frame.png", false);
         Element item = screen.findElementByName("item-"+itemSelected);
         item.getRenderer(ImageRenderer.class).setImage(img);
         
+        //Ersetzt den Rahmen des neu gewählten Items mit dem markierten Rahmen.
         NiftyImage imgSel = nifty.getRenderEngine().createImage(screen, "Interface/item-frame-selected.png", false);
         Element itemSel = screen.findElementByName("item-"+num);
         itemSel.getRenderer(ImageRenderer.class).setImage(imgSel);
@@ -152,6 +158,12 @@ public class HudScreenState extends AbstractAppState implements ScreenController
         }
     }
     
+    /**
+     * Gibt dem geraden gewählten Turm zurück. Dieser Turm wird dann später gebaut. Falls etwas anderes als ein Turm im Itemslot ausgewählt wird sollte dies vorher 
+     * herausgefiltert werden.
+     * @param location Ort, an dem der Turm gebaut werden soll. 
+     * @return 
+     */
     public Tower getSelectedTower(Vector3f location) {
         switch(itemSelected) {
             case(1):
@@ -168,6 +180,10 @@ public class HudScreenState extends AbstractAppState implements ScreenController
         }
     }
     
+    /**
+     * Gibt den gerade gewählten Itemslot zurück. Die Nummerierung fängt bei 1 an.
+     * @return gewählter Itemslot.
+     */
    public int getSelectedItemNum() {
        return itemSelected;
    }
@@ -187,6 +203,7 @@ public class HudScreenState extends AbstractAppState implements ScreenController
        String sps = tower.getShotsPerSecond()+"+"+Math.round((tower.getNewSPS(newLevel)-tower.getShotsPerSecond())*100)/100.0;
        String range = tower.getRange()+"+"+(tower.getNewRange(newLevel)-tower.getRange());
        
+       //Setzt Texte im Popup entsprechend den Werten des Turms
        Main.app.getFlyByCamera().setDragToRotate(true);
        cameraDragToRotate = true;
        towerPopup = nifty.createPopup("niftyPopupTower");
@@ -228,6 +245,9 @@ public class HudScreenState extends AbstractAppState implements ScreenController
        cameraDragToRotate = false;
    }
      
+   /**
+    * Entfernt den Turm. Dies wird vom Towerpopup aufgerufen, so dass der Turm, dessen Upgrade-Popup offen ist entfernt wird.
+    */
     public void removeTower(){
         if(tower == null) {
             return;
@@ -236,10 +256,17 @@ public class HudScreenState extends AbstractAppState implements ScreenController
         tower.remove();
     }
    
+   /**
+    * Gibt zurück ob der Mauszeiger direkt die Kamera dreht (false) , also gefangen ist oder nicht (true).
+    * @return Gefangen = false; Maustaste muss gedrückt werden um Kamera zu drehen = true
+    */
    public boolean isCameraDragToRotate() {
        return cameraDragToRotate;
    }
    
+   /**
+    * Zeigt Popup für das Ende der Welle an.
+    */
    public void showEndWavePopup() {
        //EndWavePopup wird nicht ausgeführt, wenn der Beacon tot ist -> gameOver. Der Beacon ruft eine entsprechende Methode auf, wenn er stirbt.
        if(!Main.app.getWorld().getBeacon().isLiving()) {
@@ -263,6 +290,7 @@ public class HudScreenState extends AbstractAppState implements ScreenController
        String speed = player.getSpeed()+"+"+(player.getNewSpeed()-player.getSpeed());
        String beaconHealth = beacon.getMaxHealth()+"+"+(beacon.getNewMaxHealth()-beacon.getMaxHealth());
        
+       //Setzt richtige Werte, für die Upgrademöglichkeiten
        endWavePopup.findElementByName("#waveEnd").getRenderer(TextRenderer.class).setText("Ende der Welle "+(Main.app.getGame().getWave()-1));
        endWavePopup.findElementByName("#PLHealth").getRenderer(TextRenderer.class).setText(health);
        endWavePopup.findElementByName("#PLDamage").getRenderer(TextRenderer.class).setText(damage);
@@ -273,8 +301,11 @@ public class HudScreenState extends AbstractAppState implements ScreenController
        
    }
    
+   /**
+    * Schliest das EndWavePopup und startet die Bauphase am Anfang der nächsten Welle.
+    */
    public void nextWave() {
-       //Erster Aufruf hat nifty == null. Herkunft unbekannt
+       //Erster Aufruf hat nifty == null. Herkunft des Aufrufs unbekannt
        if(nifty == null) {
            return;
        }
@@ -287,70 +318,140 @@ public class HudScreenState extends AbstractAppState implements ScreenController
        buildPhase = true;
    }
    
+   /**
+    * Startet die nächste Welle, wenn die Bauzeit vorbei ist.
+    */
    private void startNextWave() {
        Main.app.getGame().startWave();
        startWaveTime = 0;
        buildPhase = false;  
    }
 
+   /**
+    * Gibt zurück ob gerade Bauzeit/phase ist. Dies ist immer für eine gewisse Zeit, nach dem Ende jeder Welle der Fall.
+    * @return ist Bauphase
+    */
     public boolean isBuildPhase() {
         return buildPhase;
     }
    
+    /**
+     * Gibt den Preis zum Upgraden der Lebenspunkte des Spielers zurück.
+     * @return Ugradepreis
+     */
     public String getHealthPrice() {
         return String.valueOf(Main.app.getWorld().getPlayer().getNewMaxHealthPrice());
     }
     
+    /**
+     * Gibt den Preis zum Upgraden des Schadens, der der Spieler verursacht, zurück.
+     * @return Ugradepreis
+     */
     public String getDamagePrice() {
         return String.valueOf(Main.app.getWorld().getPlayer().getNewDamagePrice());
     }
     
+    /**
+     * Gibt den Preis zum Upgraden der Schiessgeschwindigkeit des Spielers zurück.
+     * @return Ugradepreis
+     */
     public String getSPSPrice() {
         return String.valueOf(Main.app.getWorld().getPlayer().getNewSPSPrice());
     }
     
+    /**
+     * Gibt den Preis zum Upgraden der Reichweite des Spielers zurück.
+     * @return Ugradepreis
+     */
     public String getRangePrice() {
         return String.valueOf(Main.app.getWorld().getPlayer().getNewRangePrice());
     }
     
+    /**
+     * Gibt den Preis zum Upgraden der Geschwindigkeit des Spielers zurück.
+     * @return Ugradepreis
+     */
     public String getSpeedPrice() {
         return String.valueOf(Main.app.getWorld().getPlayer().getNewSpeedPrice());
     }
     
+    /**
+     * Gibt den Preis zum Wiederbeleben zurück
+     * @return Wiederbelebungspreis.
+     */
+    public String getRevivePrice() {
+        return String.valueOf(Main.app.getWorld().getPlayer().getRevivePrice());
+    }
+    
+    /**
+     * Wiederbelebt den Spieler.
+     */
+    public void revivePlayer() {
+        if(!Main.app.getWorld().getPlayer().isLiving()){
+            Main.app.getWorld().getPlayer().revive();
+        }
+        reloadEndWavePopup();
+    }
+    
+    /**
+     * Upgradet die Lebenspunkte des Spielers.
+     */
     public void upgradePlayerHealth() {
         Main.app.getWorld().getPlayer().increaseMaxHealth();
         reloadEndWavePopup();
     }
     
+    /**
+     * Upgradet den Schaden, den der Spieler verursacht.
+     */
     public void upgradePlayerDamage() {
         Main.app.getWorld().getPlayer().increaseDamage();
         reloadEndWavePopup();
     }
     
+    /**
+     * Upgradet die Schussgeschwindigkeit des Spielers.
+     */
     public void upgradePlayerSPS() {
         Main.app.getWorld().getPlayer().increaseSPS();
         reloadEndWavePopup();
     }
     
+    /**
+     * Upgradet die Reichweite des Spielers.
+     */
     public void upgradePlayerRange() {
         Main.app.getWorld().getPlayer().increaseRange();
         reloadEndWavePopup();
     }
     
+    /**
+     * Upgradet die Geschwindigkeit des Spielers.
+     */
     public void upgradePlayerSpeed() {
         Main.app.getWorld().getPlayer().increaseSpeed();
         reloadEndWavePopup();
     }
     
+    /**
+     * Upgradet den Beacon.
+     */
     public void upgradeBeacon() {
         Main.app.getWorld().getBeacon().increaseLevel();
         reloadEndWavePopup();
     }
     
+    /**
+     * Gibt den Preis zum Upgraden des Beacons zurück
+     * @return Upgradepreis
+     */
     public String getBeaconUpgradePrice() {
         return String.valueOf(Main.app.getWorld().getBeacon().getNewHealthPrice());
     }
     
+    /**
+     * Lädt das EndWavePopup neu, damit alle Wert darin neu geladen werden. Dies geschieht nach dem Upgraden eines Wertes im EndWavePopup
+     */
     private void reloadEndWavePopup() {
         //Popup erneut laden, damit neue Werte gesetzt werden. Dafür muss es geschlossen werden, damit die Beschriftungen
         //der Knöpfe im xml neu geladen wird, da mir keine Methode bekannt ist die Beschriftung er Knöpfe im Java-Code
@@ -363,32 +464,57 @@ public class HudScreenState extends AbstractAppState implements ScreenController
         showEndWavePopup();
     }
    
+    /**
+     * Aktiviert oder Deaktiviert den Debugmodus. Dieser zeigt im Spiel die Speilerposition an. (Im mom. noch eher nutzlos)
+     * @param flag true = aktivieren, false = deaktivieren
+     */
     public void setDebugModeEnabled(boolean flag) {
         Element debugLayer =  screen.findElementByName("debug");
         debugLayer.setVisible(flag);
         debugMode = flag;
     }
     
+    /**
+     * Aktiviert oder Deaktiviert die Bauzeit/phase. Die gibt es nach dem Ende jeder Welle
+     * @param buildPhase  true = aktivieren, false = deaktivieren
+     */
     public void setBuildPhase(boolean buildPhase) {
         this.buildPhase = buildPhase;
     }
     
+    /**
+     * Setzt den Zeitpunkt an dem die nächste Welle, nach der Bauzeit anfängt. Dies wird jeweils beim aufrufen der Methode {@link HudScreenState#nextWave()} gesetzt
+     * und beim Starten den nächsten Welle mit {@link HudScreenState#startNextWave()} wieder zurückgesetzt.
+     * @param startWaveTime Zeit des Starts der nächsten Welle
+     */
     public void setStartWaveTime(long startWaveTime) {
         this.startWaveTime = startWaveTime;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void bind(Nifty nifty, Screen screen, Element element, Properties parameter, Attributes controlDefinitionAttributes) {
 //        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+     /**
+     * {@inheritDoc}
+     */
     public void init(Properties parameter, Attributes controlDefinitionAttributes) {
 //        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+     /**
+     * {@inheritDoc}
+     */
     public void onFocus(boolean getFocus) {
 //        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+     /**
+     * {@inheritDoc}
+     */
     public boolean inputEvent(NiftyInputEvent inputEvent) {
 //        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         return true;

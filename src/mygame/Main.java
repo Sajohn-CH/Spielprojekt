@@ -19,6 +19,7 @@ import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 
 /**
+ * Die Hauptklasse des Spiels. Sie initialisert alle Komponenten.
  * @author Samuel Martin und Florian Wenk
  */
 
@@ -31,7 +32,12 @@ public class Main extends SimpleApplication implements ActionListener{
     private static Game game;
     private boolean debugMode = true;
     private static AppSettings appSettings;
+    private Spatial scene;
     
+    /**
+     * Startet das Spiel bzw. die Simple-Application und legt gewisse Einstellungen fest.
+     * @param args 
+     */
     public static void main(String[] args) {
         app = new Main();
         
@@ -57,12 +63,17 @@ public class Main extends SimpleApplication implements ActionListener{
         app.start();
     }
 
+    /**
+     * Initialisiert das Spiel. Es Werden alle nötigen Objekte initialisiert: Die Welt ({@link World}) mit dem Spieler und Beacon, das Spiel ({@link Game}) und die 
+     * GUI mit den xml-Dateien und den zwei Controllers und Appstates ({@link HudScreenState}, {@link MyStartScreen}). Auch wird die Szenen gesetzt und die Kamera
+     * initialisiert.
+     */
     @Override
     public void simpleInitApp() {
         //Set this boolean true when the game loop should stop running when ever the window loses focus.
         app.setPauseOnLostFocus(true);
         
-        Spatial scene = assetManager.loadModel("Scenes/scene_1.j3o");
+        scene = assetManager.loadModel("Scenes/scene_1.j3o");
         scene.setLocalScale(2f);
         
         bulletAppState = new BulletAppState();
@@ -92,17 +103,6 @@ public class Main extends SimpleApplication implements ActionListener{
         app.getAssetManager().loadModel("Objects/MGTower.j3o");
         app.getAssetManager().loadModel("Objects/PyramidTower.j3o");
         
-//        n = new Node();             // attach to n to let disappear when player is there
-//        Node n1 = new Node();       // attach to n1 to make collision resistant
-                
-//        Bomb bomb = new Bomb(1);
-//        bomb.setSpeed(50);
-//        world.addBomb(bomb);
-//        
-//        Bomb bomb1 = new Bomb(1);
-//        bomb1.setSpeed(50);
-//        world.addBomb(bomb1);
-        
         NiftyJmeDisplay niftyDisplay = new NiftyJmeDisplay( assetManager, inputManager, audioRenderer, guiViewPort);
         //Create a new NiftyGui objects
         nifty = niftyDisplay.getNifty();
@@ -116,7 +116,6 @@ public class Main extends SimpleApplication implements ActionListener{
         
         hudState = (HudScreenState) nifty.getScreen("hud").getScreenController();
         //hudState.setPlayer(player);
-        hudState.setWorld(world);
         nifty.registerScreenController(hudState);
         stateManager.attach(hudState);
         
@@ -137,6 +136,9 @@ public class Main extends SimpleApplication implements ActionListener{
         changeDebugMode();
     }
     
+    /**
+     * Fügt Tastenbelegungen hinzu.
+     */
     private void setUpKeys() {
         //Allgemeine Tasten
         inputManager.addMapping("Menu", new KeyTrigger(KeyInput.KEY_ESCAPE), new KeyTrigger(KeyInput.KEY_PAUSE));
@@ -161,6 +163,10 @@ public class Main extends SimpleApplication implements ActionListener{
 //        inputManager.addListener(this, "item_scroll_down");
     }
     
+    /**
+     * {@inheritDoc}
+     * Definiert was bei welcher Tastenbelegung gemacht werden soll.
+     */
     @Override
     public void onAction(String binding, boolean isPressed, float tpf) {
         if(!getWorld().isPaused()){
@@ -192,11 +198,11 @@ public class Main extends SimpleApplication implements ActionListener{
         }    
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void simpleUpdate(float tpf) {
-//        if(!game.bombLeft() && world.getAllBombs().isEmpty() && waveEnded == 0){
-//            waveEnded = System.currentTimeMillis();
-//        }
         //Wenn Kamera DragToRotate ist, dann wird ein Menu angezeigt (Menu für Wellenende muss nicht angezeigt werden)
         if(!game.bombLeft() && world.getAllBombs().isEmpty() && !hudState.isCameraDragToRotate() && !hudState.isBuildPhase()){
             game.nextWave();
@@ -207,32 +213,57 @@ public class Main extends SimpleApplication implements ActionListener{
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void simpleRender(RenderManager rm) {
         //TODO: add render code
     }
     
+    /**
+     * Gibt die Welt ({@link World}) zurück.
+     * @return  Welt
+     */
     public static World getWorld() {
         return world;
     }
     
+    /**
+     * Gibt den HudScreenState zurück, der den HUD kontrolliert.
+     * @return HudScreenState
+     */
     public HudScreenState getHudState() {
         return hudState;
     }
     
+    /**
+     * Gibt BulletAppState zurück, der für Kollision zuständig ist.
+     * @return BulletAppState
+     */
     public static BulletAppState getBulletAppState(){
         return bulletAppState;
     }
     
+    /**
+     * Gibt das Game ({@link Game}) zurück. Dies steuert die Spielmechanik
+     * @return 
+     */
     public static Game getGame(){
         return game;
     }
     
+    /**
+     * Ändert die Debugmodus. Schaltet ihn aus, wenn er an war und umgekehrt.
+     */
     private void changeDebugMode() {
         debugMode = !debugMode;
         hudState.setDebugModeEnabled(debugMode);
     }
     
+    /**
+     * Wird aufgerufen, wenn das Spiel vorbei ist. Ruft den entsprechenden Bildschirm auf.
+     */
     public void gameOver() {
         getWorld().setPaused(true);
         getFlyByCamera().setDragToRotate(true);
@@ -253,5 +284,28 @@ public class Main extends SimpleApplication implements ActionListener{
             ex.printStackTrace();
         }
          nifty.addXml(file);
+    } 
+    
+    public void restartGame() {
+//        bulletAppState = new BulletAppState();
+//        stateManager.attach(bulletAppState);
+        
+        world.getPlayer().revive();
+        world.getPlayer().setMoney(250);
+        
+        Beacon beacon = new Beacon(new Vector3f(0, 0, 0), 100);
+        world = new World(beacon, world.getPlayer(), scene);
+        stateManager.attach(world);
+        world.setPaused(true);
+        
+        beacon.turn();
+        world.getPlayer().turn();
+        
+        rootNode.attachChild(world.getBombNode());
+        rootNode.attachChild(world.getTowerNode());
+        rootNode.attachChild(world.getBeacon().getSpatial());
+        
+        game = new Game(1);
+        game.startWave();
     }
 }
