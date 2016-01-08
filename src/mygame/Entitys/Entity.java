@@ -79,7 +79,7 @@ public class Entity {
         this.health = this.health + health;
         if(this.health <= 0) {
             this.health = 0;
-             die();
+            die();
         }     
     }
 

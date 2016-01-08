@@ -202,15 +202,9 @@ public class Main extends SimpleApplication implements ActionListener{
             game.nextWave();
             world.getPlayer().stopAudio();
             world.getPlayer().setNotWalking();
-//            waveEnded = 0;
         } else if (game.bombLeft()){
             game.action(tpf);
         }
-//        for (int i = 0; i < n.getChildren().size(); i++)
-//            if(!n.getChildren().isEmpty())
-//                if((cam.getLocation().getX()-1 < n.getChild(i).getLocalTranslation().add(n.getLocalTranslation()).getX() && cam.getLocation().getX()+1 > n.getChild(i).getLocalTranslation().add(n.getLocalTranslation()).getX()) && (cam.getLocation().getZ()-1 < n.getChild(i).getLocalTranslation().add(n.getLocalTranslation()).getZ() && cam.getLocation().getZ()+1 > n.getChild(i).getLocalTranslation().add(n.getLocalTranslation()).getZ()))
-//                    n.detachChildAt(0); // If cam is in box -> detach box
-       // world.getPlayer().action(tpf);
     }
 
     @Override
