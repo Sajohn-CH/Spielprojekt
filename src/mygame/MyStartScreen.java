@@ -129,6 +129,8 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
         }
         //Welle 1 starten
         Main.app.getGame().startWave(1);
+        //Falls Bauzeit/phase war diese Beenden (einfach auf false setzen)
+        Main.app.getHudState().setBuildPhase(false);
         
     }
     
@@ -150,7 +152,6 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
     /**
      * Lädt einen Spielstand von einer XML-Datei. Diese Datei ist aktuel immer "saveGame.xml". 
      */
-    //TODO: Geht nicht. Lädt nicht.
     public void loadGame() {
         File saveGame = new File("saveGame.xml");
         try{

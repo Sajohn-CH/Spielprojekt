@@ -33,7 +33,6 @@ public class HudScreenState extends AbstractAppState implements ScreenController
     private Screen screen;
     private SimpleDateFormat df = new SimpleDateFormat("HH:mm");
     private int itemSelected = 1;
-    //private long lastSelectionChanged; //Zeit, als das letzte Mal die Auswahl geändert wurde. Wird gebraucht um die Anzeige der Turmbeschreibung nach eine Zeitspannen verschwinden zu lassen
 
     private String[] descriptions = {"Zerstört Bomben: 20$", "Verlangsamt Bomben: 30$", "Macht schiessende Bomben schiessunfähig: 100$", "Upgraden", "Heilen: 1$ pro Lebenspunkt"};
 
@@ -41,7 +40,7 @@ public class HudScreenState extends AbstractAppState implements ScreenController
     private Tower tower;
     private Element endWavePopup;
     private boolean cameraDragToRotate = false;     //Ist nur dann true, wenn bei der aktuellen anzeige DragToRotate der FlyByCamera true ist (z.B: bei Popup)
-    long startWaveTime =  0;
+    private long startWaveTime =  0;
     private boolean buildPhase = false;
     private boolean debugMode = true;
     /**
@@ -472,15 +471,6 @@ public class HudScreenState extends AbstractAppState implements ScreenController
      */
     public void setBuildPhase(boolean buildPhase) {
         this.buildPhase = buildPhase;
-    }
-    
-    /**
-     * Setzt den Zeitpunkt an dem die nächste Welle, nach der Bauzeit anfängt. Dies wird jeweils beim aufrufen der Methode {@link HudScreenState#nextWave()} gesetzt
-     * und beim Starten den nächsten Welle mit {@link HudScreenState#startNextWave()} wieder zurückgesetzt.
-     * @param startWaveTime Zeit des Starts der nächsten Welle
-     */
-    public void setStartWaveTime(long startWaveTime) {
-        this.startWaveTime = startWaveTime;
     }
 
     /**
