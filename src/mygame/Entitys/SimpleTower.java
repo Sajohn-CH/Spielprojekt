@@ -28,7 +28,7 @@ public class SimpleTower extends Tower{
         this.setName("Zerstörender Turm");
         this.setPrice(20);
         this.increaseTotalPaidMoney(this.getPrice());
-        this.setLevel(29);
+        this.setLevel(1);
         this.setLocation(location);
         this.setLiving(true);
         this.setLocation(new Vector3f(location.x, 0, location.z));
