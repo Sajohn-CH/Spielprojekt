@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package mygame.Entitys;
 
 import com.jme3.audio.AudioNode;
@@ -51,6 +47,12 @@ public class Player extends Entity{
     private AudioNode buyAudio;
     private AudioNode notEnoughMoneyAudio;
     private AudioNode earnMoneyAudio;
+    
+    private int key_left = KeyInput.KEY_A;
+    private int key_right = KeyInput.KEY_D;
+    private int key_up = KeyInput.KEY_W;
+    private int key_down = KeyInput.KEY_S;
+    private int key_jump = KeyInput.KEY_SPACE;
     
     /**
      * Initialisiert den Spieler. Setzt Grundattribute des Spielers, erstellt die Waffe und Schusslinie und lädt die Töne.
@@ -141,11 +143,16 @@ public class Player extends Entity{
      */
     private void setUpKeys() {
         //Tasten um Spieler zu Steuern
-        Main.app.getInputManager().addMapping("Left", new KeyTrigger(KeyInput.KEY_A));
-        Main.app.getInputManager().addMapping("Right", new KeyTrigger(KeyInput.KEY_D));
-        Main.app.getInputManager().addMapping("Up", new KeyTrigger(KeyInput.KEY_W));
-        Main.app.getInputManager().addMapping("Down", new KeyTrigger(KeyInput.KEY_S));
-        Main.app.getInputManager().addMapping("Jump", new KeyTrigger(KeyInput.KEY_SPACE));
+        Main.app.getInputManager().deleteMapping("Left");
+        Main.app.getInputManager().addMapping("Left", new KeyTrigger(key_left));
+        Main.app.getInputManager().deleteMapping("Right");
+        Main.app.getInputManager().addMapping("Right", new KeyTrigger(key_right));
+        Main.app.getInputManager().deleteMapping("Up");
+        Main.app.getInputManager().addMapping("Up", new KeyTrigger(key_up));
+        Main.app.getInputManager().deleteMapping("Down");
+        Main.app.getInputManager().addMapping("Down", new KeyTrigger(key_down));
+        Main.app.getInputManager().deleteMapping("Jump");
+        Main.app.getInputManager().addMapping("Jump", new KeyTrigger(key_jump));
         Main.app.getInputManager().addMapping("Shoot", new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
         Main.app.getInputManager().addMapping("placeTower", new MouseButtonTrigger(MouseInput.BUTTON_RIGHT));
         Main.app.getInputManager().addListener(this.inputListener, "Left");
@@ -162,116 +169,116 @@ public class Player extends Entity{
      * @param binding Welche Taste gedrückt wurde.
      * @param isPressed Ob die Taste gedrückt oder losgelassen wurde.
      */
-   public void onAction(String binding, boolean isPressed){
-        if (binding.equals("Left")) {
-            left = isPressed;
-        } else if (binding.equals("Right")) {
-            right= isPressed;
-        } else if (binding.equals("Up")) {
-            up = isPressed;
-        } else if (binding.equals("Down")) {
-            down = isPressed;
-        } else if (binding.equals("Shoot") && this.isLiving()) {
-            if(isPressed) {
-                isShooting = true;
-                Main.app.getRootNode().attachChild(line);
-            }
-            if(!isPressed){
-                isShooting = false;
-                line.removeFromParent();
-            }
-        } else if (binding.equals("placeTower") && this.isLiving()) {
-            //if(!isPressed) verhindert, dass die Methode zweimal ausgeführt wird
-            if(isPressed && Main.app.getHudState().getSelectedItemNum() == 5) {
-                isHealing = true;
-            }
-            if(!isPressed) {
-                  if(Main.app.getHudState().getSelectedItemNum()==4) {
-                      this.upgradeObject();
-                  } else if(Main.app.getHudState().getSelectedItemNum() == 5) {
-                      isHealing = false;
-                      if(hasHealed){
-                        playAudioBought();
-                        hasHealed = false;
-                      }
-                  } else {
-                      this.placeTower();  
-                  }
-            }
-        } else if (binding.equals("Jump")) {
-          if (isPressed) {
-              player.jump();
-          }
+    public void onAction(String binding, boolean isPressed){
+         if (binding.equals("Left")) {
+             left = isPressed;
+         } else if (binding.equals("Right")) {
+             right= isPressed;
+         } else if (binding.equals("Up")) {
+             up = isPressed;
+         } else if (binding.equals("Down")) {
+             down = isPressed;
+         } else if (binding.equals("Shoot") && this.isLiving()) {
+             if(isPressed) {
+                 isShooting = true;
+                 Main.app.getRootNode().attachChild(line);
+             }
+             if(!isPressed){
+                 isShooting = false;
+                 line.removeFromParent();
+             }
+         } else if (binding.equals("placeTower") && this.isLiving()) {
+             //if(!isPressed) verhindert, dass die Methode zweimal ausgeführt wird
+             if(isPressed && Main.app.getHudState().getSelectedItemNum() == 5) {
+                 isHealing = true;
+             }
+             if(!isPressed) {
+                   if(Main.app.getHudState().getSelectedItemNum()==4) {
+                       this.upgradeObject();
+                   } else if(Main.app.getHudState().getSelectedItemNum() == 5) {
+                       isHealing = false;
+                       if(hasHealed){
+                         playAudioBought();
+                         hasHealed = false;
+                       }
+                   } else {
+                       this.placeTower();  
+                   }
+             }
+         } else if (binding.equals("Jump")) {
+           if (isPressed) {
+               player.jump();
+           }
+         }
+     }
+
+    /**
+     * Gibt zurück, ob genügend Zeit vergangen ist, um wieder zu schiessen.
+     * @return Ob wieder geschossen werden kann.
+     */
+    private boolean canShoot(){
+        if(System.currentTimeMillis()-shot >= 1000/shotsPerSecond){
+            shot = 0;
+            return true;
         }
+        return false;
     }
-   
-   /**
-    * Gibt zurück, ob genügend Zeit vergangen ist, um wieder zu schiessen.
-    * @return Ob wieder geschossen werden kann.
-    */
-   private boolean canShoot(){
-       if(System.currentTimeMillis()-shot >= 1000/shotsPerSecond){
-           shot = 0;
-           return true;
-       }
-       return false;
-   }
-    
-   /**
-    * {@inheritDoc }
-    */
-   @Override
-   public void action(float tpf){
-        camDir.set(Main.app.getCamera().getDirection()).multLocal(0.6f);
-        camLeft.set(Main.app.getCamera().getLeft()).multLocal(0.4f);
-        //Versucht y-Komponente zu entferen, damit man nicht nach oben/unten gehen kann
-        camDir.setY(0);
-        camLeft.setY(0);
-        walkDirection.set(0, 0, 0);
-        if (left) {
-            walkDirection.addLocal(camLeft);
-        }
-        if (right) {
-            walkDirection.addLocal(camLeft.negate());
-        }
-        if (up) {
-            walkDirection.addLocal(camDir);
-        }
-        if (down) {
-            walkDirection.addLocal(camDir.negate());
-        }
-        walkDirection.normalizeLocal();
-        walkDirection.multLocal(this.getSpeed() * tpf);
-        if(walkDirection.length() != 0){
-            walkAudio.play();
-        } else {
-            walkAudio.stop();
-        }
-        player.setWalkDirection(walkDirection);
-        Main.app.getCamera().setLocation(player.getPhysicsLocation());
-        
-        this.getSpatial().setLocalTranslation(Main.app.getCamera().getLocation().add(Main.app.getCamera().getUp().normalize().mult(-1.75f)).add(Main.app.getCamera().getLeft().normalize().mult(-.75f)).add(Main.app.getCamera().getDirection().normalize().mult(1.9f)));
-        this.getSpatial().lookAt(Main.app.getCamera().getDirection().mult(range).add(Main.app.getCamera().getLocation()), new Vector3f(0,1,0));
-        
-        if(isHealing) {
-            heal();
-        } 
-        if(isShooting){
-            shootAudio.play();
-            shoot();
-        } else {
-            shootAudio.stop();
-        }
-        if(!isLiving() && (isHealing || isShooting)){
-            isHealing = false;
-            isShooting = false;
-            line.removeFromParent();
-        }
-        if(!isLiving() && this.getSpatial().hasAncestor(Main.app.getRootNode())){
-            this.getSpatial().removeFromParent();
-        }
-    }
-    
+
+    /**
+     * {@inheritDoc }
+     */
+    @Override
+    public void action(float tpf){
+         camDir.set(Main.app.getCamera().getDirection()).multLocal(0.6f);
+         camLeft.set(Main.app.getCamera().getLeft()).multLocal(0.4f);
+         //Versucht y-Komponente zu entferen, damit man nicht nach oben/unten gehen kann
+         camDir.setY(0);
+         camLeft.setY(0);
+         walkDirection.set(0, 0, 0);
+         if (left) {
+             walkDirection.addLocal(camLeft);
+         }
+         if (right) {
+             walkDirection.addLocal(camLeft.negate());
+         }
+         if (up) {
+             walkDirection.addLocal(camDir);
+         }
+         if (down) {
+             walkDirection.addLocal(camDir.negate());
+         }
+         walkDirection.normalizeLocal();
+         walkDirection.multLocal(this.getSpeed() * tpf);
+         if(walkDirection.length() != 0){
+             walkAudio.play();
+         } else {
+             walkAudio.stop();
+         }
+         player.setWalkDirection(walkDirection);
+         Main.app.getCamera().setLocation(player.getPhysicsLocation());
+
+         this.getSpatial().setLocalTranslation(Main.app.getCamera().getLocation().add(Main.app.getCamera().getUp().normalize().mult(-1.75f)).add(Main.app.getCamera().getLeft().normalize().mult(-.75f)).add(Main.app.getCamera().getDirection().normalize().mult(1.9f)));
+         this.getSpatial().lookAt(Main.app.getCamera().getDirection().mult(range).add(Main.app.getCamera().getLocation()), new Vector3f(0,1,0));
+
+         if(isHealing) {
+             heal();
+         } 
+         if(isShooting){
+             shootAudio.play();
+             shoot();
+         } else {
+             shootAudio.stop();
+         }
+         if(!isLiving() && (isHealing || isShooting)){
+             isHealing = false;
+             isShooting = false;
+             line.removeFromParent();
+         }
+         if(!isLiving() && this.getSpatial().hasAncestor(Main.app.getRootNode())){
+             this.getSpatial().removeFromParent();
+         }
+     }
+
    /**
     * Fügt einem Objekt Schaden zu.
     * @param e Objekt, welchem Schadenzugefügt werden soll.
@@ -524,9 +531,6 @@ public class Player extends Entity{
      */
     public void increaseMoney(int money){
         this.money += money;
-        if(money > 0){
-            playAudioEarnMoney();
-        }
     }
     
     /**
@@ -759,5 +763,32 @@ public class Player extends Entity{
      */
     public void playAudioEarnMoney(){
         earnMoneyAudio.playInstance();
+    }
+    
+    /**
+     * Ändert die Tastaturbelegungen.
+     * @param key_left Taste um nach Links zu laufen
+     * @param key_right Taste um nach rechts zu laufen
+     * @param key_up Taste um geradeaus zu laufen
+     * @param key_down Taste um zurück zu laufen
+     * @param key_jump Taste um zu springen
+     */
+    public void replaceKeys(int key_left,
+            int key_right,
+            int key_up,
+            int key_down,
+            int key_jump){
+        if(key_left != 0)
+            this.key_left = key_left;
+        if(key_right != 0)
+            this.key_right = key_right;
+        if(key_up != 0)
+            this.key_up = key_up;
+        if(key_down != 0)
+            this.key_down = key_down;
+        if(key_jump != 0)
+            this.key_jump = key_jump;
+        
+        setUpKeys();
     }
 }

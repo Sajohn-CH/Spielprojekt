@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package mygame.Entitys;
 
 import com.jme3.bullet.collision.shapes.CollisionShape;
@@ -21,15 +17,15 @@ import mygame.Main;
  */
 public class DeactivationTower extends Tower{
       
-    RigidBodyControl towerC;
+    private RigidBodyControl towerC;
     private Geometry line;
-    private long shot;
     
     /**
      * Erstellt den Tower. Setzt wichtige Attribute des Turmes, ladet das Modell und erstellt die Schusslinie.
      * @param location 
      */
     public DeactivationTower (Vector3f location){
+        this.setName("Deaktivierender Turm");
         this.setPrice(100);
         this.increaseTotalPaidMoney(this.getPrice());
         this.setLevel(1);
@@ -40,6 +36,7 @@ public class DeactivationTower extends Tower{
         //Modell von: http://www.blendswap.com/blends/view/77840 (User: thanhkhmt1)
         //Bearbeitet von: Florian Wenk
         this.setSpatial(Main.app.getAssetManager().loadModel("Objects/PyramidTower.j3o").scale(0.5f));
+        this.getSpatial().setName("DeactivationTower");
         
         PointLight light1 = new PointLight();
         light1.setPosition(new Vector3f(location.x ,100, location.z));
@@ -177,6 +174,7 @@ public class DeactivationTower extends Tower{
     /**
      * Upgradet Turm. Überprüft, ob der Spieler genügend Geld hat, und falls das der Fall ist, wird das Geld abgezogen und derTurm upgegraded.
      */
+    @Override
     public void upgrade() {
          if(Main.app.getWorld().getPlayer().getMoney() >= getUpgradePrice()) {
             this.increaseTotalPaidMoney(getUpgradePrice());

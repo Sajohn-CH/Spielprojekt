@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package mygame.Entitys;
 
 import com.jme3.bullet.collision.shapes.CollisionShape;
@@ -21,7 +17,7 @@ import mygame.Main;
  */
 public class SimpleTower extends Tower{
     
-    RigidBodyControl towerC;
+    private RigidBodyControl towerC;
     private Geometry line;
     
     /**
@@ -29,9 +25,10 @@ public class SimpleTower extends Tower{
      * @param location Ort
      */
     public SimpleTower (Vector3f location){
+        this.setName("Zerstörender Turm");
         this.setPrice(20);
         this.increaseTotalPaidMoney(this.getPrice());
-        this.setLevel(1);
+        this.setLevel(29);
         this.setLocation(location);
         this.setLiving(true);
         this.setLocation(new Vector3f(location.x, 0, location.z));
