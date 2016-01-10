@@ -158,7 +158,7 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
     }
     
     /**
-     * Lädt einen Spielstand von einer XML-Datei. Diese Datei ist aktuel immer "saveGame.xml". 
+     * Lädt einen Spielstand von einer XML-Datei. Diese Datei ist aktuell immer "saveGame.xml". 
      */
     public void loadGame() {
         File saveGame = new File("saveGame.xml");

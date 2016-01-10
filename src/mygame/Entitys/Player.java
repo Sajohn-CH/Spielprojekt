@@ -229,24 +229,27 @@ public class Player extends Entity{
      */
     @Override
     public void action(float tpf){
-         camDir.set(Main.app.getCamera().getDirection()).multLocal(0.6f);
-         camLeft.set(Main.app.getCamera().getLeft()).multLocal(0.4f);
-         //Versucht y-Komponente zu entferen, damit man nicht nach oben/unten gehen kann
-         camDir.setY(0);
-         camLeft.setY(0);
-         walkDirection.set(0, 0, 0);
-         if (left) {
-             walkDirection.addLocal(camLeft);
-         }
-         if (right) {
-             walkDirection.addLocal(camLeft.negate());
-         }
-         if (up) {
-             walkDirection.addLocal(camDir);
-         }
-         if (down) {
-             walkDirection.addLocal(camDir.negate());
-         }
+          if (!Main.app.getFlyByCamera().isDragToRotate() && !Main.app.getWorld().isPaused() && !player.isEnabled()) {
+              player.setEnabled(true);
+          }
+          camDir.set(Main.app.getCamera().getDirection()).multLocal(0.6f);
+          camLeft.set(Main.app.getCamera().getLeft()).multLocal(0.4f);
+          //Versucht y-Komponente zu entferen, damit man nicht nach oben/unten gehen kann
+          camDir.setY(0);
+          camLeft.setY(0);
+          walkDirection.set(0, 0, 0);
+          if (left) {
+              walkDirection.addLocal(camLeft);
+          }
+          if (right) {
+              walkDirection.addLocal(camLeft.negate());
+          } 
+          if (up) {
+              walkDirection.addLocal(camDir);
+          }
+          if (down) {
+              walkDirection.addLocal(camDir.negate());
+          }
          walkDirection.normalizeLocal();
          walkDirection.multLocal(this.getSpeed() * tpf);
          if(walkDirection.length() != 0){
@@ -256,7 +259,6 @@ public class Player extends Entity{
          }
          player.setWalkDirection(walkDirection);
          Main.app.getCamera().setLocation(player.getPhysicsLocation());
-
          this.getSpatial().setLocalTranslation(Main.app.getCamera().getLocation().add(Main.app.getCamera().getUp().normalize().mult(-1.75f)).add(Main.app.getCamera().getLeft().normalize().mult(-.75f)).add(Main.app.getCamera().getDirection().normalize().mult(1.9f)));
          this.getSpatial().lookAt(Main.app.getCamera().getDirection().mult(range).add(Main.app.getCamera().getLocation()), new Vector3f(0,1,0));
 
@@ -734,6 +736,8 @@ public class Player extends Entity{
         right = false;
         up = false;
         down = false;
+        walkDirection = new Vector3f(0, 0, 0);
+        player.setEnabled(false);
     }
     
     /**
