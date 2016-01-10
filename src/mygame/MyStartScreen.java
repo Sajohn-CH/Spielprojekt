@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package mygame;
 
 import com.jme3.app.Application;
@@ -121,7 +117,7 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
             Main.app.getFlyByCamera().setRotationSpeed(1);
         }
         Main.getWorld().setPaused(false);
-        
+      
         //Spiel zurücksetzen.
 //        Main.app.restartGame();
         Main.app.getWorld().getPlayer().setLocation(new Vector3f(0,10,0));
