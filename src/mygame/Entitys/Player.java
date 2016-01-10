@@ -5,6 +5,8 @@ import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
 import com.jme3.bullet.control.CharacterControl;
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
+import com.jme3.effect.ParticleEmitter;
+import com.jme3.effect.ParticleMesh;
 import com.jme3.input.KeyInput;
 import com.jme3.input.MouseInput;
 import com.jme3.input.controls.InputListener;
@@ -33,6 +35,7 @@ public class Player extends Entity{
     private Vector3f camLeft = new Vector3f();
     private InputListener inputListener;
     private Geometry line;
+    private Geometry healingLine;
     private long shot;
     private boolean isShooting = false;
     private int money;
@@ -79,6 +82,11 @@ public class Player extends Entity{
         Material mat = new Material(Main.app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
         mat.setColor("Color", ColorRGBA.Red);
         line.setMaterial(mat);
+        
+        healingLine = new Geometry("line", new Line());
+        Material mat1 = new Material(Main.app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
+        mat1.setColor("Color", ColorRGBA.Cyan);
+        healingLine.setMaterial(mat1);
         
         //Modell von: http://www.blendswap.com/blends/view/67733 (User: genx473)
         //Beatrbeitet von: Florian Wenk
@@ -387,11 +395,15 @@ public class Player extends Entity{
             if(resultsBeacon.size() != 0){
                 Beacon beacon = Main.getWorld().getBeacon();
                     if(beacon.getHealth() < beacon.getMaxHealth() && this.getMoney() > 0) {
+                        Line l = new Line(this.getSpatial().getLocalTranslation().add(Main.app.getCamera().getUp().normalize().mult(1.3f)), resultsBeacon.getClosestCollision().getContactPoint());
+                        healingLine.setMesh(l);
+                        Main.app.getRootNode().attachChild(healingLine);
                         beacon.setHealth(beacon.getHealth()+1);
                         this.increaseMoney(-1);
                         hasHealed = true;
                     } else {
                         isHealing = false;
+                        healingLine.removeFromParent();
                     }
             }
         } else {
@@ -405,30 +417,42 @@ public class Player extends Entity{
                     //Beacon ist näher
                     Beacon beacon = Main.getWorld().getBeacon();
                     if(beacon.getHealth() < beacon.getMaxHealth() && this.getMoney() > 0) {
+                        Line l = new Line(this.getSpatial().getLocalTranslation().add(Main.app.getCamera().getUp().normalize().mult(1.3f)), pointBeacon);
+                        healingLine.setMesh(l);
+                        Main.app.getRootNode().attachChild(healingLine);
                         beacon.setHealth(beacon.getHealth()+1);
                         this.increaseMoney(-1);
                         hasHealed = true;
                     } else {
                         isHealing = false;
+                        healingLine.removeFromParent();
                     }
                 } else {
                     //ein Turm heilen
                     if(nearestTower.getHealth() < nearestTower.getMaxHealth() && this.getMoney() > 0) {
+                        Line l = new Line(this.getSpatial().getLocalTranslation().add(Main.app.getCamera().getUp().normalize().mult(1.3f)), resultsTower.getClosestCollision().getContactPoint());
+                        healingLine.setMesh(l);
+                        Main.app.getRootNode().attachChild(healingLine);
                         nearestTower.setHealth(nearestTower.getHealth()+1);
                         this.increaseMoney(-1);
                         hasHealed = true;
                     } else {
                         isHealing = false;
+                        healingLine.removeFromParent();
                     }
                 }
             } else {
                 //ein Turm heilen
                 if(nearestTower.getHealth() < nearestTower.getMaxHealth() && this.getMoney() > 0) {
+                    Line l = new Line(this.getSpatial().getLocalTranslation().add(Main.app.getCamera().getUp().normalize().mult(1.3f)), resultsTower.getClosestCollision().getContactPoint());
+                    healingLine.setMesh(l);
+                    Main.app.getRootNode().attachChild(healingLine);
                     nearestTower.setHealth(nearestTower.getHealth()+1);
                     this.increaseMoney(-1);
                     hasHealed = true;
                 } else {
                     isHealing = false;
+                    healingLine.removeFromParent();
                 }
             }
         }

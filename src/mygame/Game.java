@@ -78,7 +78,7 @@ public class Game {
      */
     public void nextWave(){
         // Bonus für welle überstanden
-        Main.app.getWorld().getPlayer().increaseMoney(this.wave * 50);
+        Main.app.getWorld().getPlayer().increaseMoney((int) Math.sqrt(this.wave) * 75);
         Main.app.getWorld().getPlayer().playAudioEarnMoney();
         this.wave += 1;
         //Wenn Player tot, wiederbeleben.

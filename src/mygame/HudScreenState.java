@@ -35,7 +35,7 @@ public class HudScreenState extends AbstractAppState implements ScreenController
     private int itemSelected = 1;
     //private long lastSelectionChanged; //Zeit, als das letzte Mal die Auswahl geändert wurde. Wird gebraucht um die Anzeige der Turmbeschreibung nach eine Zeitspannen verschwinden zu lassen
 
-    private String[] descriptions = {"Zerstört Bomben: 20$", "Verlangsamt Bomben: 30$", "Macht schiessende Bomben schiessunfähig: 100$", "Upgraden", "Heilen: 1$ pro Lebenspunkt"};
+    private String[] descriptions = {"Zerstört Bomben: 100$", "Verlangsamt Bomben: 150$", "Macht schiessende Bomben schiessunfähig: 200$", "Upgraden", "Heilen: 1$ pro Lebenspunkt"};
 
     private Element towerPopup;
     private Tower tower;

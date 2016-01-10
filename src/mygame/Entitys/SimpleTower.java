@@ -3,9 +3,12 @@ package mygame.Entitys;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
+import com.jme3.collision.CollisionResult;
+import com.jme3.collision.CollisionResults;
 import com.jme3.light.PointLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.Ray;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.shape.Line;
@@ -26,7 +29,7 @@ public class SimpleTower extends Tower{
      */
     public SimpleTower (Vector3f location){
         this.setName("Zerstörender Turm");
-        this.setPrice(20);
+        this.setPrice(100);
         this.increaseTotalPaidMoney(this.getPrice());
         this.setLevel(1);
         this.setLocation(location);
@@ -63,6 +66,7 @@ public class SimpleTower extends Tower{
         CollisionShape towerShape = CollisionShapeFactory.createMeshShape(this.getSpatial());
         towerC = new RigidBodyControl(towerShape, 0);
         this.getSpatial().addControl(towerC);
+        towerC.setKinematic(true);
         Main.getBulletAppState().getPhysicsSpace().add(towerC);
     }
     

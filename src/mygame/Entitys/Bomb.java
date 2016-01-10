@@ -169,8 +169,8 @@ public class Bomb extends Entity{
       */
     public void decreaseSpeed (int speed){
         this.decreasedSpeed += speed;
-        if(decreasedSpeed >= 50-this.getLevel()*2+Main.getGame().getWave()*2){
-            decreasedSpeed = (50-this.getLevel()*2+Main.getGame().getWave()*2)-10;
+        if(decreasedSpeed >= (50-this.getLevel()*2+Main.getGame().getWave()*2)-10-getLevel()*2){
+            decreasedSpeed = (50-this.getLevel()*2+Main.getGame().getWave()*2)-10-getLevel()*2;
         }
         this.setSpeed((50-this.getLevel()*2+Main.getGame().getWave()*2) - decreasedSpeed);
     }

@@ -26,7 +26,7 @@ public class DeactivationTower extends Tower{
      */
     public DeactivationTower (Vector3f location){
         this.setName("Deaktivierender Turm");
-        this.setPrice(100);
+        this.setPrice(200);
         this.increaseTotalPaidMoney(this.getPrice());
         this.setLevel(1);
         this.setLocation(location);
@@ -67,7 +67,7 @@ public class DeactivationTower extends Tower{
         
         line = new Geometry("line");
         Material matL = new Material(Main.app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
-        matL.setColor("Color", ColorRGBA.Red);
+        matL.setColor("Color", ColorRGBA.Magenta);
         line.setMaterial(matL);
     }
     
@@ -79,6 +79,7 @@ public class DeactivationTower extends Tower{
         CollisionShape towerShape = CollisionShapeFactory.createMeshShape(this.getSpatial());
         towerC = new RigidBodyControl(towerShape, 0);
         this.getSpatial().addControl(towerC);
+        towerC.setKinematic(true);
         Main.getBulletAppState().getPhysicsSpace().add(towerC);
     }
     
@@ -90,9 +91,9 @@ public class DeactivationTower extends Tower{
         for(int i = 0; i < Main.getWorld().getAllBombs().size(); i++){
             Bomb bomb = Main.getWorld().getAllBombs().get(i);
             if(bomb.getSpatial().getLocalTranslation().subtract(this.getSpatial().getLocalTranslation()).length() <= this.getRange() && bomb.getSpatial().getName().equals("shootingBomb") && this.canShoot()){
-                this.getSpatial().lookAt(bomb.getSpatial().getLocalTranslation().add(Main.getWorld().getBombNode().getLocalTranslation()), new Vector3f(0,1,0));
                 ShootingBomb sBomb = (ShootingBomb) bomb;
                 if(sBomb.isShooting()){
+                this.getSpatial().lookAt(bomb.getSpatial().getLocalTranslation().add(Main.getWorld().getBombNode().getLocalTranslation()), new Vector3f(0,1,0));
                     this.disableShooting(sBomb);
                     Line l = new Line(this.getSpatial().getLocalTranslation().add(0,4,0), bomb.getSpatial().getLocalTranslation());
                     line.setMesh(l);

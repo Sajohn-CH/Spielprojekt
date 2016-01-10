@@ -26,7 +26,7 @@ public class SloweringTower extends Tower{
      */
     public SloweringTower(Vector3f location) {
         this.setName("Verlangsamender Turm");
-        this.setPrice(30);
+        this.setPrice(150);
         this.increaseTotalPaidMoney(this.getPrice());
         this.setLevel(1);
         this.setLocation(location);
@@ -71,6 +71,7 @@ public class SloweringTower extends Tower{
         CollisionShape towerShape = CollisionShapeFactory.createBoxShape(this.getSpatial());
         towerC = new RigidBodyControl(towerShape, 0);
         this.getSpatial().addControl(towerC);
+        towerC.setKinematic(true);
         Main.getBulletAppState().getPhysicsSpace().add(towerC);
     }
     
@@ -89,10 +90,8 @@ public class SloweringTower extends Tower{
     public void action(float tpf) {
         for(int i = 0; i < Main.getWorld().getAllBombs().size(); i++){
             Bomb bomb = Main.getWorld().getAllBombs().get(i);
-            if(bomb.getSpatial().getLocalTranslation().subtract(this.getSpatial().getLocalTranslation()).length() <= this.getRange() && this.canShoot()){
+            if(bomb.getSpatial().getLocalTranslation().subtract(this.getSpatial().getLocalTranslation()).length() <= this.getRange() && isLiving() && canShoot() && bomb.getDecreasedSpeed() < bomb.getSpeed()-10-getLevel()*2){
                 this.getSpatial().lookAt(bomb.getSpatial().getLocalTranslation().add(Main.getWorld().getBombNode().getLocalTranslation()).setY(0), new Vector3f(0,1,0));
-            }
-            if(bomb.getSpatial().getLocalTranslation().subtract(this.getSpatial().getLocalTranslation()).length() <= this.getRange() && isLiving() && canShoot() && bomb.getDecreasedSpeed() < bomb.getSpeed()-1){
                Vector3f vec = bomb.getSpatial().getLocalTranslation().subtract(this.getSpatial().getLocalTranslation()).normalize().mult(3.15f).setY(5.925f);
                Line l = new Line(this.getSpatial().getLocalTranslation().add(vec), bomb.getSpatial().getLocalTranslation());
                line.setMesh(l);
@@ -137,7 +136,7 @@ public class SloweringTower extends Tower{
      */
     @Override
     public int getNewDamage(int newLevel) {
-        return 5+newLevel*5;
+        return 2+newLevel*2;
     }
     
     /**
@@ -153,7 +152,7 @@ public class SloweringTower extends Tower{
      */
     @Override
     public double getNewSPS(int newLevel) {
-        return 0.5+newLevel*0.5;
+        return 0.125+newLevel*0.125;
     }
     
     /**
