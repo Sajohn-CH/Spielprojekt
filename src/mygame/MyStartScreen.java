@@ -206,7 +206,6 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
             pos.setX(Float.valueOf(posEle.getAttribute("x")));
             pos.setY(Float.valueOf(posEle.getAttribute("y")));
             pos.setZ(Float.valueOf(posEle.getAttribute("z")));
-            System.out.println("Set pos of Player at: "+pos);
             player.setLocation(pos);
             //Schaut ob Player tot ist
             if(player.getHealth() <= 0) {
@@ -308,6 +307,9 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
        nifty.gotoScreen("start");
    }
    
+   /**
+    * Wechselt zwischen aktivierten und deaktivieren Mausrad. Das Mausrad kann gebraucht werden um zwischen den einzelnen Slots in der Leiste zu wechseln.
+    */
    public void toggleScroll() {
        Settings settings = Main.app.getSettings();
        
@@ -328,6 +330,9 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
        Main.app.setUpKeys();
    }
    
+   /**
+    * Wechselt zum Einstellungsbildschirm.
+    */
    public void gotoSettings() {
        nifty.gotoScreen("settings"); 
    }   
