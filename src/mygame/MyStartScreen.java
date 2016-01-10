@@ -325,6 +325,7 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
            settings.setUseScroll(false);
        }  
        
+       Main.app.deleteKeys();
        Main.app.setUpKeys();
    }
    

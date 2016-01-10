@@ -33,9 +33,8 @@ public class Main extends SimpleApplication implements ActionListener{
     private static Game game;           //Das "Spiel". Kontrolliert die Wellengenerierung
     private boolean debugMode = true;   //Gibt an ob der Debugmodus aktiviert ist.
     private static AppSettings appSettings;     //Die Einstellungen der Applications (kommt von der JMonkeyApplication). Sie ist für Auflösung etc. zuständig
-    private Settings settings;          //Die selber erstellten Einstellungen. Sie ist für die Tastenbelegung etc. zuständig.
-    private Spatial scene;              //Die Spielszene
-    
+    private Settings settings;          //Die selber erstellten Einstellungen. Sie ist für die Tastenbelegung etc. zuständig.   
+    private Spatial scene;              //Die Spielszene  
     
     /**
      * Startet das Spiel bzw. die Simple-Application und legt gewisse Einstellungen fest.
@@ -143,30 +142,23 @@ public class Main extends SimpleApplication implements ActionListener{
     /**
      * Fügt Tastenbelegungen hinzu.
      */
-    //Change in diagramm private -> public
     public void setUpKeys() {
-        String[] key_items = settings.getKeys_items();
+        String[] key_items = settings.getKeysItems();
         //Allgemeine Tasten
         inputManager.addMapping("Menu", new KeyTrigger(KeyInput.KEY_ESCAPE), new KeyTrigger(KeyInput.KEY_PAUSE));
         inputManager.addListener(this, "Menu");
         //Tasten für SchnelleisteSlots
-        inputManager.deleteMapping("item_1");
         inputManager.addMapping("item_1", new KeyTrigger(settings.getKeyCode(key_items[0])));
         inputManager.addListener(this, "item_1");
-        inputManager.deleteMapping("item_2");
         inputManager.addMapping("item_2", new KeyTrigger(settings.getKeyCode(key_items[1])));
         inputManager.addListener(this, "item_2");
-        inputManager.deleteMapping("item_3");
         inputManager.addMapping("item_3", new KeyTrigger(settings.getKeyCode(key_items[2])));
         inputManager.addListener(this, "item_3");
-        inputManager.deleteMapping("item_4");
         inputManager.addMapping("item_4", new KeyTrigger(settings.getKeyCode(key_items[3])));
         inputManager.addListener(this, "item_4");
-        inputManager.deleteMapping("item_5");
         inputManager.addMapping("item_5", new KeyTrigger(settings.getKeyCode(key_items[4])));
         inputManager.addListener(this, "item_5");
-        inputManager.deleteMapping("debug");
-        inputManager.addMapping("debug", new KeyTrigger(settings.getKeyCode(settings.getKey_debug())));
+        inputManager.addMapping("debug", new KeyTrigger(settings.getKeyCode(settings.getKeyDebug())));
         inputManager.addListener(this, "debug");
         //Mausrad
         if(settings.isUseScroll()) {
@@ -175,6 +167,24 @@ public class Main extends SimpleApplication implements ActionListener{
             inputManager.addMapping("item_scroll_down", new MouseAxisTrigger(MouseInput.AXIS_WHEEL, true));
             inputManager.addListener(this, "item_scroll_down");
         }
+    }
+    
+    /**
+     * Löscht alle Taste der Tastaturbelegung. Wird gebraucht, damit man mit {@link Main#setUpKeys()} wieder neue hinzufügen kann.
+     */
+    public void deleteKeys() {
+        //Allgemeine Tasten
+        inputManager.deleteMapping("Menu");
+        //Tasten für SchnelleisteSlots
+        inputManager.deleteMapping("item_1");
+        inputManager.deleteMapping("item_2");
+        inputManager.deleteMapping("item_3");
+        inputManager.deleteMapping("item_4");
+        inputManager.deleteMapping("item_5");
+        inputManager.deleteMapping("debug");
+        //Mausrad
+        inputManager.deleteMapping("item_scroll_up");
+        inputManager.deleteMapping("item_scroll_down");
     }
     
     /**
@@ -300,6 +310,10 @@ public class Main extends SimpleApplication implements ActionListener{
          nifty.addXml(file);
     }
     
+    /**
+     * Gibt das Einstellungsobjekt, in dem alle Tastaturbelegungen gepseichert sind zurück.
+     * @return Einstellungen
+     */
     public Settings getSettings() {
         return settings;
     }

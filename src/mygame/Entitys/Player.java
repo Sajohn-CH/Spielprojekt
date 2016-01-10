@@ -74,11 +74,12 @@ public class Player extends Entity{
         hasHealed = false;
         shotsPerSecond = 50;
         range = 100;
-        key_left = KeyInput.KEY_A;
-        key_right = KeyInput.KEY_D;
-        key_up = KeyInput.KEY_W;
-        key_down = KeyInput.KEY_S;
-        key_jump = KeyInput.KEY_SPACE;
+        String[] keys_walking = Main.app.getSettings().getKeysWalking();
+        key_left = Main.app.getSettings().getKeyCode(keys_walking[0]);
+        key_right = Main.app.getSettings().getKeyCode(keys_walking[1]);
+        key_up = Main.app.getSettings().getKeyCode(keys_walking[2]);
+        key_down = Main.app.getSettings().getKeyCode(keys_walking[3]);
+        key_jump = Main.app.getSettings().getKeyCode(Main.app.getSettings().getKeyJump());
         
         money = 250;
         this.inputListener = inputListener;
@@ -813,27 +814,15 @@ public class Player extends Entity{
     
     /**
      * Ändert die Tastaturbelegungen.
-     * @param key_left Taste um nach Links zu laufen
-     * @param key_right Taste um nach rechts zu laufen
-     * @param key_up Taste um geradeaus zu laufen
-     * @param key_down Taste um zurück zu laufen
+     * @param keys_walking //Tasten zum Laufen. Reihenfolge, left, right, up, down.
      * @param key_jump Taste um zu springen
      */
-    public void replaceKeys(int key_left,
-            int key_right,
-            int key_up,
-            int key_down,
-            int key_jump){
-        if(key_left != 0)
-            this.key_left = key_left;
-        if(key_right != 0)
-            this.key_right = key_right;
-        if(key_up != 0)
-            this.key_up = key_up;
-        if(key_down != 0)
-            this.key_down = key_down;
-        if(key_jump != 0)
-            this.key_jump = key_jump;
+    public void replaceKeys(String[] keys_walking, String key_jump){
+        key_left = Main.app.getSettings().getKeyCode(keys_walking[0]);
+        key_right = Main.app.getSettings().getKeyCode(keys_walking[1]);
+        key_up = Main.app.getSettings().getKeyCode(keys_walking[2]);
+        key_down = Main.app.getSettings().getKeyCode(keys_walking[3]);
+        this.key_jump = Main.app.getSettings().getKeyCode(key_jump);
         
         setUpKeys();
     }

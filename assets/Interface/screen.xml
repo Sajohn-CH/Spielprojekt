@@ -119,8 +119,6 @@
                     </control>-->
                 </panel>
             </panel>
-            
-           
             <control name="button" id="saveSettings" label="Einstellungen speichern">
             <interact onClick="saveSettings()"/>
         </control>
