@@ -58,7 +58,7 @@ public class Main extends SimpleApplication implements ActionListener{
         appSettings.setFrameRate(60);
         //AppSettings hinzufügen
         app.setSettings(appSettings);
-        app.setShowSettings(false);
+//        app.setShowSettings(false);
         //Start into Fullscreen
         appSettings.setFullscreen(device.isFullScreenSupported());
         

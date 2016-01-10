@@ -107,8 +107,7 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
             Main.app.getFlyByCamera().setRotationSpeed(1);
         }
         Main.getWorld().setPaused(false);
-        //InfoBildschirm anzeigen
-        Main.app.getHudState().toggleHelpLayer();
+       
     }
     
     /**
@@ -134,7 +133,8 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
         Main.app.getGame().startWave(1);
         //Falls Bauzeit/phase war diese Beenden (einfach auf false setzen)
         Main.app.getHudState().setBuildPhase(false);
-        
+         //InfoBildschirm anzeigen
+        Main.app.getHudState().toggleHelpLayer();
     }
     
     /**
