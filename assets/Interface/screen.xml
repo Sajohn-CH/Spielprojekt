@@ -12,7 +12,7 @@
             <!-- Vordergrund-->
             <panel id="panel_top" height="25%" width="75%" align="center" childLayout="center" >
                 <!-- Name des Spiels-->
-                <text text="Spielname" font="Interface/Fonts/Arial.fnt" width="100%" height="100%" />
+                <text text="First Person View Tower Defense" font="Interface/Fonts/Arial.fnt" width="100%" height="100%" color="#000000ff"/>
             </panel>
             <panel id="panel_mid" height="25%" width="75%" align="center" childLayout="horizontal" >
                 <!-- Knopf zum Starten des Spiels-->
