@@ -99,27 +99,26 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
      * Führt das Spiel weiter aus.
      */
     public void continueGame() {
+        //Zum richtigen Bildschirm wechseln
         nifty.gotoScreen("hud");
+        //Kamera ändern
         Main.app.getFlyByCamera().setDragToRotate(Main.app.getHudState().isCameraDragToRotate());
          if(!Main.app.getFlyByCamera().isDragToRotate()){
             Main.app.getFlyByCamera().setRotationSpeed(1);
         }
         Main.getWorld().setPaused(false);
+        //InfoBildschirm anzeigen
+        Main.app.getHudState().toggleHelpLayer();
     }
     
     /**
      * Startet das Spiel.
      */
     public void startGame() {
-        nifty.gotoScreen("hud");
-        Main.app.getFlyByCamera().setDragToRotate(Main.app.getHudState().isCameraDragToRotate());
-        if(!Main.app.getFlyByCamera().isDragToRotate()){
-            Main.app.getFlyByCamera().setRotationSpeed(1);
-        }
-        Main.getWorld().setPaused(false);
-      
-        //Spiel zurücksetzen.
-//        Main.app.restartGame();
+        //Spiel fortsetzen
+        continueGame();
+        
+        //Spielstand zurücksetzen.
         Main.app.getWorld().getPlayer().setLocation(new Vector3f(0,10,0));
         Main.app.getWorld().getPlayer().revive();
         Main.app.getWorld().getPlayer().setMoney(250);
