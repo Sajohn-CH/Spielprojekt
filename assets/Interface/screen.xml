@@ -101,11 +101,12 @@
         
         <layer id="foreground" childLayout="center">
             <panel width="100%" height="80%" childLayout="horizontal">
+                <!-- Beschriftungen-->
                 <panel id="#labels" width="70%" height="100%" childLayout="vertical">
                     <text text="Mausrad benutzen um Auswahl in der Leiste zu ändern" font="Interface/Fonts/Arial.fnt"/>
-                    <!--<text text="Tastaturbelegung für Slot 1" font="Interface/Fonts/Arial.fnt"/>-->
                 </panel>
                 <panel id="#buttons" width="30%" height="100%" childLayout="vertical">
+                    <!-- knöpfe zum (De)Aktivieren-->
                     <panel childLayout="horizontal">
                         <control name="button" id="enableScroll" label="An">
                             <interact onClick="toggleScroll()"/>
@@ -114,14 +115,12 @@
                             <interact onClick="toggleScroll()"/>
                         </control>
                     </panel>
-                    <!--<control id="choseKey_Slot1" name="button" label="Taste wählen">
-                        <interact onClick="showSelectKeyPopup()"/>
-                    </control>-->
                 </panel>
             </panel>
+            <!-- Knopf zum Verlassen der Einstellungen-->
             <control name="button" id="saveSettings" label="Einstellungen speichern">
-            <interact onClick="saveSettings()"/>
-        </control>
+                <interact onClick="saveSettings()"/>
+            </control>
         </layer>
         
     </screen>

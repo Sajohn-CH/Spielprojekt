@@ -115,8 +115,9 @@ public class HudScreenState extends AbstractAppState implements ScreenController
     public void bind(Nifty nifty, Screen screen) {
         this.nifty = nifty;
         this.screen = screen;
-        System.out.println("bind("+screen.getScreenId()+")");        
-        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        System.out.println("bind("+screen.getScreenId()+")");      
+        //Deaktiviert den Hilfebildschirm
+        toggleHelpLayer();
     }
 
     /**
@@ -525,5 +526,26 @@ public class HudScreenState extends AbstractAppState implements ScreenController
     public boolean inputEvent(NiftyInputEvent inputEvent) {
 //        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         return true;
+    }
+    
+    /**
+     * Aktiviert oder Deaktiviert den Hilfebildschirm, je nach dem ob er zuvor aktiviert oder deaktiviert war.
+     */
+    public void toggleHelpLayer() {
+        Main.app.getWorld().getPlayer().stopAudio();
+        Element helpLayer = screen.findElementByName("help");
+        if(helpLayer.isVisible()) {
+            helpLayer.setVisible(false);
+            Main.app.getFlyByCamera().setDragToRotate(false);
+            cameraDragToRotate = false;
+            Main.app.getWorld().setPaused(false);
+        } else {
+            helpLayer.setVisible(true);
+            Main.app.getFlyByCamera().setDragToRotate(true);
+            cameraDragToRotate = true;
+            Main.app.getWorld().setPaused(true);
+        }
+       
+        
     }
 }

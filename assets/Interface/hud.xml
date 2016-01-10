@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <nifty xmlns="http://nifty-gui.sourceforge.net/nifty-1.3.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://nifty-gui.sourceforge.net/nifty-1.3.xsd http://nifty-gui.sourceforge.net/nifty-1.3.xsd">
-  <!--HUD-Bildschirm. Der HUD ist das, was über der 3D-Grafik angezeigt wird. -->
+    <useStyles filename="nifty-default-styles.xml" />
+    <useControls filename="nifty-default-controls.xml" />
+    <!--HUD-Bildschirm. Der HUD ist das, was über der 3D-Grafik angezeigt wird. -->
     <screen id="hud" controller="mygame.HudScreenState">
         <!--Hintergrundschicht, bei der das Fadenkreuz als "+" angezgeigt wird. Es ist das einzige Element im Hintergrund, damit es in der Mitte angezeigt wird. -->
         <layer id="background" childLayout="center">
@@ -76,6 +78,44 @@
                 </panel>
             </panel>
             <panel childLayout="center" width="100%" height="70%"/>
+        </layer>
+        
+        <!-- Layer, die eine Hilfestellung anzeigt -->
+        <layer id="help" childLayout="center">
+            <!-- Sorgt dafür, dass bei einem Klick irgendwohin das Layer unsichtbar gemacht wird-->
+            <interact onClick="toggleHelpLayer()"/>
+            <panel childLayout="vertical" width="90%" height="90%" backgroundColor="#00fffff3">
+                <!-- Spielbeschreibung -->
+                <text text="Tutorial" font="Interface/Fonts/Arial.fnt"/>
+                <text text="Ziel des Spiels:" font="Interface/Fonts/Arial.fnt"/>
+                <text text="Ziel des Spieles ist die Drohne in der Kartenmitte vor den angreifenden Bomben zu verteidigen." font="Interface/Fonts/Arial.fnt"/>
+                <text text="Diese folgen immer dem markiertem Weg zur Drohne. Es gibt zwei Arten von Bomben:" font="Interface/Fonts/Arial.fnt"/> 
+                <text text="Die normale und die schiessende Bombe. Die schiessende Bombe schiesst auf Türme und den Spieler, wenn diese sich in Reichweite befinden." font="Interface/Fonts/Arial.fnt"/>
+                <text text="Eine normale Bomben dagegen macht nur Schaden wenn man in sie rein läuft oder sie die Drohne trifft." font="Interface/Fonts/Arial.fnt"/>
+                <text text="Zur Verteidigung können Türme errichtet werden und der Spieler kann selber schiessen. Es stehen folgende Trüme zur Verfügung:" font="Interface/Fonts/Arial.fnt"/>
+                <panel childLayout="horizontal" width="100%" height="30%">
+                    <!-- Bilder der Türme-->
+                    <panel width="30%" height="100%" childLayout="vertical">
+                        <image filename="Interface/tower-1.png" width="100%" height="30%"/>
+                        <image filename="Interface/tower-2.png" width="100%" height="30%"/>
+                        <image filename="Interface/tower-3.png" width="100%" height="30%"/>
+                    </panel>
+                    <!-- Turmbeschreibungen-->
+                    <panel width="70%" height="100%" childLayout="vertical">
+                        <text text="Dieser Turm kann Bomben zerstören indem er auf sie schiesst." font="Interface/Fonts/Arial.fnt" width="100%" height="30%"/>
+                        <text text="Dieser Turm verlangsamt jede Bombe auf die er schiesst." font="Interface/Fonts/Arial.fnt" width="100%" height="30%"/>
+                        <text text="Dieser Turm kann eine schiessende Bombe zu einer normalen Bombe umfunktioniern." font="Interface/Fonts/Arial.fnt" width="100%" height="30%"/>
+                    </panel>
+                </panel>
+                <!-- weitere Erklärungen -->
+                <text text="Der Spieler kann mit dem grünen Plus einen Turm upgraden, also verbessern und mit dem roten Herz sich selber, einen Turm oder die Drohne heilen." font="Interface/Fonts/Arial.fnt"/>
+                <text text="Um einen Turm zu setzen, zu heilen oder upzugraden muss man die rechte Maustaste drücken, während unten, in der Leiste das entsprechende Symbol ausgewählt wurde." font="Interface/Fonts/Arial.fnt"/>
+                <text text="Die Auswahl kann man ändern in dem man die Zahlen 1-5 auf der Tastatur drückt (oder alternativ mit dem Mausrad," font="Interface/Fonts/Arial.fnt"/>
+                <text text="was aber zuerst in den Einstellungen aktiviert werden muss)." font="Interface/Fonts/Arial.fnt"/>
+                <text text="Zum Schiessen muss man die Linke Maustaste drücke, die Auswahl spielt dabei keine Rolle. Der Spieler bewegt sich mit den Tasten W,A,S,D." font="Interface/Fonts/Arial.fnt"/>
+                <text text="Mit der ESC-Taste ruft man das Pausenmenu auf." font="Interface/Fonts/Arial.fnt"/>
+                <text text="Um diesen Bildschirm erneut aufzurufen muss die F1-Taste gedrückt werden. Zum Schliessen dieses Bildschirms muss einmal die linke Maustaste gedrückt werden." font="Interface/Fonts/Arial.fnt"/>
+            </panel>
         </layer>
     </screen>
     
@@ -163,7 +203,7 @@
                 </panel> 
             </panel>
             <!-- Beaconupgrades -->
-            <text text="Beaconupgrade" font="Interface/Fonts/Arial.fnt" width="100%"/>
+            <text text="Upgrade der Drohne" font="Interface/Fonts/Arial.fnt" width="100%"/>
             <panel id="#beaconUpgrade" width="90%" childLayout="horizontal">
                 <text text="Lebenspunkte:" font="Interface/Fonts/Arial.fnt" width="50%"/>
                 <text text="" id="#BeaconUpgrade" font="Interface/Fonts/Arial.fnt" width="40%"/>

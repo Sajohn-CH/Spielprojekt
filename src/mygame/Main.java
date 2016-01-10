@@ -160,6 +160,8 @@ public class Main extends SimpleApplication implements ActionListener{
         inputManager.addListener(this, "item_5");
         inputManager.addMapping("debug", new KeyTrigger(settings.getKeyCode(settings.getKeyDebug())));
         inputManager.addListener(this, "debug");
+        inputManager.addMapping("help", new KeyTrigger(KeyInput.KEY_F1));
+        inputManager.addListener(this, "help");
         //Mausrad
         if(settings.isUseScroll()) {
             inputManager.addMapping("item_scroll_up", new MouseAxisTrigger(MouseInput.AXIS_WHEEL, false));
@@ -218,6 +220,8 @@ public class Main extends SimpleApplication implements ActionListener{
                 hudState.lastSelectedItem();
             } else if(binding.equals("debug") && isPressed) {
                 changeDebugMode();
+            } else if(binding.equals("help") && isPressed) {
+                hudState.toggleHelpLayer();
             }
         }    
     }
