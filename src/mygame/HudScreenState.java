@@ -29,20 +29,38 @@ import java.util.Properties;
  * @author Samuel Martin 
  */
 public class HudScreenState extends AbstractAppState implements ScreenController, Controller{
-    private Nifty nifty;
-    private Screen screen;
-    private SimpleDateFormat df = new SimpleDateFormat("HH:mm");
-    private int itemSelected = 1;
-
-    private String[] descriptions = {"Zerstört Bomben: 20$", "Verlangsamt Bomben: 30$", "Macht schiessende Bomben schiessunfähig: 100$", "Upgraden", "Heilen: 1$ pro Lebenspunkt"};
-
-    private Element towerPopup;
-    private Tower tower;
-    private Element endWavePopup;
-    private boolean cameraDragToRotate = false;     //Ist nur dann true, wenn bei der aktuellen anzeige DragToRotate der FlyByCamera true ist (z.B: bei Popup)
-    private long startWaveTime =  0;
-    private boolean buildPhase = false;
-    private boolean debugMode = true;
+    private Nifty nifty;            //Das Niftyobject das mit der Methode bind() übergeben wird. Wird benötigt um auf die graphische Oberfläche zuzugreifen
+    private Screen screen;          //Das Screenobject das mit der Methode bind() übergeben wird. Wird benötigt um auf die graphische Oberfläche zuzugreifen. Es repräsentiert den aktuell angezeigten Bildschirm.
+    private SimpleDateFormat df;    //Das Simpledate welches benötigt wird um die aktuelle Uhrzeit im Format Stunden:Minuten anzuzeigen.
+    private int itemSelected;       //Welcher Slot in der Leiste gerade ausgewählt ist.
+    private String[] descriptions;   //Alle Beschreibungen der Items, die in der Leiste ausgewählt werden können.
+    private Element towerPopup;     //Das Popup, welches erscheint, wenn man einen Turm upgraden will.
+    private Tower tower;            //Der Turm der geupgradet werden soll. Die Variable wird jedes Mal neu initialisiert.
+    private Element endWavePopup;   //Das Popup das am Ende jeder Welle erscheint.
+    private boolean cameraDragToRotate;     //Ist nur dann true, wenn bei der aktuellen anzeige DragToRotate der FlyByCamera true ist (z.B: bei Popup)
+    private long startWaveTime;        //Die Startzeit der nächsten Welle. Diese wird immer gesetzt, wenn eine Welle vorbei ist. Sie wird benötigt, da nach dem Ende erste eine Bauzeit/phase kommt, bevor die nächste startet.
+    private boolean buildPhase;     //Zeigt an ob gerade Bauzeit/phase ist.
+    private boolean debugMode;       //Zeigt an ob gerade der Debugmodus aktiviert ist.
+    
+    /**
+     * Konstruktor. Initialisiert alle Werte.
+     */
+    public HudScreenState() {
+        itemSelected = 1;
+        startWaveTime = 0;
+        cameraDragToRotate = false;
+        buildPhase = false;
+        debugMode = true;
+        df = new SimpleDateFormat("HH:mm");
+        descriptions = new String[5];
+        descriptions[0] = "Zerstört Bomben: 20$";
+        descriptions[1] = "Verlangsamt Bomben: 30$";
+        descriptions[2] = "Macht schiessende Bomben schiessunfähig: 100$";
+        descriptions[3] = "Upgraden";
+        descriptions[4] = "Heilen: 1$ pro Lebenspunkt";
+    }
+    
+    
     /**
      * {@inheritDoc}
      */
@@ -161,7 +179,7 @@ public class HudScreenState extends AbstractAppState implements ScreenController
      * Gibt dem geraden gewählten Turm zurück. Dieser Turm wird dann später gebaut. Falls etwas anderes als ein Turm im Itemslot ausgewählt wird sollte dies vorher 
      * herausgefiltert werden.
      * @param location Ort, an dem der Turm gebaut werden soll. 
-     * @return 
+     * @return gewählter Turm, der gebaut werden soll
      */
     public Tower getSelectedTower(Vector3f location) {
         switch(itemSelected) {
@@ -225,7 +243,7 @@ public class HudScreenState extends AbstractAppState implements ScreenController
    }
    
    /**
-    * Schliesst das Popup, welches mit {@link HudScreenState#showUpgradeTower(mygame.Tower, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)} geöffnet, wurde wieder.
+    * Schliesst das Popup, welches mit {@link HudScreenState#showUpgradeTower(mygame.Entitys.Tower)} geöffnet, wurde wieder.
     * @param upgrade Gibt an ob der Turm upgegradet werden soll. Wenn der String "true" entspricht wird upgegradet.
     */
    public void closeTowerPopup(String upgrade) {

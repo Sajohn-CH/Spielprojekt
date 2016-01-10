@@ -556,7 +556,7 @@ public class Player extends Entity{
     
     /**
      * Berechenet upgradekosten eines Upgrades der Reichweite
-     * @return 
+     * @return Upgradekosten
      */
     public int getNewRangePrice(){
         return (int) (getNewRange()*0.75);
@@ -593,7 +593,7 @@ public class Player extends Entity{
     
     /**
      * Berechnet Schüsse pro Sekunde. Berechnet wieviele Schüsse por Sekunde der Spieler nach einem Upgrade abgeben könnte.
-     * @return 
+     * @return Neue Schüsse pro Sekunde
      */
     public double getNewSPS(){   
         return (int) shotsPerSecond + Math.sqrt(shotsPerSecond);

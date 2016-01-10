@@ -24,23 +24,25 @@ import java.awt.GraphicsEnvironment;
  */
 
 public class Main extends SimpleApplication implements ActionListener{
-    public static Main app;
-    private static BulletAppState bulletAppState;
-    private Nifty nifty;
-    private HudScreenState hudState;
-    private static World world;
-    private static Game game;
-    private boolean debugMode = true;
-    private static AppSettings appSettings;
-    private boolean scrollToChangeSelection;
-    private Spatial scene;
+    public static Main app;             //Die Application selbst. 
+    private static BulletAppState bulletAppState;   
+    private Nifty nifty;                //Wird benötigt um auf die graphische Oberfläche Bildschirme etc. anzeigen zu lassen.
+    private HudScreenState hudState;    //Der ScreenController, der kontrolliert, was der HUD macht (Der Bildschirm, der während des Spielens angezeigt wird.)
+    private MyStartScreen startState;   //Der ScreenController, der kontrolliert, was die Start-, Pause- und Einstellungsbildschirme machen.  
+    private static World world;         //Die Spielwelt
+    private static Game game;           //Das "Spiel". Kontrolliert die Wellengenerierung
+    private boolean debugMode = true;   //Gibt an ob der Debugmodus aktiviert ist.
+    private static AppSettings appSettings;     //Die Einstellungen der Applications (kommt von der JMonkeyApplication). Sie ist für Auflösung etc. zuständig
+    private Settings settings;          //Die selber erstellten Einstellungen. Sie ist für die Tastenbelegung etc. zuständig.
+//    private boolean scrollToChangeSelection;    
+    private Spatial scene;              //Die Spielszene
     
-    private int key_item_1 = KeyInput.KEY_1;
-    private int key_item_2 = KeyInput.KEY_2;
-    private int key_item_3 = KeyInput.KEY_3;
-    private int key_item_4 = KeyInput.KEY_4;
-    private int key_item_5 = KeyInput.KEY_5;
-    private int key_debug = KeyInput.KEY_F4;
+//    private int key_item_1 = KeyInput.KEY_1;
+//    private int key_item_2 = KeyInput.KEY_2;
+//    private int key_item_3 = KeyInput.KEY_3;
+//    private int key_item_4 = KeyInput.KEY_4;
+//    private int key_item_5 = KeyInput.KEY_5;
+//    private int key_debug = KeyInput.KEY_F4;
     
     /**
      * Startet das Spiel bzw. die Simple-Application und legt gewisse Einstellungen fest.
@@ -78,6 +80,8 @@ public class Main extends SimpleApplication implements ActionListener{
      */
     @Override
     public void simpleInitApp() {
+        settings = new Settings();
+        
         //Set this boolean true when the game loop should stop running when ever the window loses focus.
         app.setPauseOnLostFocus(true);
         
@@ -117,13 +121,12 @@ public class Main extends SimpleApplication implements ActionListener{
         //Lädt die benötigten XML-Dateien (diese werden dabei überprüft)
         addXmlFile("Interface/hud.xml");
         addXmlFile("Interface/screen.xml"); 
-        MyStartScreen startState = (MyStartScreen) nifty.getScreen("start").getScreenController();
+        startState = (MyStartScreen) nifty.getScreen("start").getScreenController();
         nifty.registerScreenController(startState);
         nifty.gotoScreen("hud");
         stateManager.attach(startState);
         
         hudState = (HudScreenState) nifty.getScreen("hud").getScreenController();
-        //hudState.setPlayer(player);
         nifty.registerScreenController(hudState);
         stateManager.attach(hudState);
         
@@ -147,31 +150,33 @@ public class Main extends SimpleApplication implements ActionListener{
     /**
      * Fügt Tastenbelegungen hinzu.
      */
-    private void setUpKeys() {
+    //Change in diagramm private -> public
+    public void setUpKeys() {
+        String[] key_items = settings.getKeys_items();
         //Allgemeine Tasten
         inputManager.addMapping("Menu", new KeyTrigger(KeyInput.KEY_ESCAPE), new KeyTrigger(KeyInput.KEY_PAUSE));
         inputManager.addListener(this, "Menu");
         //Tasten für SchnelleisteSlots
         inputManager.deleteMapping("item_1");
-        inputManager.addMapping("item_1", new KeyTrigger(key_item_1));
+        inputManager.addMapping("item_1", new KeyTrigger(settings.getKeyCode(key_items[0])));
         inputManager.addListener(this, "item_1");
         inputManager.deleteMapping("item_2");
-        inputManager.addMapping("item_2", new KeyTrigger(key_item_2));
+        inputManager.addMapping("item_2", new KeyTrigger(settings.getKeyCode(key_items[1])));
         inputManager.addListener(this, "item_2");
         inputManager.deleteMapping("item_3");
-        inputManager.addMapping("item_3", new KeyTrigger(key_item_3));
+        inputManager.addMapping("item_3", new KeyTrigger(settings.getKeyCode(key_items[2])));
         inputManager.addListener(this, "item_3");
         inputManager.deleteMapping("item_4");
-        inputManager.addMapping("item_4", new KeyTrigger(key_item_4));
+        inputManager.addMapping("item_4", new KeyTrigger(settings.getKeyCode(key_items[3])));
         inputManager.addListener(this, "item_4");
         inputManager.deleteMapping("item_5");
-        inputManager.addMapping("item_5", new KeyTrigger(key_item_5));
+        inputManager.addMapping("item_5", new KeyTrigger(settings.getKeyCode(key_items[4])));
         inputManager.addListener(this, "item_5");
         inputManager.deleteMapping("debug");
-        inputManager.addMapping("debug", new KeyTrigger(key_debug));
+        inputManager.addMapping("debug", new KeyTrigger(settings.getKeyCode(settings.getKey_debug())));
         inputManager.addListener(this, "debug");
         //Mausrad
-        if(scrollToChangeSelection){
+          if(settings.isUseScroll()) {
             inputManager.addMapping("item_scroll_up", new MouseAxisTrigger(MouseInput.AXIS_WHEEL, false));
             inputManager.addListener(this, "item_scroll_up");
             inputManager.addMapping("item_scroll_down", new MouseAxisTrigger(MouseInput.AXIS_WHEEL, true));
@@ -263,7 +268,7 @@ public class Main extends SimpleApplication implements ActionListener{
     
     /**
      * Gibt das Game ({@link Game}) zurück. Dies steuert die Spielmechanik
-     * @return 
+     * @return Game
      */
     public static Game getGame(){
         return game;
@@ -321,43 +326,43 @@ public class Main extends SimpleApplication implements ActionListener{
      * @param key_down Taste um zurück zu gehen
      * @param key_jump  Taste um zu springen
      */
-    public void changeSettings(boolean scrollToChangeSelection, int resolutionWidth, int resolutionHeight, int frameRate, boolean fullscreen, 
-            String key_item_1, 
-            String key_item_2, 
-            String key_item_3, 
-            String key_item_4, 
-            String key_item_5, 
-            String key_debug, 
-            String key_left, 
-            String key_right, 
-            String key_up, 
-            String key_down, 
-            String key_jump){
-        this.scrollToChangeSelection = scrollToChangeSelection;
-        
-        appSettings.setResolution(resolutionWidth, resolutionHeight);
-        appSettings.setFrameRate(frameRate);
-        appSettings.setFullscreen(fullscreen);
-        app.setSettings(appSettings);
-        app.restart();
-        
-        if(key_item_1 != null)
-            this.key_item_1 = getKeyCode(key_item_1);
-        if(key_item_2 != null)
-            this.key_item_2 = getKeyCode(key_item_2);
-        if(key_item_3 != null)
-            this.key_item_3 = getKeyCode(key_item_3);
-        if(key_item_4 != null)
-            this.key_item_4 = getKeyCode(key_item_4);
-        if(key_item_5 != null)
-            this.key_item_5 = getKeyCode(key_item_5);
-        if(key_debug != null)
-            this.key_debug = getKeyCode(key_debug);
-                
-        setUpKeys();
-        
-        world.getPlayer().replaceKeys(getKeyCode(key_left), getKeyCode(key_right), getKeyCode(key_up), getKeyCode(key_down), getKeyCode(key_jump));
-    }
+//    public void changeSettings(boolean scrollToChangeSelection, int resolutionWidth, int resolutionHeight, int frameRate, boolean fullscreen, 
+//            String key_item_1, 
+//            String key_item_2, 
+//            String key_item_3, 
+//            String key_item_4, 
+//            String key_item_5, 
+//            String key_debug, 
+//            String key_left, 
+//            String key_right, 
+//            String key_up, 
+//            String key_down, 
+//            String key_jump){
+//        this.scrollToChangeSelection = scrollToChangeSelection;
+//        
+//        appSettings.setResolution(resolutionWidth, resolutionHeight);
+//        appSettings.setFrameRate(frameRate);
+//        appSettings.setFullscreen(fullscreen);
+//        app.setSettings(appSettings);
+//        app.restart();
+//        
+//        if(key_item_1 != null)
+//            this.key_item_1 = getKeyCode(key_item_1);
+//        if(key_item_2 != null)
+//            this.key_item_2 = getKeyCode(key_item_2);
+//        if(key_item_3 != null)
+//            this.key_item_3 = getKeyCode(key_item_3);
+//        if(key_item_4 != null)
+//            this.key_item_4 = getKeyCode(key_item_4);
+//        if(key_item_5 != null)
+//            this.key_item_5 = getKeyCode(key_item_5);
+//        if(key_debug != null)
+//            this.key_debug = getKeyCode(key_debug);
+//                
+//        setUpKeys();
+//        
+//        world.getPlayer().replaceKeys(getKeyCode(key_left), getKeyCode(key_right), getKeyCode(key_up), getKeyCode(key_down), getKeyCode(key_jump));
+//    }
     
     /**
      * Gibt den KeyCode der Taste die das übergebene Zeichen erzeugt zurück. Keine Pfeiltasten, da diese Standardmässig für die Kamera verwendet werden.
@@ -538,5 +543,9 @@ public class Main extends SimpleApplication implements ActionListener{
         else if(key.equals( "PGDOWN"))
             code = KeyInput.KEY_PGDN;
         return code;
+    }
+    
+    public Settings getSettings() {
+        return settings;
     }
 }
