@@ -23,16 +23,16 @@ public class Settings {
     public Settings(){
         keys_items = new String[5];
         keys_items[0] ="1";
-        keys_items[0] ="2";
-        keys_items[0] ="3";
-        keys_items[0] ="4";
-        keys_items[0] ="5";
+        keys_items[1] ="2";
+        keys_items[2] ="3";
+        keys_items[3] ="4";
+        keys_items[4] ="5";
         
         keys_walking = new String[4];
         keys_walking[0] = "A";
-        keys_walking[0] = "D";
-        keys_walking[0] = "W";
-        keys_walking[0] = "S";
+        keys_walking[1] = "D";
+        keys_walking[2] = "W";
+        keys_walking[3] = "S";
 
         key_debug = "F4";
     }
