@@ -19,18 +19,19 @@ import mygame.Way;
  */
 public class Bomb extends Entity{
     
-    private Material mat;
-    private ColorRGBA[] colors = {ColorRGBA.Blue, ColorRGBA.Cyan, ColorRGBA.Green, ColorRGBA.Magenta, ColorRGBA.Red, ColorRGBA.Orange, ColorRGBA.Yellow, ColorRGBA.Green, ColorRGBA.Pink, ColorRGBA.Brown};
-    private Way way;
-    private int money;
-    private int decreasedSpeed;
-    private Node n;
+    private Material mat;       //Das Material der Bombe
+    private ColorRGBA[] colors; //Die Farben, die die Bombe annehmen kann(um das Level anzuzeigen)
+    private Way way;            //Der Weg der Bombe
+    private int money;          //Wieviel Geld der Spieler beim zerstören einer Schicht bekommt
+    private int decreasedSpeed; //Um wieviel die Geschwindigkeit verringert wurde
+    private Node n;             //Enthält alle Graphischen Elemente der Bombe
     
     /**
      * Erstellt die Bombe. Erstellt den Spatial der Bombe und setzt den Weg.
      * @param level 
      */
     public Bomb (int level){
+        colors  = new ColorRGBA[]{ColorRGBA.Blue, ColorRGBA.Cyan, ColorRGBA.Green, ColorRGBA.Magenta, ColorRGBA.Red, ColorRGBA.Orange, ColorRGBA.Yellow, ColorRGBA.Green, ColorRGBA.Pink, ColorRGBA.Brown};
         this.setLiving(true);
         
         //Spatial erstellen

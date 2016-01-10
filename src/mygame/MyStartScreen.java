@@ -19,7 +19,6 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import mygame.Entitys.Beacon;
 import mygame.Entitys.SloweringTower;
 import mygame.Entitys.Player;
 import mygame.Entitys.DeactivationTower;
@@ -35,7 +34,8 @@ import org.w3c.dom.NodeList;
  * @author Samuel Martin
  */
 public class MyStartScreen extends AbstractAppState implements ScreenController{
-    private Nifty nifty;
+    private Nifty nifty;        //Das Niftyobject das mit der Methode bind() übergeben wird. Wird benötigt um auf die graphische Oberfläche zuzugreifen
+    private Screen screen;      //Das Screenobject das mit der Methode bind() übergeben wird. Wird benötigt um auf die graphische Oberfläche zuzugreifen. Es repräsentiert den aktuell angezeigten Bildschirm.
     
     
     /**
@@ -72,7 +72,16 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
      */
     public void bind(Nifty nifty, Screen screen) {
         this.nifty = nifty;
+        this.screen = screen;
         System.out.println("bind " + screen.getScreenId());
+        if(screen.getScreenId().equals("settings")) {
+            //Lädt die eingestellten Einstellungen, damit diese angezeigt werden, wenn der Einstellungsbildschirm geladen wird.
+            if(Main.app.getSettings().isUseScroll()) {
+                screen.findElementByName("enableScroll").disable();
+            } else {
+            screen.findElementByName("disableScroll").disable();
+            }
+        }
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -80,7 +89,7 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
      * {@inheritDoc }
      */
     public void onStartScreen() {
-        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.      
     }
 
     /**
@@ -124,11 +133,12 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
         }
         //Alle Bomben zurücksetzen
         for(int i = Main.app.getWorld().getAllBombs().size()-1; i >= 0; i--) {
-            System.out.println("Bombe entfernt");
             Main.app.getWorld().removeBomb(Main.app.getWorld().getAllBombs().get(i));
         }
         //Welle 1 starten
         Main.app.getGame().startWave(1);
+        //Falls Bauzeit/phase war diese Beenden (einfach auf false setzen)
+        Main.app.getHudState().setBuildPhase(false);
         
     }
     
@@ -150,7 +160,6 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
     /**
      * Lädt einen Spielstand von einer XML-Datei. Diese Datei ist aktuell immer "saveGame.xml". 
      */
-    //TODO: Geht nicht. Lädt nicht.
     public void loadGame() {
         File saveGame = new File("saveGame.xml");
         try{
@@ -295,4 +304,31 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
    public int getCurrentWave() {
        return Main.app.getGame().getWave();
    }
+   
+   public void saveSettings() {
+       nifty.gotoScreen("start");
+   }
+   
+   public void toggleScroll() {
+       Settings settings = Main.app.getSettings();
+       
+       //Text ändern
+       de.lessvoid.nifty.elements.Element buttonOn = screen.findElementByName("enableScroll");
+       de.lessvoid.nifty.elements.Element buttonOff = screen.findElementByName("disableScroll");
+       if(buttonOn.isEnabled()) {
+           buttonOn.disable();
+           buttonOff.enable();
+           settings.setUseScroll(true);
+       } else {
+           buttonOn.enable();
+           buttonOff.disable();
+           settings.setUseScroll(false);
+       }  
+       
+       Main.app.setUpKeys();
+   }
+   
+   public void gotoSettings() {
+       nifty.gotoScreen("settings"); 
+   }   
 }

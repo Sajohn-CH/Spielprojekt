@@ -28,40 +28,58 @@ import mygame.Main;
  */
 public class Player extends Entity{
     
-    private CharacterControl player;
-    private Vector3f walkDirection = new Vector3f();
-    private boolean left = false, right = false, up = false, down = false, shoot = false;
-    private Vector3f camDir = new Vector3f();
-    private Vector3f camLeft = new Vector3f();
-    private InputListener inputListener;
-    private Geometry line;
-    private Geometry healingLine;
-    private long shot;
-    private boolean isShooting = false;
-    private int money;
-    private boolean isHealing = false;
-    private boolean hasHealed = false;
+    private CharacterControl player;        //Sorgt für Physik des Spielers
+    private Vector3f walkDirection;         //Laufrichtung des Spielers
+    private boolean left, right, up, down;  //Ob die jeweilige Taste fürs Laufen gedrückt ist
+    private Vector3f camDir;                //Richtung der Kamera
+    private Vector3f camLeft;               //"Links" in richtung der Kamera
+    private InputListener inputListener;    //Wird für die Eingaben des Spielers benötigt
+    private Geometry line;                  //Schusslinie
+    private Geometry healingLine;           //Heilungslinie
+    private long shot;                      //Wann zuletzt geschossen wurde
+    private boolean isShooting;             //Ob der Spieler am schiessen ist
+    private int money;                      //Das Geld des Spielers
+    private boolean isHealing;              //Ob der Spieler am heilen ist
+    private boolean hasHealed;              //Ob der Spieler geheilt hat
     
-    private double shotsPerSecond = 50;
-    private int range = 100;
+    private double shotsPerSecond;          //Wieoft der Spieler in der Sekunde schiesst
+    private int range;                      //Reichweite des Spielers
     
-    private AudioNode shootAudio;
-    private AudioNode walkAudio;
-    private AudioNode buyAudio;
-    private AudioNode notEnoughMoneyAudio;
-    private AudioNode earnMoneyAudio;
+    private AudioNode shootAudio;           //Ton, der beim Schiessen abgespielt wird
+    private AudioNode walkAudio;            //Ton, der beim Laufen abgespielt wird
+    private AudioNode buyAudio;             //Ton, der beim Kaufen abgespielt wird
+    private AudioNode notEnoughMoneyAudio;  //Ton, der bei zu wenig Geld zum kaufen abgespielt wird
+    private AudioNode earnMoneyAudio;       //Ton, der beim verdienen von Geld abgespielt wird
     
-    private int key_left = KeyInput.KEY_A;
-    private int key_right = KeyInput.KEY_D;
-    private int key_up = KeyInput.KEY_W;
-    private int key_down = KeyInput.KEY_S;
-    private int key_jump = KeyInput.KEY_SPACE;
+    private int key_left;                   //Keycode der Links-Taste
+    private int key_right;                  //Keycode der Rechts-Taste
+    private int key_up;                     //Keycode der Oben-Taste
+    private int key_down;                   //Keycode der Unten-Taste
+    private int key_jump;                   //Keycode der Springen-Taste
     
     /**
      * Initialisiert den Spieler. Setzt Grundattribute des Spielers, erstellt die Waffe und Schusslinie und lädt die Töne.
      * @param inputListener Für Tasteneingaben benötigt
      */
     public Player(InputListener inputListener){
+        left = false;
+        right = false;
+        up = false;
+        down = false;
+        walkDirection = new Vector3f();
+        camDir = new Vector3f();
+        camLeft = new Vector3f();
+        isShooting = false;
+        isHealing = false;
+        hasHealed = false;
+        shotsPerSecond = 50;
+        range = 100;
+        key_left = KeyInput.KEY_A;
+        key_right = KeyInput.KEY_D;
+        key_up = KeyInput.KEY_W;
+        key_down = KeyInput.KEY_S;
+        key_jump = KeyInput.KEY_SPACE;
+        
         money = 250;
         this.inputListener = inputListener;
         //Ob Tastaturbelgung gesetzt werden soll. Dies ist nur beim ersten Starten des Spiels notwendig, nicht bei Neustarten
@@ -76,7 +94,7 @@ public class Player extends Entity{
         this.setDamage(2);
         setHealth(this.maxHealth);
         this.setSpeed(50);
-        Main.getBulletAppState().getPhysicsSpace().add(player);
+        Main.app.getBulletAppState().getPhysicsSpace().add(player);
         
         line = new Geometry("line", new Line());
         Material mat = new Material(Main.app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
@@ -582,7 +600,7 @@ public class Player extends Entity{
     
     /**
      * Berechenet upgradekosten eines Upgrades der Reichweite
-     * @return 
+     * @return Upgradekosten
      */
     public int getNewRangePrice(){
         return (int) (getNewRange()*0.75);
@@ -619,7 +637,7 @@ public class Player extends Entity{
     
     /**
      * Berechnet Schüsse pro Sekunde. Berechnet wieviele Schüsse por Sekunde der Spieler nach einem Upgrade abgeben könnte.
-     * @return 
+     * @return Neue Schüsse pro Sekunde
      */
     public double getNewSPS(){   
         return (int) shotsPerSecond + Math.sqrt(shotsPerSecond);

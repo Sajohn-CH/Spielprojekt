@@ -20,8 +20,8 @@ import mygame.Main;
  */
 public class SimpleTower extends Tower{
     
-    private RigidBodyControl towerC;
-    private Geometry line;
+    private RigidBodyControl towerC;    //Wird benötigt um den Turm kollidierbar zu machen
+    private Geometry line;              //Schusslinie
     
     /**
      * Initialisiert den Turm. Setzt Grundattribute, ladet das Modell und erstellt die Schusslinie.

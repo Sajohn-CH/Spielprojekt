@@ -15,14 +15,14 @@ import mygame.Main;
  */
 public class Tower extends Entity{
     
-    private int range;
-    private int price;
-    private double shotsPerSecond;
-    private long shot;
-    private long died = 0;
-    private ParticleEmitter flame;
-    private int totalPaidMoney = 0;
-    private String name = "Turm";
+    private int range;                  //Reichweite
+    private int price;                  //Preis zum bauen
+    private double shotsPerSecond;      //Schüsse pro Sekunde
+    private long shot;                  //Wann zuletzt geschossen
+    private long died = 0;              //Wann gestorben(Wird für Effekt benötigt, damit dieser noch genügend lange angezeigt wird)
+    private ParticleEmitter flame;      //Effekt bei Zerstörung
+    private int totalPaidMoney = 0;     //Das gesamte dafür gezahlte Geld
+    private String name = "Turm";       //Der Name des Turmes
     
     /**
      * Gibt die Reichweite des Turmes zurück.

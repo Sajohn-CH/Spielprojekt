@@ -9,14 +9,14 @@ import mygame.World;
  * @author Florian Wenk
  */
 public class Entity {
-    private int health;
-    private int damage;
-    private int level; //level 0 == tot
-    private int speed;
-    private Vector3f location;
-    private boolean living;
-    protected int maxHealth = 100;
-    private Spatial spatial;
+    private int health;                 //Das Leben des Objektes
+    private int damage;                 //Den Schaden den es Anrichtet
+    private int level;                  //Das Level des Objektes (level 0 == tot)
+    private int speed;                  //Die Geschwindigkeit des Objektes
+    private Vector3f location;          //Die Position
+    private boolean living;             //Ob das Objekt lebt
+    protected int maxHealth = 100;      //Das Maximale Leben
+    private Spatial spatial;            //Das Modell, das das Objekt in der Welt repräsentiert
 
     
     /**

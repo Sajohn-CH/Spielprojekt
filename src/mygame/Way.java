@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package mygame;
 
 import com.jme3.math.Vector3f;
@@ -12,8 +8,8 @@ import java.util.ArrayList;
  * @author Florian Wenk
  */
 public class Way {
-    private ArrayList<Vector3f> corners;
-    private int positionID;
+    private ArrayList<Vector3f> corners;    //Alle Ecken des Weges.
+    private int positionID;                 //Gibt die aktuelle Ecke an.
     
     /**
      * Initialisiert den Weg. Lädt die Eckpunkte und initialisiert die positionID.

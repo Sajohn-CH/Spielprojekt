@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package mygame;
 
 import mygame.Entitys.Bomb;
@@ -13,11 +9,11 @@ import java.util.ArrayList;
  * @author Florian Wenk
  */
 public class Game {
-    private int wave;
-    private ArrayList<Integer> bombsLeftPerLevel;
-    private ArrayList<Integer> shootingBombsLeftPerLevel;
-    private long lastTime;
-    private long nextTime;
+    private int wave;                                       //Die wievielte Welle gerade läuft
+    private ArrayList<Integer> bombsLeftPerLevel;           //Alle Bomben dieser Welle, die noch erstellt werden müssen
+    private ArrayList<Integer> shootingBombsLeftPerLevel;   //Alle Schiessenden -bomben dieser Welle, die noch erstellt werden müssen
+    private long lastTime;                                  //Das Letze Mal, als eine Bombe erstellt wurde
+    private long nextTime;                                  //Wieviel Zeit (in Milisekunden) vergeht bis die nächste Bombe erstellt wird.
    
     /**
      * Initialisiert das Spielprinzip. Sorgt dafür, dass Bomben erstellt werden.
@@ -64,7 +60,7 @@ public class Game {
     }
     
     /**
-     * {@link startWave()}
+     * {@link Game#startWave()}
      * Setzt die Welle auf den übergebenen Wert.
      * @param wave Setzt die Welle.
      */

@@ -32,22 +32,30 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 /**
- *
- * @author Samuel Martin
+ * Die Spielwelt. Sie enthält alle nötigen Element der Welt: Die Umgebung (scene), alle Bomben und Türme, den Beacon (den es zu verteidigen gilt), den Spieler, sowie den Weg den die Bomben zurücklegen müssen. 
+ * Auch entählt es die Nodes (Gruppe von graphischen Objekten in der JMonkeyEngine), an den die Türme und Bomben "befestigt" sind und damit angezeigt werden.
+ * @author Samuel Martin und Florian Wenk
  */
 public class World extends AbstractAppState{
     
-    private Spatial scene;
-    private HashMap<Spatial, Bomb> bombs;
-    private HashMap<Spatial, Tower> towers;
-    private Beacon beacon;
-    private Player player;
-    private Node bombNode;
-    private Node towerNode;
-    private Node wayNode;
-    private File cornersFile = new File("assets/Scenes/scene_1.xml");
+    private Spatial scene;                  //Die Spielszene
+    private HashMap<Spatial, Bomb> bombs;   //Alle Bomben. Jeweils mit ihrem Spatial (Objekt in der 3D-Welt)
+    private HashMap<Spatial, Tower> towers;     //Alle Türme. Jeweils mit ihrem Spatial (Objekt in der 3D-Welt)
+    private Beacon beacon;                  //Der Beacon
+    private Player player;                  //Der Spieler
+    private Node bombNode;                  //Node mit allen Bomben
+    private Node towerNode;                 //Node mit allen Türmen
+    private Node wayNode;                   //Node mit dem Weg der Bomben. Blockiert diesen, damit nichts drauf gebaut werden kann
+    private File cornersFile;               //Datei, in der alle Eckpunkte des Weges gespeichert sind.
     
+    /**
+     * Konstruktor. Lädt den Himmel, fügt die Szene hinzu und initialisiert alles.
+     * @param beacon Den Beacon in der Spielwelt   
+     * @param player Der Spieler in der Spielwelt  
+     * @param scene Die "Szene", die Umgebung der Spielwelt bzw. die Spielwelt selbst
+     */
     public World(Beacon beacon, Player player, Spatial scene) {
+        this.cornersFile = new File("assets/Scenes/scene_1.xml");
         this.beacon = beacon;
         this.player = player;
         Main.getBulletAppState().getPhysicsSpace().add(player.getCharacterControl());
@@ -58,12 +66,6 @@ public class World extends AbstractAppState{
         this.towerNode = new Node();
         this.wayNode = new Node();
         generateWayGeometries();
-//        Main.app.getRootNode().attachChild(SkyFactory.createSky(
-//            Main.app.getAssetManager(), "Textures/sky/BrightSky.dds", false));
-//        Main.app.getRootNode().attachChild(SkyFactory.createSky(
-//            Main.app.getAssetManager(), "Textures/sky/BrightSky","Textures/sky/BrightSky", "Textures/sky/BrightSky", "Textures/sky/BrightSky", "Textures/sky/BrightSky"
-//                ,"Textures/sky/BrightSky", ));
-        //TODO: weitermachen
         
         // Himmel laden
         Texture west = Main.app.getAssetManager().loadTexture("Textures/sky/BrightSky/west.jpg");
@@ -82,50 +84,96 @@ public class World extends AbstractAppState{
         Main.getBulletAppState().getPhysicsSpace().add(sceneC);
     }
     
+    /**
+     * Fügt der Welt eine Bombe hinzu. Diese wird auch grad dem entsprechenden Node hinzugefügt, sodass die Bombe angezeigt wird.
+     * @param bomb Hinzuzufügenden Bombe
+     */
     public void addBomb(Bomb bomb) {
         bombNode.attachChild(bomb.getSpatial());
         this.bombs.put(bomb.getSpatial(), bomb);
     }
     
+    /**
+     * Gibt die Bombe zurück, die dem übergeben Spatial (graphisches Objekt der JMonkeyEngine) entspricht. 
+     * @param spatial Spatial der gewünschen Bombe
+     * @return Bombe
+     */
     public Bomb getBomb(Spatial spatial) {
         return bombs.get(spatial);
     }
     
+    /**
+     * Gibt alle Bomben als ArrayList zurück.
+     * @return Alle Bomben der Welt
+     */
     public ArrayList<Bomb> getAllBombs() {
         return new ArrayList<Bomb>(bombs.values());
     }
     
+    /**
+     * Entfernt eine Bombe.
+     * @param bomb  Zu entfernende Bombe
+     */
     public void removeBomb(Bomb bomb){
         bombNode.detachChild(bomb.getSpatial());
         this.bombs.remove(bomb.getSpatial());
     }
     
+    /**
+     * Gibt den Spieler der Welt zurück.
+     * @return  Spieler
+     */
     public Player getPlayer() {
         return player;
     }
     
+    /**
+     * Gibt den Beacon der Welt zurück.
+     * @return  Beacon
+     */
     public Beacon getBeacon() {
         return beacon;
     }
     
+    /**
+     * Gibt die Szene der Welt zurück.
+     * @return  Szene
+     */
     public Spatial getScene(){
         return scene;
     }
     
+    /**
+     * Fügt einen Turm der Welt hinzu. Dieser wird auch den entpsrehcenden Node hinzugefügt, so dass der Turm auch angezeigt wird.
+     * @param tower 
+     */
     public void addTower(Tower tower) {
         towerNode.attachChild(tower.getSpatial());
         this.towers.put(tower.getSpatial(), tower);
         tower.setCollidable();
     }
     
+    /**
+     * Gibt den Turm zurück, welcher dem übergebenen Spatial (graphisches Objekt der JMonkeyEngine) entspricht.
+     * @param spatial  Spatial des Turms
+     * @return Turm
+     */
     public Tower getTower (Spatial spatial) {
         return towers.get(spatial);
     }
     
+    /**
+     * Gibt alle Türme der Spielwelt als ArrayList zurück.
+     * @return Alle Türme
+     */
     public ArrayList<Tower> getAllTowers() {
         return new ArrayList<Tower>(towers.values());
     }
     
+    /**
+     * Entfernt einen Turm.
+     * @param tower Zu entfernender Turm.
+     */
     public void removeTower(Tower tower){
         if(tower.isDead()){
             tower.removeFireEffect();
@@ -134,14 +182,27 @@ public class World extends AbstractAppState{
         this.towers.remove(tower.getSpatial());
     }
 
+    /**
+     * Gibt den Node mit allen Bomben zurück.
+     * @return Bombennode
+     */
     public Node getBombNode() {
         return bombNode;
     }
 
+    /**
+     * Gibt den Node mit allen Türmen zurück
+     * @return Turmnode
+     */
     public Node getTowerNode() {
         return towerNode;
     }
     
+    /**
+     * Gibt den nächsten Turm bei einem bestimmten Ort zurück.
+     * @param location Ort
+     * @return nächsten Turm
+     */
     public Tower getNearestTower(Vector3f location){
         ArrayList<Tower> allTowers = this.getAllTowers();
         if(!allTowers.isEmpty()){
@@ -182,6 +243,10 @@ public class World extends AbstractAppState{
         }
     }
     
+    /**
+     * Gibt alle Ecken des Weges zurück, den die Bomben zurücklegen um zum Beacon zu gelangen. Die Ecken werden aus einer XML-Datei ausgelesen. 
+     * @return Alle Ecken des Weges
+     */
     public ArrayList<Vector3f> getAllCorners(){
         //Corners xml-file auslesen
         ArrayList<Vector3f> corners = new ArrayList<Vector3f>();
@@ -193,6 +258,7 @@ public class World extends AbstractAppState{
             doc.getDocumentElement().normalize();
             
             NodeList list = doc.getElementsByTagName("corner");
+            //Ruft die Ecken nach ihrer Nummerierung (id) auf. 
             for(int i = 0; i < list.getLength(); i++) {
                 Element element = getElement(i, list);
                 
@@ -208,6 +274,12 @@ public class World extends AbstractAppState{
         return corners;
     }
     
+    /**
+     * Gibt das Element in der XML-NodeList (nicht zu verwechseln mit dem Node der JMonkeyEngine) mit der übergebenen ID zurück. Die ID ist immer ein Attribut jedes Elements in der NodeList.
+     * @param id  ID des gewünschten Elements
+     * @param list  NodeList mit allen Elementen
+     * @return gewünschtes Element
+     */
     private Element getElement(int id, NodeList list) {
         for(int i = 0; i < list.getLength(); i++) {
             Element element = (Element) list.item(i);
@@ -218,6 +290,9 @@ public class World extends AbstractAppState{
         return null;
     }
     
+    /**
+     * Legt unsichtbare Elemente auf den Weg, damit darauf nichts gebaut werden kann.
+     */
     private void generateWayGeometries(){
         //Unsichtbare Geometries auf den Weg legen, damit dort nichts gebaut werden kann.
         ArrayList<Vector3f> corners = getAllCorners();
@@ -235,14 +310,26 @@ public class World extends AbstractAppState{
         }
     }
     
+    /**
+     * Gitb den Node mit dem Weg zurück.
+     * @return Wegnode
+     */
     public Node getWayNode(){
         return this.wayNode;
     }
     
+    /**
+     * Pausiert oder entpausiert das Spiel
+     * @param pause true = pausieren, false = entpausieren (weiterfahren)
+     */
     public void setPaused(boolean pause){
         this.setEnabled(!pause);
     }
     
+    /**
+     * Gibt zurück ob das Spiel pausiert.
+     * @return Ist Spiel pausiert? 
+     */
     public boolean isPaused(){
         return !this.isEnabled();
     }

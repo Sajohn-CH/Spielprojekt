@@ -18,13 +18,13 @@ import mygame.Main;
  */
 public class ShootingBomb extends Bomb{
     
-    private Geometry line;
-    private Node n;
-    private long shot;
-    private int shotsPerSecond;
-    private int range;
-    private boolean shooting;
-    private int shotDamage;
+    private Geometry line;      //Schusslinie
+    private Node n;             //Enthält alle sichtbaren Elemente der Bombe
+    private long shot;          //Wann zuletzt geschossen
+    private int shotsPerSecond; //Schüsse pro Sekunde
+    private int range;          //Reichweite
+    private boolean shooting;   //Ob sie noch schiessen kann
+    private int shotDamage;     //Der Schaden, den ein Schuss anrichtet
     
     /**
      * Erstellt eine ShootingBomb. Eine ShootingBomb wird erstellt und die Schusslinie geladen.

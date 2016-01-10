@@ -13,7 +13,7 @@ import mygame.Main;
  */
 public class Beacon extends Entity {
     
-    private RigidBodyControl beaconC;
+    private RigidBodyControl beaconC;   //Wird benötigt um den Beacon kollidierbar zu machen
     
     /**
      * Erstellt den Beacon. Ladet das Modell und setzt dieses kollidierbar.

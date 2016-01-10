@@ -17,8 +17,8 @@ import mygame.Main;
  */
 public class SloweringTower extends Tower{
     
-    private RigidBodyControl towerC;
-    private Geometry line;
+    private RigidBodyControl towerC;    //Wird benötigt um den Turm kollidierbar zu machen
+    private Geometry line;              //Schusslinie
     
     /**
      * Initialisierung des Turmes. Setzt Grundattribute des Turmes, ladet das Modell und erstellt die Schusslinie.

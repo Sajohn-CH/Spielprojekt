@@ -17,8 +17,8 @@ import mygame.Main;
  */
 public class DeactivationTower extends Tower{
       
-    private RigidBodyControl towerC;
-    private Geometry line;
+    private RigidBodyControl towerC;    //Wird benötigt um den Turm kollidierbar zu machen
+    private Geometry line;              //Die Schusslinie des Turmes
     
     /**
      * Erstellt den Tower. Setzt wichtige Attribute des Turmes, ladet das Modell und erstellt die Schusslinie.
