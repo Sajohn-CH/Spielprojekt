@@ -58,6 +58,9 @@ public class Main extends SimpleApplication implements ActionListener{
         appSettings.setFrameRate(60);
         //AppSettings hinzufügen
         app.setSettings(appSettings);
+        app.setDisplayStatView(false);
+        app.setDisplayFps(false);
+        app.setPauseOnLostFocus(true);
 //        app.setShowSettings(false);
         //Start into Fullscreen
         appSettings.setFullscreen(device.isFullScreenSupported());
@@ -295,6 +298,7 @@ public class Main extends SimpleApplication implements ActionListener{
     public void gameOver() {
         getWorld().setPaused(true);
         getFlyByCamera().setDragToRotate(true);
+        world.getPlayer().stopAudio();
         nifty.gotoScreen("gameOver");
     }
    
