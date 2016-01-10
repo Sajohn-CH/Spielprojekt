@@ -12,29 +12,31 @@ public class Settings {
 //    private Dimension resolution;
 //    private int frameReate;
 //    private boolean fullscreen;
-    private String[] keys_items;        //Tasten für die Schnellzugrife auf der Leiste unten. Für jeden Slot einen. Es gibt 5.
-    private String[] keys_walking;      //Tasten zum Laufen. Reihenfolge, left, right, up, down.
-    private String key_debug;         //Taste um den Debugbildschirm aufzurufen
+    private String[] keysItems;        //Tasten für die Schnellzugrife auf der Leiste unten. Für jeden Slot einen. Es gibt 5.
+    private String[] keysWalking;      //Tasten zum Laufen. Reihenfolge, left, right, up, down.
+    private String keyJump;             //Taste zum Springen
+    private String keyDebug;         //Taste um den Debugbildschirm aufzurufen
     private boolean useScroll;          //Gibt an ob das Mausrad zum Scrollen der Slots in der Leiste genutzt werden soll.
     
     /**
      * Konstruktor. Belegt die Einstellungen mit Standarwerten.
      */
     public Settings(){
-        keys_items = new String[5];
-        keys_items[0] ="1";
-        keys_items[1] ="2";
-        keys_items[2] ="3";
-        keys_items[3] ="4";
-        keys_items[4] ="5";
+        keysItems = new String[5];
+        keysItems[0] ="1";
+        keysItems[1] ="2";
+        keysItems[2] ="3";
+        keysItems[3] ="4";
+        keysItems[4] ="5";
         
-        keys_walking = new String[4];
-        keys_walking[0] = "A";
-        keys_walking[1] = "D";
-        keys_walking[2] = "W";
-        keys_walking[3] = "S";
+        keysWalking = new String[4];
+        keysWalking[0] = "A";
+        keysWalking[1] = "D";
+        keysWalking[2] = "W";
+        keysWalking[3] = "S";
+        keyJump = " ";
 
-        key_debug = "F4";
+        keyDebug = "F4";
     }
     
     /**
@@ -222,48 +224,48 @@ public class Settings {
      * Gibt die Tasten für die einzelnen Slots der Leiste zurück.
      * @return Tasten 
      */
-    public String[] getKeys_items() {
-        return keys_items;
+    public String[] getKeysItems() {
+        return keysItems;
     }
 
     /**
      * Setzt die Tasten für die einzelnen Slots der Leiste.
      * @param keys_items Tasten für die Slots.
      */
-    public void setKeys_items(String[] keys_items) {
-        this.keys_items = keys_items;
+    public void setKeysItems(String[] keys_items) {
+        this.keysItems = keys_items;
     }
 
     /**
      * Gibt die Tasten, die zum Laufen benötigt werden zurück.
      * @return Tasten
      */
-    public String[] getKeys_walking() {
-        return keys_walking;
+    public String[] getKeysWalking() {
+        return keysWalking;
     }
 
     /**
      * Setzt die Tasten, die zum Laufen benötigt werden.
      * @param keys_walking Tasten zum Laufen
      */
-    public void setKeys_walking(String[] keys_walking) {
-        this.keys_walking = keys_walking;
+    public void setKeysWalking(String[] keys_walking) {
+        this.keysWalking = keys_walking;
     }
 
     /**
      * Gibt die Taste für um den Debugmodus zu aktivieren zurück.
      * @return Taste
      */
-    public String getKey_debug() {
-        return key_debug;
+    public String getKeyDebug() {
+        return keyDebug;
     }
 
     /**
      * Setzt die Taste um den Debugmodus zu aktivieren.
      * @param key_debug Taste für Debugmodus
      */
-    public void setKey_debug(String key_debug) {
-        this.key_debug = key_debug;
+    public void setKeyDebug(String key_debug) {
+        this.keyDebug = key_debug;
     }
 
     /**
@@ -281,7 +283,21 @@ public class Settings {
     public void setUseScroll(boolean useScroll) {
         this.useScroll = useScroll;
     }
-    
-    
+
+    /**
+     * Gibt die Taste zurück, die zum Springen gedrückt werden muss.
+     * @return Taste zum Springen
+     */
+    public String getKeyJump() {
+        return keyJump;
+    }
+
+    /**
+     * Setzt die Taste, die zum Springen gedrückt werden muss.
+     * @param keyJump Taste zum Springen
+     */
+    public void setKeyJump(String keyJump) {
+        this.keyJump = keyJump;
+    }
     
 }
