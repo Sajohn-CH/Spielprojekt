@@ -176,7 +176,7 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
                 position.setZ(Float.valueOf(posEle.getAttribute("z")));
                 if(towerElement.getAttribute("Type").equals("mygame.Entitys.SimpleTower")) {
                     tower = new SimpleTower(position);
-                } else if(towerElement.getAttribute("Type").equals("mygame.Entitys.MGTower")) {
+                } else if(towerElement.getAttribute("Type").equals("mygame.Entitys.SloweringTower")) {
                     tower = new SloweringTower(position);
                 } else {
                     tower = new DeactivationTower(position);

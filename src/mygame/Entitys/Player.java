@@ -288,7 +288,9 @@ public class Player extends Entity{
 
          if(isHealing) {
              heal();
-         } 
+         } else {
+             healingLine.removeFromParent();
+         }
          if(isShooting){
              shootAudio.play();
              shoot();
@@ -299,6 +301,7 @@ public class Player extends Entity{
              isHealing = false;
              isShooting = false;
              line.removeFromParent();
+             healingLine.removeFromParent();
          }
          if(!isLiving() && this.getSpatial().hasAncestor(Main.app.getRootNode())){
              this.getSpatial().removeFromParent();
@@ -404,6 +407,7 @@ public class Player extends Entity{
                 this.increaseMoney(-1);
                 this.increaseHealth(1);
                 hasHealed = true;
+                healingLine.removeFromParent();
             } else {
                 isHealing = false;
             }                
