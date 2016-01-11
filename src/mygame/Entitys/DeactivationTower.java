@@ -25,6 +25,7 @@ public class DeactivationTower extends Tower{
      * @param location 
      */
     public DeactivationTower (Vector3f location){
+        super();
         this.setName("Deaktivierender Turm");
         this.setPrice(200);
         this.increaseTotalPaidMoney(this.getPrice());

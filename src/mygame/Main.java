@@ -31,7 +31,7 @@ public class Main extends SimpleApplication implements ActionListener{
     private MyStartScreen startState;   //Der ScreenController, der kontrolliert, was die Start-, Pause- und Einstellungsbildschirme machen.  
     private static World world;         //Die Spielwelt
     private static Game game;           //Das "Spiel". Kontrolliert die Wellengenerierung
-    private boolean debugMode = true;   //Gibt an ob der Debugmodus aktiviert ist.
+    private boolean debugMode;   //Gibt an ob der Debugmodus aktiviert ist.
     private static AppSettings appSettings;     //Die Einstellungen der Applications (kommt von der JMonkeyApplication). Sie ist für Auflösung etc. zuständig
     private Settings settings;          //Die selber erstellten Einstellungen. Sie ist für die Tastenbelegung etc. zuständig.   
     private Spatial scene;              //Die Spielszene  
@@ -75,6 +75,8 @@ public class Main extends SimpleApplication implements ActionListener{
      */
     @Override
     public void simpleInitApp() {
+        //Debugmode aktivieren, da das entsprechende Layer anfangs sichtbar ist. Wird später noch deaktiviert.
+        debugMode = true;
         settings = new Settings();
         
         //Set this boolean true when the game loop should stop running when ever the window loses focus.
@@ -146,20 +148,20 @@ public class Main extends SimpleApplication implements ActionListener{
      * Fügt Tastenbelegungen hinzu.
      */
     public void setUpKeys() {
-        String[] key_items = settings.getKeysItems();
+        String[] keyItems = settings.getKeysItems();
         //Allgemeine Tasten
         inputManager.addMapping("Menu", new KeyTrigger(KeyInput.KEY_ESCAPE), new KeyTrigger(KeyInput.KEY_PAUSE));
         inputManager.addListener(this, "Menu");
         //Tasten für SchnelleisteSlots
-        inputManager.addMapping("item_1", new KeyTrigger(settings.getKeyCode(key_items[0])));
+        inputManager.addMapping("item_1", new KeyTrigger(settings.getKeyCode(keyItems[0])));
         inputManager.addListener(this, "item_1");
-        inputManager.addMapping("item_2", new KeyTrigger(settings.getKeyCode(key_items[1])));
+        inputManager.addMapping("item_2", new KeyTrigger(settings.getKeyCode(keyItems[1])));
         inputManager.addListener(this, "item_2");
-        inputManager.addMapping("item_3", new KeyTrigger(settings.getKeyCode(key_items[2])));
+        inputManager.addMapping("item_3", new KeyTrigger(settings.getKeyCode(keyItems[2])));
         inputManager.addListener(this, "item_3");
-        inputManager.addMapping("item_4", new KeyTrigger(settings.getKeyCode(key_items[3])));
+        inputManager.addMapping("item_4", new KeyTrigger(settings.getKeyCode(keyItems[3])));
         inputManager.addListener(this, "item_4");
-        inputManager.addMapping("item_5", new KeyTrigger(settings.getKeyCode(key_items[4])));
+        inputManager.addMapping("item_5", new KeyTrigger(settings.getKeyCode(keyItems[4])));
         inputManager.addListener(this, "item_5");
         inputManager.addMapping("debug", new KeyTrigger(settings.getKeyCode(settings.getKeyDebug())));
         inputManager.addListener(this, "debug");

@@ -25,6 +25,7 @@ public class SimpleTower extends Tower{
      * @param location Ort
      */
     public SimpleTower (Vector3f location){
+        super();
         this.setName("Zerstörender Turm");
         this.setPrice(100);
         this.increaseTotalPaidMoney(this.getPrice());

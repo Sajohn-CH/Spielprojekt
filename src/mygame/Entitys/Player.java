@@ -48,11 +48,11 @@ public class Player extends Entity{
     private AudioNode notEnoughMoneyAudio;  //Ton, der bei zu wenig Geld zum kaufen abgespielt wird
     private AudioNode earnMoneyAudio;       //Ton, der beim verdienen von Geld abgespielt wird
     
-    private int key_left;                   //Keycode der Links-Taste
-    private int key_right;                  //Keycode der Rechts-Taste
-    private int key_up;                     //Keycode der Oben-Taste
-    private int key_down;                   //Keycode der Unten-Taste
-    private int key_jump;                   //Keycode der Springen-Taste
+    private int keyLeft;                   //Keycode der Links-Taste
+    private int keyRight;                  //Keycode der Rechts-Taste
+    private int keyUp;                     //Keycode der Oben-Taste
+    private int keyDown;                   //Keycode der Unten-Taste
+    private int keyJump;                   //Keycode der Springen-Taste
     
     /**
      * Initialisiert den Spieler. Setzt Grundattribute des Spielers, erstellt die Waffe und Schusslinie und lädt die Töne.
@@ -72,11 +72,11 @@ public class Player extends Entity{
         shotsPerSecond = 50;
         range = 100;
         String[] keys_walking = Main.app.getSettings().getKeysWalking();
-        key_left = Main.app.getSettings().getKeyCode(keys_walking[0]);
-        key_right = Main.app.getSettings().getKeyCode(keys_walking[1]);
-        key_up = Main.app.getSettings().getKeyCode(keys_walking[2]);
-        key_down = Main.app.getSettings().getKeyCode(keys_walking[3]);
-        key_jump = Main.app.getSettings().getKeyCode(Main.app.getSettings().getKeyJump());
+        keyLeft = Main.app.getSettings().getKeyCode(keys_walking[0]);
+        keyRight = Main.app.getSettings().getKeyCode(keys_walking[1]);
+        keyUp = Main.app.getSettings().getKeyCode(keys_walking[2]);
+        keyDown = Main.app.getSettings().getKeyCode(keys_walking[3]);
+        keyJump = Main.app.getSettings().getKeyCode(Main.app.getSettings().getKeyJump());
         
         money = 250;
         this.inputListener = inputListener;
@@ -168,15 +168,15 @@ public class Player extends Entity{
     private void setUpKeys() {
         //Tasten um Spieler zu Steuern
         Main.app.getInputManager().deleteMapping("Left");
-        Main.app.getInputManager().addMapping("Left", new KeyTrigger(key_left));
+        Main.app.getInputManager().addMapping("Left", new KeyTrigger(keyLeft));
         Main.app.getInputManager().deleteMapping("Right");
-        Main.app.getInputManager().addMapping("Right", new KeyTrigger(key_right));
+        Main.app.getInputManager().addMapping("Right", new KeyTrigger(keyRight));
         Main.app.getInputManager().deleteMapping("Up");
-        Main.app.getInputManager().addMapping("Up", new KeyTrigger(key_up));
+        Main.app.getInputManager().addMapping("Up", new KeyTrigger(keyUp));
         Main.app.getInputManager().deleteMapping("Down");
-        Main.app.getInputManager().addMapping("Down", new KeyTrigger(key_down));
+        Main.app.getInputManager().addMapping("Down", new KeyTrigger(keyDown));
         Main.app.getInputManager().deleteMapping("Jump");
-        Main.app.getInputManager().addMapping("Jump", new KeyTrigger(key_jump));
+        Main.app.getInputManager().addMapping("Jump", new KeyTrigger(keyJump));
         Main.app.getInputManager().addMapping("Shoot", new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
         Main.app.getInputManager().addMapping("placeTower", new MouseButtonTrigger(MouseInput.BUTTON_RIGHT));
         Main.app.getInputManager().addListener(this.inputListener, "Left");
@@ -811,15 +811,15 @@ public class Player extends Entity{
     
     /**
      * Ändert die Tastaturbelegungen.
-     * @param keys_walking //Tasten zum Laufen. Reihenfolge, left, right, up, down.
-     * @param key_jump Taste um zu springen
+     * @param keysWalking Tasten zum Laufen. Reihenfolge, left, right, up, down.
+     * @param keyJump Taste um zu springen
      */
-    public void replaceKeys(String[] keys_walking, String key_jump){
-        key_left = Main.app.getSettings().getKeyCode(keys_walking[0]);
-        key_right = Main.app.getSettings().getKeyCode(keys_walking[1]);
-        key_up = Main.app.getSettings().getKeyCode(keys_walking[2]);
-        key_down = Main.app.getSettings().getKeyCode(keys_walking[3]);
-        this.key_jump = Main.app.getSettings().getKeyCode(key_jump);
+    public void replaceKeys(String[] keysWalking, String keyJump){
+        keyLeft = Main.app.getSettings().getKeyCode(keysWalking[0]);
+        keyRight = Main.app.getSettings().getKeyCode(keysWalking[1]);
+        keyUp = Main.app.getSettings().getKeyCode(keysWalking[2]);
+        keyDown = Main.app.getSettings().getKeyCode(keysWalking[3]);
+        this.keyJump = Main.app.getSettings().getKeyCode(keyJump);
         
         setUpKeys();
     }

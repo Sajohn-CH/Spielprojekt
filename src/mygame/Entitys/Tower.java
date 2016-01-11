@@ -19,10 +19,19 @@ public class Tower extends Entity{
     private int price;                  //Preis zum bauen
     private double shotsPerSecond;      //Schüsse pro Sekunde
     private long shot;                  //Wann zuletzt geschossen
-    private long died = 0;              //Wann gestorben(Wird für Effekt benötigt, damit dieser noch genügend lange angezeigt wird)
+    private long died;              //Wann gestorben(Wird für Effekt benötigt, damit dieser noch genügend lange angezeigt wird)
     private ParticleEmitter flame;      //Effekt bei Zerstörung
-    private int totalPaidMoney = 0;     //Das gesamte dafür gezahlte Geld
-    private String name = "Turm";       //Der Name des Turmes
+    private int totalPaidMoney;     //Das gesamte dafür gezahlte Geld
+    private String name;       //Der Name des Turmes
+    
+    /**
+     * Konstruktor. Initialisiert alle Werte.
+     */
+    public Tower() {
+        died = 0;
+        totalPaidMoney = 0;
+        name = "Turm";
+    }
     
     /**
      * Gibt die Reichweite des Turmes zurück.

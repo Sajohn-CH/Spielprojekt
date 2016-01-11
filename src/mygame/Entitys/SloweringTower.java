@@ -25,6 +25,7 @@ public class SloweringTower extends Tower{
      * @param location Ort
      */
     public SloweringTower(Vector3f location) {
+        super();
         this.setName("Verlangsamender Turm");
         this.setPrice(150);
         this.increaseTotalPaidMoney(this.getPrice());
