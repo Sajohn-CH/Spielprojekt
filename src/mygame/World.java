@@ -241,15 +241,15 @@ public class World extends AbstractAppState{
     public ShootingBomb getNearestShootingBomb(Vector3f location){
         ArrayList<Bomb> allBombs = this.getAllBombs();
         if(!allBombs.isEmpty()){
-            ShootingBomb nearest = (ShootingBomb) allBombs.get(0);
-            for(int i = 1; i < allBombs.size(); i ++){
-                if(allBombs.get(i).getSpatial().getLocalTranslation().subtract(location).length() < nearest.getSpatial().getLocalTranslation().subtract(location).length() && allBombs.get(i).getSpatial().getName().equals("shootingBomb")){
+            ShootingBomb nearest = null;
+            for(int i = 0; i < allBombs.size(); i ++){
+                if(nearest == null && allBombs.get(i).getSpatial().getName().equals("shootingBomb")){
+                    nearest = (ShootingBomb) allBombs.get(i);
+                }else if(nearest != null && allBombs.get(i).getSpatial().getLocalTranslation().subtract(location).length() < nearest.getSpatial().getLocalTranslation().subtract(location).length() && allBombs.get(i).getSpatial().getName().equals("shootingBomb")){
                     nearest = (ShootingBomb) allBombs.get(i);
                 }
             }
-            if(nearest.getSpatial().getName().equals("shootingBomb")){
-                return nearest;
-            }
+            return nearest;
         }
         return null;
     }
