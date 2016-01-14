@@ -89,17 +89,15 @@ public class SloweringTower extends Tower{
      */
     @Override
     public void action(float tpf) {
-        for(int i = 0; i < Main.getWorld().getAllBombs().size(); i++){
-            Bomb bomb = Main.getWorld().getAllBombs().get(i);
-            if(bomb.getSpatial().getLocalTranslation().subtract(this.getSpatial().getLocalTranslation()).length() <= this.getRange() && isLiving() && canShoot() && bomb.getDecreasedSpeed() < bomb.getSpeed()-10-getLevel()*2){
-                this.getSpatial().lookAt(bomb.getSpatial().getLocalTranslation().add(Main.getWorld().getBombNode().getLocalTranslation()).setY(0), new Vector3f(0,1,0));
-               Vector3f vec = bomb.getSpatial().getLocalTranslation().subtract(this.getSpatial().getLocalTranslation()).normalize().mult(3.15f).setY(5.925f);
-               Line l = new Line(this.getSpatial().getLocalTranslation().add(vec), bomb.getSpatial().getLocalTranslation());
-               line.setMesh(l);
-               Main.app.getRootNode().attachChild(line);
-               super.shot();
-               this.decreaseSpeed(Main.getWorld().getAllBombs().get(i));
-            }
+        Bomb bomb = Main.getWorld().getNearestBomb(this.getLocation());
+        if(bomb != null && bomb.getSpatial().getLocalTranslation().subtract(this.getSpatial().getLocalTranslation()).length() <= this.getRange() && isLiving() && canShoot() && bomb.getDecreasedSpeed() < bomb.getSpeed()-10-getLevel()*2){
+           this.getSpatial().lookAt(bomb.getSpatial().getLocalTranslation().add(Main.getWorld().getBombNode().getLocalTranslation()).setY(0), new Vector3f(0,1,0));
+           Vector3f vec = bomb.getSpatial().getLocalTranslation().subtract(this.getSpatial().getLocalTranslation()).normalize().mult(3.15f).setY(5.925f);
+           Line l = new Line(this.getSpatial().getLocalTranslation().add(vec), bomb.getSpatial().getLocalTranslation());
+           line.setMesh(l);
+           Main.app.getRootNode().attachChild(line);
+           super.shot();
+           this.decreaseSpeed(bomb);
         }
         if(!this.isLiving() && !this.isDead()){
             died();

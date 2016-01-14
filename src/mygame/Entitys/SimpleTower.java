@@ -73,19 +73,14 @@ public class SimpleTower extends Tower{
      */
     @Override
     public void action(float tpf) {
-        for(int i = 0; i < Main.getWorld().getAllBombs().size(); i++){
-            Bomb bomb = Main.getWorld().getAllBombs().get(i);
-            if(bomb.getSpatial().getLocalTranslation().subtract(this.getSpatial().getLocalTranslation()).length() <= this.getRange() && this.canShoot()){
-                this.getSpatial().lookAt(bomb.getSpatial().getLocalTranslation().add(Main.getWorld().getBombNode().getLocalTranslation()).setY(0), new Vector3f(0,1,0));
-            }
-            if(bomb.getSpatial().getLocalTranslation().subtract(this.getSpatial().getLocalTranslation()).length() <= this.getRange() && isLiving() && canShoot()){
-               this.getSpatial().lookAt(bomb.getSpatial().getLocalTranslation().add(Main.getWorld().getBombNode().getLocalTranslation()).setY(0), new Vector3f(0,1,0));
-               Line l = new Line(this.getSpatial().getLocalTranslation().add(0, 3, 0), bomb.getSpatial().getLocalTranslation());
-               line.setMesh(l);
-               Main.app.getRootNode().attachChild(line);
-               super.shot();
-               this.makeDamage(Main.getWorld().getAllBombs().get(i));
-            }
+        Bomb bomb = Main.getWorld().getNearestBomb(this.getLocation());
+        if(bomb != null && bomb.getSpatial().getLocalTranslation().subtract(this.getSpatial().getLocalTranslation()).length() <= this.getRange() && isLiving() && canShoot()){
+           this.getSpatial().lookAt(bomb.getSpatial().getLocalTranslation().add(Main.getWorld().getBombNode().getLocalTranslation()).setY(0), new Vector3f(0,1,0));
+           Line l = new Line(this.getSpatial().getLocalTranslation().add(0, 3, 0), bomb.getSpatial().getLocalTranslation());
+           line.setMesh(l);
+           Main.app.getRootNode().attachChild(line);
+           super.shot();
+           this.makeDamage(bomb);
         }
         if(!this.isLiving() && !this.isDead()){
             died();

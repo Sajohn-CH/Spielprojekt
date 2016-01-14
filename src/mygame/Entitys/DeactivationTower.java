@@ -89,18 +89,15 @@ public class DeactivationTower extends Tower{
      */
     @Override
     public void action(float tpf) {
-        for(int i = 0; i < Main.getWorld().getAllBombs().size(); i++){
-            Bomb bomb = Main.getWorld().getAllBombs().get(i);
-            if(bomb.getSpatial().getLocalTranslation().subtract(this.getSpatial().getLocalTranslation()).length() <= this.getRange() && bomb.getSpatial().getName().equals("shootingBomb") && this.canShoot()){
-                ShootingBomb sBomb = (ShootingBomb) bomb;
-                if(sBomb.isShooting()){
+        ShootingBomb bomb = Main.getWorld().getNearestShootingBomb(this.getLocation());
+        if(bomb != null && bomb.getSpatial().getLocalTranslation().subtract(this.getSpatial().getLocalTranslation()).length() <= this.getRange() && this.canShoot()){
+            if(bomb.isShooting()){
                 this.getSpatial().lookAt(bomb.getSpatial().getLocalTranslation().add(Main.getWorld().getBombNode().getLocalTranslation()), new Vector3f(0,1,0));
-                    this.disableShooting(sBomb);
-                    Line l = new Line(this.getSpatial().getLocalTranslation().add(0,4,0), bomb.getSpatial().getLocalTranslation());
-                    line.setMesh(l);
-                    Main.app.getRootNode().attachChild(line);
-                    super.shot();
-                }
+                this.disableShooting(bomb);
+                Line l = new Line(this.getSpatial().getLocalTranslation().add(0,4,0), bomb.getSpatial().getLocalTranslation());
+                line.setMesh(l);
+                Main.app.getRootNode().attachChild(line);
+                super.shot();
             }
         }
         if(!this.isLiving() && !this.isDead()){

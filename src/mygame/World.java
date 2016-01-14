@@ -23,6 +23,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import mygame.Entitys.ShootingBomb;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -209,6 +210,46 @@ public class World extends AbstractAppState{
                 }
             }
             return nearest;
+        }
+        return null;
+    }
+    
+    /**
+     * Gibt die nächste Bombe bei einem bestimmten Ort zurück.
+     * @param location Ort
+     * @return nächste Bombe
+     */
+    public Bomb getNearestBomb(Vector3f location){
+        ArrayList<Bomb> allBombs = this.getAllBombs();
+        if(!allBombs.isEmpty()){
+            Bomb nearest = allBombs.get(0);
+            for(int i = 1; i < allBombs.size(); i ++){
+                if(allBombs.get(i).getSpatial().getLocalTranslation().subtract(location).length() < nearest.getSpatial().getLocalTranslation().subtract(location).length()){
+                    nearest = allBombs.get(i);
+                }
+            }
+            return nearest;
+        }
+        return null;
+    }
+    
+    /**
+     * Gibt die nächste ShootingBomb bei einem bestimmten Ort zurück.
+     * @param location Ort
+     * @return nächste ShootingBomb
+     */
+    public ShootingBomb getNearestShootingBomb(Vector3f location){
+        ArrayList<Bomb> allBombs = this.getAllBombs();
+        if(!allBombs.isEmpty()){
+            ShootingBomb nearest = (ShootingBomb) allBombs.get(0);
+            for(int i = 1; i < allBombs.size(); i ++){
+                if(allBombs.get(i).getSpatial().getLocalTranslation().subtract(location).length() < nearest.getSpatial().getLocalTranslation().subtract(location).length() && allBombs.get(i).getSpatial().getName().equals("shootingBomb")){
+                    nearest = (ShootingBomb) allBombs.get(i);
+                }
+            }
+            if(nearest.getSpatial().getName().equals("shootingBomb")){
+                return nearest;
+            }
         }
         return null;
     }

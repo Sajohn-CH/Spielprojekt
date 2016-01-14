@@ -106,16 +106,15 @@ public class ShootingBomb extends Bomb{
                 Main.getWorld().getPlayer().increaseHealth(-this.getShotDamage());
             }
         }
-        if(canShoot() && this.isLiving() && !Main.getWorld().getAllTowers().isEmpty()){
-            for(int i = 0; i < Main.getWorld().getAllTowers().size(); i++){
-                if(Main.getWorld().getAllTowers().get(i).getSpatial().getLocalTranslation().subtract(this.getSpatial().getLocalTranslation()).length() <= this.range && canShoot() && Main.getWorld().getAllTowers().get(i).isLiving()){
-                   n.getChild("gun").lookAt(Main.getWorld().getAllTowers().get(i).getSpatial().getLocalTranslation(), new Vector3f(0,1,0));
-                   Line l = new Line(this.getSpatial().getLocalTranslation(), Main.getWorld().getAllTowers().get(i).getSpatial().getLocalTranslation());
-                   line.setMesh(l);
-                   Main.app.getRootNode().attachChild(line);
-                   shot();
-                   Main.getWorld().getAllTowers().get(i).increaseHealth(-this.getShotDamage());
-                }
+        Tower nearestTower = Main.getWorld().getNearestTower(this.getSpatial().getLocalTranslation());
+        if(canShoot() && this.isLiving() && nearestTower != null && nearestTower.getLocation().subtract(this.getSpatial().getLocalTranslation()).length() <= this.range){
+            if(nearestTower.isLiving()){
+                n.getChild("gun").lookAt(nearestTower.getLocation().add(0, 2, 0), new Vector3f(0,1,0));
+                Line l = new Line(this.getSpatial().getLocalTranslation(), nearestTower.getSpatial().getLocalTranslation().add(0, 2, 0));
+                line.setMesh(l);
+                Main.app.getRootNode().attachChild(line);
+                shot();
+                nearestTower.increaseHealth(-this.getShotDamage());
             }
         }
         if(canShoot()){
