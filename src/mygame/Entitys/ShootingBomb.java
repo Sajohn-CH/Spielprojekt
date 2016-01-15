@@ -96,15 +96,13 @@ public class ShootingBomb extends Bomb{
     @Override
     public void action(float tpf) {
         super.action(tpf);
-        if(canShoot() && this.isLiving() & Main.getWorld().getPlayer().isLiving()){
-            if(Main.app.getCamera().getLocation().subtract(this.getSpatial().getLocalTranslation()).length() <= this.range){
-                n.getChild("gun").lookAt(Main.app.getCamera().getLocation(), new Vector3f(0,1,0));
-                Line l = new Line(this.getSpatial().getLocalTranslation(), Main.app.getCamera().getLocation().setY(2.5f));
-                line.setMesh(l);
-                Main.app.getRootNode().attachChild(line);
-                shot();
-                Main.getWorld().getPlayer().increaseHealth(-this.getShotDamage());
-            }
+        if(canShoot() && this.isLiving() & Main.getWorld().getPlayer().isLiving() && Main.app.getCamera().getLocation().subtract(this.getSpatial().getLocalTranslation()).length() <= this.range){
+            n.getChild("gun").lookAt(Main.app.getCamera().getLocation(), new Vector3f(0,1,0));
+            Line l = new Line(this.getSpatial().getLocalTranslation(), Main.app.getCamera().getLocation().setY(2.5f));
+            line.setMesh(l);
+            Main.app.getRootNode().attachChild(line);
+            shot();
+            Main.getWorld().getPlayer().increaseHealth(-this.getShotDamage());
         }
         Tower nearestTower = Main.getWorld().getNearestTower(this.getSpatial().getLocalTranslation());
         if(canShoot() && this.isLiving() && nearestTower != null && nearestTower.getLocation().subtract(this.getSpatial().getLocalTranslation()).length() <= this.range){
@@ -116,6 +114,14 @@ public class ShootingBomb extends Bomb{
                 shot();
                 nearestTower.increaseHealth(-this.getShotDamage());
             }
+        }
+        if(canShoot() && this.isLiving() && Main.app.getWorld().getBeacon().getLocation().subtract(this.getSpatial().getLocalTranslation()).length() <= this.range){
+            n.getChild("gun").lookAt(Main.app.getWorld().getBeacon().getLocation().add(0, 2, 0), new Vector3f(0,1,0));
+            Line l = new Line(this.getSpatial().getLocalTranslation(), Main.app.getWorld().getBeacon().getSpatial().getLocalTranslation().add(0, 2, 0));
+            line.setMesh(l);
+            Main.app.getRootNode().attachChild(line);
+            shot();
+            Main.app.getWorld().getBeacon().increaseHealth(-this.getShotDamage());
         }
         if(canShoot()){
             n.getChild("gun").lookAt(this.getWay().getThisCorner().add(0, 2, 0), new Vector3f(0,1,0));
