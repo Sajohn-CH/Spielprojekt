@@ -255,6 +255,26 @@ public class World extends AbstractAppState{
     }
     
     /**
+     * Gibt alle Bomben zurück die einen Maximalabstand zu einem Ort haben zurück.
+     * @param location Ort
+     * @param range Maximalabstand
+     * @return alle Bomben im Umkreis
+     */
+     public ArrayList<Bomb> getAllBombsInRange(Vector3f location, int range){
+        ArrayList<Bomb> allBombs = this.getAllBombs();
+        ArrayList<Bomb> bombsInRange = null;
+        if(!allBombs.isEmpty()){
+            for(int i = 1; i < allBombs.size(); i ++){
+                if(allBombs.get(i).getSpatial().getLocalTranslation().subtract(location).length() <= range){
+                    bombsInRange.add(allBombs.get(i));
+                }
+            }
+            return bombsInRange;
+        }
+        return null;
+    }
+    
+    /**
      * {@inheritDoc }
      *
      */

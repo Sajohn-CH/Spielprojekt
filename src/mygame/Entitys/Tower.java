@@ -6,6 +6,7 @@ import com.jme3.effect.shapes.EmitterSphereShape;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
+import java.util.ArrayList;
 import mygame.Main;
 
 
@@ -175,6 +176,15 @@ public class Tower extends Entity{
     }
     
     /**
+     * Der Turm wird automatisch soweit upgegradet, bis er das maximale Level erreicht hat oder der Spieler nicht mehr genügend Geld hat.
+     */
+    public void upgradeToMax(){
+        while(Main.app.getWorld().getPlayer().getMoney() >= this.getUpgradePrice() && this.getLevel() < 30){
+            this.upgrade();
+        }
+    }
+    
+    /**
      * Der Turm wird kollidierbar gemacht, damit man nicht hindurchlaufen kann.
      */
     public void setCollidable(){
@@ -272,5 +282,41 @@ public class Tower extends Entity{
      */
     public void setName(String name){
         this.name = name;
+    }
+    
+    /**
+     * Gibt die Schwächste Bombe in Reichweite zurück.
+     * @return schwächste Bombe
+     */
+    public Bomb getWeakestBombInRange(){
+        ArrayList<Bomb> allBombs = Main.app.getWorld().getAllBombsInRange(this.getLocation(), range);
+        if(!allBombs.isEmpty()){
+            Bomb weakest = allBombs.get(0);
+            for(int i = 0; i < allBombs.size(); i ++){
+                if(allBombs.get(i).getLevel() < weakest.getLevel() || (allBombs.get(i).getLevel() == weakest.getLevel() && allBombs.get(i).getSpatial().getLocalTranslation().subtract(this.getLocation()).length() < weakest.getSpatial().getLocalTranslation().subtract(this.getLocation()).length())){
+                    weakest = allBombs.get(i);
+                }
+            }
+            return weakest;
+        }
+        return null;
+    }
+    
+    /**
+     * Gibt die stärkste Bombe in Reichweite zurück.
+     * @return stärkste Bombe
+     */
+    public Bomb getStrongestBombInRange(){
+        ArrayList<Bomb> allBombs = Main.app.getWorld().getAllBombsInRange(this.getLocation(), range);
+        if(!allBombs.isEmpty()){
+            Bomb strongest = allBombs.get(0);
+            for(int i = 0; i < allBombs.size(); i ++){
+                if(allBombs.get(i).getLevel() > strongest.getLevel() || (allBombs.get(i).getLevel() == strongest.getLevel() && allBombs.get(i).getSpatial().getLocalTranslation().subtract(this.getLocation()).length() < strongest.getSpatial().getLocalTranslation().subtract(this.getLocation()).length())){
+                    strongest = allBombs.get(i);
+                }
+            }
+            return strongest;
+        }
+        return null;
     }
 }
