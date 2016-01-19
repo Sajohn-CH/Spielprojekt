@@ -176,6 +176,9 @@
                     <control id="upgrade" name="button" label="Upgraden" align="center" valign="center" color="#0000" visibleToMouse="true">
                         <interact onClick="closeTowerPopup(true)"/>
                     </control>
+                    <control id="upgradeToMax" name="button" label="Sofortupgrade" align="center" valign="center" color="#0000" visibleToMouse="true">
+                        <interact onClick="upgradeToMax()"/>
+                    </control>
                     <control id="cancel" name="button" label="Abbrechen" align="center" valign="center" color="#ffffffff" visibleToMouse="true">
                         <interact onClick="closeTowerPopup(false)"/>
                     </control>

@@ -261,15 +261,15 @@ public class HudScreenState extends AbstractAppState implements ScreenController
             towerPopup.findElementByName("strongest").enable();
             towerPopup.findElementByName("weakest").disable();
        }
-       
        if(tower.getShootAtShootingBombs()){
            towerPopup.findElementByName("shootingBombs").disable();
        } else {
            towerPopup.findElementByName("allBombs").disable();
        }
-       
+               
        nifty.showPopup(screen, towerPopup.getId(), null);  
        Main.app.getWorld().setPaused(true);
+       towerPopup.findElementByName("cancel").setFocus();
    }
    
    /**
@@ -291,7 +291,15 @@ public class HudScreenState extends AbstractAppState implements ScreenController
        Main.app.getWorld().setPaused(false);
        cameraDragToRotate = false;
    }
-     
+    
+   public void upgradeToMax(){
+       if(tower == null){
+           return;
+       }
+       this.closeTowerPopup("false");
+       tower.upgradeToMax();
+   }
+   
     /**
      * Setzt auf welche Bombe geschossen werden soll. Es muss nur eine Variable true sein.
      * @param nearest Auf die nächste
@@ -408,6 +416,7 @@ public class HudScreenState extends AbstractAppState implements ScreenController
        endWavePopup.findElementByName("#PLSpeed").getRenderer(TextRenderer.class).setText(speed);
        endWavePopup.findElementByName("#BeaconUpgrade").getRenderer(TextRenderer.class).setText(beaconHealth);
        
+       endWavePopup.findElementByName("#nextWave").setFocus();
    }
    
    /**
