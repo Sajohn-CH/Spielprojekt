@@ -75,7 +75,7 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
             if(Main.app.getSettings().isUseScroll()) {
                 screen.findElementByName("enableScroll").disable();
             } else {
-            screen.findElementByName("disableScroll").disable();
+                screen.findElementByName("disableScroll").disable();
             }
         }
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -320,7 +320,7 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
            buttonOn.enable();
            buttonOff.disable();
            settings.setUseScroll(false);
-       }  
+       }
        
        Main.app.deleteKeys();
        Main.app.setUpKeys();

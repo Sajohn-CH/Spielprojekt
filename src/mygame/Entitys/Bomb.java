@@ -199,5 +199,20 @@ public class Bomb extends Entity{
     public Way getWay(){
         return way;
     }
+    
+    /**
+     * Gibt zurück zur wievielten Ecke sie unterwegs ist.
+     * @return Wievielte Ecke
+     */
+    public int getCornerIndex(){
+        return way.getPositionID();
+    }
         
+    /**
+     * Gibt die Distanz zur nächsten Ecke zurück
+     * @return Distanz
+     */
+    public double getDistanceToNextCorner(){
+        return this.getSpatial().getLocalTranslation().subtract(way.getThisCorner()).length();
+    }
 }

@@ -44,4 +44,11 @@ public class Way {
         return corners.get(positionID-1).mult(2);
     }
     
+    /**
+     * Gibt zurück zur wievielten Ecke sie unterwegs ist.
+     * @return Wievielte Ecke
+     */
+    public int getPositionID(){
+        return positionID;
+    }
 }

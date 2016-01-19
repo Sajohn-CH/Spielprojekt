@@ -234,10 +234,40 @@ public class HudScreenState extends AbstractAppState implements ScreenController
        } else {
            towerPopup.findElementByName("textDamage").getRenderer(TextRenderer.class).setText(damage);
            towerPopup.findElementByName("damage").getRenderer(TextRenderer.class).setText("");
+           towerPopup.findElementByName("#buttonsShootingBomb").setVisible(false);
        }
        towerPopup.findElementByName("health").getRenderer(TextRenderer.class).setText(health);
        towerPopup.findElementByName("sps").getRenderer(TextRenderer.class).setText(sps);
        towerPopup.findElementByName("range").getRenderer(TextRenderer.class).setText(range);
+       
+       if(tower.getShootAt().equals("nearest")){
+            towerPopup.findElementByName("nearest").disable();
+            towerPopup.findElementByName("furthest").enable();
+            towerPopup.findElementByName("strongest").enable();
+            towerPopup.findElementByName("weakest").enable();
+       } else if (tower.getShootAt().equals("furthest")){
+            towerPopup.findElementByName("nearest").enable();
+            towerPopup.findElementByName("furthest").disable();
+            towerPopup.findElementByName("strongest").enable();
+            towerPopup.findElementByName("weakest").enable();
+       } else if (tower.getShootAt().equals("strongest")){
+            towerPopup.findElementByName("nearest").enable();
+            towerPopup.findElementByName("furthest").enable();
+            towerPopup.findElementByName("strongest").disable();
+            towerPopup.findElementByName("weakest").enable();
+       } else if (tower.getShootAt().equals("weakest")){
+            towerPopup.findElementByName("nearest").enable();
+            towerPopup.findElementByName("furthest").enable();
+            towerPopup.findElementByName("strongest").enable();
+            towerPopup.findElementByName("weakest").disable();
+       }
+       
+       if(tower.getShootAtShootingBombs()){
+           towerPopup.findElementByName("shootingBombs").disable();
+       } else {
+           towerPopup.findElementByName("allBombs").disable();
+       }
+       
        nifty.showPopup(screen, towerPopup.getId(), null);  
        Main.app.getWorld().setPaused(true);
    }
@@ -262,6 +292,68 @@ public class HudScreenState extends AbstractAppState implements ScreenController
        cameraDragToRotate = false;
    }
      
+    /**
+     * Setzt auf welche Bombe geschossen werden soll. Es muss nur eine Variable true sein.
+     * @param nearest Auf die nächste
+     * @param furthest Auf die weiteste
+     * @param strongest Auf die stärkste
+     * @param weakest Auf die schwächste
+     */
+    public void setShootAt(String nearest, String furthest, String strongest, String weakest){
+        if(tower == null){
+            return;
+        }
+        de.lessvoid.nifty.elements.Element buttonNearest = screen.findElementByName("nearest");
+        de.lessvoid.nifty.elements.Element buttonFurthest = screen.findElementByName("furthest");
+        de.lessvoid.nifty.elements.Element buttonStrongest = screen.findElementByName("strongest");
+        de.lessvoid.nifty.elements.Element buttonWeakest = screen.findElementByName("weakest");
+        if(nearest.equals("true")){
+            tower.setShootAt(true, false, false, false);
+            buttonNearest.disable();
+            buttonFurthest.enable();
+            buttonStrongest.enable();
+            buttonWeakest.enable();
+        } else if(furthest.equals("true")){
+            tower.setShootAt(false, true, false, false);
+            buttonNearest.enable();
+            buttonFurthest.disable();
+            buttonStrongest.enable();
+            buttonWeakest.enable();
+        } else if(strongest.equals("true")){
+            tower.setShootAt(false, false, true, false);
+            buttonNearest.enable();
+            buttonFurthest.enable();
+            buttonStrongest.disable();
+            buttonWeakest.enable();
+        } else if(weakest.equals("true")){
+            tower.setShootAt(false, false, false, true);
+            buttonNearest.enable();
+            buttonFurthest.enable();
+            buttonStrongest.enable();
+            buttonWeakest.disable();
+        }
+    }
+    
+    /**
+     * Wechselt ob nur auf ShootingBombs geschossen werden soll.
+     */
+    public void toogleShootAtShootingBombs(){
+        if(tower == null){
+            return;
+        }
+        de.lessvoid.nifty.elements.Element buttonAll = screen.findElementByName("allBombs");
+        de.lessvoid.nifty.elements.Element buttonShootingBombs = screen.findElementByName("shootingBombs");
+        if(buttonAll.isEnabled()) {
+           buttonAll.disable();
+           buttonShootingBombs.enable();
+           tower.toogleShootAtShootingBombs();
+       } else {
+           buttonAll.enable();
+           buttonShootingBombs.disable();
+           tower.toogleShootAtShootingBombs();
+       }
+    }
+    
    /**
     * Entfernt den Turm. Dies wird vom Towerpopup aufgerufen, so dass der Turm, dessen Upgrade-Popup offen ist entfernt wird.
     */
@@ -545,7 +637,5 @@ public class HudScreenState extends AbstractAppState implements ScreenController
             cameraDragToRotate = true;
             Main.app.getWorld().setPaused(true);
         }
-       
-        
     }
 }

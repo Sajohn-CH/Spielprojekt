@@ -33,6 +33,7 @@ public class DeactivationTower extends Tower{
         this.setLocation(location);
         this.setLiving(true);
         this.setLocation(new Vector3f(location.x, 0, location.z));
+        super.setShootAt(true, true, false, false, false);
         
         //Modell von: http://www.blendswap.com/blends/view/77840 (User: thanhkhmt1)
         //Bearbeitet von: Florian Wenk
@@ -89,7 +90,7 @@ public class DeactivationTower extends Tower{
      */
     @Override
     public void action(float tpf) {
-        ShootingBomb bomb = Main.getWorld().getNearestShootingBomb(this.getLocation());
+        ShootingBomb bomb = (ShootingBomb) super.getBombToShootAt();
         if(bomb != null && bomb.getSpatial().getLocalTranslation().subtract(this.getSpatial().getLocalTranslation()).length() <= this.getRange() && this.canShoot()){
             if(bomb.isShooting()){
                 this.getSpatial().lookAt(bomb.getSpatial().getLocalTranslation().add(Main.getWorld().getBombNode().getLocalTranslation()), new Vector3f(0,1,0));

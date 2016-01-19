@@ -73,7 +73,7 @@ public class SimpleTower extends Tower{
      */
     @Override
     public void action(float tpf) {
-        Bomb bomb = Main.getWorld().getNearestBomb(this.getLocation());
+        Bomb bomb = this.getBombToShootAt();
         if(bomb != null && bomb.getSpatial().getLocalTranslation().subtract(this.getSpatial().getLocalTranslation()).length() <= this.getRange() && isLiving() && canShoot()){
            this.getSpatial().lookAt(bomb.getSpatial().getLocalTranslation().add(Main.getWorld().getBombNode().getLocalTranslation()).setY(0), new Vector3f(0,1,0));
            Line l = new Line(this.getSpatial().getLocalTranslation().add(0, 3, 0), bomb.getSpatial().getLocalTranslation());

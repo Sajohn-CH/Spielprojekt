@@ -262,14 +262,37 @@ public class World extends AbstractAppState{
      */
      public ArrayList<Bomb> getAllBombsInRange(Vector3f location, int range){
         ArrayList<Bomb> allBombs = this.getAllBombs();
-        ArrayList<Bomb> bombsInRange = null;
+        ArrayList<Bomb> bombsInRange = new ArrayList<Bomb>();
         if(!allBombs.isEmpty()){
-            for(int i = 1; i < allBombs.size(); i ++){
+            for(int i = 0; i < allBombs.size(); i ++){
                 if(allBombs.get(i).getSpatial().getLocalTranslation().subtract(location).length() <= range){
                     bombsInRange.add(allBombs.get(i));
                 }
             }
             return bombsInRange;
+        }
+        return null;
+    }
+     
+     /**
+     * Gibt alle ShootingBombs zurück die einen Maximalabstand zu einem Ort haben zurück.
+     * @param location Ort
+     * @param range Maximalabstand
+     * @return alle ShootingBombs im Umkreis
+     */
+     public ArrayList<ShootingBomb> getAllShootingBombsInRange(Vector3f location, int range){
+        ArrayList<Bomb> allBombs = this.getAllBombs();
+        ArrayList<ShootingBomb> shootingBombsInRange = new ArrayList<ShootingBomb>();
+        if(!allBombs.isEmpty()){
+            for(int i = 0; i < allBombs.size(); i ++){
+                if(allBombs.get(i).getSpatial().getLocalTranslation().subtract(location).length() <= range && allBombs.get(i).getSpatial().getName().equals("shootingBomb")){
+                    ShootingBomb sBomb = (ShootingBomb) allBombs.get(i);
+                    if(sBomb.isShooting()){
+                        shootingBombsInRange.add(sBomb);
+                    }
+                }
+            }
+            return shootingBombsInRange;
         }
         return null;
     }
