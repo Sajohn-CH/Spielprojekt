@@ -785,6 +785,16 @@ public class Player extends Entity{
     }
     
     /**
+     * Stoppt das Schiessen und Heilen des Spielers.
+     */
+    public void setNotShootingAndHealing(){
+        isShooting = false;
+        isHealing = false;
+        line.removeFromParent();
+        healingLine.removeFromParent();
+    }
+    
+    /**
      * Stoppt die Wiedergabe der langanhaltenden Soundeffekte.
      */
     public void stopAudio(){

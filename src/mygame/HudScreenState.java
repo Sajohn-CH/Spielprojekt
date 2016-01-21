@@ -220,12 +220,27 @@ public class HudScreenState extends AbstractAppState implements ScreenController
        String sps = tower.getShotsPerSecond()+"+"+Math.round((tower.getNewSPS(newLevel)-tower.getShotsPerSecond())*100)/100.0;
        String range = tower.getRange()+"+"+(tower.getNewRange(newLevel)-tower.getRange());
        
+       
+       if(tower.getLevel() >= 30){
+            price = tower.getUpgradePrice()+"$";
+            damage = Integer.toString(tower.getDamage());
+            if(tower.getSpatial().getName().equals("DeactivationTower")){
+                 damage = "Macht schiessunfähig";
+            }
+            health = tower.getHealth()+"/"+tower.getMaxHealth();
+            sps = Double.toString(tower.getShotsPerSecond());
+            range = Integer.toString(tower.getRange());
+       }
+       
        //Setzt Texte im Popup entsprechend den Werten des Turms
        Main.app.getFlyByCamera().setDragToRotate(true);
        cameraDragToRotate = true;
        towerPopup = nifty.createPopup("niftyPopupTower");
        if(tower.getLevel() >= 30){
            towerPopup.findElementByName("upgrade").setVisible(false);
+           towerPopup.findElementByName("upgradeToMax").setVisible(false);
+           towerPopup.findElementByName("textPrice").setVisible(false);
+           towerPopup.findElementByName("price").setVisible(false);
        }
        towerPopup.findElementByName("#title").getRenderer(TextRenderer.class).setText(tower.getName() + " Stufe " + tower.getLevel());
        towerPopup.findElementByName("price").getRenderer(TextRenderer.class).setText(price);
@@ -263,8 +278,10 @@ public class HudScreenState extends AbstractAppState implements ScreenController
        }
        if(tower.getShootAtShootingBombs()){
            towerPopup.findElementByName("shootingBombs").disable();
-       } else {
+       } else if (tower.getShootAtAllBombs()){
            towerPopup.findElementByName("allBombs").disable();
+       } else if (tower.getShootAtNormalBombs()){
+           towerPopup.findElementByName("normalBombs").disable();
        }
                
        nifty.showPopup(screen, towerPopup.getId(), null);  
@@ -343,23 +360,51 @@ public class HudScreenState extends AbstractAppState implements ScreenController
     }
     
     /**
-     * Wechselt ob nur auf ShootingBombs geschossen werden soll.
+     * Setzt, dass nur auf ShootingBombs geschossen werden soll.
      */
-    public void toogleShootAtShootingBombs(){
+    public void setShootAtShootingBombs(){
         if(tower == null){
             return;
         }
         de.lessvoid.nifty.elements.Element buttonAll = screen.findElementByName("allBombs");
         de.lessvoid.nifty.elements.Element buttonShootingBombs = screen.findElementByName("shootingBombs");
-        if(buttonAll.isEnabled()) {
-           buttonAll.disable();
-           buttonShootingBombs.enable();
-           tower.toogleShootAtShootingBombs();
-       } else {
-           buttonAll.enable();
-           buttonShootingBombs.disable();
-           tower.toogleShootAtShootingBombs();
-       }
+        de.lessvoid.nifty.elements.Element buttonNormalBombs = screen.findElementByName("normalBombs");
+        buttonAll.enable();
+        buttonShootingBombs.disable();
+        buttonNormalBombs.enable();
+        tower.setShootOnlyAtShootingBombs();
+    }
+    
+    /**
+     * Setzt, dass nur auf normale Bomben geschossen werden soll.
+     */
+    public void setShootAtNormalBombs(){
+        if(tower == null){
+            return;
+        }
+        de.lessvoid.nifty.elements.Element buttonAll = screen.findElementByName("allBombs");
+        de.lessvoid.nifty.elements.Element buttonShootingBombs = screen.findElementByName("shootingBombs");
+        de.lessvoid.nifty.elements.Element buttonNormalBombs = screen.findElementByName("normalBombs");
+        buttonAll.enable();
+        buttonShootingBombs.enable();
+        buttonNormalBombs.disable();
+        tower.setShootOnlyAtNormalBombs();
+    }
+    
+    /**
+     * Setzt, dass nur auf ShootingBombs geschossen werden soll.
+     */
+    public void setShootAtAllBombs(){
+        if(tower == null){
+            return;
+        }
+        de.lessvoid.nifty.elements.Element buttonAll = screen.findElementByName("allBombs");
+        de.lessvoid.nifty.elements.Element buttonShootingBombs = screen.findElementByName("shootingBombs");
+        de.lessvoid.nifty.elements.Element buttonNormalBombs = screen.findElementByName("normalBombs");
+        buttonAll.disable();
+        buttonShootingBombs.enable();
+        buttonNormalBombs.enable();
+        tower.setShootAtAllBombs();
     }
     
    /**

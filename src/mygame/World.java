@@ -255,6 +255,34 @@ public class World extends AbstractAppState{
     }
     
     /**
+     * Gibt die nächste Normale Bombe bei einem bestimmten Ort zurück.
+     * @param location Ort
+     * @return nächste normale Bombe
+     */
+    public Bomb getNearestNormalBomb(Vector3f location){
+        ArrayList<Bomb> allBombs = this.getAllBombs();
+        if(!allBombs.isEmpty()){
+            Bomb nearest = null;
+            for(int i = 0; i < allBombs.size(); i ++){
+                if(nearest == null && allBombs.get(i).getSpatial().getName().equals("bomb")){
+                    nearest = allBombs.get(i);
+                }else if(nearest != null && allBombs.get(i).getSpatial().getLocalTranslation().subtract(location).length() < nearest.getSpatial().getLocalTranslation().subtract(location).length()){
+                    if(allBombs.get(i).getSpatial().getName().equals("bomb")){
+                        nearest = allBombs.get(i);
+                    } else {
+                        ShootingBomb sBomb = (ShootingBomb) allBombs.get(i);
+                        if(!sBomb.isShooting()){
+                            nearest = (Bomb) sBomb;
+                        }
+                    }
+                }
+            }
+            return nearest;
+        }
+        return null;
+    }
+    
+    /**
      * Gibt alle Bomben zurück die einen Maximalabstand zu einem Ort haben zurück.
      * @param location Ort
      * @param range Maximalabstand
@@ -293,6 +321,33 @@ public class World extends AbstractAppState{
                 }
             }
             return shootingBombsInRange;
+        }
+        return null;
+    }
+     
+     /**
+     * Gibt alle Normalen Bomben zurück die einen Maximalabstand zu einem Ort haben zurück.
+     * @param location Ort
+     * @param range Maximalabstand
+     * @return alle normalen Bomben im Umkreis
+     */
+     public ArrayList<Bomb> getAllNormalBombsInRange(Vector3f location, int range){
+        ArrayList<Bomb> allBombs = this.getAllBombs();
+        ArrayList<Bomb> normalBombsInRange = new ArrayList<Bomb>();
+        if(!allBombs.isEmpty()){
+            for(int i = 0; i < allBombs.size(); i ++){
+                if(allBombs.get(i).getSpatial().getLocalTranslation().subtract(location).length() <= range){
+                    if(allBombs.get(i).getSpatial().getName().equals("bomb")){
+                        normalBombsInRange.add(allBombs.get(i));
+                    } else {
+                        ShootingBomb sBomb = (ShootingBomb) allBombs.get(i);
+                        if(!sBomb.isShooting()){
+                            normalBombsInRange.add((Bomb) sBomb);
+                        }
+                    }
+                }
+            }
+            return normalBombsInRange;
         }
         return null;
     }
@@ -404,6 +459,7 @@ public class World extends AbstractAppState{
      */
     public void setPaused(boolean pause){
         this.setEnabled(!pause);
+        player.setNotShootingAndHealing();
     }
     
     /**
