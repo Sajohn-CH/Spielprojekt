@@ -407,6 +407,20 @@ public class HudScreenState extends AbstractAppState implements ScreenController
         tower.setShootAtAllBombs();
     }
     
+    
+    public void openRemoveTowerPopup(){
+        if(tower == null){
+            return;
+        }
+        closeTowerPopup("false");
+        Main.app.getFlyByCamera().setDragToRotate(true);
+        cameraDragToRotate = true;
+        towerPopup = nifty.createPopup("niftyPopupRemoveTower");
+        Main.app.getWorld().setPaused(true);
+        nifty.showPopup(screen, towerPopup.getId(), null);
+        towerPopup.findElementByName("no").setFocus();
+    }
+    
    /**
     * Entfernt den Turm. Dies wird vom Towerpopup aufgerufen, so dass der Turm, dessen Upgrade-Popup offen ist entfernt wird.
     */

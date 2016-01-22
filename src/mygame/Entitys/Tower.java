@@ -466,7 +466,6 @@ public class Tower extends Entity{
      * @return Bombe, die Ziel ist
      */
     public Bomb getBombToShootAt(){
-        System.out.println(shootOnlyAtNormalBombs);
         if(shootAtNearestBomb && !shootOnlyAtShootingBombs && !shootOnlyAtNormalBombs){
             return Main.app.getWorld().getNearestBomb(this.getLocation());
         } else if (shootAtNearestBomb && shootOnlyAtShootingBombs){
