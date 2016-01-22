@@ -161,7 +161,7 @@ public class DeactivationTower extends Tower{
      */
     @Override
     public int getUpgradePrice() {
-        return this.getMaxHealth();
+        return this.getMaxHealth()*(this.getLevel()/10+1);
     }
         
     /**

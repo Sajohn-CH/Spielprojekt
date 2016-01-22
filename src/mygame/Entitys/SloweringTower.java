@@ -159,7 +159,7 @@ public class SloweringTower extends Tower{
      */
     @Override
     public int getUpgradePrice() {
-        return this.getMaxHealth();
+        return this.getMaxHealth()*(int)(this.getLevel()/7.5+1);
     }
     
     /**
