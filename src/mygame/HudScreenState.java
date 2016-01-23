@@ -97,7 +97,15 @@ public class HudScreenState extends AbstractAppState implements ScreenController
         
         if(startWaveTime != 0 && startWaveTime <= System.currentTimeMillis()) {
             startNextWave();
-        }        
+        }
+        
+        if(towerPopup != null && towerPopup.isEnabled()) {
+           Main.app.getFlyByCamera().setEnabled(false);
+        } else if(endWavePopup != null && endWavePopup.isEnabled()) {
+           Main.app.getFlyByCamera().setEnabled(false);
+        } else if (!Main.app.getFlyByCamera().isEnabled()){
+            Main.app.getFlyByCamera().setEnabled(true);
+        }
     }
     
     /**
