@@ -744,9 +744,11 @@ public class HudScreenState extends AbstractAppState implements ScreenController
         Element towerLostHealth = screen.findElementByName("#towerLostHealth");
         
         towerHealthBar.setWidth((int)(tower.getHealthPercentage()/100f*towerInfoPanel.getWidth()));  
+        screen.findElementByName("crosshair").setVisible(false);
    }
     
     public void hideTowerInfo() {
         screen.findElementByName("towerInfoLayer").setVisible(false);
+        screen.findElementByName("crosshair").setVisible(true);
     }
 }

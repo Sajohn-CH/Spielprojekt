@@ -311,9 +311,11 @@ public class Player extends Entity{
          
          //Kontrolle ob Turm im Sichtfeld
          CollisionResults results = new CollisionResults();
+         CollisionResults resultsBeacon = new CollisionResults();
          Ray ray = new Ray(Main.app.getCamera().getLocation(), Main.app.getCamera().getDirection());
          Main.getWorld().getTowerNode().collideWith(ray, results);
-         if(results.size() != 0) {
+         Main.getWorld().getBeacon().getSpatial().collideWith(ray, resultsBeacon);
+         if(results.size() != 0 && (resultsBeacon.size() == 0 || results.getClosestCollision().getContactPoint().subtract(this.getLocation()).length() < resultsBeacon.getClosestCollision().getContactPoint().subtract(this.getLocation()).length()) && results.getClosestCollision().getContactPoint().subtract(this.getLocation()).length() <= 150) {
              Tower tower = Main.getWorld().getNearestTower(results.getClosestCollision().getContactPoint());
              Main.app.getHudState().showTowerInfo(tower);
          } else {
