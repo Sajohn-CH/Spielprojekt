@@ -6,6 +6,8 @@ import com.jme3.effect.shapes.EmitterSphereShape;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
 import java.util.ArrayList;
 import mygame.Main;
 
@@ -24,6 +26,7 @@ public class Tower extends Entity{
     private ParticleEmitter flame;      //Effekt bei Zerstörung
     private int totalPaidMoney;     //Das gesamte dafür gezahlte Geld
     private String name;       //Der Name des Turmes
+    private boolean lowHealthSignIsVisible; //Zeichen, dass der Turm wenig Leben hat ist aktiv.
     
     private boolean shootOnlyAtShootingBombs;
     private boolean shootOnlyAtNormalBombs;
@@ -39,6 +42,7 @@ public class Tower extends Entity{
         died = 0;
         totalPaidMoney = 0;
         name = "Turm";
+        lowHealthSignIsVisible = false;
         
         shootOnlyAtShootingBombs = false;
         shootOnlyAtNormalBombs = false;
@@ -574,5 +578,26 @@ public class Tower extends Entity{
             return "weakest";
         }
         return null;
+    }
+    
+    public void showLowHealthSign(Node n, float height){
+        lowHealthSignIsVisible = true;
+        Spatial s = Main.app.getAssetManager().loadModel("Objects/!.j3o");
+        s.setName("LowHealth");
+        Material mat = new Material(Main.app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
+        mat.setColor("Color", ColorRGBA.Red);
+        mat.setTransparent(true);
+        s.setMaterial(mat);
+        n.attachChild(s);
+        s.setLocalTranslation(0, height, 0);
+    }
+    
+    public void hideLowHealthSign(Node n){
+        lowHealthSignIsVisible = false;
+        n.detachChildNamed("LowHealth");
+    }
+    
+    public boolean lowHealthSignIsVisble(){
+        return this.lowHealthSignIsVisible;
     }
 }

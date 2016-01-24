@@ -8,6 +8,7 @@ import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
+import com.jme3.scene.Node;
 import com.jme3.scene.shape.Line;
 import mygame.Main;
 
@@ -109,6 +110,11 @@ public class DeactivationTower extends Tower{
         }
         if(System.currentTimeMillis()-getLastShot() >= 50){
             line.removeFromParent();
+        }
+        if(this.getHealthPercentage() <= 20 && !this.lowHealthSignIsVisble()){
+            this.showLowHealthSign((Node) this.getSpatial(), 10);
+        } else if (this.getHealthPercentage() > 20 && this.lowHealthSignIsVisble()){
+            this.hideLowHealthSign((Node) this.getSpatial());
         }
     }
     

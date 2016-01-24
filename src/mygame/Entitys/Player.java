@@ -278,7 +278,7 @@ public class Player extends Entity{
           }
          walkDirection.normalizeLocal();
          walkDirection.multLocal(this.getSpeed() * tpf);
-         if(walkDirection.length() != 0){
+         if(walkDirection.length() != 0 && player.onGround()){
              walkAudio.play();
          } else {
              walkAudio.stop();
