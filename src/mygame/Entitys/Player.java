@@ -306,6 +306,17 @@ public class Player extends Entity{
          if(!isLiving() && this.getSpatial().hasAncestor(Main.app.getRootNode())){
              this.getSpatial().removeFromParent();
          }
+         
+         //Kontrolle ob Turm im Sichtfeld
+         CollisionResults results = new CollisionResults();
+         Ray ray = new Ray(Main.app.getCamera().getLocation(), Main.app.getCamera().getDirection());
+         Main.getWorld().getTowerNode().collideWith(ray, results);
+         if(results.size() != 0) {
+             Tower tower = Main.getWorld().getNearestTower(results.getClosestCollision().getContactPoint());
+             Main.app.getHudState().showTowerInfo(tower);
+         } else {
+             Main.app.getHudState().hideTowerInfo();
+         }
      }
 
    /**

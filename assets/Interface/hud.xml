@@ -6,7 +6,7 @@
     <screen id="hud" controller="mygame.HudScreenState">
         <!--Hintergrundschicht, bei der das Fadenkreuz als "+" angezgeigt wird. Es ist das einzige Element im Hintergrund, damit es in der Mitte angezeigt wird. -->
         <layer id="background" childLayout="center">
-             <text id="crosshair" height="100%" width="100%" text="+" font="Interface/Fonts/Arial.fnt"/>
+            <text id="crosshair" height="100%" width="100%" text="+" font="Interface/Fonts/Arial.fnt"/>
         </layer>
         <!--Eine zweite Schicht, die dazu dient die einzelnen Bilder in der Leiste unten anzuzeigen. Darüber wird in der nächsten Schicht ein Rahmen gelegt. -->
         <layer childLayout="vertical">
@@ -25,6 +25,7 @@
                 </panel>
             </panel>
         </layer>
+        
         <!-- Der Vodergrund. -->
         <layer id="foreground" childLayout="vertical">
             <!-- Die obere Leiste, sie zeigt den akutellen Geldstand, die Welle und die Uhrzeit an.-->
@@ -39,6 +40,9 @@
                     <text id="beaconHealth" text="100%" height="100%" width="100%" font="Interface/Fonts/Arial.fnt"/>
                 </panel>
             </panel>
+            
+            
+           
             
             <!-- Panel, das dafür sorgt, dass das nächste Panel zuunterst ist. -->
             <panel id="top" height="77%" width="100%" childLayout="center" >
@@ -115,6 +119,24 @@
                 <text text="Zum Schiessen muss man die linke Maustaste drücken, die Auswahl spielt dabei keine Rolle. Der Spieler bewegt sich mit den Tasten W,A,S,D." font="Interface/Fonts/Arial.fnt"/>
                 <text text="Mit der ESC-Taste ruft man das Pausenmenu auf." font="Interface/Fonts/Arial.fnt"/>
                 <text text="Um diesen Bildschirm erneut aufzurufen, muss die F1-Taste gedrückt werden. Zum Schliessen dieses Bildschirms muss einmal die linke Maustaste gedrückt werden." font="Interface/Fonts/Arial.fnt"/>
+            </panel>
+        </layer>
+        
+        <!-- Layer welche Informationen über den Turm anzeigt, der gerade angeschaut wird. Ist nur sichtbar wenn auf ein Turm geschaut wird-->
+        <layer id="towerInfoLayer" childLayout="center">
+            <panel id="#towerInfoPanel" width="15%" height="5%" childLayout="vertical">
+                <text id ="#towerDescription" text="TowerDescription" font="Interface/Fonts/Arial.fnt" align="center"/>
+                <!-- Leerplatz fürs Fadenkreuz-->
+                <text text="" font="Interface/Fonts/Arial.fnt"/>
+                <!-- Panel mit dem Lebensbalken samt Angabe der Lebenpunkte als Zahl. childLayout="overlay" führt dazu, dass die einzelnen Element darin sich überlagern in der Reihenfolge in der sie aufgelistet sind-->
+                <panel id="#healthBar" height="10%" width="100%" childLayout="overlay">
+                    <!-- Roter Hintergrundbalken damit besser sichtbar ist was schon an Lebenspunkten verloren ging-->
+                    <panel id="#towerLostHealth" height="100%" width="100%" childLayout="horizontal" backgroundColor="#ff0000ff"/> 
+                    <!-- Lebensbalken-->
+                    <panel id="#towerHealthBar" height="100%" width="100%" childLayout="center" backgroundColor="#0066ffff"/>
+                    <!-- Angabe der Lebenspunkte-->    
+                    <text id="#towerHealth" text="100%" height="100%" width="100%" font="Interface/Fonts/Arial.fnt"/>
+                </panel>  
             </panel>
         </layer>
     </screen>

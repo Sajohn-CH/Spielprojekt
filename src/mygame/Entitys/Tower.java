@@ -35,7 +35,7 @@ public class Tower extends Entity{
     /**
      * Konstruktor. Initialisiert alle Werte.
      */
-    public Tower() {
+    public Tower() {  
         died = 0;
         totalPaidMoney = 0;
         name = "Turm";
@@ -47,7 +47,7 @@ public class Tower extends Entity{
         shootAtWeakestBomb = false;
         shootAtFurthestBomb = false;
     }
-    
+      
     /**
      * Gibt die Reichweite des Turmes zurück.
      * @return Reichweite

@@ -118,6 +118,7 @@ public class HudScreenState extends AbstractAppState implements ScreenController
         System.out.println("bind("+screen.getScreenId()+")");      
         //Deaktiviert den Hilfebildschirm
         toggleHelpLayer();
+        hideTowerInfo();
     }
 
     /**
@@ -705,5 +706,21 @@ public class HudScreenState extends AbstractAppState implements ScreenController
             cameraDragToRotate = true;
             Main.app.getWorld().setPaused(true);
         }
+    }
+    
+    public void showTowerInfo(Tower tower) {
+        screen.findElementByName("towerInfoLayer").setVisible(true);
+        updateText("#towerHealth", tower.getHealth()+"/"+tower.getMaxHealth());
+        updateText("#towerDescription", tower.getName()+" der Stufe "+tower.getLevel());
+        
+        Element towerInfoPanel = screen.findElementByName("#towerInfoPanel");
+        Element towerHealthBar = screen.findElementByName("#towerHealthBar");
+        Element towerLostHealth = screen.findElementByName("#towerLostHealth");
+        
+        towerHealthBar.setWidth((int)(tower.getHealthPercentage()/100f*towerInfoPanel.getWidth()));  
+   }
+    
+    public void hideTowerInfo() {
+        screen.findElementByName("towerInfoLayer").setVisible(false);
     }
 }
