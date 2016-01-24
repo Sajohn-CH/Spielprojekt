@@ -582,6 +582,7 @@ public class Tower extends Entity{
     
     public void showLowHealthSign(Node n, float height){
         lowHealthSignIsVisible = true;
+        // Selbsterstelltes Modell von Florian Wenk
         Spatial s = Main.app.getAssetManager().loadModel("Objects/!.j3o");
         s.setName("LowHealth");
         Material mat = new Material(Main.app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
