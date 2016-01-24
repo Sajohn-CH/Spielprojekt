@@ -145,10 +145,10 @@ public class Bomb extends Entity{
     protected void die() {
         if(this.getLevel() == 1) {
             super.die();
+            Main.getWorld().getPlayer().increaseMoney(money*2);
         } else {
             setLevel(getLevel()-1);
         }
-        Main.getWorld().getPlayer().increaseMoney(money);
     }
     
     /**
