@@ -36,6 +36,7 @@ public class Player extends Entity{
     private long shot;                      //Wann zuletzt geschossen wurde
     private boolean isShooting;             //Ob der Spieler am schiessen ist
     private int money;                      //Das Geld des Spielers
+    private int healPoints;                 //Punkte die beim Heilen pro Updateloop geheilt werden.
     private boolean isHealing;              //Ob der Spieler am heilen ist
     private boolean hasHealed;              //Ob der Spieler geheilt hat
     
@@ -69,6 +70,7 @@ public class Player extends Entity{
         isShooting = false;
         isHealing = false;
         hasHealed = false;
+        healPoints = 1;
         shotsPerSecond = 50;
         range = 100;
         String[] keys_walking = Main.app.getSettings().getKeysWalking();
@@ -404,8 +406,9 @@ public class Player extends Entity{
         if(resultsTower.size() == 0 && resultsBeacon.size() == 0) {
             //Es wird auf nichts gezeigt -> Spieler heilen
             if(this.getHealth() < this.getMaxHealth() && this.getMoney() > 0) {
-                this.increaseMoney(-1);
-                this.increaseHealth(1);
+                int beforeHealed = this.getHealth();
+                this.increaseHealth(healPoints);
+                this.increaseMoney(beforeHealed-this.getHealth());
                 hasHealed = true;
                 healingLine.removeFromParent();
             } else {
@@ -418,8 +421,9 @@ public class Player extends Entity{
                         Line l = new Line(this.getSpatial().getLocalTranslation().add(Main.app.getCamera().getUp().normalize().mult(1.3f)), resultsBeacon.getClosestCollision().getContactPoint());
                         healingLine.setMesh(l);
                         Main.app.getRootNode().attachChild(healingLine);
-                        beacon.setHealth(beacon.getHealth()+1);
-                        this.increaseMoney(-1);
+                        int beforeHealed = beacon.getHealth();
+                        beacon.increaseHealth(healPoints);
+                        this.increaseMoney(beforeHealed-beacon.getHealth());
                         hasHealed = true;
                     } else {
                         isHealing = false;
@@ -440,8 +444,9 @@ public class Player extends Entity{
                         Line l = new Line(this.getSpatial().getLocalTranslation().add(Main.app.getCamera().getUp().normalize().mult(1.3f)), pointBeacon);
                         healingLine.setMesh(l);
                         Main.app.getRootNode().attachChild(healingLine);
-                        beacon.setHealth(beacon.getHealth()+1);
-                        this.increaseMoney(-1);
+                        int beforeHealed = beacon.getHealth();
+                        beacon.increaseHealth(healPoints);
+                        this.increaseMoney(beforeHealed-beacon.getHealth());
                         hasHealed = true;
                     } else {
                         isHealing = false;
@@ -453,8 +458,9 @@ public class Player extends Entity{
                         Line l = new Line(this.getSpatial().getLocalTranslation().add(Main.app.getCamera().getUp().normalize().mult(1.3f)), resultsTower.getClosestCollision().getContactPoint());
                         healingLine.setMesh(l);
                         Main.app.getRootNode().attachChild(healingLine);
-                        nearestTower.setHealth(nearestTower.getHealth()+1);
-                        this.increaseMoney(-1);
+                        int beforeHealed = nearestTower.getHealth();
+                        nearestTower.increaseHealth(healPoints);
+                        this.increaseMoney(beforeHealed-nearestTower.getHealth());
                         hasHealed = true;
                     } else {
                         isHealing = false;
@@ -467,8 +473,9 @@ public class Player extends Entity{
                     Line l = new Line(this.getSpatial().getLocalTranslation().add(Main.app.getCamera().getUp().normalize().mult(1.3f)), resultsTower.getClosestCollision().getContactPoint());
                     healingLine.setMesh(l);
                     Main.app.getRootNode().attachChild(healingLine);
-                    nearestTower.setHealth(nearestTower.getHealth()+1);
-                    this.increaseMoney(-1);
+                    int beforeHealed = nearestTower.getHealth();
+                    nearestTower.increaseHealth(healPoints);
+                    this.increaseMoney(beforeHealed-nearestTower.getHealth());
                     hasHealed = true;
                 } else {
                     isHealing = false;
@@ -548,13 +555,21 @@ public class Player extends Entity{
     }
 
     /**
+     * Gibt die Anzahl Lebenspunkte die pro Updateloop geheilt werden zurück.
+     * @return Lebenspunkte pro Updateloop
+     */
+    public int getHealPoints(){
+        return healPoints;
+    }
+    
+    /**
      * Setzt Schüsse pro Sekunde.
      * @param shotsPerSecond Neue Schüsse pro Sekunde
      */
     public void setShotsPerSecond(double shotsPerSecond) {
         this.shotsPerSecond = shotsPerSecond;
     }
-
+    
     /**
      * Setzt die Reichweite
      * @param range Neue Reichweite
@@ -563,6 +578,14 @@ public class Player extends Entity{
         this.range = range;
     }
 
+    /**
+     * Setzt die anzahl Lebenspunkte pro Updateloop.
+     * @param healPoints Lebenspunkte pro Updateloop
+     */
+    public void setHealPoints(int healPoints){
+        this.healPoints = healPoints;
+    }
+    
     /**
      * Setzt das Geld des Spielers.
      * @param money Neues Geld
@@ -682,7 +705,7 @@ public class Player extends Entity{
     public int getNewSpeedPrice() {
         return (int) (getNewSpeed()*1.5);
     }
-    
+
     /**
      * Erhöht die Geschwindigkeit des Spielers. Erhöht die Geschwindigkeit des Spielers und zieht diesem die Kosten ab, sofern er genügend Geld hat.
      */
@@ -690,6 +713,35 @@ public class Player extends Entity{
         if(this.getMoney() >= this.getNewSpeedPrice()) {
          this.increaseMoney(-this.getNewSpeedPrice());
          this.setSpeed(getNewSpeed());   
+            playAudioBought();
+        } else {
+            playAudioNotEnoughMoney();
+        }
+    }
+        
+    /**
+     * Berechnet Lebenspunkte, die pro Sekunde geheilt werden. Berechnet die neuen Lebenspunkte pro Sekunde, die nach einem Upgrade geheilt würden.
+     * @return Neue Lebenspunkte pro Updateloop
+     */
+    public int getNewHealPoints(){
+        return this.healPoints+1;
+    }
+    
+    /**
+     * Berechnet den Preis eines Upgrades der Lebenspunkte pro Updateloop beim Heilen.
+     * @return 
+     */
+    public int getNewHealPointsPrice(){
+        return (int) (getNewHealPoints() * 100);
+    }
+    
+    /**
+     * Erhöht die Lebenspunkte pro Updateloop, die der Spieler heilt. Erhöht die Lebenspunkte pro Sekunde und zieht diesem die Kosten ab, sofern er genügend Geld hat.
+     */
+    public void increaseHealPoints(){
+        if(this.getMoney() >= this.getNewHealPointsPrice()){
+            this.increaseMoney(-this.getNewHealPointsPrice());
+            this.setHealPoints(this.getNewHealPoints());
             playAudioBought();
         } else {
             playAudioNotEnoughMoney();
@@ -736,6 +788,7 @@ public class Player extends Entity{
             this.setLiving(true);
             this.setMaxHealth(100);
             setHealth(this.maxHealth);
+            this.setHealPoints(1);
             this.setDamage(2);
             this.setSpeed(50);
             this.setShotsPerSecond(50);

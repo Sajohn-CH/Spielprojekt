@@ -472,6 +472,7 @@ public class HudScreenState extends AbstractAppState implements ScreenController
        String sps = Math.round(player.getSPS()*1000.0)/1000.0 + "+" + Math.round((player.getNewSPS()-player.getSPS())*1000.0)/1000.0;
        String range = player.getRange()+"+"+(player.getNewRange()-player.getRange());
        String speed = player.getSpeed()+"+"+(player.getNewSpeed()-player.getSpeed());
+       String healPoints = player.getHealPoints()+"+"+(player.getNewHealPoints()-player.getHealPoints());
        String beaconHealth = beacon.getMaxHealth()+"+"+(beacon.getNewMaxHealth()-beacon.getMaxHealth());
        
        //Setzt richtige Werte, für die Upgrademöglichkeiten
@@ -481,6 +482,7 @@ public class HudScreenState extends AbstractAppState implements ScreenController
        endWavePopup.findElementByName("#PLSPS").getRenderer(TextRenderer.class).setText(sps);
        endWavePopup.findElementByName("#PLRange").getRenderer(TextRenderer.class).setText(range);
        endWavePopup.findElementByName("#PLSpeed").getRenderer(TextRenderer.class).setText(speed);
+       endWavePopup.findElementByName("#PLHealPoints").getRenderer(TextRenderer.class).setText(healPoints);
        endWavePopup.findElementByName("#BeaconUpgrade").getRenderer(TextRenderer.class).setText(beaconHealth);
        
        endWavePopup.findElementByName("#nextWave").setFocus();
@@ -616,6 +618,22 @@ public class HudScreenState extends AbstractAppState implements ScreenController
     public void upgradePlayerSpeed() {
         Main.app.getWorld().getPlayer().increaseSpeed();
         reloadEndWavePopup();
+    }
+        
+    /**
+     * Upgradet die Lebenspunkte, die pro Updateloop geheilt werden.
+     */
+    public void upgradePlayerHealPoints() {
+        Main.app.getWorld().getPlayer().increaseHealPoints();
+        reloadEndWavePopup();
+    }
+    
+    /**
+     * Gibt den Preis zum Upgraden der Lebenspunkte, die pro Updateloop geheilt werden zurück
+     * @return Upgradepreis
+     */
+    public String getHealPointsUpgradePrice() {
+        return String.valueOf(Main.app.getWorld().getPlayer().getNewHealPointsPrice());
     }
     
     /**

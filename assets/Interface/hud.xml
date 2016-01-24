@@ -234,6 +234,7 @@
                     <text text="Schüsse pro Sekunde:" font="Interface/Fonts/Arial.fnt" width="100%"/>
                     <text text="Reichweite:" font="Interface/Fonts/Arial.fnt" width="100%"/>
                     <text text="Geschwindigkeit:" font="Interface/Fonts/Arial.fnt" width="100%"/>
+                    <text text="Heilgeschwindigkeit:" font="Interface/Fonts/Arial.fnt" width="100%"/>
                 </panel>
                 <!-- Werte zu den Beschriftungen-->
                 <panel id="#values" width="40%" height="100%" childLayout="vertical">
@@ -242,6 +243,7 @@
                     <text id="#PLSPS" text="" font="Interface/Fonts/Arial.fnt" width="100%"/>
                     <text id="#PLRange" text="" font="Interface/Fonts/Arial.fnt" width="100%"/>
                     <text id="#PLSpeed" text="" font="Interface/Fonts/Arial.fnt" width="100%"/>
+                    <text id="#PLHealPoints" text="" font="Interface/Fonts/Arial.fnt" width="100%"/>
                 </panel>
                 <!-- Die Knöpfe mit den Preisen des einzelnen Upgrades. Beim Klicken der Knöpfe wird upgegradet.-->
                 <panel id="#buyButtons" width="10%" height="100%" childLayout="vertical">
@@ -259,6 +261,9 @@
                     </control>
                     <control name="button" id="#PLSpeedPrice" width="100%" label="${CALL.getSpeedPrice()}$">
                         <interact onClick="upgradePlayerSpeed()"/>
+                    </control>
+                    <control name="button" id="#PLHealPointsPrice" width="100%" label="${CALL.getHealPointsUpgradePrice()}$">
+                        <interact onClick="upgradePlayerHealPoints()"/>
                     </control>
                 </panel> 
             </panel>
