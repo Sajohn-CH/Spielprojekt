@@ -5,6 +5,7 @@ import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.math.Vector3f;
 import de.lessvoid.nifty.Nifty;
+import de.lessvoid.nifty.elements.render.TextRenderer;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
 import java.io.File;
@@ -85,6 +86,11 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
      * {@inheritDoc }
      */
     public void onStartScreen() {
+        if(screen.getScreenId().equals("gameOver")) {
+            screen.findElementByName("untilWave").getRenderer(TextRenderer.class).setText("Du hast es bist zur Welle " + getCurrentWave()+" geschaft");
+           
+                    
+        }
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.      
     }
 
