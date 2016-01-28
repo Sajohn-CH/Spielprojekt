@@ -9,6 +9,7 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Line;
 import mygame.Main;
 
@@ -39,7 +40,9 @@ public class DeactivationTower extends Tower{
         
         //Modell von: http://www.blendswap.com/blends/view/77840 (User: thanhkhmt1)
         //Bearbeitet von: Florian Wenk
-        this.setSpatial(Main.app.getAssetManager().loadModel("Objects/PyramidTower.j3o").scale(0.5f));
+        Spatial s = Main.app.getAssetManager().loadModel("Objects/PyramidTower.j3o").scale(0.5f);
+        s.setName("Tower");
+        this.getNode().attachChild(s);
         this.getSpatial().setName("DeactivationTower");
         
         PointLight light1 = new PointLight();
@@ -112,10 +115,11 @@ public class DeactivationTower extends Tower{
             line.removeFromParent();
         }
         if(this.getHealthPercentage() <= 20 && !this.lowHealthSignIsVisble()){
-            this.showLowHealthSign((Node) this.getSpatial(), 10);
+            this.showLowHealthSign();
         } else if (this.getHealthPercentage() > 20 && this.lowHealthSignIsVisble()){
-            this.hideLowHealthSign((Node) this.getSpatial());
+            this.hideLowHealthSign();
         }
+        this.getNode().getChild("levelNumber").lookAt(Main.app.getWorld().getPlayer().getLocation().setY(this.getNode().getChild("levelNumber").getLocalTranslation().getY()), new Vector3f (0, 1, 0));
     }
     
     /**
@@ -136,6 +140,7 @@ public class DeactivationTower extends Tower{
         this.setHealth(getNewHealth(newLevel));
         this.setMaxHealth(getNewHealth(newLevel));
         this.setShotsPerSecond(getNewSPS(newLevel));
+        this.setLevelNumberSpatial(newLevel, 6);
     }
         
     /**

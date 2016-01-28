@@ -27,6 +27,8 @@ public class Tower extends Entity{
     private int totalPaidMoney;     //Das gesamte dafür gezahlte Geld
     private String name;       //Der Name des Turmes
     private boolean lowHealthSignIsVisible; //Zeichen, dass der Turm wenig Leben hat ist aktiv.
+    private Node n;
+    private Material numberMat;
     
     private boolean shootOnlyAtShootingBombs;
     private boolean shootOnlyAtNormalBombs;
@@ -43,6 +45,10 @@ public class Tower extends Entity{
         totalPaidMoney = 0;
         name = "Turm";
         lowHealthSignIsVisible = false;
+        n = new Node(name);
+        this.setSpatial(n);
+        numberMat = new Material(Main.app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
+        numberMat.setColor("Color", ColorRGBA.Gray);
         
         shootOnlyAtShootingBombs = false;
         shootOnlyAtNormalBombs = false;
@@ -580,25 +586,40 @@ public class Tower extends Entity{
         return null;
     }
     
-    public void showLowHealthSign(Node n, float height){
+    public void showLowHealthSign(){
         lowHealthSignIsVisible = true;
-        // Selbsterstelltes Modell von Florian Wenk
-        Spatial s = Main.app.getAssetManager().loadModel("Objects/!.j3o");
-        s.setName("LowHealth");
         Material mat = new Material(Main.app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
         mat.setColor("Color", ColorRGBA.Red);
         mat.setTransparent(true);
-        s.setMaterial(mat);
-        n.attachChild(s);
-        s.setLocalTranslation(0, height, 0);
+        n.getChild("levelNumber").setMaterial(mat);
     }
     
-    public void hideLowHealthSign(Node n){
+    public void hideLowHealthSign(){
         lowHealthSignIsVisible = false;
-        n.detachChildNamed("LowHealth");
+        n.getChild("levelNumber").setMaterial(numberMat);
     }
     
     public boolean lowHealthSignIsVisble(){
         return this.lowHealthSignIsVisible;
+    }
+    
+    public void setLevelNumberSpatial(int level, float height){
+        if(level > 1){
+            n.detachChildNamed("levelNumber");
+        }
+        // Selbsterstellte Modelle von Florian Wenk
+        Spatial s = Main.app.getAssetManager().loadModel("Objects/RomanNumbers/" + level + ".j3o");
+        s.setName("levelNumber");
+        s.setMaterial(numberMat);
+        s.setLocalTranslation(0, height, 0);
+        n.attachChild(s);
+    }
+    
+    public Node getNode(){
+        return this.n;
+    }
+    
+    public void setNode(Node n){
+        this.n = n;
     }
 }

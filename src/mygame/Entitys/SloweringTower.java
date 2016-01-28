@@ -9,6 +9,7 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Line;
 import mygame.Main;
 
@@ -37,7 +38,10 @@ public class SloweringTower extends Tower{
         
         //Modell von: http://www.blendswap.com/blends/view/71401 (User: zagony)
         //Bearbeitet von: Florian Wenk
-        this.setSpatial(Main.app.getAssetManager().loadModel("Objects/MGTower.j3o"));
+        Spatial s = Main.app.getAssetManager().loadModel("Objects/MGTower.j3o");
+        s.setName("Tower");
+        this.getNode().attachChild(s);
+        this.getSpatial().setName("SloweringTower");
         
         PointLight light1 = new PointLight();
         light1.setPosition(new Vector3f(location.x +10 ,20, location.z));
@@ -109,10 +113,11 @@ public class SloweringTower extends Tower{
             line.removeFromParent();
         }
         if(this.getHealthPercentage() <= 20 && !this.lowHealthSignIsVisble()){
-            this.showLowHealthSign((Node) this.getSpatial(), 8);
+            this.showLowHealthSign();
         } else if (this.getHealthPercentage() > 20 && this.lowHealthSignIsVisble()){
-            this.hideLowHealthSign((Node) this.getSpatial());
+            this.hideLowHealthSign();
         }
+        this.getNode().getChild("levelNumber").lookAt(Main.app.getWorld().getPlayer().getLocation().setY(this.getNode().getChild("levelNumber").getLocalTranslation().getY()), new Vector3f (0, 1, 0));
     }
     
     /**
@@ -126,6 +131,7 @@ public class SloweringTower extends Tower{
         this.setHealth(getNewHealth(newLevel));
         this.setMaxHealth(getNewHealth(newLevel));
         this.setShotsPerSecond(getNewSPS(newLevel));
+        this.setLevelNumberSpatial(newLevel, 8);
     }
     
     /**

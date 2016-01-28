@@ -9,6 +9,7 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Line;
 import mygame.Main;
 
@@ -36,18 +37,21 @@ public class SimpleTower extends Tower{
         this.setLocation(new Vector3f(location.x, 0, location.z));
         //Modell von: http://www.blendswap.com/blends/view/2611 (User: RH2) 
         //Bearbeitet von: Florian Wenk
-        this.setSpatial(Main.app.getAssetManager().loadModel("Objects/SimpleTower.j3o").scale(2f, 2f, 2f));
+        Spatial s = Main.app.getAssetManager().loadModel("Objects/SimpleTower.j3o").scale(2f, 2f, 2f);
+        s.setName("Tower");
+        this.getNode().attachChild(s);
+        this.getSpatial().setName("SimpleTower");
         
         // Licht hinzufügen
         PointLight light1 = new PointLight();
         light1.setPosition(new Vector3f(location.x ,20, location.z));
         light1.setRadius(100f);
-        this.getSpatial().addLight(light1);
+        s.addLight(light1);
         
         PointLight light2 = new PointLight();
         light2.setPosition(new Vector3f(location.x +1,2, location.z-1));
         light2.setRadius(100f);
-        this.getSpatial().addLight(light2);
+        s.addLight(light2);
         
         this.getSpatial().setLocalTranslation(this.getLocation());
         
@@ -92,10 +96,11 @@ public class SimpleTower extends Tower{
             line.removeFromParent();
         }
         if(this.getHealthPercentage() <= 20 && !this.lowHealthSignIsVisble()){
-            this.showLowHealthSign((Node) this.getSpatial(), 3);
+            this.showLowHealthSign();
         } else if (this.getHealthPercentage() > 20 && this.lowHealthSignIsVisble()){
-            this.hideLowHealthSign((Node) this.getSpatial());
+            this.hideLowHealthSign();
         }
+        this.getNode().getChild("levelNumber").lookAt(Main.app.getWorld().getPlayer().getLocation().setY(this.getNode().getChild("levelNumber").getLocalTranslation().getY()), new Vector3f (0, 1, 0));
     }
   
     /**
@@ -110,6 +115,7 @@ public class SimpleTower extends Tower{
         this.setHealth(getNewHealth(newLevel));
         this.setMaxHealth(getNewHealth(newLevel));
         this.setShotsPerSecond(getNewSPS(newLevel));
+        this.setLevelNumberSpatial(newLevel, 6);
     }
     
     /**
