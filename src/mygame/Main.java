@@ -31,9 +31,10 @@ public class Main extends SimpleApplication implements ActionListener{
     private MyStartScreen startState;   //Der ScreenController, der kontrolliert, was die Start-, Pause- und Einstellungsbildschirme machen.  
     private static World world;         //Die Spielwelt
     private static Game game;           //Das "Spiel". Kontrolliert die Wellengenerierung
-    private boolean debugMode;   //Gibt an ob der Debugmodus aktiviert ist.
+    private boolean debugMode;          //Gibt an ob der Debugmodus aktiviert ist.
     private static AppSettings appSettings;     //Die Einstellungen der Applications (kommt von der JMonkeyApplication). Sie ist für Auflösung etc. zuständig
     private Settings settings;          //Die selber erstellten Einstellungen. Sie ist für die Tastenbelegung etc. zuständig.   
+    private Highscores highscores;      //Die Highscores, die Angezeigt werden
     private Spatial scene;              //Die Spielszene  
     
     /**
@@ -64,7 +65,7 @@ public class Main extends SimpleApplication implements ActionListener{
 //        app.setShowSettings(false);
         //Start into Fullscreen
         appSettings.setFullscreen(device.isFullScreenSupported());
-        
+                
         app.start();
     }
 
@@ -78,7 +79,8 @@ public class Main extends SimpleApplication implements ActionListener{
         //Debugmode aktivieren, da das entsprechende Layer anfangs sichtbar ist. Wird später noch deaktiviert.
         debugMode = true;
         settings = new Settings();
-        
+        highscores = new Highscores();
+                
         //Set this boolean true when the game loop should stop running when ever the window loses focus.
         app.setPauseOnLostFocus(true);
         
@@ -245,7 +247,7 @@ public class Main extends SimpleApplication implements ActionListener{
             game.action(tpf);
         }
     }
-
+    
     /**
      * {@inheritDoc}
      */
@@ -300,6 +302,11 @@ public class Main extends SimpleApplication implements ActionListener{
     public void gameOver() {
         getWorld().setPaused(true);
         getFlyByCamera().setDragToRotate(true);
+        if(Main.app.getWorld().getPlayer().getName() != null){
+            highscores.addHighscore(Main.app.getWorld().getPlayer().getName(), game.getWave());
+        } else {
+            highscores.addHighscore(game.getWave());
+        }
         world.getPlayer().stopAudio();
         nifty.gotoScreen("gameOver");
     }
@@ -326,5 +333,9 @@ public class Main extends SimpleApplication implements ActionListener{
      */
     public Settings getSettings() {
         return settings;
+    }
+    
+    public Highscores getHighscores(){
+        return highscores;
     }
 }

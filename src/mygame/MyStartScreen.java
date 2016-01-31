@@ -148,6 +148,7 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
      */
     public void quitGame() {
        saveGame();
+       Main.app.getHighscores().saveHighscores();
        Main.app.stop();
     }
     

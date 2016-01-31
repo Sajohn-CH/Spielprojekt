@@ -40,7 +40,7 @@ public class DeactivationTower extends Tower{
         
         //Modell von: http://www.blendswap.com/blends/view/77840 (User: thanhkhmt1)
         //Bearbeitet von: Florian Wenk
-        Spatial s = Main.app.getAssetManager().loadModel("Objects/PyramidTower.j3o").scale(0.5f);
+        Spatial s = Main.app.getAssetManager().loadModel("Objects/PyramidTower.j3o").scale(0.5f).rotate(0, (float) Math.toRadians(90), 0);
         s.setName("Tower");
         this.getNode().attachChild(s);
         this.getSpatial().setName("DeactivationTower");
@@ -98,7 +98,7 @@ public class DeactivationTower extends Tower{
         ShootingBomb bomb = (ShootingBomb) super.getBombToShootAt();
         if(bomb != null && bomb.getSpatial().getLocalTranslation().subtract(this.getSpatial().getLocalTranslation()).length() <= this.getRange() && this.canShoot()){
             if(bomb.isShooting()){
-                this.getSpatial().lookAt(bomb.getSpatial().getLocalTranslation().add(Main.getWorld().getBombNode().getLocalTranslation()), new Vector3f(0,1,0));
+                this.getSpatial().lookAt(bomb.getSpatial().getLocalTranslation().add(Main.getWorld().getBombNode().getLocalTranslation()).setY(0), new Vector3f(0,1,0));
                 this.disableShooting(bomb);
                 Line l = new Line(this.getSpatial().getLocalTranslation().add(0,4,0), bomb.getSpatial().getLocalTranslation());
                 line.setMesh(l);

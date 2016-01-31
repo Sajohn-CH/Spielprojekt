@@ -25,6 +25,7 @@ import mygame.Main;
  */
 public class Player extends Entity{
     
+    private String name;                    //Name des Spielers
     private CharacterControl player;        //Sorgt für Physik des Spielers
     private Vector3f walkDirection;         //Laufrichtung des Spielers
     private boolean left, right, up, down;  //Ob die jeweilige Taste fürs Laufen gedrückt ist
@@ -155,6 +156,16 @@ public class Player extends Entity{
         earnMoneyAudio.setLooping(false);
         earnMoneyAudio.setVolume(2f);
         Main.app.getRootNode().attachChild(earnMoneyAudio);
+    }
+    
+    /**
+     * Konstruktor, der neben dem was {@link Player#Player(com.jme3.input.controls.InputListener)} macht, noch den Namen setzt.
+     * @param inputListener Für Tasteneingaben benötigt
+     * @param name Name des Spielers
+     */
+    public Player(InputListener inputListener, String name){
+        this(inputListener);
+        this.name = name;
     }
     
     /**
@@ -902,5 +913,21 @@ public class Player extends Entity{
         this.keyJump = Main.app.getSettings().getKeyCode(keyJump);
         
         setUpKeys();
+    }
+    
+    /**
+     * Gibt den Namen des Spielers zurück.
+     * @return Name des Spielers
+     */
+    public String getName(){
+        return name;
+    }
+    
+    /**
+     * Setzt den Namen des Spielers.
+     * @param name Neuer Name
+     */
+    public void setName(String name){
+        this.name = name;
     }
 }

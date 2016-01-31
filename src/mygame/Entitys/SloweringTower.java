@@ -147,7 +147,7 @@ public class SloweringTower extends Tower{
      */
     @Override
     public int getNewDamage(int newLevel) {
-        return 2+newLevel*2;
+        return 5+newLevel*5;
     }
     
     /**
@@ -163,7 +163,7 @@ public class SloweringTower extends Tower{
      */
     @Override
     public double getNewSPS(int newLevel) {
-        return 0.125+newLevel*0.125;
+        return 0.5+newLevel*0.5;
     }
     
     /**
@@ -171,7 +171,7 @@ public class SloweringTower extends Tower{
      */
     @Override
     public int getUpgradePrice() {
-        return this.getMaxHealth()*(int)(this.getLevel()/7.5+1);
+        return this.getMaxHealth()*(int)(this.getLevel()/10+1);
     }
     
     /**
