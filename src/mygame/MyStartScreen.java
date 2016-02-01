@@ -9,6 +9,7 @@ import de.lessvoid.nifty.elements.render.TextRenderer;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -78,6 +79,8 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
             } else {
                 screen.findElementByName("disableScroll").disable();
             }
+        } else if (screen.getScreenId().equals("highscores")){
+            reloadHighscores();
         }
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
@@ -338,5 +341,35 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
     */
    public void gotoSettings() {
        nifty.gotoScreen("settings"); 
-   }   
+   }
+   
+   public void gotoHighscores(){
+       nifty.gotoScreen("highscores");
+   }
+   
+   public void clearHighscores(){
+       Main.app.getHighscores().deleteAllHighscores();
+       reloadHighscores();
+   }
+   
+   public void reloadHighscores(){
+       Highscores highscores = Main.app.getHighscores();
+       SimpleDateFormat df = new SimpleDateFormat("dd.MM.yyyy '; ' HH:mm");
+       int j = 25;
+       if(highscores.getAllHighscores().size() < 10){
+           j = highscores.getAllHighscores().size();
+       }
+       for(int i = 0; i < j; i ++){
+           screen.findElementByName((i+1) + "place").getRenderer(TextRenderer.class).setText("  " + String.valueOf(i+1));
+           screen.findElementByName("name" + (i+1)).getRenderer(TextRenderer.class).setText("   " + highscores.getHighscore(i+1).getName());
+           screen.findElementByName("wave" + (i+1)).getRenderer(TextRenderer.class).setText("   " + String.valueOf(highscores.getHighscore(i+1).getWave()));
+           screen.findElementByName("date" + (i+1)).getRenderer(TextRenderer.class).setText("   " + df.format(highscores.getHighscore(i+1).getDate()));
+       }
+       for(int i = j; i < 25; i ++){
+           screen.findElementByName((i+1) + "place").getRenderer(TextRenderer.class).setText("");
+           screen.findElementByName("name" + (i+1)).getRenderer(TextRenderer.class).setText("");
+           screen.findElementByName("wave" + (i+1)).getRenderer(TextRenderer.class).setText("");
+           screen.findElementByName("date" + (i+1)).getRenderer(TextRenderer.class).setText("");
+       }
+   }
 }

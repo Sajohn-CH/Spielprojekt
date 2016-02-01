@@ -36,7 +36,7 @@ public class Highscores {
     /**
      * Gibt einen bestimmten Platz der Highscores zurück.
      * @param place Platz
-     * @return HighscoreElement am entsprechenden Platz
+     * @return HighscoreElement auf dem entsprechenden Platz
      */
     public HighscoreElement getHighscore(int place){
         return highscores.get(place-1);
