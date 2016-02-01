@@ -31,6 +31,9 @@
                 <control name="button" label="Highscores" id="HighscoresButton" align="center" valign="center" visiblteToMouse="true">
                     <interact onClick="gotoHighscores()"/>
                 </control>
+                <control name="button" label="Credits" id="CreditsButton" align="center" valign="center" visiblteToMouse="true">
+                    <interact onClick="gotoCredits()"/>
+                </control>
             </panel>
             <panel id="panel_bottom" height="25%" width="75%" align="center" childLayout="center" >
                 <!-- Knopf zum Beenden des Spiels -->
@@ -293,12 +296,64 @@
             <panel height="15%" childLayout="center">
                 <panel width="25%" childLayout="horizontal">
                     <!-- Knopf zum Verlassen der Einstellungen-->
-                    <control name="button" id="backToStart" label="Zurück zum Start" width="50%">
+                    <control name="button" id="backToStart" label="Zurück zum Startbildschirm" width="50%">
                         <interact onClick="toStart()"/>
                     </control>
                     <!-- Knopf zum Verlassen der Einstellungen-->
                     <control name="button" id="clearHighscores" label="Highscores zurücksetzen" width="50%">
                         <interact onClick="clearHighscores()"/>
+                    </control>
+                </panel>
+            </panel>
+        </layer>
+        
+    </screen>
+    
+     <!-- Credits-Bildschirm -->
+    <screen id="credits" controller="mygame.MyStartScreen">
+         <!-- Hintergrundbild -->
+        <layer id="background" childLayout="center">
+            <image filename="Interface/backgroundStartPage.png" width="100%" height="100%"/>
+        </layer>
+        
+        <layer id="foreground" childLayout="vertical">
+            <panel height="30%"></panel>
+            <panel height="55%" childLayout="horizontal">
+                <panel width="15%" height="100%"></panel>
+                <!-- Text-->
+                <panel id="#credits" width="80%" height="100%" childLayout="vertical">
+                    <text id="1credits" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="2credits" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="3credits" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="4credits" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="5credits" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="6credits" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="7credits" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="8credits" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="9credits" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="10credits" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="11credits" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="12credits" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="13credits" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="14credits" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="15credits" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="16credits" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="17credits" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="18credits" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="19credits" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="20credits" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="21credits" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="22credits" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="23credits" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="24credits" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="25credits" text="" font="Interface/Fonts/Arial.fnt"/>
+                </panel>
+            </panel>
+            <panel height="15%" childLayout="center">
+                <panel width="25%" childLayout="horizontal">
+                    <!-- Knopf zum Verlassen der Einstellungen-->
+                    <control name="button" id="backToStart" label="Zurück zum Startbildschirm" width="100%">
+                        <interact onClick="toStart()"/>
                     </control>
                 </panel>
             </panel>

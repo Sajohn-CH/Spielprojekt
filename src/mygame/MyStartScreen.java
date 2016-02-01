@@ -9,8 +9,12 @@ import de.lessvoid.nifty.elements.render.TextRenderer;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Transformer;
@@ -81,6 +85,8 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
             }
         } else if (screen.getScreenId().equals("highscores")){
             reloadHighscores();
+        } else if (screen.getScreenId().equals("credits")){
+            loadCredits();
         }
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
@@ -343,15 +349,24 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
        nifty.gotoScreen("settings"); 
    }
    
+   /**
+    * Wechselt zum Highscoresbildschirm.
+    */
    public void gotoHighscores(){
        nifty.gotoScreen("highscores");
    }
    
+   /**
+    * Löscht alle Highscores.
+    */
    public void clearHighscores(){
        Main.app.getHighscores().deleteAllHighscores();
        reloadHighscores();
    }
    
+   /**
+    * Aktualisiert den Text des Highscoresbildschirms.
+    */
    public void reloadHighscores(){
        Highscores highscores = Main.app.getHighscores();
        SimpleDateFormat df = new SimpleDateFormat("dd.MM.yyyy '; ' HH:mm");
@@ -372,6 +387,32 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
            screen.findElementByName("wave" + (i+1)).getRenderer(TextRenderer.class).setText("");
            screen.findElementByName("date" + (i+1)).getRenderer(TextRenderer.class).setText("");
            screen.findElementByName("world" + (i+1)).getRenderer(TextRenderer.class).setText("");
+       }
+   }
+   
+   public void gotoCredits(){
+       nifty.gotoScreen("credits");
+   }
+   
+   public void loadCredits(){
+       ArrayList<String> text = new ArrayList<>();
+       File file = new File("credits");
+       
+       if(file.exists()){
+           try {
+               Scanner reader = new Scanner(file);
+               while(reader.hasNextLine()){
+                   text.add(reader.nextLine());
+               }
+           } catch (FileNotFoundException ex) {
+               Logger.getLogger(MyStartScreen.class.getName()).log(Level.SEVERE, null, ex);
+           }
+       } else {
+           return;
+       }
+       
+       for(int i = 0; i < text.size(); i ++){
+           screen.findElementByName((i+1) + "credits").getRenderer(TextRenderer.class).setText(text.get(i));
        }
    }
 }
