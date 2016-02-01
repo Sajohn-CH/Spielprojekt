@@ -364,12 +364,14 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
            screen.findElementByName("name" + (i+1)).getRenderer(TextRenderer.class).setText("   " + highscores.getHighscore(i+1).getName());
            screen.findElementByName("wave" + (i+1)).getRenderer(TextRenderer.class).setText("   " + String.valueOf(highscores.getHighscore(i+1).getWave()));
            screen.findElementByName("date" + (i+1)).getRenderer(TextRenderer.class).setText("   " + df.format(highscores.getHighscore(i+1).getDate()));
+           screen.findElementByName("world" + (i+1)).getRenderer(TextRenderer.class).setText("  " + highscores.getHighscore(i+1).getWorld());
        }
        for(int i = j; i < 25; i ++){
            screen.findElementByName((i+1) + "place").getRenderer(TextRenderer.class).setText("");
            screen.findElementByName("name" + (i+1)).getRenderer(TextRenderer.class).setText("");
            screen.findElementByName("wave" + (i+1)).getRenderer(TextRenderer.class).setText("");
            screen.findElementByName("date" + (i+1)).getRenderer(TextRenderer.class).setText("");
+           screen.findElementByName("world" + (i+1)).getRenderer(TextRenderer.class).setText("");
        }
    }
 }

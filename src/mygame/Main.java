@@ -86,6 +86,7 @@ public class Main extends SimpleApplication implements ActionListener{
         
         scene = assetManager.loadModel("Scenes/scene_1.j3o");
         scene.setLocalScale(2f);
+        scene.setName("scene_1");
         
         bulletAppState = new BulletAppState();
         stateManager.attach(bulletAppState);
@@ -303,9 +304,9 @@ public class Main extends SimpleApplication implements ActionListener{
         getWorld().setPaused(true);
         getFlyByCamera().setDragToRotate(true);
         if(Main.app.getWorld().getPlayer().getName() != null){
-            highscores.addHighscore(Main.app.getWorld().getPlayer().getName(), game.getWave());
+            highscores.addHighscore(getWorld().getPlayer().getName(), game.getWave(), getWorld().getScene().getName());
         } else {
-            highscores.addHighscore(game.getWave());
+            highscores.addHighscore(game.getWave(), getWorld().getScene().getName());
         }
         world.getPlayer().stopAudio();
         nifty.gotoScreen("gameOver");

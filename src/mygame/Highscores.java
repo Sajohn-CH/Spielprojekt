@@ -54,25 +54,27 @@ public class Highscores {
      * Fügt ein Spielstand zu den Highscores hinzu.
      * @param name Name des Spielers
      * @param wave Erreichte Welle
+     * @param world Name der Welt
      */
-    public void addHighscore(String name, int wave){
+    public void addHighscore(String name, int wave, String world){
         if(highscores.isEmpty()){
-            highscores.add(new HighscoreElement(name, wave, System.currentTimeMillis()));
+            highscores.add(new HighscoreElement(name, wave, System.currentTimeMillis(), world));
             return;
         }
         int i = 0;
         while(highscores.get(i).getWave() > wave){
             i++;
         }
-        highscores.add(i, new HighscoreElement(name, wave, System.currentTimeMillis()));
+        highscores.add(i, new HighscoreElement(name, wave, System.currentTimeMillis(), world));
     }
     
     /**
      * Fügt ein Spielstand zu den Highscores hinzu. Setzt im gegensatz zu {@link Highscores#addHighscore(java.lang.String, int)} keinen Namen (den Namen auf "Unbekannt")
      * @param wave Erreichte Welle
+     * @param world Name der Welt
      */
-    public void addHighscore(int wave){
-        addHighscore("Unbekannt", wave);
+    public void addHighscore(int wave, String world){
+        addHighscore("Unbekannt", wave, world);
     }
     
     /**
@@ -102,7 +104,7 @@ public class Highscores {
             NodeList nList = doc.getElementsByTagName("Highscore");
             for(int i = 0; i < nList.getLength(); i++) {
                 Element highscoreElement = (Element) nList.item(i);
-                highscores.add(Integer.valueOf(highscoreElement.getAttribute("Place"))-1, new HighscoreElement(highscoreElement.getAttribute("Name"), Integer.valueOf(highscoreElement.getAttribute("Wave")), Long.valueOf(highscoreElement.getAttribute("Date"))));
+                highscores.add(Integer.valueOf(highscoreElement.getAttribute("Place"))-1, new HighscoreElement(highscoreElement.getAttribute("Name"), Integer.valueOf(highscoreElement.getAttribute("Wave")), Long.valueOf(highscoreElement.getAttribute("Date")), highscoreElement.getAttribute("World")));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -134,6 +136,7 @@ public class Highscores {
                 highscore.setAttribute("Name", this.highscores.get(i).getName());
                 highscore.setAttribute("Wave", String.valueOf(this.highscores.get(i).getWave()));
                 highscore.setAttribute("Date", String.valueOf(this.highscores.get(i).getDate()));
+                highscore.setAttribute("World", this.highscores.get(i).getWorld());
                 rootElement.appendChild(highscore);
             }
                                

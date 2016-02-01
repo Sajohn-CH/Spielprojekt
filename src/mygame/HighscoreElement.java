@@ -8,6 +8,7 @@ public class HighscoreElement {
     private String name;
     private int wave;
     private long date;
+    private String world;
     
     /**
      * Initialisiert den Highscore. Setzt die Werte des Highscores.
@@ -15,10 +16,11 @@ public class HighscoreElement {
      * @param wave Erreichte Welle
      * @param date Datum
      */
-    public HighscoreElement(String name, int wave, long date){
+    public HighscoreElement(String name, int wave, long date, String world){
         this.name = name;
         this.wave = wave;
         this.date = date;
+        this.world = world;
     }
     
     /**
@@ -43,5 +45,13 @@ public class HighscoreElement {
      */
     public long getDate(){
         return date;
+    }
+    
+    /**
+     * Gibt den Namen der Welt zurück.
+     * @return Name der Welt
+     */
+    public String getWorld(){
+        return world;
     }
 }
