@@ -10,6 +10,7 @@ import mygame.Entitys.Tower;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.math.Vector3f;
 import de.lessvoid.nifty.Nifty;
+import de.lessvoid.nifty.controls.CheckBox;
 import de.lessvoid.nifty.controls.Controller;
 import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.elements.render.ImageRenderer;
@@ -258,41 +259,49 @@ public class HudScreenState extends AbstractAppState implements ScreenController
        } else {
            towerPopup.findElementByName("textDamage").getRenderer(TextRenderer.class).setText(damage);
            towerPopup.findElementByName("damage").getRenderer(TextRenderer.class).setText("");
-           towerPopup.findElementByName("#buttonsShootingBomb").setVisible(false);
+           towerPopup.findElementByName("panelAllBombs").setVisible(false);
+           towerPopup.findElementByName("panelNormalBombs").setVisible(false);
        }
        towerPopup.findElementByName("health").getRenderer(TextRenderer.class).setText(health);
        towerPopup.findElementByName("sps").getRenderer(TextRenderer.class).setText(sps);
        towerPopup.findElementByName("range").getRenderer(TextRenderer.class).setText(range);
        
        if(tower.getShootAt().equals("nearest")){
-            towerPopup.findElementByName("nearest").disable();
-            towerPopup.findElementByName("furthest").enable();
-            towerPopup.findElementByName("strongest").enable();
-            towerPopup.findElementByName("weakest").enable();
+            towerPopup.findNiftyControl("nearest", CheckBox.class).check();
+            towerPopup.findNiftyControl("furthest", CheckBox.class).uncheck();
+            towerPopup.findNiftyControl("strongest", CheckBox.class).uncheck();
+            towerPopup.findNiftyControl("weakest", CheckBox.class).uncheck();
        } else if (tower.getShootAt().equals("furthest")){
-            towerPopup.findElementByName("nearest").enable();
-            towerPopup.findElementByName("furthest").disable();
-            towerPopup.findElementByName("strongest").enable();
-            towerPopup.findElementByName("weakest").enable();
+            towerPopup.findNiftyControl("nearest", CheckBox.class).uncheck();
+            towerPopup.findNiftyControl("furthest", CheckBox.class).check();
+            towerPopup.findNiftyControl("strongest", CheckBox.class).uncheck();
+            towerPopup.findNiftyControl("weakest", CheckBox.class).uncheck();
        } else if (tower.getShootAt().equals("strongest")){
-            towerPopup.findElementByName("nearest").enable();
-            towerPopup.findElementByName("furthest").enable();
-            towerPopup.findElementByName("strongest").disable();
-            towerPopup.findElementByName("weakest").enable();
+            towerPopup.findNiftyControl("nearest", CheckBox.class).uncheck();
+            towerPopup.findNiftyControl("furthest", CheckBox.class).uncheck();
+            towerPopup.findNiftyControl("strongest", CheckBox.class).check();
+            towerPopup.findNiftyControl("weakest", CheckBox.class).uncheck();
        } else if (tower.getShootAt().equals("weakest")){
-            towerPopup.findElementByName("nearest").enable();
-            towerPopup.findElementByName("furthest").enable();
-            towerPopup.findElementByName("strongest").enable();
-            towerPopup.findElementByName("weakest").disable();
+            towerPopup.findNiftyControl("nearest", CheckBox.class).uncheck();
+            towerPopup.findNiftyControl("furthest", CheckBox.class).uncheck();
+            towerPopup.findNiftyControl("strongest", CheckBox.class).uncheck();
+            towerPopup.findNiftyControl("weakest", CheckBox.class).check();
        }
        if(tower.getShootAtShootingBombs()){
-           towerPopup.findElementByName("shootingBombs").disable();
+           towerPopup.findNiftyControl("shootingBombs", CheckBox.class).check();
        } else if (tower.getShootAtAllBombs()){
-           towerPopup.findElementByName("allBombs").disable();
+           towerPopup.findNiftyControl("allBombs", CheckBox.class).check();
        } else if (tower.getShootAtNormalBombs()){
-           towerPopup.findElementByName("normalBombs").disable();
+           towerPopup.findNiftyControl("normalBombs", CheckBox.class).check();
        }
-               
+       towerPopup.findNiftyControl("nearest", CheckBox.class).setFocusable(false);
+       towerPopup.findNiftyControl("furthest", CheckBox.class).setFocusable(false);
+       towerPopup.findNiftyControl("strongest", CheckBox.class).setFocusable(false);
+       towerPopup.findNiftyControl("weakest", CheckBox.class).setFocusable(false);
+       towerPopup.findNiftyControl("shootingBombs", CheckBox.class).setFocusable(false);
+       towerPopup.findNiftyControl("allBombs", CheckBox.class).setFocusable(false);
+       towerPopup.findNiftyControl("normalBombs", CheckBox.class).setFocusable(false);
+       
        nifty.showPopup(screen, towerPopup.getId(), null);  
        Main.app.getWorld().setPaused(true);
        towerPopup.findElementByName("cancel").setFocus();
@@ -337,34 +346,34 @@ public class HudScreenState extends AbstractAppState implements ScreenController
         if(tower == null){
             return;
         }
-        de.lessvoid.nifty.elements.Element buttonNearest = screen.findElementByName("nearest");
-        de.lessvoid.nifty.elements.Element buttonFurthest = screen.findElementByName("furthest");
-        de.lessvoid.nifty.elements.Element buttonStrongest = screen.findElementByName("strongest");
-        de.lessvoid.nifty.elements.Element buttonWeakest = screen.findElementByName("weakest");
+        CheckBox checkboxNearest = screen.findNiftyControl("nearest", CheckBox.class);
+        CheckBox checkboxFurthest = screen.findNiftyControl("furthest", CheckBox.class);
+        CheckBox checkboxStrongest = screen.findNiftyControl("strongest", CheckBox.class);
+        CheckBox checkboxWeakest = screen.findNiftyControl("weakest", CheckBox.class);
         if(nearest.equals("true")){
             tower.setShootAt(true, false, false, false);
-            buttonNearest.disable();
-            buttonFurthest.enable();
-            buttonStrongest.enable();
-            buttonWeakest.enable();
+            checkboxNearest.check();
+            checkboxFurthest.uncheck();
+            checkboxStrongest.uncheck();
+            checkboxWeakest.uncheck();
         } else if(furthest.equals("true")){
             tower.setShootAt(false, true, false, false);
-            buttonNearest.enable();
-            buttonFurthest.disable();
-            buttonStrongest.enable();
-            buttonWeakest.enable();
+            checkboxNearest.uncheck();
+            checkboxFurthest.check();
+            checkboxStrongest.uncheck();
+            checkboxWeakest.uncheck();
         } else if(strongest.equals("true")){
             tower.setShootAt(false, false, true, false);
-            buttonNearest.enable();
-            buttonFurthest.enable();
-            buttonStrongest.disable();
-            buttonWeakest.enable();
+            checkboxNearest.uncheck();
+            checkboxFurthest.uncheck();
+            checkboxStrongest.check();
+            checkboxWeakest.uncheck();
         } else if(weakest.equals("true")){
             tower.setShootAt(false, false, false, true);
-            buttonNearest.enable();
-            buttonFurthest.enable();
-            buttonStrongest.enable();
-            buttonWeakest.disable();
+            checkboxNearest.uncheck();
+            checkboxFurthest.uncheck();
+            checkboxStrongest.uncheck();
+            checkboxWeakest.check();
         }
     }
     
@@ -375,12 +384,13 @@ public class HudScreenState extends AbstractAppState implements ScreenController
         if(tower == null){
             return;
         }
-        de.lessvoid.nifty.elements.Element buttonAll = screen.findElementByName("allBombs");
-        de.lessvoid.nifty.elements.Element buttonShootingBombs = screen.findElementByName("shootingBombs");
-        de.lessvoid.nifty.elements.Element buttonNormalBombs = screen.findElementByName("normalBombs");
-        buttonAll.enable();
-        buttonShootingBombs.disable();
-        buttonNormalBombs.enable();
+        CheckBox checkboxAll = screen.findNiftyControl("allBombs", CheckBox.class);
+        CheckBox checkboxShootingBombs = screen.findNiftyControl("shootingBombs", CheckBox.class);
+        CheckBox checkboxNormalBombs = screen.findNiftyControl("normalBombs", CheckBox.class);
+        checkboxAll.uncheck();
+        checkboxShootingBombs.check();
+        checkboxNormalBombs.uncheck();
+        
         tower.setShootOnlyAtShootingBombs();
     }
     
@@ -391,28 +401,30 @@ public class HudScreenState extends AbstractAppState implements ScreenController
         if(tower == null){
             return;
         }
-        de.lessvoid.nifty.elements.Element buttonAll = screen.findElementByName("allBombs");
-        de.lessvoid.nifty.elements.Element buttonShootingBombs = screen.findElementByName("shootingBombs");
-        de.lessvoid.nifty.elements.Element buttonNormalBombs = screen.findElementByName("normalBombs");
-        buttonAll.enable();
-        buttonShootingBombs.enable();
-        buttonNormalBombs.disable();
+        CheckBox checkboxAll = screen.findNiftyControl("allBombs", CheckBox.class);
+        CheckBox checkboxShootingBombs = screen.findNiftyControl("shootingBombs", CheckBox.class);
+        CheckBox checkboxNormalBombs = screen.findNiftyControl("normalBombs", CheckBox.class);
+        checkboxAll.uncheck();
+        checkboxShootingBombs.uncheck();
+        checkboxNormalBombs.check();
+        
         tower.setShootOnlyAtNormalBombs();
     }
     
     /**
-     * Setzt, dass nur auf ShootingBombs geschossen werden soll.
+     * Setzt, dass auf alle Bomben geschossen werden soll.
      */
     public void setShootAtAllBombs(){
         if(tower == null){
             return;
         }
-        de.lessvoid.nifty.elements.Element buttonAll = screen.findElementByName("allBombs");
-        de.lessvoid.nifty.elements.Element buttonShootingBombs = screen.findElementByName("shootingBombs");
-        de.lessvoid.nifty.elements.Element buttonNormalBombs = screen.findElementByName("normalBombs");
-        buttonAll.disable();
-        buttonShootingBombs.enable();
-        buttonNormalBombs.enable();
+        CheckBox checkboxAll = screen.findNiftyControl("allBombs", CheckBox.class);
+        CheckBox checkboxShootingBombs = screen.findNiftyControl("shootingBombs", CheckBox.class);
+        CheckBox checkboxNormalBombs = screen.findNiftyControl("normalBombs", CheckBox.class);
+        checkboxAll.check();
+        checkboxShootingBombs.uncheck();
+        checkboxNormalBombs.uncheck();
+        
         tower.setShootAtAllBombs();
     }
     
@@ -425,6 +437,7 @@ public class HudScreenState extends AbstractAppState implements ScreenController
         Main.app.getFlyByCamera().setDragToRotate(true);
         cameraDragToRotate = true;
         towerPopup = nifty.createPopup("niftyPopupRemoveTower");
+        towerPopup.findElementByName("no").setFocus();
         Main.app.getWorld().setPaused(true);
         nifty.showPopup(screen, towerPopup.getId(), null);
         towerPopup.findElementByName("no").setFocus();

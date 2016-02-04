@@ -5,6 +5,7 @@ import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.math.Vector3f;
 import de.lessvoid.nifty.Nifty;
+import de.lessvoid.nifty.controls.CheckBox;
 import de.lessvoid.nifty.elements.render.TextRenderer;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
@@ -78,6 +79,11 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
                 screen.findElementByName("enableScroll").disable();
             } else {
                 screen.findElementByName("disableScroll").disable();
+            }
+            if(Main.app.getSettings().isFullscreen()){
+                screen.findNiftyControl("checkboxFullscreen", CheckBox.class).check();
+            } else {
+                screen.findNiftyControl("checkboxFullscreen", CheckBox.class).uncheck();
             }
         } else if (screen.getScreenId().equals("highscores")){
             reloadHighscores();
@@ -313,6 +319,7 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
    
    public void saveSettings() {
        nifty.gotoScreen("start");
+       Main.app.restart();
    }
    
    /**
@@ -395,6 +402,17 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
        
        for(int i = 0; i < text.size(); i ++){
            screen.findElementByName((i+1) + "credits").getRenderer(TextRenderer.class).setText(text.get(i));
+       }
+   }
+   
+   public void toggleFullscreen(){
+       Settings settings = Main.app.getSettings();
+       if(settings.isFullscreen()){
+           screen.findNiftyControl("checkboxFullscreen", CheckBox.class).uncheck();
+           settings.setFullscreen(false);
+       } else {
+           screen.findNiftyControl("checkboxFullscreen", CheckBox.class).check();
+           settings.setFullscreen(true);
        }
    }
 }

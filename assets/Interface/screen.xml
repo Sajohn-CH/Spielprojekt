@@ -110,6 +110,12 @@
                 <!-- Beschriftungen-->
                 <panel id="#labels" width="70%" height="100%" childLayout="vertical">
                     <text text="Mausrad benutzen um Auswahl in der Leiste zu ändern" font="Interface/Fonts/Arial.fnt"/>
+                    <panel id="panelFullscreen" childLayout="horizontal">
+                        <text text="Vollbildmodus aktivieren" font="Interface/Fonts/Arial.fnt"/>
+                        <control name="checkbox" id="checkboxFullscreen" label="Aus">
+                            <interact onClick="toggleFullscreen()"/>
+                        </control>
+                    </panel>
                 </panel>
                 <panel id="#buttons" width="30%" height="100%" childLayout="vertical">
                     <!-- knöpfe zum (De)Aktivieren-->
@@ -117,7 +123,7 @@
                         <control name="button" id="enableScroll" label="An">
                             <interact onClick="toggleScroll()"/>
                         </control>
-                         <control name="button" id="disableScroll" label="Aus">
+                        <control name="button" id="disableScroll" label="Aus">
                             <interact onClick="toggleScroll()"/>
                         </control>
                     </panel>

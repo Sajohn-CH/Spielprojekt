@@ -341,4 +341,8 @@ public class Main extends SimpleApplication implements ActionListener{
     public Highscores getHighscores(){
         return highscores;
     }
+    
+    public AppSettings getAppSettings(){
+        return appSettings;
+    }
 }

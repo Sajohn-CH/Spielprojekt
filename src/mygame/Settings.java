@@ -1,7 +1,10 @@
 package mygame;
 
 import com.jme3.input.KeyInput;
+import com.jme3.system.AppSettings;
 import java.awt.Dimension;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 
 /**
  * Kontrolliert die Einstellungen des Spiels. Dies beinhaltet vorallem die Tastaturbelegung. Ist aktuell noch nicht zu 100% implementiert und funktionsfähig.
@@ -9,9 +12,10 @@ import java.awt.Dimension;
  */
 public class Settings {
     
+    private GraphicsDevice device;
 //    private Dimension resolution;
-//    private int frameReate;
-//    private boolean fullscreen;
+//    private int frameRate;
+    private boolean fullscreen;
     private String[] keysItems;        //Tasten für die Schnellzugrife auf der Leiste unten. Für jeden Slot einen. Es gibt 5.
     private String[] keysWalking;      //Tasten zum Laufen. Reihenfolge, left, right, up, down.
     private String keyJump;             //Taste zum Springen
@@ -22,6 +26,9 @@ public class Settings {
      * Konstruktor. Belegt die Einstellungen mit Standarwerten.
      */
     public Settings(){
+        device = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+        fullscreen = Main.app.getAppSettings().isFullscreen();
+        
         keysItems = new String[5];
         keysItems[0] ="1";
         keysItems[1] ="2";
@@ -300,4 +307,16 @@ public class Settings {
         this.keyJump = keyJump;
     }
     
+    public boolean isFullscreen(){
+        return fullscreen;
+    }
+    
+    public void setFullscreen(boolean enable){
+        AppSettings appSettings = Main.app.getAppSettings();
+        this.fullscreen = enable;
+        if(device.isFullScreenSupported()){
+            appSettings.setFullscreen(enable);
+        }
+        Main.app.setSettings(appSettings);
+    }
 }
