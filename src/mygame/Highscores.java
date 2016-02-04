@@ -88,7 +88,7 @@ public class Highscores {
     
     /**
      * Lädt die Highscores. Lädt die Highscores aus dem Dokument.
-     * @return Die ArralList mit den Highscores
+     * @return Die ArrayList mit den Highscores
      */
     private ArrayList<HighscoreElement> loadHighscores (){
         ArrayList<HighscoreElement> highscores = new ArrayList<>();

@@ -395,21 +395,7 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
    }
    
    public void loadCredits(){
-       ArrayList<String> text = new ArrayList<>();
-       File file = new File("credits");
-       
-       if(file.exists()){
-           try {
-               Scanner reader = new Scanner(file);
-               while(reader.hasNextLine()){
-                   text.add(reader.nextLine());
-               }
-           } catch (FileNotFoundException ex) {
-               Logger.getLogger(MyStartScreen.class.getName()).log(Level.SEVERE, null, ex);
-           }
-       } else {
-           return;
-       }
+       ArrayList<String> text = (ArrayList<String>) Main.app.getAssetManager().loadAsset("Interface/credits.credits");
        
        for(int i = 0; i < text.size(); i ++){
            screen.findElementByName((i+1) + "credits").getRenderer(TextRenderer.class).setText(text.get(i));

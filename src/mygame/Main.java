@@ -76,6 +76,8 @@ public class Main extends SimpleApplication implements ActionListener{
      */
     @Override
     public void simpleInitApp() {
+        assetManager.registerLoader(CornersLoader.class, "corners");
+        assetManager.registerLoader(TextLoader.class, "credits");
         //Debugmode aktivieren, da das entsprechende Layer anfangs sichtbar ist. Wird später noch deaktiviert.
         debugMode = true;
         settings = new Settings();

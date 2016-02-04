@@ -43,7 +43,7 @@ public class World extends AbstractAppState{
     private Node bombNode;                  //Node mit allen Bomben
     private Node towerNode;                 //Node mit allen Türmen
     private Node wayNode;                   //Node mit dem Weg der Bomben. Blockiert diesen, damit nichts drauf gebaut werden kann
-    private File cornersFile;               //Datei, in der alle Eckpunkte des Weges gespeichert sind.
+    private ArrayList<Vector3f> corners;               //ArrayList, in der alle Eckpunkte des Weges gespeichert sind.
     
     /**
      * Konstruktor. Lädt den Himmel, fügt die Szene hinzu und initialisiert alles.
@@ -52,7 +52,7 @@ public class World extends AbstractAppState{
      * @param scene Die "Szene", die Umgebung der Spielwelt bzw. die Spielwelt selbst
      */
     public World(Beacon beacon, Player player, Spatial scene) {
-        this.cornersFile = new File("assets/Scenes/scene_1.xml");
+        this.corners = (ArrayList<Vector3f>) Main.app.getAssetManager().loadAsset("Scenes/" + scene.getName() + ".corners");
         this.beacon = beacon;
         this.player = player;
         Main.getBulletAppState().getPhysicsSpace().add(player.getCharacterControl());
@@ -383,46 +383,7 @@ public class World extends AbstractAppState{
      * @return Alle Ecken des Weges
      */
     public ArrayList<Vector3f> getAllCorners(){
-        //Corners xml-file auslesen
-        ArrayList<Vector3f> corners = new ArrayList<Vector3f>();
-        try {
-            DocumentBuilderFactory dbFacotry = DocumentBuilderFactory.newInstance();
-            DocumentBuilder dBuilder = dbFacotry.newDocumentBuilder();
-            Document doc = dBuilder.parse(cornersFile);
-            dBuilder = dbFacotry.newDocumentBuilder();
-            doc.getDocumentElement().normalize();
-            
-            NodeList list = doc.getElementsByTagName("corner");
-            //Ruft die Ecken nach ihrer Nummerierung (id) auf. 
-            for(int i = 0; i < list.getLength(); i++) {
-                Element element = getElement(i, list);
-                
-                Vector3f vector = new Vector3f();
-                vector.setX(Float.valueOf(element.getAttribute("x")));
-                vector.setY(Float.valueOf(element.getAttribute("y")));
-                vector.setZ(Float.valueOf(element.getAttribute("z")));
-                corners.add(vector);
-            }
-        } catch (Exception ex) {
-            Logger.getLogger(World.class.getName()).log(Level.SEVERE, null, ex);
-        }
         return corners;
-    }
-    
-    /**
-     * Gibt das Element in der XML-NodeList (nicht zu verwechseln mit dem Node der JMonkeyEngine) mit der übergebenen ID zurück. Die ID ist immer ein Attribut jedes Elements in der NodeList.
-     * @param id  ID des gewünschten Elements
-     * @param list  NodeList mit allen Elementen
-     * @return gewünschtes Element
-     */
-    private Element getElement(int id, NodeList list) {
-        for(int i = 0; i < list.getLength(); i++) {
-            Element element = (Element) list.item(i);
-            if(element.getAttribute("id").equals(String.valueOf(id))) {
-                return element;
-            }
-        }
-        return null;
     }
     
     /**
