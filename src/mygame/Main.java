@@ -35,7 +35,7 @@ public class Main extends SimpleApplication implements ActionListener{
     private static AppSettings appSettings;     //Die Einstellungen der Applications (kommt von der JMonkeyApplication). Sie ist für Auflösung etc. zuständig
     private Settings settings;          //Die selber erstellten Einstellungen. Sie ist für die Tastenbelegung etc. zuständig.   
     private Highscores highscores;      //Die Highscores, die Angezeigt werden
-    private Spatial scene;              //Die Spielszene  
+    private Spatial scene;              //Die Spielszene
     
     /**
      * Startet das Spiel bzw. die Simple-Application und legt gewisse Einstellungen fest.

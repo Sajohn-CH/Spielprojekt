@@ -1,10 +1,7 @@
 package mygame;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Transformer;
@@ -26,11 +23,7 @@ public class Highscores {
      * Initialisiert die Highscores. Lädt die Highscores, falls diese Existieren.
      */
     public Highscores(){
-        this.highscores = new ArrayList<>();
-        File highscores = new File("highscores.xml");
-        if(highscores.exists()){
-            this.highscores = loadHighscores();
-        }
+        this.highscores = loadHighscores();
     }
     
     /**
@@ -92,14 +85,14 @@ public class Highscores {
      */
     private ArrayList<HighscoreElement> loadHighscores (){
         ArrayList<HighscoreElement> highscores = new ArrayList<>();
-        File highscoresFile = new File("highscores.xml");
+        File highscoresFile = new File("highscores.high");
         try{
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
             Document doc = dBuilder.parse(highscoresFile);
             dBuilder = dbFactory.newDocumentBuilder();
             doc.getDocumentElement().normalize();
-                        
+
             //Lädt alle Highscores
             NodeList nList = doc.getElementsByTagName("Highscore");
             for(int i = 0; i < nList.getLength(); i++) {
@@ -108,8 +101,9 @@ public class Highscores {
             }
         } catch (Exception e) {
             e.printStackTrace();
+            return new ArrayList<>();
         }
-        
+
         return highscores;
     }
     
@@ -117,10 +111,11 @@ public class Highscores {
      * Speichert die Highscores, falls sie nicht leer sind.
      */
     public void saveHighscores(){
+         File highscores = new File("highscores.high");
          if(this.highscores.isEmpty()){
+             highscores.delete();
              return;
          }
-         File highscores = new File("highscores.xml");
          try{
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();

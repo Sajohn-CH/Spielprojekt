@@ -9,12 +9,8 @@ import de.lessvoid.nifty.elements.render.TextRenderer;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Transformer;
@@ -172,7 +168,7 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
      * Lädt einen Spielstand von einer XML-Datei. Diese Datei ist aktuell immer "saveGame.xml". 
      */
     public void loadGame() {
-        File saveGame = new File("saveGame.xml");
+        File saveGame = new File("saveGame.save");
         try{
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
@@ -244,7 +240,7 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
      * Speichert den aktuellen Spielstand. Der wird immer in die Datei "saveGame.xml".
      */
     private void saveGame() {
-         File saveGame = new File("saveGame.xml");
+         File saveGame = new File("saveGame.save");
          try{
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
