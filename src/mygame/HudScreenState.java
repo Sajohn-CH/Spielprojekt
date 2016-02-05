@@ -294,13 +294,6 @@ public class HudScreenState extends AbstractAppState implements ScreenController
        } else if (tower.getShootAtNormalBombs()){
            towerPopup.findNiftyControl("normalBombs", CheckBox.class).check();
        }
-       towerPopup.findNiftyControl("nearest", CheckBox.class).setFocusable(false);
-       towerPopup.findNiftyControl("furthest", CheckBox.class).setFocusable(false);
-       towerPopup.findNiftyControl("strongest", CheckBox.class).setFocusable(false);
-       towerPopup.findNiftyControl("weakest", CheckBox.class).setFocusable(false);
-       towerPopup.findNiftyControl("shootingBombs", CheckBox.class).setFocusable(false);
-       towerPopup.findNiftyControl("allBombs", CheckBox.class).setFocusable(false);
-       towerPopup.findNiftyControl("normalBombs", CheckBox.class).setFocusable(false);
        
        nifty.showPopup(screen, towerPopup.getId(), null);  
        Main.app.getWorld().setPaused(true);

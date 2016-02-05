@@ -105,34 +105,43 @@
             <image filename="Interface/backgroundStartPage.png" width="100%" height="100%"/>
         </layer>
         
-        <layer id="foreground" childLayout="center">
-            <panel width="100%" height="80%" childLayout="horizontal">
-                <!-- Beschriftungen-->
-                <panel id="#labels" width="70%" height="100%" childLayout="vertical">
-                    <text text="Mausrad benutzen um Auswahl in der Leiste zu ändern" font="Interface/Fonts/Arial.fnt"/>
+        <layer id="foreground" childLayout="vertical">
+            <panel height="35%"></panel>
+            <panel width="90%" height="55%" childLayout="horizontal">
+                <panel width="10%" height="100%"></panel>
+                <!-- Einstellungen links-->
+                <panel id="#Settings1" width="50%" height="100%" childLayout="vertical">
+                    <panel id="panelScroll" childLayout="horizontal">
+                        <control name="checkbox" id="checkboxScroll" label="Aus" focusable="false">
+                            <interact onClick="toggleScroll()"/>
+                        </control>
+                        <text text="   Mausrad benutzen um Auswahl in der Leiste zu ändern" font="Interface/Fonts/Arial.fnt">
+                            <interact onClick="toggleScroll()"/>
+                        </text>
+                    </panel>
+                    <!-- Leere Zeile als Abstand -->
+                    <text text="" font="Interface/Fonts/Arial.fnt"/>
+                </panel>
+                <!-- Einstellungen rechts -->
+                <panel id="#Settings2" width="50%" height="100%" childLayout="vertical">
                     <panel id="panelFullscreen" childLayout="horizontal">
-                        <text text="Vollbildmodus aktivieren" font="Interface/Fonts/Arial.fnt"/>
-                        <control name="checkbox" id="checkboxFullscreen" label="Aus">
+                        <control name="checkbox" id="checkboxFullscreen" label="Aus" focusable="false">
                             <interact onClick="toggleFullscreen()"/>
                         </control>
+                        <text text="   Vollbildmodus aktivieren" font="Interface/Fonts/Arial.fnt">
+                            <interact onClick="toggleFullscreen()"/>
+                        </text>
                     </panel>
-                </panel>
-                <panel id="#buttons" width="30%" height="100%" childLayout="vertical">
-                    <!-- knöpfe zum (De)Aktivieren-->
-                    <panel childLayout="horizontal">
-                        <control name="button" id="enableScroll" label="An">
-                            <interact onClick="toggleScroll()"/>
-                        </control>
-                        <control name="button" id="disableScroll" label="Aus">
-                            <interact onClick="toggleScroll()"/>
-                        </control>
-                    </panel>
+                    <!-- Leere Zeile als Abstand -->
+                    <text text="" font="Interface/Fonts/Arial.fnt"/>
                 </panel>
             </panel>
             <!-- Knopf zum Verlassen der Einstellungen-->
-            <control name="button" id="saveSettings" label="Einstellungen speichern">
-                <interact onClick="saveSettings()"/>
-            </control>
+            <panel width="100%" childLayout="center">
+                <control name="button" id="saveSettings" align="center" width="10%" label="Einstellungen speichern">
+                    <interact onClick="saveSettings()"/>
+                </control>
+            </panel>
         </layer>
         
     </screen>

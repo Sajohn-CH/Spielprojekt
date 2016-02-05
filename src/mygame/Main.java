@@ -4,6 +4,7 @@ import mygame.Entitys.Beacon;
 import mygame.Entitys.Player;
 import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.BulletAppState;
+import com.jme3.input.FlyByCamera;
 import com.jme3.input.KeyInput;
 import com.jme3.input.MouseInput;
 import com.jme3.input.controls.ActionListener;
@@ -145,7 +146,7 @@ public class Main extends SimpleApplication implements ActionListener{
         flyCam.setZoomSpeed(0);
         //Setzt standardbewegung der Kamera ausser Kraft, damit man im pausemenu nicht laufen kann.
         flyCam.setMoveSpeed(0);
-        
+                
         changeDebugMode();
     }
     
@@ -187,6 +188,7 @@ public class Main extends SimpleApplication implements ActionListener{
     public void deleteKeys() {
         //Allgemeine Tasten
         inputManager.deleteMapping("Menu");
+        inputManager.deleteMapping("help");
         //Tasten für SchnelleisteSlots
         inputManager.deleteMapping("item_1");
         inputManager.deleteMapping("item_2");
@@ -241,6 +243,9 @@ public class Main extends SimpleApplication implements ActionListener{
      */
     @Override
     public void simpleUpdate(float tpf) {
+        if(!nifty.getCurrentScreen().getScreenId().equals("hud") && !world.isPaused()){
+            world.setPaused(true);
+        }
         //Wenn Kamera DragToRotate ist, dann wird ein Menu angezeigt (Menu für Wellenende muss nicht angezeigt werden)
         if(!game.bombLeft() && world.getAllBombs().isEmpty() && !hudState.isCameraDragToRotate() && !hudState.isBuildPhase()){
             game.nextWave();

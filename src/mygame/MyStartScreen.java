@@ -76,9 +76,9 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
         if(screen.getScreenId().equals("settings")) {
             //Lädt die eingestellten Einstellungen, damit diese angezeigt werden, wenn der Einstellungsbildschirm geladen wird.
             if(Main.app.getSettings().isUseScroll()) {
-                screen.findElementByName("enableScroll").disable();
+                screen.findNiftyControl("checkboxScroll", CheckBox.class).check();
             } else {
-                screen.findElementByName("disableScroll").disable();
+                screen.findNiftyControl("checkboxScroll", CheckBox.class).uncheck();
             }
             if(Main.app.getSettings().isFullscreen()){
                 screen.findNiftyControl("checkboxFullscreen", CheckBox.class).check();
@@ -124,7 +124,6 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
             Main.app.getFlyByCamera().setRotationSpeed(1);
         }
         Main.getWorld().setPaused(false);
-       
     }
     
     /**
@@ -137,6 +136,7 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
         //Spielstand zurücksetzen.
         Main.app.getWorld().getPlayer().setLocation(new Vector3f(0,10,0));
         Main.app.getWorld().getPlayer().revive();
+        Main.app.getWorld().getPlayer().turn();
         Main.app.getWorld().getPlayer().setMoney(250);
         //Alle Türme zurücksetzen
         for(int i = Main.app.getWorld().getAllTowers().size()-1; i >= 0; i--) {
@@ -329,16 +329,13 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
        Settings settings = Main.app.getSettings();
        
        //Text ändern
-       de.lessvoid.nifty.elements.Element buttonOn = screen.findElementByName("enableScroll");
-       de.lessvoid.nifty.elements.Element buttonOff = screen.findElementByName("disableScroll");
-       if(buttonOn.isEnabled()) {
-           buttonOn.disable();
-           buttonOff.enable();
-           settings.setUseScroll(true);
-       } else {
-           buttonOn.enable();
-           buttonOff.disable();
+       CheckBox cb = screen.findNiftyControl("checkboxScroll", CheckBox.class);
+       if(cb.isChecked()) {
+           cb.uncheck();
            settings.setUseScroll(false);
+       } else {
+           cb.check();
+           settings.setUseScroll(true);
        }
        
        Main.app.deleteKeys();

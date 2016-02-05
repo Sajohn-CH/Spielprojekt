@@ -180,15 +180,10 @@ public class Player extends Entity{
      */
     private void setUpKeys() {
         //Tasten um Spieler zu Steuern
-        Main.app.getInputManager().deleteMapping("Left");
         Main.app.getInputManager().addMapping("Left", new KeyTrigger(keyLeft));
-        Main.app.getInputManager().deleteMapping("Right");
         Main.app.getInputManager().addMapping("Right", new KeyTrigger(keyRight));
-        Main.app.getInputManager().deleteMapping("Up");
         Main.app.getInputManager().addMapping("Up", new KeyTrigger(keyUp));
-        Main.app.getInputManager().deleteMapping("Down");
         Main.app.getInputManager().addMapping("Down", new KeyTrigger(keyDown));
-        Main.app.getInputManager().deleteMapping("Jump");
         Main.app.getInputManager().addMapping("Jump", new KeyTrigger(keyJump));
         Main.app.getInputManager().addMapping("Shoot", new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
         Main.app.getInputManager().addMapping("placeTower", new MouseButtonTrigger(MouseInput.BUTTON_RIGHT));
