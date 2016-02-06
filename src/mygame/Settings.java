@@ -3,8 +3,11 @@ package mygame;
 import com.jme3.input.KeyInput;
 import com.jme3.system.AppSettings;
 import java.awt.Dimension;
+import java.awt.DisplayMode;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
+import java.awt.Toolkit;
+import java.util.ArrayList;
 
 /**
  * Kontrolliert die Einstellungen des Spiels. Dies beinhaltet vorallem die Tastaturbelegung. Ist aktuell noch nicht zu 100% implementiert und funktionsfähig.
@@ -13,7 +16,7 @@ import java.awt.GraphicsEnvironment;
 public class Settings {
     
     private GraphicsDevice device;
-//    private Dimension resolution;
+    private Dimension resolution;
 //    private int frameRate;
     private boolean fullscreen;
     private String[] keysItems;        //Tasten für die Schnellzugrife auf der Leiste unten. Für jeden Slot einen. Es gibt 5.
@@ -27,6 +30,7 @@ public class Settings {
      */
     public Settings(){
         device = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+        resolution = new Dimension(Main.app.getAppSettings().getWidth(), Main.app.getAppSettings().getHeight());
         fullscreen = Main.app.getAppSettings().isFullscreen();
         
         keysItems = new String[5];
@@ -318,5 +322,41 @@ public class Settings {
             appSettings.setFullscreen(enable);
         }
         Main.app.setSettings(appSettings);
+    }
+    
+    public ArrayList getPossibleResolutions(){
+        ArrayList<Dimension> l = new ArrayList<>();
+        DisplayMode [] mode = device.getDisplayModes();
+        for(int i = 0; i < mode.length; i++){
+            l.add(new Dimension(mode[i].getWidth(), mode[i].getHeight()));
+        }
+        return l;
+    }
+    
+    public ArrayList getPossibleResolutionsStrings(){
+        ArrayList<String> l = new ArrayList<>();
+        DisplayMode [] mode = device.getDisplayModes();
+        for(int i = 0; i < mode.length; i++){
+            l.add(mode[i].getWidth()+ " x " + mode[i].getHeight());
+        }
+        return l;
+    }
+    
+    public void setResolution(Dimension d){
+        AppSettings appSettings = Main.app.getAppSettings();
+        this.resolution = d;
+        appSettings.setResolution((int) d.getWidth(), (int) d.getHeight());
+        Main.app.setSettings(appSettings);
+    }
+    
+    public void setResolution(int width, int height){
+        AppSettings appSettings = Main.app.getAppSettings();
+        this.resolution = new Dimension(width, height);
+        appSettings.setResolution(width, height);
+        Main.app.setSettings(appSettings);
+    }
+    
+    public String getActiveResolution(){
+        return Main.app.getAppSettings().getHeight() + " x " + Main.app.getAppSettings().getWidth();
     }
 }

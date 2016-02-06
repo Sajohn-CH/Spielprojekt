@@ -67,6 +67,7 @@ public class Main extends SimpleApplication implements ActionListener{
         //Start into Fullscreen
         appSettings.setFullscreen(device.isFullScreenSupported());
                 
+        app.destroyInput();
         app.start();
     }
 

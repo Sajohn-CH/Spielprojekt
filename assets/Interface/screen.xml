@@ -134,6 +134,10 @@
                     </panel>
                     <!-- Leere Zeile als Abstand -->
                     <text text="" font="Interface/Fonts/Arial.fnt"/>
+                    <panel id="panelResolution" childLayout="horizontal">
+                        <text text="Bildschirmauflösung   " font="Interface/Fonts/Arial.fnt" />
+                        <control name="dropDown" id="dropdownResolution" width="150px" focusable="false"/>
+                    </panel>
                 </panel>
             </panel>
             <!-- Knopf zum Verlassen der Einstellungen-->

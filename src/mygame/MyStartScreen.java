@@ -6,9 +6,11 @@ import com.jme3.app.state.AppStateManager;
 import com.jme3.math.Vector3f;
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.controls.CheckBox;
+import de.lessvoid.nifty.controls.DropDown;
 import de.lessvoid.nifty.elements.render.TextRenderer;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
+import java.awt.Dimension;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -85,6 +87,8 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
             } else {
                 screen.findNiftyControl("checkboxFullscreen", CheckBox.class).uncheck();
             }
+            screen.findNiftyControl("dropdownResolution", DropDown.class).addAllItems(Main.app.getSettings().getPossibleResolutionsStrings());
+            screen.findNiftyControl("dropdownResolution", DropDown.class).selectItem(Main.app.getSettings().getActiveResolution());
         } else if (screen.getScreenId().equals("highscores")){
             reloadHighscores();
         } else if (screen.getScreenId().equals("credits")){
@@ -318,8 +322,11 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
    }
    
    public void saveSettings() {
-       nifty.gotoScreen("start");
+       DropDown dropdownResolution = screen.findNiftyControl("dropdownResolution", DropDown.class);
+       Main.app.getSettings().setResolution((Dimension) Main.app.getSettings().getPossibleResolutions().get(dropdownResolution.getSelectedIndex()));
+       Main.app.getSettings().setFullscreen(screen.findNiftyControl("checkboxFullscreen", CheckBox.class).isChecked());
        Main.app.restart();
+       nifty.gotoScreen("start");
    }
    
    /**
@@ -406,10 +413,8 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
        Settings settings = Main.app.getSettings();
        if(settings.isFullscreen()){
            screen.findNiftyControl("checkboxFullscreen", CheckBox.class).uncheck();
-           settings.setFullscreen(false);
        } else {
            screen.findNiftyControl("checkboxFullscreen", CheckBox.class).check();
-           settings.setFullscreen(true);
        }
    }
 }
