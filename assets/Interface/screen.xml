@@ -125,7 +125,7 @@
                 <!-- Einstellungen rechts -->
                 <panel id="#Settings2" width="50%" height="100%" childLayout="vertical">
                     <panel id="panelFullscreen" childLayout="horizontal">
-                        <control name="checkbox" id="checkboxFullscreen" label="Aus" focusable="false">
+                        <control name="checkbox" id="checkboxFullscreen" focusable="false">
                             <interact onClick="toggleFullscreen()"/>
                         </control>
                         <text text="   Vollbildmodus aktivieren" font="Interface/Fonts/Arial.fnt">
@@ -138,6 +138,30 @@
                         <text text="Bildschirmauflösung   " font="Interface/Fonts/Arial.fnt" />
                         <control name="dropDown" id="dropdownResolution" width="100px" focusable="false"/>
                     </panel>
+                    <!-- Leere Zeile als Abstand -->
+                    <text text="" font="Interface/Fonts/Arial.fnt"/>
+                    <panel id="panelVsync" childLayout="horizontal">
+                        <control name="checkbox" id="checkboxVsync" focusable="false">
+                            <interact onClick="toggleVsync()"/>
+                        </control>
+                        <text text="   Vsync aktivieren" font="Interface/Fonts/Arial.fnt">
+                            <interact onClick="toggleVsync()"/>
+                        </text>
+                    </panel>
+                    <!-- Leere Zeile als Abstand -->
+                    <text text="" font="Interface/Fonts/Arial.fnt"/>
+                    <panel id="panelColorDepth" childLayout="horizontal">
+                        <text text="Farbtiefe   " font="Interface/Fonts/Arial.fnt" />
+                        <control name="dropDown" id="dropdownColorDepth" width="100px" focusable="false"/>
+                    </panel>
+                    <!-- Leere Zeile als Abstand -->
+                    <text text="" font="Interface/Fonts/Arial.fnt"/>
+                    <panel id="panelAntiAliasing" childLayout="horizontal">
+                        <text text="Anti-Aliasing   " font="Interface/Fonts/Arial.fnt" />
+                        <control name="dropDown" id="dropdownAntiAliasing" width="100px" focusable="false"/>
+                    </panel>
+                    <!-- Leere Zeile als Abstand -->
+                    <text text="" font="Interface/Fonts/Arial.fnt"/>
                 </panel>
             </panel>
             <!-- Knopf zum Verlassen der Einstellungen-->

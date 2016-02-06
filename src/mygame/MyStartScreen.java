@@ -90,8 +90,17 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
             } else {
                 screen.findNiftyControl("checkboxFullscreen", CheckBox.class).uncheck();
             }
+            if(Main.app.getSettings().isVsync()){
+                screen.findNiftyControl("checkboxVsync", CheckBox.class).check();
+            } else {
+                screen.findNiftyControl("checkboxVsync", CheckBox.class).uncheck();
+            }
             screen.findNiftyControl("dropdownResolution", DropDown.class).addAllItems(Main.app.getSettings().getPossibleResolutionsStrings());
             screen.findNiftyControl("dropdownResolution", DropDown.class).selectItem(Main.app.getSettings().getActiveResolution());
+            screen.findNiftyControl("dropdownColorDepth", DropDown.class).addAllItems(Main.app.getSettings().getPossibleColorDepthsStrings());
+            screen.findNiftyControl("dropdownColorDepth", DropDown.class).selectItem(Main.app.getSettings().getActiveColorDepth());
+            screen.findNiftyControl("dropdownAntiAliasing", DropDown.class).addAllItems(Main.app.getSettings().getPossibleAntiAliasingStrings());
+            screen.findNiftyControl("dropdownAntiAliasing", DropDown.class).selectItem(Main.app.getSettings().getActiveAntiAliasing());
         } else if (screen.getScreenId().equals("highscores")){
             reloadHighscores();
         } else if (screen.getScreenId().equals("credits")){
@@ -326,8 +335,11 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
    
    public void saveSettings() {
        DropDown dropdownResolution = screen.findNiftyControl("dropdownResolution", DropDown.class);
-       Main.app.getSettings().setResolution((Dimension) Main.app.getSettings().getPossibleResolutions().get(dropdownResolution.getSelectedIndex()));
+       Main.app.getSettings().setResolution(Main.app.getSettings().getPossibleResolutions().get(dropdownResolution.getSelectedIndex()));
        Main.app.getSettings().setFullscreen(screen.findNiftyControl("checkboxFullscreen", CheckBox.class).isChecked());
+       Main.app.getSettings().setVsync(screen.findNiftyControl("checkboxVsync", CheckBox.class).isChecked());
+//       Main.app.getSettings().setColorDepth(Main.app.getSettings().getPossibleColorDepths().get(screen.findNiftyControl("dropdownColorDepth", DropDown.class).getSelectedIndex()));
+       Main.app.getSettings().setAntiAliasing(Main.app.getSettings().getPossibleAntiAliasing().get(screen.findNiftyControl("dropdownAntiAliasing", DropDown.class).getSelectedIndex()));
        Main.app.restart();
        nifty.gotoScreen("start");
    }
@@ -386,6 +398,9 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
         screen.findNiftyControl("checkboxScroll", CheckBox.class).uncheck();
         screen.findNiftyControl("checkboxFullscreen", CheckBox.class).check();
         screen.findNiftyControl("dropdownResolution", DropDown.class).selectItem(device.getDisplayMode().getWidth() + " x " + device.getDisplayMode().getHeight());
+        screen.findNiftyControl("checkboxVsync", CheckBox.class).uncheck();
+        screen.findNiftyControl("dropdownColorDepth", DropDown.class).selectItem(device.getDisplayMode().getBitDepth());
+        screen.findNiftyControl("dropdownAntiAliasing", DropDown.class).selectItemByIndex(0);
         
         nifty.gotoScreen("start");
    }
@@ -445,10 +460,23 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
    
    public void toggleFullscreen(){
        Settings settings = Main.app.getSettings();
-       if(settings.isFullscreen()){
-           screen.findNiftyControl("checkboxFullscreen", CheckBox.class).uncheck();
-       } else {
-           screen.findNiftyControl("checkboxFullscreen", CheckBox.class).check();
-       }
+        screen.findNiftyControl("checkboxFullscreen", CheckBox.class).toggle();
+//       if(settings.isFullscreen()){
+//           screen.findNiftyControl("checkboxFullscreen", CheckBox.class).uncheck();
+//           settings.setFullscreen(false);
+//       } else {
+//           screen.findNiftyControl("checkboxFullscreen", CheckBox.class).check();
+//           settings.setFullscreen(true);
+//       }
+   }
+   
+   public void toggleVsync(){
+       Settings settings = Main.app.getSettings();
+        screen.findNiftyControl("checkboxVsync", CheckBox.class).toggle();
+//       if(settings.isVsync()){
+//           screen.findNiftyControl("checkboxVsync", CheckBox.class).uncheck();
+//       } else {
+//           screen.findNiftyControl("checkboxVsync", CheckBox.class).check();
+//       }
    }
 }
