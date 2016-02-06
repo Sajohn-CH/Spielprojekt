@@ -147,7 +147,7 @@ public class Main extends SimpleApplication implements ActionListener{
     /**
      * Fügt Tastenbelegungen hinzu.
      */
-    public void setUpKeys() {
+    private void setUpKeys() {
         String[] keyItems = settings.getKeysItems();
         //Allgemeine Tasten
         inputManager.addMapping("Menu", new KeyTrigger(KeyInput.KEY_ESCAPE), new KeyTrigger(KeyInput.KEY_PAUSE));
@@ -179,7 +179,8 @@ public class Main extends SimpleApplication implements ActionListener{
     /**
      * Löscht alle Taste der Tastaturbelegung. Wird gebraucht, damit man mit {@link Main#setUpKeys()} wieder neue hinzufügen kann.
      */
-    public void deleteKeys() {
+    private void deleteKeys() {
+        
         //Allgemeine Tasten
         inputManager.deleteMapping("Menu");
         //Tasten für SchnelleisteSlots
@@ -188,10 +189,15 @@ public class Main extends SimpleApplication implements ActionListener{
         inputManager.deleteMapping("item_3");
         inputManager.deleteMapping("item_4");
         inputManager.deleteMapping("item_5");
+        
         inputManager.deleteMapping("debug");
-        //Mausrad
-        inputManager.deleteMapping("item_scroll_up");
-        inputManager.deleteMapping("item_scroll_down");
+        inputManager.deleteMapping("help");
+        //Mausrad (wird nur entfernt, falls es vorhanden ist.
+        if(inputManager.hasMapping("item_scroll_up")) {
+          inputManager.deleteMapping("item_scroll_up");
+          inputManager.deleteMapping("item_scroll_down");  
+        }
+        
     }
     
     /**
@@ -326,5 +332,14 @@ public class Main extends SimpleApplication implements ActionListener{
      */
     public Settings getSettings() {
         return settings;
+    }
+    
+    /**
+     * Methode, die aufgerufen wird, damit die Tastaturbelegung neu von der {@link Settings}-Klasse geladen wird.
+     */
+    public void reloadKeys() {
+        world.getPlayer().reloadKeys();
+        deleteKeys();
+        setUpKeys();
     }
 }

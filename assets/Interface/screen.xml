@@ -100,7 +100,7 @@
         </layer>
         
         <layer id="foreground" childLayout="center">
-            <panel width="100%" height="80%" childLayout="horizontal">
+            <panel width="100%" height="30%" childLayout="horizontal">
                 <!-- Beschriftungen-->
                 <panel id="#labels" width="70%" height="100%" childLayout="vertical">
                     <text text="Mausrad benutzen um Auswahl in der Leiste zu ändern" font="Interface/Fonts/Arial.fnt"/>
@@ -115,6 +115,35 @@
                             <interact onClick="toggleScroll()"/>
                         </control>
                     </panel>
+                </panel>
+            </panel>
+            <!-- Tastatureinstellungen --> 
+            <panel id="keyBindings" width="100%" height="100%" childLayout="horizontal">
+                <!-- Beschriftungen-->
+                <panel id="#keyLabels" width="70%" height="100%" childLayout="vertical">
+                    <text text="Vorwärts laufen" font="Interface/Fonts/Arial.fnt"/>
+                    <text text="Rückwärst laufen" font="Interface/Fonts/Arial.fnt"/>
+                    <text text="Links laufen" font="Interface/Fonts/Arial.fnt"/>
+                    <text text="Rechts laufen" font="Interface/Fonts/Arial.fnt"/>
+                    <text text="Springen" font="Interface/Fonts/Arial.fnt"/>
+                </panel>
+                <!-- Knöpfe um neue Taste zu belegen-->
+                <panel id="keyButtons" width="30%" height="100%" childLayout="vertical">
+                    <control id="forward" name="button" label ="">
+                        <interact onClick="setKeyBinding(forward)"/>
+                    </control>
+                    <control id="backward" name="button" label ="">
+                        <interact onClick="setKeyBinding(backward)"/>
+                    </control>
+                    <control id="goLeft" name="button" label ="">
+                        <interact onClick="setKeyBinding(goLeft)"/>
+                    </control>
+                    <control id="goRight" name="button" label ="">
+                        <interact onClick="setKeyBinding(goRight)"/>
+                    </control>
+                    <control id="jump" name="button" label ="">
+                        <interact onClick="setKeyBinding(jump)"/>
+                    </control>
                 </panel>
             </panel>
             <!-- Knopf zum Verlassen der Einstellungen-->

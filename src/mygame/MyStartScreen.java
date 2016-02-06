@@ -3,12 +3,16 @@ package mygame;
 import com.jme3.app.Application;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
+import com.jme3.input.KeyInput;
+import com.jme3.input.event.KeyInputEvent;
 import com.jme3.math.Vector3f;
 import de.lessvoid.nifty.Nifty;
+import de.lessvoid.nifty.controls.Button;
 import de.lessvoid.nifty.elements.render.TextRenderer;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
 import java.io.File;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -78,8 +82,15 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
             } else {
                 screen.findElementByName("disableScroll").disable();
             }
+
+            Settings settings = Main.app.getSettings();
+            updateButtonText("forward", settings.getKeyString(settings.getKey("forward")));
+            updateButtonText("backward", settings.getKeyString(settings.getKey("backward")));
+            updateButtonText("goLeft", settings.getKeyString(settings.getKey("goLeft")));
+            updateButtonText("goRight", settings.getKeyString(settings.getKey("goRight")));
+            updateButtonText("jump", settings.getKeyString(settings.getKey("jump")));
         }
-        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        
     }
 
     /**
@@ -87,9 +98,7 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
      */
     public void onStartScreen() {
         if(screen.getScreenId().equals("gameOver")) {
-            screen.findElementByName("untilWave").getRenderer(TextRenderer.class).setText("Du hast es bist zur Welle " + getCurrentWave()+" geschaft");
-           
-                    
+            screen.findElementByName("untilWave").getRenderer(TextRenderer.class).setText("Du hast es bist zur Welle " + getCurrentWave()+" geschaft");    
         }
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.      
     }
@@ -328,14 +337,99 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
            settings.setUseScroll(false);
        }
        
-       Main.app.deleteKeys();
-       Main.app.setUpKeys();
+       Main.app.reloadKeys();
    }
    
    /**
     * Wechselt zum Einstellungsbildschirm.
     */
    public void gotoSettings() {
-       nifty.gotoScreen("settings"); 
+       nifty.gotoScreen("settings");
    }   
+   
+   /**
+    * Ändert die Tastaturbelegung.
+    * @param keyBinding Welche Aktion neu belegt wird
+    */
+   //http://olavz.com/nifty-gui-create-key-bindings-for-your-game-in-jmonkey-engine-3/
+   private SettingsInputHandler settingsInputHandler;
+   public void setKeyBinding(String eventId) {
+       Screen screen = nifty.getScreen("settings");
+       if(settingsInputHandler != null) {
+           Button button = screen.findNiftyControl(settingsInputHandler.getEventId(), Button.class);
+           button.setText("");
+           Main.app.getInputManager().removeRawInputListener(settingsInputHandler);
+       }
+       Button button = screen.findNiftyControl(eventId, Button.class);
+       button.setText("<press any key>");
+       settingsInputHandler = new SettingsInputHandler(this, eventId);
+       Main.app.getInputManager().addRawInputListener(settingsInputHandler);
+   }
+   
+   /**
+    * Wird aufgerufen sobald eine Taste gedrückt wurde, wenn der SettingsInputHandler aktiviert ist.
+    * @param evt  Tastendruck
+    * @param eventId  Welche Aktion neu belegt werden soll
+    */
+   //http://olavz.com/nifty-gui-create-key-bindings-for-your-game-in-jmonkey-engine-3/
+   public void keyBindCallBack(KeyInputEvent evt, String eventId) {
+      /* Callback, triggered from settingsKeyHandler */ 
+       Screen screen = nifty.getScreen("settings");
+       Button button = screen.findNiftyControl(eventId, Button.class);
+       String keyName = Main.app.getSettings().getKeyString(evt.getKeyCode());
+       //Setzt nur dann die neue Taste, wenn es einen gültigen KeyName bekommt, wenn dies der Fall ist, ist es wohl eine Spezialtaste, die leicht 
+//       zu komplikationen führen könnte.
+       if(!keyName.equals("")) {
+          button.setText(keyName); 
+          Main.app.getSettings().setKey(eventId, evt.getKeyCode());
+          Main.app.reloadKeys();
+       }
+       
+//       System.out.print(evt.getKeyChar()+"; ");
+//       System.out.print(String.valueOf(evt.getKeyChar()).toUpperCase()+"; ");
+//       System.out.println(evt.getKeyCode());
+       
+      Main.app.getInputManager().removeRawInputListener(settingsInputHandler);
+      settingsInputHandler = null;
+   }
+   
+   /**
+    * Liefert den Name einer Taste.
+    * @param evt Taste (die gedrückt wurde)
+    * @return Name der Taste
+    */
+//   private String getKeyName(KeyInputEvent evt) {
+//       
+//       switch(evt.getKeyCode()) {
+//           case 29:
+//               return "L_CTRL";
+//           case 56:
+//               return "ALT";
+//           case 57:
+//               return "SPACEBAR";
+//           case 157:   
+//               return "R_CTRL";
+//           case 184:
+//               return "ALT_GR";
+//           case 42:
+//               return "L_SHIFT";
+//           case 58:
+//               return "CAPS_LOCK";
+//           case 15:
+//               return "TABULATOR";
+//           case 14:
+//               return "BACKSPACE";
+//           case 28:
+//               return "ENTER";
+//           case 54:
+//               return "R_SHIFT";
+//           default:
+//            return String.valueOf(evt.getKeyChar()).toUpperCase();           
+//       }
+//       
+//   }
+   
+   private void updateButtonText(String id, String text) {
+       screen.findNiftyControl(id, Button.class).setText(text);
+   }
 }

@@ -2,6 +2,9 @@ package mygame;
 
 import com.jme3.input.KeyInput;
 import java.awt.Dimension;
+import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Kontrolliert die Einstellungen des Spiels. Dies beinhaltet vorallem die Tastaturbelegung. Ist aktuell noch nicht zu 100% implementiert und funktionsfähig.
@@ -17,6 +20,9 @@ public class Settings {
     private String keyJump;             //Taste zum Springen
     private String keyDebug;         //Taste um den Debugbildschirm aufzurufen
     private boolean useScroll;          //Gibt an ob das Mausrad zum Scrollen der Slots in der Leiste genutzt werden soll.
+    private HashMap<String, Integer> keys;
+    
+    final private HashMap<String, Integer> KEYBOARDKEYS;
     
     /**
      * Konstruktor. Belegt die Einstellungen mit Standarwerten.
@@ -37,6 +43,17 @@ public class Settings {
         keyJump = " ";
 
         keyDebug = "F4";
+        
+        
+        keys = new HashMap();
+        keys.put("forward", KeyInput.KEY_W);
+        keys.put("backward", KeyInput.KEY_S);
+        keys.put("goRight", KeyInput.KEY_D);
+        keys.put("goLeft", KeyInput.KEY_A);
+        keys.put("jump", KeyInput.KEY_SPACE);
+        
+        KEYBOARDKEYS = new HashMap();
+        loadKEYBOARDKEYS();
     }
     
     /**
@@ -219,7 +236,7 @@ public class Settings {
             code = KeyInput.KEY_PGDN;
         return code;
     }
-
+    
     /**
      * Gibt die Tasten für die einzelnen Slots der Leiste zurück.
      * @return Tasten 
@@ -299,5 +316,95 @@ public class Settings {
     public void setKeyJump(String keyJump) {
         this.keyJump = keyJump;
     }
+    
+    /**
+     * Setzt eine neue Taste für eine bestimmte Aktion
+     * @param eventId Aktion
+     * @param keyCode neue Taste
+     */
+    public void setKey(String eventId, int keyCode) {
+        keys.put(eventId, keyCode);
+        return;
+    }
+    
+    /**
+     * Gibt den KeyCode für eine bestimmte Aktion zurück
+     * @param eventId Aktion    
+     * @return KeyCode
+     */
+    public int getKey(String eventId) {
+        return keys.get(eventId);
+        
+    }
+    
+    /**
+     * Gitb den String, der den gegebenen KeyCode beschreibt, zurück
+     * @param keyCode KeyCode der Taste
+     * @return String, der Taste bzw. KeyCode beschreibt 
+     */
+    public String getKeyString(int keyCode) {
+        for (Map.Entry<String, Integer> entry: KEYBOARDKEYS.entrySet()) {
+            if(entry.getValue() == keyCode) {
+                return entry.getKey();
+            }
+        }
+        return null;
+    } 
+    
+//    public int getKeyCode(String string) {
+//        return KEYBOARDKEYS.get(string);
+//    }
+    
+    private void loadKEYBOARDKEYS() {
+        KEYBOARDKEYS.put("A", KeyInput.KEY_A);
+        KEYBOARDKEYS.put("B", KeyInput.KEY_B);
+        KEYBOARDKEYS.put("C", KeyInput.KEY_C);
+        KEYBOARDKEYS.put("D", KeyInput.KEY_D);
+        KEYBOARDKEYS.put("E", KeyInput.KEY_E);
+        KEYBOARDKEYS.put("F", KeyInput.KEY_F);
+        KEYBOARDKEYS.put("G", KeyInput.KEY_G);
+        KEYBOARDKEYS.put("H", KeyInput.KEY_H);
+        KEYBOARDKEYS.put("I", KeyInput.KEY_I);
+        KEYBOARDKEYS.put("J", KeyInput.KEY_J);
+        KEYBOARDKEYS.put("K", KeyInput.KEY_K);
+        KEYBOARDKEYS.put("L", KeyInput.KEY_L);
+        KEYBOARDKEYS.put("M", KeyInput.KEY_M);
+        KEYBOARDKEYS.put("N", KeyInput.KEY_N);
+        KEYBOARDKEYS.put("O", KeyInput.KEY_O);
+        KEYBOARDKEYS.put("P", KeyInput.KEY_P);
+        KEYBOARDKEYS.put("Q", KeyInput.KEY_Q);
+        KEYBOARDKEYS.put("R", KeyInput.KEY_R);
+        KEYBOARDKEYS.put("S", KeyInput.KEY_S);
+        KEYBOARDKEYS.put("T", KeyInput.KEY_T);
+        KEYBOARDKEYS.put("U", KeyInput.KEY_U);
+        KEYBOARDKEYS.put("V", KeyInput.KEY_V);
+        KEYBOARDKEYS.put("W", KeyInput.KEY_W);
+        KEYBOARDKEYS.put("X", KeyInput.KEY_X);
+        KEYBOARDKEYS.put("Y", KeyInput.KEY_Y);
+        KEYBOARDKEYS.put("Z", KeyInput.KEY_Z);
+        KEYBOARDKEYS.put("F1", KeyInput.KEY_F1);
+        KEYBOARDKEYS.put("F2", KeyInput.KEY_F2);
+        KEYBOARDKEYS.put("F3", KeyInput.KEY_F3);
+        KEYBOARDKEYS.put("F4", KeyInput.KEY_F4);
+        KEYBOARDKEYS.put("F5", KeyInput.KEY_F5);
+        KEYBOARDKEYS.put("F6", KeyInput.KEY_F6);
+        KEYBOARDKEYS.put("F7", KeyInput.KEY_F7);
+        KEYBOARDKEYS.put("F8", KeyInput.KEY_F8);
+        KEYBOARDKEYS.put("F9", KeyInput.KEY_F9);
+        KEYBOARDKEYS.put("F10", KeyInput.KEY_F10);
+        KEYBOARDKEYS.put("F11", KeyInput.KEY_F11);
+        KEYBOARDKEYS.put("F12", KeyInput.KEY_F12);
+        KEYBOARDKEYS.put("F13", KeyInput.KEY_F13);
+        KEYBOARDKEYS.put("F14", KeyInput.KEY_F14);
+        KEYBOARDKEYS.put("F15", KeyInput.KEY_F15);
+        KEYBOARDKEYS.put("Space", KeyInput.KEY_SPACE);
+        KEYBOARDKEYS.put("Back", KeyInput.KEY_BACK);
+        KEYBOARDKEYS.put("L_Control", KeyInput.KEY_LCONTROL);
+        KEYBOARDKEYS.put("R_Control", KeyInput.KEY_RCONTROL);
+        KEYBOARDKEYS.put("R_Shift", KeyInput.KEY_RSHIFT);
+        KEYBOARDKEYS.put("L_Shift", KeyInput.KEY_LSHIFT);
+        KEYBOARDKEYS.put("Tab", KeyInput.KEY_TAB);
+    }
+    
     
 }

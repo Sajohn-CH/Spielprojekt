@@ -18,6 +18,7 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.shape.Line;
 import mygame.HudScreenState;
 import mygame.Main;
+import mygame.Settings;
 
 /**
  * Der Spieler. Erstellt und konntrolliert den Spieler und seine Aktionen.
@@ -72,14 +73,7 @@ public class Player extends Entity{
         hasHealed = false;
         healPoints = 1;
         shotsPerSecond = 50;
-        range = 100;
-        String[] keys_walking = Main.app.getSettings().getKeysWalking();
-        keyLeft = Main.app.getSettings().getKeyCode(keys_walking[0]);
-        keyRight = Main.app.getSettings().getKeyCode(keys_walking[1]);
-        keyUp = Main.app.getSettings().getKeyCode(keys_walking[2]);
-        keyDown = Main.app.getSettings().getKeyCode(keys_walking[3]);
-        keyJump = Main.app.getSettings().getKeyCode(Main.app.getSettings().getKeyJump());
-        
+        range = 100; 
         money = 250;
         this.inputListener = inputListener;
         //Ob Tastaturbelgung gesetzt werden soll. Dies ist nur beim ersten Starten des Spiels notwendig, nicht bei Neustarten
@@ -169,15 +163,17 @@ public class Player extends Entity{
      */
     private void setUpKeys() {
         //Tasten um Spieler zu Steuern
-        Main.app.getInputManager().deleteMapping("Left");
+        keyLeft = Main.app.getSettings().getKey("goLeft");
+        keyRight = Main.app.getSettings().getKey("goRight");
+        keyUp = Main.app.getSettings().getKey("forward");
+        keyDown = Main.app.getSettings().getKey("backward");
+        keyJump = Main.app.getSettings().getKey("jump");
+        
+       
         Main.app.getInputManager().addMapping("Left", new KeyTrigger(keyLeft));
-        Main.app.getInputManager().deleteMapping("Right");
         Main.app.getInputManager().addMapping("Right", new KeyTrigger(keyRight));
-        Main.app.getInputManager().deleteMapping("Up");
         Main.app.getInputManager().addMapping("Up", new KeyTrigger(keyUp));
-        Main.app.getInputManager().deleteMapping("Down");
         Main.app.getInputManager().addMapping("Down", new KeyTrigger(keyDown));
-        Main.app.getInputManager().deleteMapping("Jump");
         Main.app.getInputManager().addMapping("Jump", new KeyTrigger(keyJump));
         Main.app.getInputManager().addMapping("Shoot", new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
         Main.app.getInputManager().addMapping("placeTower", new MouseButtonTrigger(MouseInput.BUTTON_RIGHT));
@@ -188,6 +184,27 @@ public class Player extends Entity{
         Main.app.getInputManager().addListener(this.inputListener, "Jump");
         Main.app.getInputManager().addListener(this.inputListener, "Shoot");
         Main.app.getInputManager().addListener(this.inputListener, "placeTower");
+    }
+    
+    /** 
+     * Löscht alle Tastaturbelegungen, damit sie wieder neu belegt werden können.
+     */
+    private void deleteKeys() {
+         Main.app.getInputManager().deleteMapping("Left");
+         Main.app.getInputManager().deleteMapping("Right");
+         Main.app.getInputManager().deleteMapping("Up");
+         Main.app.getInputManager().deleteMapping("Down");
+         Main.app.getInputManager().deleteMapping("Jump");
+         Main.app.getInputManager().deleteMapping("Shoot");
+         Main.app.getInputManager().deleteMapping("placeTower");
+    }
+    
+    /**
+     * Methode, die aufgerufen wird, damit die Tastaturbelegung neu von der {@link Settings}-Klasse geladen wird.
+     */
+    public void reloadKeys() {
+        deleteKeys();
+        setUpKeys();
     }
     
     /**

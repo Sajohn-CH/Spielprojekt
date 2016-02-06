@@ -734,6 +734,10 @@ public class HudScreenState extends AbstractAppState implements ScreenController
         }
     }
     
+    /**
+     * Zeigt die Information zum übergebenen Turm in der Bildschirmmitte an. Dabei wird das Fadenkreuz deaktiviert, damit es nicht im Weg ist.
+     * @param tower  Turm, dessen Informationen angezeigt werden
+     */
     public void showTowerInfo(Tower tower) {
         screen.findElementByName("towerInfoLayer").setVisible(true);
         updateText("#towerHealth", tower.getHealth()+"/"+tower.getMaxHealth());
@@ -747,6 +751,9 @@ public class HudScreenState extends AbstractAppState implements ScreenController
         screen.findElementByName("crosshair").setVisible(false);
    }
     
+    /**
+     * Macht die Turminformation in der Mitte des Bildschirms wieder unsichtbar und aktiviert wieder das Fadenkreuz.
+     */
     public void hideTowerInfo() {
         screen.findElementByName("towerInfoLayer").setVisible(false);
         screen.findElementByName("crosshair").setVisible(true);
