@@ -136,15 +136,20 @@
                     <text text="" font="Interface/Fonts/Arial.fnt"/>
                     <panel id="panelResolution" childLayout="horizontal">
                         <text text="Bildschirmauflösung   " font="Interface/Fonts/Arial.fnt" />
-                        <control name="dropDown" id="dropdownResolution" width="150px" focusable="false"/>
+                        <control name="dropDown" id="dropdownResolution" width="100px" focusable="false"/>
                     </panel>
                 </panel>
             </panel>
             <!-- Knopf zum Verlassen der Einstellungen-->
             <panel width="100%" childLayout="center">
-                <control name="button" id="saveSettings" align="center" width="10%" label="Einstellungen speichern">
-                    <interact onClick="saveSettings()"/>
-                </control>
+                <panel  width="384px" childLayout="horizontal">
+                    <control name="button" id="saveSettings" align="center" width="192px" label="Einstellungen speichern">
+                        <interact onClick="saveSettings()"/>
+                    </control>
+                    <control name="button" id="restoreSettings" align="center" width="192px" label="Einstellungen zurücksetzen">
+                        <interact onClick="restoreDefaultSettings()"/>
+                    </control>
+                </panel>
             </panel>
         </layer>
         
