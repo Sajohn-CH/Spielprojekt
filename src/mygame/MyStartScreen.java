@@ -3,16 +3,20 @@ package mygame;
 import com.jme3.app.Application;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
-import com.jme3.input.KeyInput;
 import com.jme3.input.event.KeyInputEvent;
 import com.jme3.math.Vector3f;
+import com.jme3.system.AppSettings;
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.controls.Button;
+import de.lessvoid.nifty.controls.CheckBox;
+import de.lessvoid.nifty.controls.DropDown;
 import de.lessvoid.nifty.elements.render.TextRenderer;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import java.io.File;
-import java.lang.reflect.Field;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -78,17 +82,37 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
         if(screen.getScreenId().equals("settings")) {
             //Lädt die eingestellten Einstellungen, damit diese angezeigt werden, wenn der Einstellungsbildschirm geladen wird.
             if(Main.app.getSettings().isUseScroll()) {
-                screen.findElementByName("enableScroll").disable();
+                screen.findNiftyControl("checkboxScroll", CheckBox.class).check();
             } else {
-                screen.findElementByName("disableScroll").disable();
+                screen.findNiftyControl("checkboxScroll", CheckBox.class).uncheck();
             }
-
             Settings settings = Main.app.getSettings();
             updateButtonText("forward", settings.getKeyString(settings.getKey("forward")));
             updateButtonText("backward", settings.getKeyString(settings.getKey("backward")));
             updateButtonText("goLeft", settings.getKeyString(settings.getKey("goLeft")));
             updateButtonText("goRight", settings.getKeyString(settings.getKey("goRight")));
             updateButtonText("jump", settings.getKeyString(settings.getKey("jump")));
+
+            if(Main.app.getSettings().isFullscreen()){
+                screen.findNiftyControl("checkboxFullscreen", CheckBox.class).check();
+            } else {
+                screen.findNiftyControl("checkboxFullscreen", CheckBox.class).uncheck();
+            }
+            if(Main.app.getSettings().isVsync()){
+                screen.findNiftyControl("checkboxVsync", CheckBox.class).check();
+            } else {
+                screen.findNiftyControl("checkboxVsync", CheckBox.class).uncheck();
+            }
+            screen.findNiftyControl("dropdownResolution", DropDown.class).addAllItems(Main.app.getSettings().getPossibleResolutionsStrings());
+            screen.findNiftyControl("dropdownResolution", DropDown.class).selectItem(Main.app.getSettings().getActiveResolution());
+            screen.findNiftyControl("dropdownColorDepth", DropDown.class).addAllItems(Main.app.getSettings().getPossibleColorDepthsStrings());
+            screen.findNiftyControl("dropdownColorDepth", DropDown.class).selectItem(Main.app.getSettings().getActiveColorDepth());
+            screen.findNiftyControl("dropdownAntiAliasing", DropDown.class).addAllItems(Main.app.getSettings().getPossibleAntiAliasingStrings());
+            screen.findNiftyControl("dropdownAntiAliasing", DropDown.class).selectItem(Main.app.getSettings().getActiveAntiAliasing());
+        } else if (screen.getScreenId().equals("highscores")){
+            reloadHighscores();
+        } else if (screen.getScreenId().equals("credits")){
+            loadCredits();
         }
         
     }
@@ -122,7 +146,6 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
             Main.app.getFlyByCamera().setRotationSpeed(1);
         }
         Main.getWorld().setPaused(false);
-       
     }
     
     /**
@@ -135,6 +158,7 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
         //Spielstand zurücksetzen.
         Main.app.getWorld().getPlayer().setLocation(new Vector3f(0,10,0));
         Main.app.getWorld().getPlayer().revive();
+        Main.app.getWorld().getPlayer().turn();
         Main.app.getWorld().getPlayer().setMoney(250);
         //Alle Türme zurücksetzen
         for(int i = Main.app.getWorld().getAllTowers().size()-1; i >= 0; i--) {
@@ -157,6 +181,7 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
      */
     public void quitGame() {
        saveGame();
+       Main.app.getHighscores().saveHighscores();
        Main.app.stop();
     }
     
@@ -171,7 +196,7 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
      * Lädt einen Spielstand von einer XML-Datei. Diese Datei ist aktuell immer "saveGame.xml". 
      */
     public void loadGame() {
-        File saveGame = new File("saveGame.xml");
+        File saveGame = new File("saveGame.save");
         try{
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
@@ -243,7 +268,7 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
      * Speichert den aktuellen Spielstand. Der wird immer in die Datei "saveGame.xml".
      */
     private void saveGame() {
-         File saveGame = new File("saveGame.xml");
+         File saveGame = new File("saveGame.save");
          try{
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
@@ -315,6 +340,13 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
    }
    
    public void saveSettings() {
+       DropDown dropdownResolution = screen.findNiftyControl("dropdownResolution", DropDown.class);
+       Main.app.getSettings().setResolution(Main.app.getSettings().getPossibleResolutions().get(dropdownResolution.getSelectedIndex()));
+       Main.app.getSettings().setFullscreen(screen.findNiftyControl("checkboxFullscreen", CheckBox.class).isChecked());
+       Main.app.getSettings().setVsync(screen.findNiftyControl("checkboxVsync", CheckBox.class).isChecked());
+//       Main.app.getSettings().setColorDepth(Main.app.getSettings().getPossibleColorDepths().get(screen.findNiftyControl("dropdownColorDepth", DropDown.class).getSelectedIndex()));
+       Main.app.getSettings().setAntiAliasing(Main.app.getSettings().getPossibleAntiAliasing().get(screen.findNiftyControl("dropdownAntiAliasing", DropDown.class).getSelectedIndex()));
+       Main.app.restart();
        nifty.gotoScreen("start");
    }
    
@@ -325,16 +357,13 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
        Settings settings = Main.app.getSettings();
        
        //Text ändern
-       de.lessvoid.nifty.elements.Element buttonOn = screen.findElementByName("enableScroll");
-       de.lessvoid.nifty.elements.Element buttonOff = screen.findElementByName("disableScroll");
-       if(buttonOn.isEnabled()) {
-           buttonOn.disable();
-           buttonOff.enable();
-           settings.setUseScroll(true);
-       } else {
-           buttonOn.enable();
-           buttonOff.disable();
+       CheckBox cb = screen.findNiftyControl("checkboxScroll", CheckBox.class);
+       if(cb.isChecked()) {
+           cb.uncheck();
            settings.setUseScroll(false);
+       } else {
+           cb.check();
+           settings.setUseScroll(true);
        }
        
        Main.app.reloadKeys();
@@ -431,5 +460,115 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
    
    private void updateButtonText(String id, String text) {
        screen.findNiftyControl(id, Button.class).setText(text);
+       nifty.gotoScreen("settings"); 
+   }
+   
+   public void restoreDefaultSettings(){
+        //AppSettings initialisieren
+        AppSettings appSettings = new AppSettings(true);
+        
+        //Titel setzen
+        appSettings.setTitle("First-Person-View TowerDefense Game");
+        //Get the Resolution of the main/default display
+        GraphicsDevice device = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+        //set the found resolution of the monitor as the resolution of the game.
+        appSettings.setResolution(device.getDisplayMode().getWidth(), device.getDisplayMode().getHeight());
+        appSettings.setFrequency(device.getDisplayMode().getRefreshRate());
+        appSettings.setBitsPerPixel(device.getDisplayMode().getBitDepth());
+        // Frame rate limitieren
+        appSettings.setFrameRate(60);
+        appSettings.setFullscreen(device.isFullScreenSupported());
+        
+        Main.app.setSettings(appSettings);
+        
+        Settings settings = Main.app.getSettings();
+        settings.setUseScroll(false);
+        settings.setFullscreen(true);
+        settings.setResolution(device.getDisplayMode().getWidth(), device.getDisplayMode().getHeight());
+        Main.app.restart();
+
+        screen.findNiftyControl("checkboxScroll", CheckBox.class).uncheck();
+        screen.findNiftyControl("checkboxFullscreen", CheckBox.class).check();
+        screen.findNiftyControl("dropdownResolution", DropDown.class).selectItem(device.getDisplayMode().getWidth() + " x " + device.getDisplayMode().getHeight());
+        screen.findNiftyControl("checkboxVsync", CheckBox.class).uncheck();
+        screen.findNiftyControl("dropdownColorDepth", DropDown.class).selectItem(device.getDisplayMode().getBitDepth());
+        screen.findNiftyControl("dropdownAntiAliasing", DropDown.class).selectItemByIndex(0);
+        
+        nifty.gotoScreen("start");
+   }
+   
+   /**
+    * Wechselt zum Highscoresbildschirm.
+    */
+   public void gotoHighscores(){
+       nifty.gotoScreen("highscores");
+   }
+   
+   /**
+    * Löscht alle Highscores.
+    */
+   public void clearHighscores(){
+       Main.app.getHighscores().deleteAllHighscores();
+       reloadHighscores();
+   }
+   
+   /**
+    * Aktualisiert den Text des Highscoresbildschirms.
+    */
+   public void reloadHighscores(){
+       Highscores highscores = Main.app.getHighscores();
+       SimpleDateFormat df = new SimpleDateFormat("dd.MM.yyyy '; ' HH:mm");
+       int j = 25;
+       if(highscores.getAllHighscores().size() < 10){
+           j = highscores.getAllHighscores().size();
+       }
+       for(int i = 0; i < j; i ++){
+           screen.findElementByName((i+1) + "place").getRenderer(TextRenderer.class).setText("  " + String.valueOf(i+1));
+           screen.findElementByName("name" + (i+1)).getRenderer(TextRenderer.class).setText("   " + highscores.getHighscore(i+1).getName());
+           screen.findElementByName("wave" + (i+1)).getRenderer(TextRenderer.class).setText("   " + String.valueOf(highscores.getHighscore(i+1).getWave()));
+           screen.findElementByName("date" + (i+1)).getRenderer(TextRenderer.class).setText("   " + df.format(highscores.getHighscore(i+1).getDate()));
+           screen.findElementByName("world" + (i+1)).getRenderer(TextRenderer.class).setText("  " + highscores.getHighscore(i+1).getWorld());
+       }
+       for(int i = j; i < 25; i ++){
+           screen.findElementByName((i+1) + "place").getRenderer(TextRenderer.class).setText("");
+           screen.findElementByName("name" + (i+1)).getRenderer(TextRenderer.class).setText("");
+           screen.findElementByName("wave" + (i+1)).getRenderer(TextRenderer.class).setText("");
+           screen.findElementByName("date" + (i+1)).getRenderer(TextRenderer.class).setText("");
+           screen.findElementByName("world" + (i+1)).getRenderer(TextRenderer.class).setText("");
+       }
+   }
+   
+   public void gotoCredits(){
+       nifty.gotoScreen("credits");
+   }
+   
+   public void loadCredits(){
+       ArrayList<String> text = (ArrayList<String>) Main.app.getAssetManager().loadAsset("Interface/credits.credits");
+       
+       for(int i = 0; i < text.size(); i ++){
+           screen.findElementByName((i+1) + "credits").getRenderer(TextRenderer.class).setText(text.get(i));
+       }
+   }
+   
+   public void toggleFullscreen(){
+       Settings settings = Main.app.getSettings();
+        screen.findNiftyControl("checkboxFullscreen", CheckBox.class).toggle();
+//       if(settings.isFullscreen()){
+//           screen.findNiftyControl("checkboxFullscreen", CheckBox.class).uncheck();
+//           settings.setFullscreen(false);
+//       } else {
+//           screen.findNiftyControl("checkboxFullscreen", CheckBox.class).check();
+//           settings.setFullscreen(true);
+//       }
+   }
+   
+   public void toggleVsync(){
+       Settings settings = Main.app.getSettings();
+        screen.findNiftyControl("checkboxVsync", CheckBox.class).toggle();
+//       if(settings.isVsync()){
+//           screen.findNiftyControl("checkboxVsync", CheckBox.class).uncheck();
+//       } else {
+//           screen.findNiftyControl("checkboxVsync", CheckBox.class).check();
+//       }
    }
 }

@@ -4,6 +4,7 @@ import mygame.Entitys.Beacon;
 import mygame.Entitys.Player;
 import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.BulletAppState;
+import com.jme3.input.FlyByCamera;
 import com.jme3.input.KeyInput;
 import com.jme3.input.MouseInput;
 import com.jme3.input.controls.ActionListener;
@@ -31,10 +32,11 @@ public class Main extends SimpleApplication implements ActionListener{
     private MyStartScreen startState;   //Der ScreenController, der kontrolliert, was die Start-, Pause- und Einstellungsbildschirme machen.  
     private static World world;         //Die Spielwelt
     private static Game game;           //Das "Spiel". Kontrolliert die Wellengenerierung
-    private boolean debugMode;   //Gibt an ob der Debugmodus aktiviert ist.
+    private boolean debugMode;          //Gibt an ob der Debugmodus aktiviert ist.
     private static AppSettings appSettings;     //Die Einstellungen der Applications (kommt von der JMonkeyApplication). Sie ist für Auflösung etc. zuständig
     private Settings settings;          //Die selber erstellten Einstellungen. Sie ist für die Tastenbelegung etc. zuständig.   
-    private Spatial scene;              //Die Spielszene  
+    private Highscores highscores;      //Die Highscores, die Angezeigt werden
+    private Spatial scene;              //Die Spielszene
     
     /**
      * Startet das Spiel bzw. die Simple-Application und legt gewisse Einstellungen fest.
@@ -64,7 +66,8 @@ public class Main extends SimpleApplication implements ActionListener{
 //        app.setShowSettings(false);
         //Start into Fullscreen
         appSettings.setFullscreen(device.isFullScreenSupported());
-        
+                
+        app.destroyInput();
         app.start();
     }
 
@@ -75,15 +78,19 @@ public class Main extends SimpleApplication implements ActionListener{
      */
     @Override
     public void simpleInitApp() {
+        assetManager.registerLoader(CornersLoader.class, "corners");
+        assetManager.registerLoader(TextLoader.class, "credits");
         //Debugmode aktivieren, da das entsprechende Layer anfangs sichtbar ist. Wird später noch deaktiviert.
         debugMode = true;
         settings = new Settings();
-        
+        highscores = new Highscores();
+                
         //Set this boolean true when the game loop should stop running when ever the window loses focus.
         app.setPauseOnLostFocus(true);
         
         scene = assetManager.loadModel("Scenes/scene_1.j3o");
         scene.setLocalScale(2f);
+        scene.setName("scene_1");
         
         bulletAppState = new BulletAppState();
         stateManager.attach(bulletAppState);
@@ -140,7 +147,7 @@ public class Main extends SimpleApplication implements ActionListener{
         flyCam.setZoomSpeed(0);
         //Setzt standardbewegung der Kamera ausser Kraft, damit man im pausemenu nicht laufen kann.
         flyCam.setMoveSpeed(0);
-        
+                
         changeDebugMode();
     }
     
@@ -183,6 +190,7 @@ public class Main extends SimpleApplication implements ActionListener{
         
         //Allgemeine Tasten
         inputManager.deleteMapping("Menu");
+        inputManager.deleteMapping("help");
         //Tasten für SchnelleisteSlots
         inputManager.deleteMapping("item_1");
         inputManager.deleteMapping("item_2");
@@ -242,6 +250,9 @@ public class Main extends SimpleApplication implements ActionListener{
      */
     @Override
     public void simpleUpdate(float tpf) {
+        if(!nifty.getCurrentScreen().getScreenId().equals("hud") && !world.isPaused()){
+            world.setPaused(true);
+        }
         //Wenn Kamera DragToRotate ist, dann wird ein Menu angezeigt (Menu für Wellenende muss nicht angezeigt werden)
         if(!game.bombLeft() && world.getAllBombs().isEmpty() && !hudState.isCameraDragToRotate() && !hudState.isBuildPhase()){
             game.nextWave();
@@ -251,7 +262,7 @@ public class Main extends SimpleApplication implements ActionListener{
             game.action(tpf);
         }
     }
-
+    
     /**
      * {@inheritDoc}
      */
@@ -306,6 +317,11 @@ public class Main extends SimpleApplication implements ActionListener{
     public void gameOver() {
         getWorld().setPaused(true);
         getFlyByCamera().setDragToRotate(true);
+        if(Main.app.getWorld().getPlayer().getName() != null){
+            highscores.addHighscore(getWorld().getPlayer().getName(), game.getWave(), getWorld().getScene().getName());
+        } else {
+            highscores.addHighscore(game.getWave(), getWorld().getScene().getName());
+        }
         world.getPlayer().stopAudio();
         nifty.gotoScreen("gameOver");
     }
@@ -341,5 +357,13 @@ public class Main extends SimpleApplication implements ActionListener{
         world.getPlayer().reloadKeys();
         deleteKeys();
         setUpKeys();
+    }
+    
+    public Highscores getHighscores(){
+        return highscores;
+    }
+    
+    public AppSettings getAppSettings(){
+        return appSettings;
     }
 }

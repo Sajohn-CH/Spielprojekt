@@ -26,6 +26,7 @@ import mygame.Settings;
  */
 public class Player extends Entity{
     
+    private String name;                    //Name des Spielers
     private CharacterControl player;        //Sorgt für Physik des Spielers
     private Vector3f walkDirection;         //Laufrichtung des Spielers
     private boolean left, right, up, down;  //Ob die jeweilige Taste fürs Laufen gedrückt ist
@@ -115,7 +116,7 @@ public class Player extends Entity{
         shootAudio = new AudioNode(Main.app.getAssetManager(), "Audio/shootAudio.wav", false);
         shootAudio.setPositional(false);
         shootAudio.setLooping(true);
-        shootAudio.setVolume(2);
+        shootAudio.setVolume(2 * (float) Main.app.getSettings().getVolumeEffects());
         Main.app.getRootNode().attachChild(shootAudio);
         
         //Sound von: https://freesound.org/people/Shadowedhunter/sounds/155920/ (User: Shadowedhunter)
@@ -123,7 +124,7 @@ public class Player extends Entity{
         walkAudio = new AudioNode(Main.app.getAssetManager(), "Audio/walkAudio.wav", false);
         walkAudio.setPositional(false);
         walkAudio.setLooping(true);
-        walkAudio.setVolume(.5f);
+        walkAudio.setVolume(.5f * (float) Main.app.getSettings().getVolumeEffects());
         Main.app.getRootNode().attachChild(walkAudio);
         
         //Sound von: https://freesound.org/people/jact878787/sounds/323809/ (User: jact878787)
@@ -131,7 +132,7 @@ public class Player extends Entity{
         buyAudio = new AudioNode(Main.app.getAssetManager(), "Audio/buyAudio.wav", false);
         buyAudio.setPositional(false);
         buyAudio.setLooping(false);
-        buyAudio.setVolume(2f);
+        buyAudio.setVolume(2 * (float) Main.app.getSettings().getVolumeEffects());
         Main.app.getRootNode().attachChild(buyAudio);
         
         //Sound von: https://freesound.org/people/clairinski/sounds/184372/ (User: clairinski)
@@ -139,7 +140,7 @@ public class Player extends Entity{
         notEnoughMoneyAudio = new AudioNode(Main.app.getAssetManager(), "Audio/notEnoughMoneyAudio.wav", false);
         notEnoughMoneyAudio.setPositional(false);
         notEnoughMoneyAudio.setLooping(false);
-        notEnoughMoneyAudio.setVolume(2f);
+        notEnoughMoneyAudio.setVolume(2 * (float) Main.app.getSettings().getVolumeEffects());
         Main.app.getRootNode().attachChild(notEnoughMoneyAudio);
         
         //Sound von: https://freesound.org/people/severaltimes/sounds/173989/ (User: severaltimes)
@@ -147,8 +148,18 @@ public class Player extends Entity{
         earnMoneyAudio = new AudioNode(Main.app.getAssetManager(), "Audio/earnMoneyAudio.wav", false);
         earnMoneyAudio.setPositional(false);
         earnMoneyAudio.setLooping(false);
-        earnMoneyAudio.setVolume(2f);
+        earnMoneyAudio.setVolume(2 * (float) Main.app.getSettings().getVolumeEffects());
         Main.app.getRootNode().attachChild(earnMoneyAudio);
+    }
+    
+    /**
+     * Konstruktor, der neben dem was {@link Player#Player(com.jme3.input.controls.InputListener)} macht, noch den Namen setzt.
+     * @param inputListener Für Tasteneingaben benötigt
+     * @param name Name des Spielers
+     */
+    public Player(InputListener inputListener, String name){
+        this(inputListener);
+        this.name = name;
     }
     
     /**
@@ -169,7 +180,6 @@ public class Player extends Entity{
         keyDown = Main.app.getSettings().getKey("backward");
         keyJump = Main.app.getSettings().getKey("jump");
         
-       
         Main.app.getInputManager().addMapping("Left", new KeyTrigger(keyLeft));
         Main.app.getInputManager().addMapping("Right", new KeyTrigger(keyRight));
         Main.app.getInputManager().addMapping("Up", new KeyTrigger(keyUp));
@@ -919,5 +929,29 @@ public class Player extends Entity{
         this.keyJump = Main.app.getSettings().getKeyCode(keyJump);
         
         setUpKeys();
+    }
+    
+    /**
+     * Gibt den Namen des Spielers zurück.
+     * @return Name des Spielers
+     */
+    public String getName(){
+        return name;
+    }
+    
+    /**
+     * Setzt den Namen des Spielers.
+     * @param name Neuer Name
+     */
+    public void setName(String name){
+        this.name = name;
+    }
+    
+    public void reloadVolumes(){
+        shootAudio.setVolume(2 * (float) Main.app.getSettings().getVolumeEffects());
+        walkAudio.setVolume(.5f * (float) Main.app.getSettings().getVolumeEffects());
+        buyAudio.setVolume(2 * (float) Main.app.getSettings().getVolumeEffects());
+        notEnoughMoneyAudio.setVolume(2 * (float) Main.app.getSettings().getVolumeEffects());
+        earnMoneyAudio.setVolume(2 * (float) Main.app.getSettings().getVolumeEffects());
     }
 }

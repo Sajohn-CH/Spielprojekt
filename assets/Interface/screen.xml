@@ -24,9 +24,15 @@
                     <interact onClick="loadGame()"/>
                 </control>
             </panel>
-            <panel id="panel_settings" height="25%" widht="75" align="center" childLayout="horizontal">
+            <panel id="panel_settings" height="25%" align="center" childLayout="horizontal">
                 <control name="button" label="Einstellungen" id="SettingsButton" align="center" valign="center" visiblteToMouse="true">
                     <interact onClick="gotoSettings()"/>
+                </control>
+                <control name="button" label="Highscores" id="HighscoresButton" align="center" valign="center" visiblteToMouse="true">
+                    <interact onClick="gotoHighscores()"/>
+                </control>
+                <control name="button" label="Credits" id="CreditsButton" align="center" valign="center" visiblteToMouse="true">
+                    <interact onClick="gotoCredits()"/>
                 </control>
             </panel>
             <panel id="panel_bottom" height="25%" width="75%" align="center" childLayout="center" >
@@ -99,26 +105,67 @@
             <image filename="Interface/backgroundStartPage.png" width="100%" height="100%"/>
         </layer>
         
-        <layer id="foreground" childLayout="center">
-            <panel width="100%" height="30%" childLayout="horizontal">
-                <!-- Beschriftungen-->
-                <panel id="#labels" width="70%" height="100%" childLayout="vertical">
-                    <text text="Mausrad benutzen um Auswahl in der Leiste zu ändern" font="Interface/Fonts/Arial.fnt"/>
-                </panel>
-                <panel id="#buttons" width="30%" height="100%" childLayout="vertical">
-                    <!-- knöpfe zum (De)Aktivieren-->
-                    <panel childLayout="horizontal">
-                        <control name="button" id="enableScroll" label="An">
+        <layer id="foreground" childLayout="vertical">
+            <panel height="5%"></panel>
+            <panel width="90%" height="40%" childLayout="horizontal">
+                <panel width="10%" height="100%"></panel>
+                <!-- Einstellungen links-->
+                <panel id="#Settings1" width="50%" height="100%" childLayout="vertical">
+                    <panel id="panelScroll" childLayout="horizontal">
+                        <control name="checkbox" id="checkboxScroll" label="Aus" focusable="false">
                             <interact onClick="toggleScroll()"/>
                         </control>
-                         <control name="button" id="disableScroll" label="Aus">
+                        <text text="   Mausrad benutzen um Auswahl in der Leiste zu ändern" font="Interface/Fonts/Arial.fnt">
                             <interact onClick="toggleScroll()"/>
-                        </control>
+                        </text>
                     </panel>
+                    <!-- Leere Zeile als Abstand -->
+                    <text text="" font="Interface/Fonts/Arial.fnt"/>
+                </panel>
+                <!-- Einstellungen rechts -->
+                <panel id="#Settings2" width="50%" height="100%" childLayout="vertical">
+                    <panel id="panelFullscreen" childLayout="horizontal">
+                        <control name="checkbox" id="checkboxFullscreen" focusable="false">
+                            <interact onClick="toggleFullscreen()"/>
+                        </control>
+                        <text text="   Vollbildmodus aktivieren" font="Interface/Fonts/Arial.fnt">
+                            <interact onClick="toggleFullscreen()"/>
+                        </text>
+                    </panel>
+                    <!-- Leere Zeile als Abstand -->
+                    <text text="" font="Interface/Fonts/Arial.fnt"/>
+                    <panel id="panelResolution" childLayout="horizontal">
+                        <text text="Bildschirmauflösung   " font="Interface/Fonts/Arial.fnt" />
+                        <control name="dropDown" id="dropdownResolution" width="100px" focusable="false"/>
+                    </panel>
+                    <!-- Leere Zeile als Abstand -->
+                    <text text="" font="Interface/Fonts/Arial.fnt"/>
+                    <panel id="panelVsync" childLayout="horizontal">
+                        <control name="checkbox" id="checkboxVsync" focusable="false">
+                            <interact onClick="toggleVsync()"/>
+                        </control>
+                        <text text="   Vsync aktivieren" font="Interface/Fonts/Arial.fnt">
+                            <interact onClick="toggleVsync()"/>
+                        </text>
+                    </panel>
+                    <!-- Leere Zeile als Abstand -->
+                    <text text="" font="Interface/Fonts/Arial.fnt"/>
+                    <panel id="panelColorDepth" childLayout="horizontal">
+                        <text text="Farbtiefe   " font="Interface/Fonts/Arial.fnt" />
+                        <control name="dropDown" id="dropdownColorDepth" width="100px" focusable="false"/>
+                    </panel>
+                    <!-- Leere Zeile als Abstand -->
+                    <text text="" font="Interface/Fonts/Arial.fnt"/>
+                    <panel id="panelAntiAliasing" childLayout="horizontal">
+                        <text text="Anti-Aliasing   " font="Interface/Fonts/Arial.fnt" />
+                        <control name="dropDown" id="dropdownAntiAliasing" width="100px" focusable="false"/>
+                    </panel>
+                    <!-- Leere Zeile als Abstand -->
+                    <text text="" font="Interface/Fonts/Arial.fnt"/>
                 </panel>
             </panel>
             <!-- Tastatureinstellungen --> 
-            <panel id="keyBindings" width="100%" height="100%" childLayout="horizontal">
+            <panel id="keyBindings" width="100%" height="50%" childLayout="horizontal">
                 <!-- Beschriftungen-->
                 <panel id="#keyLabels" width="70%" height="100%" childLayout="vertical">
                     <text text="Vorwärts laufen" font="Interface/Fonts/Arial.fnt"/>
@@ -147,9 +194,246 @@
                 </panel>
             </panel>
             <!-- Knopf zum Verlassen der Einstellungen-->
-            <control name="button" id="saveSettings" label="Einstellungen speichern">
-                <interact onClick="saveSettings()"/>
-            </control>
+            <panel width="100%" childLayout="center">
+                <panel  width="384px" childLayout="horizontal">
+                    <control name="button" id="saveSettings" align="center" width="192px" label="Einstellungen speichern">
+                        <interact onClick="saveSettings()"/>
+                    </control>
+                    <control name="button" id="restoreSettings" align="center" width="192px" label="Einstellungen zurücksetzen">
+                        <interact onClick="restoreDefaultSettings()"/>
+                    </control>
+                </panel>
+            </panel>
+        </layer>
+        
+    </screen>
+    
+    <!-- Highscores-Bildschirm -->
+    <screen id="highscores" controller="mygame.MyStartScreen">
+         <!-- Hintergrundbild -->
+        <layer id="background" childLayout="center">
+            <image filename="Interface/backgroundStartPage.png" width="100%" height="100%"/>
+        </layer>
+        
+        <layer id="foreground" childLayout="vertical">
+            <panel height="30%"></panel>
+            <panel height="55%" childLayout="horizontal">
+                <panel width="10%" height="100%"></panel>
+                <!-- Beschriftungen-->
+                <panel id="#places" width="15%" height="100%" childLayout="vertical">
+                    <text text="Platz" font="Interface/Fonts/Arial.fnt"/>
+                    <text text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="1place" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="2place" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="3place" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="4place" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="5place" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="6place" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="7place" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="8place" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="9place" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="10place" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="11place" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="12place" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="13place" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="14place" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="15place" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="16place" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="17place" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="18place" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="19place" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="20place" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="21place" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="22place" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="23place" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="24place" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="25place" text="" font="Interface/Fonts/Arial.fnt"/>
+                </panel>
+                <!-- Name-->
+                <panel id="#names" width="20%" height="100%" childLayout="vertical">
+                    <text text="Spielername" font="Interface/Fonts/Arial.fnt"/>
+                    <text text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="name1" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="name2" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="name3" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="name4" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="name5" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="name6" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="name7" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="name8" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="name9" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="name10" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="name11" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="name12" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="name13" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="name14" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="name15" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="name16" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="name17" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="name18" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="name19" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="name20" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="name21" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="name22" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="name23" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="name24" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="name25" text="" font="Interface/Fonts/Arial.fnt"/>
+                </panel>
+                <!-- Bis Welle-->
+                <panel id="#wave" width="15%" height="100%" childLayout="vertical">
+                    <text text="Erreichte Welle" font="Interface/Fonts/Arial.fnt"/>
+                    <text text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="wave1" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="wave2" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="wave3" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="wave4" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="wave5" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="wave6" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="wave7" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="wave8" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="wave9" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="wave10" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="wave11" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="wave12" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="wave13" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="wave14" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="wave15" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="wave16" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="wave17" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="wave18" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="wave19" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="wave20" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="wave21" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="wave22" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="wave23" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="wave24" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="wave25" text="" font="Interface/Fonts/Arial.fnt"/>
+                </panel>
+                <!-- Weltname-->
+                <panel id="#world" width="20%" height="100%" childLayout="vertical">
+                    <text text="Welt" font="Interface/Fonts/Arial.fnt"/>
+                    <text text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="world1" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="world2" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="world3" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="world4" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="world5" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="world6" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="world7" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="world8" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="world9" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="world10" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="world11" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="world12" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="world13" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="world14" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="world15" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="world16" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="world17" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="world18" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="world19" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="world20" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="world21" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="world22" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="world23" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="world24" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="world25" text="" font="Interface/Fonts/Arial.fnt"/>
+                </panel>
+                <!-- Datum-->
+                <panel id="#date" width="20%" height="100%" childLayout="vertical">
+                    <text text="Datum; Zeit" font="Interface/Fonts/Arial.fnt"/>
+                    <text text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="date1" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="date2" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="date3" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="date4" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="date5" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="date6" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="date7" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="date8" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="date9" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="date10" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="date11" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="date12" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="date13" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="date14" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="date15" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="date16" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="date17" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="date18" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="date19" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="date20" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="date21" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="date22" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="date23" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="date24" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="date25" text="" font="Interface/Fonts/Arial.fnt"/>
+                </panel>
+            </panel>
+            <panel height="15%" childLayout="center">
+                <panel width="25%" childLayout="horizontal">
+                    <!-- Knopf zum Verlassen der Einstellungen-->
+                    <control name="button" id="backToStart" label="Zurück zum Startbildschirm" width="50%">
+                        <interact onClick="toStart()"/>
+                    </control>
+                    <!-- Knopf zum Verlassen der Einstellungen-->
+                    <control name="button" id="clearHighscores" label="Highscores zurücksetzen" width="50%">
+                        <interact onClick="clearHighscores()"/>
+                    </control>
+                </panel>
+            </panel>
+        </layer>
+        
+    </screen>
+    
+     <!-- Credits-Bildschirm -->
+    <screen id="credits" controller="mygame.MyStartScreen">
+         <!-- Hintergrundbild -->
+        <layer id="background" childLayout="center">
+            <image filename="Interface/backgroundStartPage.png" width="100%" height="100%"/>
+        </layer>
+        
+        <layer id="foreground" childLayout="vertical">
+            <panel height="30%"></panel>
+            <panel height="55%" childLayout="horizontal">
+                <panel width="15%" height="100%"></panel>
+                <!-- Text-->
+                <panel id="#credits" width="80%" height="100%" childLayout="vertical">
+                    <text id="1credits" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="2credits" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="3credits" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="4credits" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="5credits" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="6credits" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="7credits" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="8credits" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="9credits" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="10credits" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="11credits" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="12credits" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="13credits" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="14credits" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="15credits" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="16credits" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="17credits" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="18credits" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="19credits" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="20credits" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="21credits" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="22credits" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="23credits" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="24credits" text="" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="25credits" text="" font="Interface/Fonts/Arial.fnt"/>
+                </panel>
+            </panel>
+            <panel height="15%" childLayout="center">
+                <panel width="25%" childLayout="horizontal">
+                    <!-- Knopf zum Verlassen der Einstellungen-->
+                    <control name="button" id="backToStart" label="Zurück zum Startbildschirm" width="100%">
+                        <interact onClick="toStart()"/>
+                    </control>
+                </panel>
+            </panel>
         </layer>
         
     </screen>

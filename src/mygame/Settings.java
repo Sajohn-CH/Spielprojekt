@@ -1,10 +1,14 @@
 package mygame;
 
 import com.jme3.input.KeyInput;
+import com.jme3.system.AppSettings;
 import java.awt.Dimension;
-import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
+import java.awt.DisplayMode;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
+import java.util.ArrayList;
 
 /**
  * Kontrolliert die Einstellungen des Spiels. Dies beinhaltet vorallem die Tastaturbelegung. Ist aktuell noch nicht zu 100% implementiert und funktionsfähig.
@@ -12,9 +16,17 @@ import java.util.Map;
  */
 public class Settings {
     
-//    private Dimension resolution;
-//    private int frameReate;
-//    private boolean fullscreen;
+    private GraphicsDevice device;
+    private Dimension resolution;
+    private boolean fullscreen;
+    private boolean vsync;
+    private int colorDepth;
+    private int antiAliasing;
+    
+    private double volumeMaster;
+    private double volumeEffects;
+    private double volumeMusic;
+//    private int frameRate;
     private String[] keysItems;        //Tasten für die Schnellzugrife auf der Leiste unten. Für jeden Slot einen. Es gibt 5.
     private String[] keysWalking;      //Tasten zum Laufen. Reihenfolge, left, right, up, down.
     private String keyJump;             //Taste zum Springen
@@ -28,6 +40,17 @@ public class Settings {
      * Konstruktor. Belegt die Einstellungen mit Standarwerten.
      */
     public Settings(){
+        device = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+        resolution = new Dimension(Main.app.getAppSettings().getWidth(), Main.app.getAppSettings().getHeight());
+        fullscreen = Main.app.getAppSettings().isFullscreen();
+        vsync = false;
+        colorDepth = device.getDisplayMode().getBitDepth();
+        antiAliasing = 0;
+        
+        volumeMaster = 1;
+        volumeMusic = 1;
+        volumeEffects = 1;
+        
         keysItems = new String[5];
         keysItems[0] ="1";
         keysItems[1] ="2";
@@ -407,4 +430,152 @@ public class Settings {
     }
     
     
+    public boolean isFullscreen(){
+        return fullscreen;
+    }
+    
+    public void setFullscreen(boolean enable){
+        AppSettings appSettings = Main.app.getAppSettings();
+        this.fullscreen = enable;
+        if(device.isFullScreenSupported()){
+            appSettings.setFullscreen(enable);
+        }
+        Main.app.setSettings(appSettings);
+    }
+    
+    public boolean isVsync(){
+        return vsync;
+    }
+    
+    public void setVsync(boolean enable){
+        AppSettings appSettings = Main.app.getAppSettings();
+        this.vsync = enable;
+        appSettings.setVSync(enable);
+        Main.app.setSettings(appSettings);
+    }
+    
+    public ArrayList<Dimension> getPossibleResolutions(){
+        ArrayList<Dimension> l = new ArrayList<Dimension>();
+        DisplayMode [] mode = device.getDisplayModes();
+        for(int i = 0; i < mode.length; i++){
+            l.add(new Dimension(mode[i].getWidth(), mode[i].getHeight()));
+        }
+        return l;
+    }
+    
+    public ArrayList getPossibleResolutionsStrings(){
+        ArrayList<String> l = new ArrayList<>();
+        DisplayMode [] mode = device.getDisplayModes();
+        for(int i = 0; i < mode.length; i++){
+            l.add(mode[i].getWidth()+ " x " + mode[i].getHeight());
+        }
+        return l;
+    }
+    
+    public void setResolution(Dimension d){
+        AppSettings appSettings = Main.app.getAppSettings();
+        this.resolution = d;
+        appSettings.setResolution((int) d.getWidth(), (int) d.getHeight());
+        Main.app.setSettings(appSettings);
+    }
+    
+    public void setResolution(int width, int height){
+        AppSettings appSettings = Main.app.getAppSettings();
+        this.resolution = new Dimension(width, height);
+        appSettings.setResolution(width, height);
+        Main.app.setSettings(appSettings);
+    }
+    
+    public String getActiveResolution(){
+        return Main.app.getAppSettings().getHeight() + " x " + Main.app.getAppSettings().getWidth();
+    }
+    
+    public ArrayList<Integer> getPossibleColorDepths(){
+        ArrayList<Integer> l = new ArrayList<>();
+        DisplayMode [] mode = device.getDisplayModes();
+        for(int i = 0; i < mode.length; i++){
+            if(!l.contains(mode[i].getBitDepth())){
+                l.add(mode[i].getBitDepth());
+            }
+        }
+        return l;
+    }
+    
+    public ArrayList getPossibleColorDepthsStrings(){
+        ArrayList<String> l = new ArrayList<>();
+        DisplayMode [] mode = device.getDisplayModes();
+        for(int i = 0; i < mode.length; i++){
+            if(!l.contains(mode[i].getBitDepth() + " bpp")){
+                l.add(mode[i].getBitDepth()+ " bpp");
+            }
+        }
+        return l;
+    }
+    
+    public void setColorDepth(int colorDepth){
+        AppSettings appSettings = Main.app.getAppSettings();
+        this.colorDepth = colorDepth;
+        if(device.getDisplayMode().getBitDepth() == colorDepth){
+            appSettings.setDepthBits(colorDepth);
+        }
+        Main.app.setSettings(appSettings);
+    }
+    
+    public String getActiveColorDepth(){
+        return Main.app.getAppSettings().getDepthBits() + " bpp";
+    }
+    
+    public ArrayList<Integer> getPossibleAntiAliasing(){
+        ArrayList<Integer> l = new ArrayList<>();
+        l.add(0);
+        l.add(2);
+        l.add(4);
+        l.add(6);
+        l.add(8);
+        l.add(16);
+        return l;
+    }
+    
+    public ArrayList getPossibleAntiAliasingStrings(){
+        ArrayList<String> l = new ArrayList<>();
+        l.add("Aus");
+        l.add(2 + "x");
+        l.add(4 + "x");
+        l.add(6 + "x");
+        l.add(8 + "x");
+        l.add(16 + "x");
+        return l;
+    }
+    
+    public void setAntiAliasing(int antiAliasing){
+        AppSettings appSettings = Main.app.getAppSettings();
+        this.antiAliasing = antiAliasing;
+        appSettings.setSamples(antiAliasing);
+        Main.app.setSettings(appSettings);
+    }
+    
+    public String getActiveAntiAliasing(){
+        return Main.app.getAppSettings().getSamples() + "x";
+    }
+    
+    public double getVolumeEffects(){
+        return volumeMaster*volumeEffects;
+    }
+    
+    public double getVolumeMusic(){
+        return volumeMaster*volumeMusic;
+    }
+    
+    public void setVolumeMaster(double volumeMaster){
+        this.volumeMaster = volumeMaster;
+    }
+    
+    public void setVolumeEffects(double volumeEffects){
+        this.volumeEffects = volumeEffects;
+        Main.app.getWorld().getPlayer().reloadVolumes();
+    }
+    
+    public void setVolumeMusic(double volumeMusic){
+        this.volumeMusic = volumeMusic;
+    }
 }
