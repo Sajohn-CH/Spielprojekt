@@ -74,6 +74,12 @@ public class Settings {
         keys.put("goRight", KeyInput.KEY_D);
         keys.put("goLeft", KeyInput.KEY_A);
         keys.put("jump", KeyInput.KEY_SPACE);
+        keys.put("item_1", KeyInput.KEY_1);
+        keys.put("item_2", KeyInput.KEY_2);
+        keys.put("item_3", KeyInput.KEY_3);
+        keys.put("item_4", KeyInput.KEY_4);
+        keys.put("item_5", KeyInput.KEY_5);
+        keys.put("help", KeyInput.KEY_F1);
         
         KEYBOARDKEYS = new HashMap();
         loadKEYBOARDKEYS();
@@ -360,6 +366,32 @@ public class Settings {
         
     }
     
+    public boolean hasKey(int keyCode){
+        return keys.containsValue(keyCode);
+    }
+    
+    public boolean hasKeyMultipleTimes(int keyCode){
+        int multiple = 0;
+        for (Map.Entry<String, Integer> entry: keys.entrySet()) {
+            if(entry.getValue() == keyCode){
+                multiple++;
+            }
+            if(multiple >= 2){
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    public boolean hasAnyKeyMultipleTimes(){
+        for (Map.Entry<String, Integer> entry: keys.entrySet()) {
+            if(hasKeyMultipleTimes(entry.getValue())){
+                return true;
+            }
+        }
+        return false;
+    }
+    
     /**
      * Gitb den String, der den gegebenen KeyCode beschreibt, zurück
      * @param keyCode KeyCode der Taste
@@ -405,6 +437,29 @@ public class Settings {
         KEYBOARDKEYS.put("X", KeyInput.KEY_X);
         KEYBOARDKEYS.put("Y", KeyInput.KEY_Y);
         KEYBOARDKEYS.put("Z", KeyInput.KEY_Z);
+        KEYBOARDKEYS.put("0", KeyInput.KEY_0);
+        KEYBOARDKEYS.put("1", KeyInput.KEY_1);
+        KEYBOARDKEYS.put("2", KeyInput.KEY_2);
+        KEYBOARDKEYS.put("3", KeyInput.KEY_3);
+        KEYBOARDKEYS.put("4", KeyInput.KEY_4);
+        KEYBOARDKEYS.put("5", KeyInput.KEY_5);
+        KEYBOARDKEYS.put("6", KeyInput.KEY_6);
+        KEYBOARDKEYS.put("7", KeyInput.KEY_7);
+        KEYBOARDKEYS.put("8", KeyInput.KEY_8);
+        KEYBOARDKEYS.put("9", KeyInput.KEY_9);
+        KEYBOARDKEYS.put("NUMPAD0", KeyInput.KEY_NUMPAD0);
+        KEYBOARDKEYS.put("NUMPAD1", KeyInput.KEY_NUMPAD1);
+        KEYBOARDKEYS.put("NUMPAD2", KeyInput.KEY_NUMPAD2);
+        KEYBOARDKEYS.put("NUMPAD3", KeyInput.KEY_NUMPAD3);
+        KEYBOARDKEYS.put("NUMPAD4", KeyInput.KEY_NUMPAD4);
+        KEYBOARDKEYS.put("NUMPAD5", KeyInput.KEY_NUMPAD5);
+        KEYBOARDKEYS.put("NUMPAD6", KeyInput.KEY_NUMPAD6);
+        KEYBOARDKEYS.put("NUMPAD7", KeyInput.KEY_NUMPAD7);
+        KEYBOARDKEYS.put("NUMPAD8", KeyInput.KEY_NUMPAD8);
+        KEYBOARDKEYS.put("NUMPAD9", KeyInput.KEY_NUMPAD9);
+        KEYBOARDKEYS.put("NUMPADCOMMA", KeyInput.KEY_NUMPADCOMMA);
+        KEYBOARDKEYS.put("NUMPADENTER", KeyInput.KEY_NUMPADENTER);
+        KEYBOARDKEYS.put("NUMPADEQUALS", KeyInput.KEY_NUMPADEQUALS);
         KEYBOARDKEYS.put("F1", KeyInput.KEY_F1);
         KEYBOARDKEYS.put("F2", KeyInput.KEY_F2);
         KEYBOARDKEYS.put("F3", KeyInput.KEY_F3);
@@ -427,6 +482,17 @@ public class Settings {
         KEYBOARDKEYS.put("R_Shift", KeyInput.KEY_RSHIFT);
         KEYBOARDKEYS.put("L_Shift", KeyInput.KEY_LSHIFT);
         KEYBOARDKEYS.put("Tab", KeyInput.KEY_TAB);
+        KEYBOARDKEYS.put("PGUP", KeyInput.KEY_PGUP);
+        KEYBOARDKEYS.put("PGDN", KeyInput.KEY_PGDN);
+        KEYBOARDKEYS.put("PAUSE", KeyInput.KEY_PAUSE);
+        KEYBOARDKEYS.put("COMMA", KeyInput.KEY_COMMA);
+        KEYBOARDKEYS.put("DOT", KeyInput.KEY_PERIOD);
+        KEYBOARDKEYS.put("MINUS", KeyInput.KEY_MINUS);
+        KEYBOARDKEYS.put("ENTER", KeyInput.KEY_RETURN);
+        KEYBOARDKEYS.put("L_ALT", KeyInput.KEY_LMENU);
+        KEYBOARDKEYS.put("R_ALT", KeyInput.KEY_RMENU);
+        KEYBOARDKEYS.put("L_META", KeyInput.KEY_LMETA);
+        KEYBOARDKEYS.put("R_META", KeyInput.KEY_RMETA);
     }
     
     

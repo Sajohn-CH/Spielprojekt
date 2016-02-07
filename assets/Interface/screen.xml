@@ -106,101 +106,153 @@
         </layer>
         
         <layer id="foreground" childLayout="vertical">
-            <panel height="5%"></panel>
-            <panel width="90%" height="40%" childLayout="horizontal">
-                <panel width="10%" height="100%"></panel>
-                <!-- Einstellungen links-->
-                <panel id="#Settings1" width="50%" height="100%" childLayout="vertical">
-                    <panel id="panelScroll" childLayout="horizontal">
-                        <control name="checkbox" id="checkboxScroll" label="Aus" focusable="false">
-                            <interact onClick="toggleScroll()"/>
-                        </control>
-                        <text text="   Mausrad benutzen um Auswahl in der Leiste zu ändern" font="Interface/Fonts/Arial.fnt">
-                            <interact onClick="toggleScroll()"/>
-                        </text>
-                    </panel>
-                    <!-- Leere Zeile als Abstand -->
-                    <text text="" font="Interface/Fonts/Arial.fnt"/>
-                </panel>
-                <!-- Einstellungen rechts -->
-                <panel id="#Settings2" width="50%" height="100%" childLayout="vertical">
-                    <panel id="panelFullscreen" childLayout="horizontal">
-                        <control name="checkbox" id="checkboxFullscreen" focusable="false">
-                            <interact onClick="toggleFullscreen()"/>
-                        </control>
-                        <text text="   Vollbildmodus aktivieren" font="Interface/Fonts/Arial.fnt">
-                            <interact onClick="toggleFullscreen()"/>
-                        </text>
-                    </panel>
-                    <!-- Leere Zeile als Abstand -->
-                    <text text="" font="Interface/Fonts/Arial.fnt"/>
-                    <panel id="panelResolution" childLayout="horizontal">
-                        <text text="Bildschirmauflösung   " font="Interface/Fonts/Arial.fnt" />
-                        <control name="dropDown" id="dropdownResolution" width="100px" focusable="false"/>
-                    </panel>
-                    <!-- Leere Zeile als Abstand -->
-                    <text text="" font="Interface/Fonts/Arial.fnt"/>
-                    <panel id="panelVsync" childLayout="horizontal">
-                        <control name="checkbox" id="checkboxVsync" focusable="false">
-                            <interact onClick="toggleVsync()"/>
-                        </control>
-                        <text text="   Vsync aktivieren" font="Interface/Fonts/Arial.fnt">
-                            <interact onClick="toggleVsync()"/>
-                        </text>
-                    </panel>
-                    <!-- Leere Zeile als Abstand -->
-                    <text text="" font="Interface/Fonts/Arial.fnt"/>
-                    <panel id="panelColorDepth" childLayout="horizontal">
-                        <text text="Farbtiefe   " font="Interface/Fonts/Arial.fnt" />
-                        <control name="dropDown" id="dropdownColorDepth" width="100px" focusable="false"/>
-                    </panel>
-                    <!-- Leere Zeile als Abstand -->
-                    <text text="" font="Interface/Fonts/Arial.fnt"/>
-                    <panel id="panelAntiAliasing" childLayout="horizontal">
-                        <text text="Anti-Aliasing   " font="Interface/Fonts/Arial.fnt" />
-                        <control name="dropDown" id="dropdownAntiAliasing" width="100px" focusable="false"/>
-                    </panel>
-                    <!-- Leere Zeile als Abstand -->
-                    <text text="" font="Interface/Fonts/Arial.fnt"/>
-                </panel>
-            </panel>
+            <panel height="35%"></panel>
+             <panel width="90%" height="55%" childLayout="horizontal">
+                  <panel width="10%" height="100%"></panel>
+                  <!-- Einstellungen links-->
+                  <panel id="#Settings1" width="50%" height="100%" childLayout="vertical">
+                     <panel id="panelScroll" childLayout="horizontal">
+                         <control name="checkbox" id="checkboxScroll" label="Aus" focusable="false">
+                             <interact onClick="toggleScroll()"/>
+                         </control>
+                         <text text="   Mausrad benutzen um Auswahl in der Leiste zu ändern" font="Interface/Fonts/Arial.fnt">
+                             <interact onClick="toggleScroll()"/>
+                         </text>
+                     </panel>
+                     <!-- Leere Zeile als Abstand -->
+                     <text text="" font="Interface/Fonts/Arial.fnt"/>
+                     <panel id="panelToKeys" childLayout="horizontal">
+                         <control name="button" id="buttonToKeys" label="Tastaturbelegungen ändern" width="200px" focusable="false">
+                             <interact onClick="gotoKeyBindings()"/>
+                         </control>
+                     </panel>
+                     <!-- Leere Zeile als Abstand -->
+                     <text text="" font="Interface/Fonts/Arial.fnt"/>
+                  </panel>
+                  <!-- Einstellungen rechts -->
+                  <panel id="#Settings2" width="50%" height="100%" childLayout="vertical">
+                      <panel id="panelFullscreen" childLayout="horizontal">
+                          <control name="checkbox" id="checkboxFullscreen" focusable="false">
+                              <interact onClick="toggleFullscreen()"/>
+                          </control>
+                          <text text="   Vollbildmodus aktivieren" font="Interface/Fonts/Arial.fnt">
+                             <interact onClick="toggleFullscreen()"/>
+                         </text>
+                     </panel>
+                     <!-- Leere Zeile als Abstand -->
+                     <text text="" font="Interface/Fonts/Arial.fnt"/>
+                     <panel id="panelResolution" childLayout="horizontal">
+                          <text text="Bildschirmauflösung   " font="Interface/Fonts/Arial.fnt" />
+                          <control name="dropDown" id="dropdownResolution" width="100px" focusable="false"/>
+                      </panel>
+                     <!-- Leere Zeile als Abstand -->
+                     <text text="" font="Interface/Fonts/Arial.fnt"/>
+                     <panel id="panelVsync" childLayout="horizontal">
+                         <control name="checkbox" id="checkboxVsync" focusable="false">
+                             <interact onClick="toggleVsync()"/>
+                         </control>
+                         <text text="   Vsync aktivieren" font="Interface/Fonts/Arial.fnt">
+                             <interact onClick="toggleVsync()"/>
+                         </text>
+                     </panel>
+                     <!-- Leere Zeile als Abstand -->
+                     <text text="" font="Interface/Fonts/Arial.fnt"/>
+                     <panel id="panelColorDepth" childLayout="horizontal">
+                         <text text="Farbtiefe   " font="Interface/Fonts/Arial.fnt" />
+                         <control name="dropDown" id="dropdownColorDepth" width="100px" focusable="false"/>
+                     </panel>
+                     <!-- Leere Zeile als Abstand -->
+                     <text text="" font="Interface/Fonts/Arial.fnt"/>
+                     <panel id="panelAntiAliasing" childLayout="horizontal">
+                         <text text="Anti-Aliasing   " font="Interface/Fonts/Arial.fnt" />
+                         <control name="dropDown" id="dropdownAntiAliasing" width="100px" focusable="false"/>
+                     </panel>
+                     <!-- Leere Zeile als Abstand -->
+                     <text text="" font="Interface/Fonts/Arial.fnt"/>
+                  </panel>
+              </panel>
+              <!-- Knopf zum Verlassen der Einstellungen-->
+              <panel width="100%" childLayout="center">
+                 <panel  width="384px" childLayout="horizontal">
+                     <control name="button" id="saveSettings" align="center" width="192px" label="Einstellungen speichern">
+                         <interact onClick="saveSettings()"/>
+                     </control>
+                     <control name="button" id="restoreSettings" align="center" width="192px" label="Einstellungen zurücksetzen">
+                         <interact onClick="restoreDefaultSettings()"/>
+                     </control>
+                 </panel>
+             </panel>
+        </layer>
+    </screen>
+    
+    <!-- Tastatureinstellungen -->
+    <screen id="keyBindings" controller="mygame.MyStartScreen">
+         <!-- Hintergrundbild -->
+        <layer id="background" childLayout="center">
+            <image filename="Interface/backgroundStartPage.png" width="100%" height="100%"/>
+        </layer>
+        
+        <layer id="foreground" childLayout="vertical">
+            <panel height="35%"></panel>
             <!-- Tastatureinstellungen --> 
-            <panel id="keyBindings" width="100%" height="50%" childLayout="horizontal">
+            <panel id="keyBindingsPanel" width="100%" height="50%" childLayout="horizontal">
+                <panel width="10%"></panel>
                 <!-- Beschriftungen-->
-                <panel id="#keyLabels" width="70%" height="100%" childLayout="vertical">
+                <panel id="#keyLabels" width="60%" height="100%" childLayout="vertical">
                     <text text="Vorwärts laufen" font="Interface/Fonts/Arial.fnt"/>
-                    <text text="Rückwärst laufen" font="Interface/Fonts/Arial.fnt"/>
+                    <text text="Rückwärts laufen" font="Interface/Fonts/Arial.fnt"/>
                     <text text="Links laufen" font="Interface/Fonts/Arial.fnt"/>
                     <text text="Rechts laufen" font="Interface/Fonts/Arial.fnt"/>
                     <text text="Springen" font="Interface/Fonts/Arial.fnt"/>
+                    <text text="1. Slot auswählen" font="Interface/Fonts/Arial.fnt"/>
+                    <text text="2. Slot auswählen" font="Interface/Fonts/Arial.fnt"/>
+                    <text text="3. Slot auswählen" font="Interface/Fonts/Arial.fnt"/>
+                    <text text="4. Slot auswählen" font="Interface/Fonts/Arial.fnt"/>
+                    <text text="5. Slot auswählen" font="Interface/Fonts/Arial.fnt"/>
+                    <text text="Hilfe anzeigen" font="Interface/Fonts/Arial.fnt"/>
                 </panel>
                 <!-- Knöpfe um neue Taste zu belegen-->
                 <panel id="keyButtons" width="30%" height="100%" childLayout="vertical">
-                    <control id="forward" name="button" label ="">
+                    <control id="forward" name="button" label ="" focusable="false">
                         <interact onClick="setKeyBinding(forward)"/>
                     </control>
-                    <control id="backward" name="button" label ="">
+                    <control id="backward" name="button" label ="" focusable="false">
                         <interact onClick="setKeyBinding(backward)"/>
                     </control>
-                    <control id="goLeft" name="button" label ="">
+                    <control id="goLeft" name="button" label ="" focusable="false">
                         <interact onClick="setKeyBinding(goLeft)"/>
                     </control>
-                    <control id="goRight" name="button" label ="">
+                    <control id="goRight" name="button" label ="" focusable="false">
                         <interact onClick="setKeyBinding(goRight)"/>
                     </control>
-                    <control id="jump" name="button" label ="">
+                    <control id="jump" name="button" label ="" focusable="false">
                         <interact onClick="setKeyBinding(jump)"/>
+                    </control>
+                    <control id="item_1" name="button" label ="" focusable="false">
+                        <interact onClick="setKeyBinding(item_1)"/>
+                    </control>
+                    <control id="item_2" name="button" label ="" focusable="false">
+                        <interact onClick="setKeyBinding(item_2)"/>
+                    </control>
+                    <control id="item_3" name="button" label ="" focusable="false">
+                        <interact onClick="setKeyBinding(item_3)"/>
+                    </control>
+                    <control id="item_4" name="button" label ="" focusable="false">
+                        <interact onClick="setKeyBinding(item_4)"/>
+                    </control>
+                    <control id="item_5" name="button" label ="" focusable="false">
+                        <interact onClick="setKeyBinding(item_5)"/>
+                    </control>
+                    <control id="help" name="button" label ="" focusable="false">
+                        <interact onClick="setKeyBinding(help)"/>
                     </control>
                 </panel>
             </panel>
-            <!-- Knopf zum Verlassen der Einstellungen-->
+            <!-- Knopf zum Verlassen der KeyBindings-->
             <panel width="100%" childLayout="center">
                 <panel  width="384px" childLayout="horizontal">
-                    <control name="button" id="saveSettings" align="center" width="192px" label="Einstellungen speichern">
-                        <interact onClick="saveSettings()"/>
-                    </control>
-                    <control name="button" id="restoreSettings" align="center" width="192px" label="Einstellungen zurücksetzen">
-                        <interact onClick="restoreDefaultSettings()"/>
+                    <control name="button" id="saveKeyBindings" align="center" width="384px" label="Zurück zu den Einstellungen">
+                        <interact onClick="saveKeyBindings()"/>
                     </control>
                 </panel>
             </panel>

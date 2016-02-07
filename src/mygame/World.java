@@ -16,17 +16,9 @@ import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Box;
 import com.jme3.texture.Texture;
 import com.jme3.util.SkyFactory;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import mygame.Entitys.ShootingBomb;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 
 /**
  * Die Spielwelt. Sie enthält alle nötigen Element der Welt: Die Umgebung (scene), alle Bomben und Türme, den Beacon (den es zu verteidigen gilt), den Spieler, sowie den Weg den die Bomben zurücklegen müssen. 
@@ -421,6 +413,7 @@ public class World extends AbstractAppState{
     public void setPaused(boolean pause){
         this.setEnabled(!pause);
         player.setNotShootingAndHealing();
+        player.setNotWalking();
     }
     
     /**

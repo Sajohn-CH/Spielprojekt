@@ -13,6 +13,7 @@ import de.lessvoid.nifty.controls.DropDown;
 import de.lessvoid.nifty.elements.render.TextRenderer;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
+import de.lessvoid.nifty.tools.Color;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.io.File;
@@ -86,13 +87,6 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
             } else {
                 screen.findNiftyControl("checkboxScroll", CheckBox.class).uncheck();
             }
-            Settings settings = Main.app.getSettings();
-            updateButtonText("forward", settings.getKeyString(settings.getKey("forward")));
-            updateButtonText("backward", settings.getKeyString(settings.getKey("backward")));
-            updateButtonText("goLeft", settings.getKeyString(settings.getKey("goLeft")));
-            updateButtonText("goRight", settings.getKeyString(settings.getKey("goRight")));
-            updateButtonText("jump", settings.getKeyString(settings.getKey("jump")));
-
             if(Main.app.getSettings().isFullscreen()){
                 screen.findNiftyControl("checkboxFullscreen", CheckBox.class).check();
             } else {
@@ -113,6 +107,19 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
             reloadHighscores();
         } else if (screen.getScreenId().equals("credits")){
             loadCredits();
+        } else if (screen.getScreenId().equals("keyBindings")){
+            Settings settings = Main.app.getSettings();
+            updateButtonText("forward", settings.getKeyString(settings.getKey("forward")));
+            updateButtonText("backward", settings.getKeyString(settings.getKey("backward")));
+            updateButtonText("goLeft", settings.getKeyString(settings.getKey("goLeft")));
+            updateButtonText("goRight", settings.getKeyString(settings.getKey("goRight")));
+            updateButtonText("jump", settings.getKeyString(settings.getKey("jump")));
+            updateButtonText("item_1", settings.getKeyString(settings.getKey("item_1")));
+            updateButtonText("item_2", settings.getKeyString(settings.getKey("item_2")));
+            updateButtonText("item_3", settings.getKeyString(settings.getKey("item_3")));
+            updateButtonText("item_4", settings.getKeyString(settings.getKey("item_4")));
+            updateButtonText("item_5", settings.getKeyString(settings.getKey("item_5")));
+            updateButtonText("help", settings.getKeyString(settings.getKey("help")));
         }
         
     }
@@ -340,14 +347,20 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
    }
    
    public void saveSettings() {
-       DropDown dropdownResolution = screen.findNiftyControl("dropdownResolution", DropDown.class);
-       Main.app.getSettings().setResolution(Main.app.getSettings().getPossibleResolutions().get(dropdownResolution.getSelectedIndex()));
-       Main.app.getSettings().setFullscreen(screen.findNiftyControl("checkboxFullscreen", CheckBox.class).isChecked());
-       Main.app.getSettings().setVsync(screen.findNiftyControl("checkboxVsync", CheckBox.class).isChecked());
-//       Main.app.getSettings().setColorDepth(Main.app.getSettings().getPossibleColorDepths().get(screen.findNiftyControl("dropdownColorDepth", DropDown.class).getSelectedIndex()));
-       Main.app.getSettings().setAntiAliasing(Main.app.getSettings().getPossibleAntiAliasing().get(screen.findNiftyControl("dropdownAntiAliasing", DropDown.class).getSelectedIndex()));
-       Main.app.restart();
-       nifty.gotoScreen("start");
+        DropDown dropdownResolution = screen.findNiftyControl("dropdownResolution", DropDown.class);
+        Main.app.getSettings().setResolution(Main.app.getSettings().getPossibleResolutions().get(dropdownResolution.getSelectedIndex()));
+        Main.app.getSettings().setFullscreen(screen.findNiftyControl("checkboxFullscreen", CheckBox.class).isChecked());
+        Main.app.getSettings().setVsync(screen.findNiftyControl("checkboxVsync", CheckBox.class).isChecked());
+//            Main.app.getSettings().setColorDepth(Main.app.getSettings().getPossibleColorDepths().get(screen.findNiftyControl("dropdownColorDepth", DropDown.class).getSelectedIndex()));
+        Main.app.getSettings().setAntiAliasing(Main.app.getSettings().getPossibleAntiAliasing().get(screen.findNiftyControl("dropdownAntiAliasing", DropDown.class).getSelectedIndex()));
+        Main.app.restart();
+        nifty.gotoScreen("start");
+   }
+   
+   public void saveKeyBindings(){
+       if(!Main.app.getSettings().hasAnyKeyMultipleTimes()){
+           gotoSettings();
+       }
    }
    
    /**
@@ -374,7 +387,11 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
     */
    public void gotoSettings() {
        nifty.gotoScreen("settings");
-   }   
+   }
+   
+   public void gotoKeyBindings() {
+       nifty.gotoScreen("keyBindings");
+   }
    
    /**
     * Ändert die Tastaturbelegung.
@@ -383,7 +400,7 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
    //http://olavz.com/nifty-gui-create-key-bindings-for-your-game-in-jmonkey-engine-3/
    private SettingsInputHandler settingsInputHandler;
    public void setKeyBinding(String eventId) {
-       Screen screen = nifty.getScreen("settings");
+       Screen screen = nifty.getScreen("keyBindings");
        if(settingsInputHandler != null) {
            Button button = screen.findNiftyControl(settingsInputHandler.getEventId(), Button.class);
            button.setText("");
@@ -393,6 +410,7 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
        button.setText("<press any key>");
        settingsInputHandler = new SettingsInputHandler(this, eventId);
        Main.app.getInputManager().addRawInputListener(settingsInputHandler);
+       deactivateKeyBindingsButtonsExept(eventId);
    }
    
    /**
@@ -403,23 +421,103 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
    //http://olavz.com/nifty-gui-create-key-bindings-for-your-game-in-jmonkey-engine-3/
    public void keyBindCallBack(KeyInputEvent evt, String eventId) {
       /* Callback, triggered from settingsKeyHandler */ 
-       Screen screen = nifty.getScreen("settings");
-       Button button = screen.findNiftyControl(eventId, Button.class);
-       String keyName = Main.app.getSettings().getKeyString(evt.getKeyCode());
-       //Setzt nur dann die neue Taste, wenn es einen gültigen KeyName bekommt, wenn dies der Fall ist, ist es wohl eine Spezialtaste, die leicht 
-//       zu komplikationen führen könnte.
-       if(!keyName.equals("")) {
-          button.setText(keyName); 
+      Screen screen = nifty.getScreen("keyBindings");
+      Button button = screen.findNiftyControl(eventId, Button.class);
+      String keyName = Main.app.getSettings().getKeyString(evt.getKeyCode());
+      //Setzt nur dann die neue Taste, wenn es einen gültigen KeyName bekommt, wenn dies der Fall ist, ist es wohl eine Spezialtaste, die leicht 
+//      zu komplikationen führen könnte.
+      if(!keyName.equals("")) {
+          button.setText(keyName);
           Main.app.getSettings().setKey(eventId, evt.getKeyCode());
           Main.app.reloadKeys();
-       }
-       
+      }
+      if(Main.app.getSettings().hasAnyKeyMultipleTimes()){
+           screen.findNiftyControl("saveKeyBindings", Button.class).setText("Gleiche Tasteneingaben vermeiden");
+           screen.findNiftyControl("saveKeyBindings", Button.class).setTextColor(new Color(1, 0, 0, 1));
+      } else {
+           screen.findNiftyControl("saveKeyBindings", Button.class).setText("Zurück zu den Einstellungen");
+           screen.findNiftyControl("saveKeyBindings", Button.class).setTextColor(Color.WHITE);
+      }
+      activateKeyBindingsButtonsExept(eventId);
+      setAllMultipleKeyBindingsButtonsRed();
 //       System.out.print(evt.getKeyChar()+"; ");
 //       System.out.print(String.valueOf(evt.getKeyChar()).toUpperCase()+"; ");
 //       System.out.println(evt.getKeyCode());
-       
+      
       Main.app.getInputManager().removeRawInputListener(settingsInputHandler);
       settingsInputHandler = null;
+   }
+   
+   private void deactivateKeyBindingsButtonsExept(String buttonId) {
+        if(!buttonId.equals("forward"))
+            screen.findElementByName("forward").setVisible(false);
+        if(!buttonId.equals("backward"))
+            screen.findElementByName("backward").setVisible(false);
+        if(!buttonId.equals("goLeft"))
+            screen.findElementByName("goLeft").setVisible(false);
+        if(!buttonId.equals("goRight"))
+            screen.findElementByName("goRight").setVisible(false);
+        if(!buttonId.equals("jump"))
+            screen.findElementByName("jump").setVisible(false);
+        if(!buttonId.equals("item_1"))
+            screen.findElementByName("item_1").setVisible(false);
+        if(!buttonId.equals("item_2"))
+            screen.findElementByName("item_2").setVisible(false);
+        if(!buttonId.equals("item_3"))
+            screen.findElementByName("item_3").setVisible(false);
+        if(!buttonId.equals("item_4"))
+            screen.findElementByName("item_4").setVisible(false);
+        if(!buttonId.equals("item_5"))
+            screen.findElementByName("item_5").setVisible(false);
+        if(!buttonId.equals("help"))
+            screen.findElementByName("help").setVisible(false);
+   }
+   
+   private void activateKeyBindingsButtonsExept (String buttonId) {
+        if(!buttonId.equals("forward"))
+            screen.findElementByName("forward").setVisible(true);
+        if(!buttonId.equals("backward"))
+            screen.findElementByName("backward").setVisible(true);
+        if(!buttonId.equals("goLeft"))
+            screen.findElementByName("goLeft").setVisible(true);
+        if(!buttonId.equals("goRight"))
+            screen.findElementByName("goRight").setVisible(true);
+        if(!buttonId.equals("jump"))
+            screen.findElementByName("jump").setVisible(true);
+        if(!buttonId.equals("item_1"))
+            screen.findElementByName("item_1").setVisible(true);
+        if(!buttonId.equals("item_2"))
+            screen.findElementByName("item_2").setVisible(true);
+        if(!buttonId.equals("item_3"))
+            screen.findElementByName("item_3").setVisible(true);
+        if(!buttonId.equals("item_4"))
+            screen.findElementByName("item_4").setVisible(true);
+        if(!buttonId.equals("item_5"))
+            screen.findElementByName("item_5").setVisible(true);
+        if(!buttonId.equals("help"))
+            screen.findElementByName("help").setVisible(true);
+   }
+   
+   private void setKeyBindingsButtonRedIfMultiple (String buttonId){
+       if(Main.app.getSettings().hasKeyMultipleTimes(Main.app.getSettings().getKey(buttonId))){
+           screen.findNiftyControl(buttonId, Button.class).setTextColor(new Color(1, 0, 0, 1));
+       } else {
+           screen.findNiftyControl(buttonId, Button.class).setTextColor(Color.WHITE);
+       }
+   }
+   
+   private void setAllMultipleKeyBindingsButtonsRed (){
+       setKeyBindingsButtonRedIfMultiple("forward");
+       setKeyBindingsButtonRedIfMultiple("backward");
+       setKeyBindingsButtonRedIfMultiple("goLeft");
+       setKeyBindingsButtonRedIfMultiple("goRight");
+       setKeyBindingsButtonRedIfMultiple("jump");
+       setKeyBindingsButtonRedIfMultiple("item_1");
+       setKeyBindingsButtonRedIfMultiple("item_2");
+       setKeyBindingsButtonRedIfMultiple("item_3");
+       setKeyBindingsButtonRedIfMultiple("item_4");
+       setKeyBindingsButtonRedIfMultiple("item_5");
+       setKeyBindingsButtonRedIfMultiple("help");
    }
    
    /**
@@ -551,8 +649,8 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
    }
    
    public void toggleFullscreen(){
-       Settings settings = Main.app.getSettings();
-        screen.findNiftyControl("checkboxFullscreen", CheckBox.class).toggle();
+//       Settings settings = Main.app.getSettings();
+       screen.findNiftyControl("checkboxFullscreen", CheckBox.class).toggle();
 //       if(settings.isFullscreen()){
 //           screen.findNiftyControl("checkboxFullscreen", CheckBox.class).uncheck();
 //           settings.setFullscreen(false);
@@ -563,8 +661,8 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
    }
    
    public void toggleVsync(){
-       Settings settings = Main.app.getSettings();
-        screen.findNiftyControl("checkboxVsync", CheckBox.class).toggle();
+//       Settings settings = Main.app.getSettings();
+       screen.findNiftyControl("checkboxVsync", CheckBox.class).toggle();
 //       if(settings.isVsync()){
 //           screen.findNiftyControl("checkboxVsync", CheckBox.class).uncheck();
 //       } else {

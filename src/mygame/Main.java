@@ -136,7 +136,7 @@ public class Main extends SimpleApplication implements ActionListener{
         
         nifty.gotoScreen("start");
         //nifty.fromXml("Interface/screen.xml", "start", myStartScreen);
-        //attach the Niftry display to the gui view port as a processor
+        //attach the Nifty display to the gui view port as a processor
         guiViewPort.addProcessor(niftyDisplay);
         //disable the fly cam
         flyCam.setDragToRotate(true);
@@ -160,19 +160,20 @@ public class Main extends SimpleApplication implements ActionListener{
         inputManager.addMapping("Menu", new KeyTrigger(KeyInput.KEY_ESCAPE), new KeyTrigger(KeyInput.KEY_PAUSE));
         inputManager.addListener(this, "Menu");
         //Tasten für SchnelleisteSlots
-        inputManager.addMapping("item_1", new KeyTrigger(settings.getKeyCode(keyItems[0])));
+        inputManager.addMapping("item_1", new KeyTrigger(settings.getKey("item_1")));
         inputManager.addListener(this, "item_1");
-        inputManager.addMapping("item_2", new KeyTrigger(settings.getKeyCode(keyItems[1])));
+        inputManager.addMapping("item_2", new KeyTrigger(settings.getKey("item_2")));
         inputManager.addListener(this, "item_2");
-        inputManager.addMapping("item_3", new KeyTrigger(settings.getKeyCode(keyItems[2])));
+        inputManager.addMapping("item_3", new KeyTrigger(settings.getKey("item_3")));
         inputManager.addListener(this, "item_3");
-        inputManager.addMapping("item_4", new KeyTrigger(settings.getKeyCode(keyItems[3])));
+        inputManager.addMapping("item_4", new KeyTrigger(settings.getKey("item_4")));
         inputManager.addListener(this, "item_4");
-        inputManager.addMapping("item_5", new KeyTrigger(settings.getKeyCode(keyItems[4])));
+        inputManager.addMapping("item_5", new KeyTrigger(settings.getKey("item_5")));
         inputManager.addListener(this, "item_5");
+        
         inputManager.addMapping("debug", new KeyTrigger(settings.getKeyCode(settings.getKeyDebug())));
         inputManager.addListener(this, "debug");
-        inputManager.addMapping("help", new KeyTrigger(KeyInput.KEY_F1));
+        inputManager.addMapping("help", new KeyTrigger(settings.getKey("help")));
         inputManager.addListener(this, "help");
         //Mausrad
         if(settings.isUseScroll()) {
@@ -190,7 +191,6 @@ public class Main extends SimpleApplication implements ActionListener{
         
         //Allgemeine Tasten
         inputManager.deleteMapping("Menu");
-        inputManager.deleteMapping("help");
         //Tasten für SchnelleisteSlots
         inputManager.deleteMapping("item_1");
         inputManager.deleteMapping("item_2");
