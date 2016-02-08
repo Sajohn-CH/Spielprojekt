@@ -8,7 +8,18 @@ import java.util.Map;
 import java.awt.DisplayMode;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
+import java.io.File;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
  * Kontrolliert die Einstellungen des Spiels. Dies beinhaltet vorallem die Tastaturbelegung. Ist aktuell noch nicht zu 100% implementiert und funktionsfähig.
@@ -26,6 +37,9 @@ public class Settings {
     private double volumeMaster;
     private double volumeEffects;
     private double volumeMusic;
+    private boolean volumeMasterIsMuted;
+    private boolean volumeEffectsIsMuted;
+    private boolean volumeMusicIsMuted;
 //    private int frameRate;
     private String[] keysItems;        //Tasten für die Schnellzugrife auf der Leiste unten. Für jeden Slot einen. Es gibt 5.
     private String[] keysWalking;      //Tasten zum Laufen. Reihenfolge, left, right, up, down.
@@ -41,48 +55,31 @@ public class Settings {
      */
     public Settings(){
         device = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
-        resolution = new Dimension(Main.app.getAppSettings().getWidth(), Main.app.getAppSettings().getHeight());
-        fullscreen = Main.app.getAppSettings().isFullscreen();
-        vsync = false;
-        colorDepth = device.getDisplayMode().getBitDepth();
-        antiAliasing = 0;
-        
-        volumeMaster = 1;
-        volumeMusic = 1;
-        volumeEffects = 1;
-        
-        keysItems = new String[5];
-        keysItems[0] ="1";
-        keysItems[1] ="2";
-        keysItems[2] ="3";
-        keysItems[3] ="4";
-        keysItems[4] ="5";
-        
-        keysWalking = new String[4];
-        keysWalking[0] = "A";
-        keysWalking[1] = "D";
-        keysWalking[2] = "W";
-        keysWalking[3] = "S";
-        keyJump = " ";
-
-        keyDebug = "F4";
-        
-        
+                
         keys = new HashMap();
-        keys.put("forward", KeyInput.KEY_W);
-        keys.put("backward", KeyInput.KEY_S);
-        keys.put("goRight", KeyInput.KEY_D);
-        keys.put("goLeft", KeyInput.KEY_A);
-        keys.put("jump", KeyInput.KEY_SPACE);
-        keys.put("item_1", KeyInput.KEY_1);
-        keys.put("item_2", KeyInput.KEY_2);
-        keys.put("item_3", KeyInput.KEY_3);
-        keys.put("item_4", KeyInput.KEY_4);
-        keys.put("item_5", KeyInput.KEY_5);
-        keys.put("help", KeyInput.KEY_F1);
+//        keys = getDefaultKeys();
+        loadSettings();
         
         KEYBOARDKEYS = new HashMap();
         loadKEYBOARDKEYS();
+        
+        keysItems = new String[5];
+        keysItems[0] = getKeyString(getKey("item_1"));
+        keysItems[1] = getKeyString(getKey("item_2"));
+        keysItems[2] = getKeyString(getKey("item_3"));
+        keysItems[3] = getKeyString(getKey("item_4"));
+        keysItems[4] = getKeyString(getKey("item_5"));
+        
+        keysWalking = new String[4];
+        keysWalking[0] = getKeyString(getKey("goLeft"));
+        keysWalking[1] = getKeyString(getKey("goRight"));
+        keysWalking[2] = getKeyString(getKey("forward"));
+        keysWalking[3] = getKeyString(getKey("backward"));
+        keyJump = getKeyString(getKey("jump"));
+
+        keyDebug = getKeyString(getKey("debug"));
+        
+        
     }
     
     /**
@@ -643,5 +640,196 @@ public class Settings {
     
     public void setVolumeMusic(double volumeMusic){
         this.volumeMusic = volumeMusic;
+    }
+
+    public void setVolumeMasterMuted(boolean muted){
+        this.volumeMasterIsMuted = muted;
+    }
+    
+    public void setVolumeEffectsMuted(boolean muted){
+        this.volumeEffectsIsMuted = muted;
+    }
+    
+    public void setVolumeMusicMuted(boolean muted){
+        this.volumeMusicIsMuted = muted;
+    }
+    
+    public boolean isVolumeMasterMuted(){
+        return this.volumeMasterIsMuted;
+    }
+    
+    public boolean isVolumeEffectsMuted(){
+        return this.volumeEffectsIsMuted;
+    }
+    
+    public boolean isVolumeMusicMuted(){
+        return this.volumeMusicIsMuted;
+    }
+    
+    public void loadSettings(){
+        File settings = new File("settings.save");
+        if(!settings.exists()){
+            loadDefaultSettings(true);
+            return;
+        }
+        try{
+            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+            Document doc = dBuilder.parse(settings);
+            doc.getDocumentElement().normalize();
+            
+            Element keys = (Element) doc.getElementsByTagName("Keys").item(0);
+            this.keys.put("forward", Integer.valueOf(keys.getAttribute("forward")));
+            this.keys.put("backward", Integer.valueOf(keys.getAttribute("backward")));
+            this.keys.put("goRight", Integer.valueOf(keys.getAttribute("goRight")));
+            this.keys.put("goLeft", Integer.valueOf(keys.getAttribute("goLeft")));
+            this.keys.put("jump", Integer.valueOf(keys.getAttribute("jump")));
+            this.keys.put("menu_1", Integer.valueOf(keys.getAttribute("menu_1")));
+            this.keys.put("menu_2", Integer.valueOf(keys.getAttribute("menu_2")));
+            this.keys.put("item_1", Integer.valueOf(keys.getAttribute("item_1")));
+            this.keys.put("item_2", Integer.valueOf(keys.getAttribute("item_2")));
+            this.keys.put("item_3", Integer.valueOf(keys.getAttribute("item_3")));
+            this.keys.put("item_4", Integer.valueOf(keys.getAttribute("item_4")));
+            this.keys.put("item_5", Integer.valueOf(keys.getAttribute("item_5")));
+            this.keys.put("debug", Integer.valueOf(keys.getAttribute("debug")));
+            this.keys.put("help", Integer.valueOf(keys.getAttribute("help")));
+            
+            Element useScroll = (Element) doc.getElementsByTagName("useScroll").item(0);
+            this.useScroll = Boolean.valueOf(useScroll.getAttribute("useScroll"));
+            
+            Element graphicSettings = (Element) doc.getElementsByTagName("GraphicSettings").item(0);
+            setFullscreen(Boolean.valueOf(graphicSettings.getAttribute("Fullscreen")));
+            setVsync(Boolean.valueOf(graphicSettings.getAttribute("Vsync")));
+//            setColorDepth(Integer.valueOf(graphicSettings.getAttribute("ColorDepth")));
+            setAntiAliasing(Integer.valueOf(graphicSettings.getAttribute("AntiAliasing")));
+            
+            Element resolution = (Element) doc.getElementsByTagName("Resolution").item(0);
+            this.setResolution(Integer.valueOf(resolution.getAttribute("Width")), Integer.valueOf(resolution.getAttribute("Height")));
+            
+            Element volumeMaster = (Element) doc.getElementsByTagName("VolumeMaster").item(0);
+            this.volumeMaster = Double.valueOf(volumeMaster.getAttribute("Volume"));
+            this.volumeMasterIsMuted = Boolean.valueOf(volumeMaster.getAttribute("isMuted"));
+            
+            Element volumeEffects = (Element) doc.getElementsByTagName("VolumeEffects").item(0);
+            this.volumeEffects = Double.valueOf(volumeEffects.getAttribute("Volume"));
+            this.volumeEffectsIsMuted = Boolean.valueOf(volumeEffects.getAttribute("isMuted"));
+            
+            Element volumeMusic = (Element) doc.getElementsByTagName("VolumeMusic").item(0);
+            this.volumeMusic = Double.valueOf(volumeMusic.getAttribute("Volume"));
+            this.volumeMusicIsMuted = Boolean.valueOf(volumeMusic.getAttribute("isMuted"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public void saveSettings(){
+        File saveSettings = new File("settings.save");
+        try {
+            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder dBuilder;
+            dBuilder = dbFactory.newDocumentBuilder();
+            Document doc = dBuilder.newDocument();
+            Element rootElement = doc.createElement("Settings");
+            rootElement.setAttribute("Date", String.valueOf(System.currentTimeMillis()));
+            doc.appendChild(rootElement);
+            
+            Element controlSettings = doc.createElement("ControlSettings");
+            Element keys = doc.createElement("Keys");
+            keys.setAttribute("forward", String.valueOf(getKey("forward")));
+            keys.setAttribute("backward", String.valueOf(getKey("backward")));
+            keys.setAttribute("goLeft", String.valueOf(getKey("goLeft")));
+            keys.setAttribute("goRight", String.valueOf(getKey("goRight")));
+            keys.setAttribute("jump", String.valueOf(getKey("jump")));
+            keys.setAttribute("menu_1", String.valueOf(getKey("menu_1")));
+            keys.setAttribute("menu_2", String.valueOf(getKey("menu_2")));
+            keys.setAttribute("item_1", String.valueOf(getKey("item_1")));
+            keys.setAttribute("item_2", String.valueOf(getKey("item_2")));
+            keys.setAttribute("item_3", String.valueOf(getKey("item_3")));
+            keys.setAttribute("item_4", String.valueOf(getKey("item_4")));
+            keys.setAttribute("item_5", String.valueOf(getKey("item_5")));
+            keys.setAttribute("debug", String.valueOf(getKey("debug")));
+            keys.setAttribute("help", String.valueOf(getKey("help")));
+            controlSettings.appendChild(keys);
+            
+            Element useScroll = doc.createElement("useScroll");
+            useScroll.setAttribute("useScroll", String.valueOf(this.useScroll));
+            controlSettings.appendChild(useScroll);
+            rootElement.appendChild(controlSettings);
+            
+            Element graphicSettings = doc.createElement("GraphicSettings");
+            graphicSettings.setAttribute("Fullscreen", String.valueOf(this.fullscreen));
+            graphicSettings.setAttribute("Vsync", String.valueOf(this.vsync));
+            graphicSettings.setAttribute("ColorDepth", String.valueOf(this.colorDepth));
+            graphicSettings.setAttribute("AntiAliasing", String.valueOf(this.antiAliasing));
+            
+            Element resolution = doc.createElement("Resolution");
+            resolution.setAttribute("Width", String.valueOf(this.resolution.width));
+            resolution.setAttribute("Height", String.valueOf(this.resolution.height));
+            graphicSettings.appendChild(resolution);
+            rootElement.appendChild(graphicSettings);
+            
+            Element volumeSettings = doc.createElement("VolumeSettings");
+            Element volumeMaster = doc.createElement("VolumeMaster");
+            volumeMaster.setAttribute("Volume", String.valueOf(this.volumeMaster));
+            volumeMaster.setAttribute("isMuted", String.valueOf(this.volumeMasterIsMuted));
+            volumeSettings.appendChild(volumeMaster);
+            
+            Element volumeEffects = doc.createElement("VolumeEffects");
+            volumeEffects.setAttribute("Volume", String.valueOf(this.volumeEffects));
+            volumeEffects.setAttribute("isMuted", String.valueOf(this.volumeEffectsIsMuted));
+            volumeSettings.appendChild(volumeEffects);
+            
+            Element volumeMusic = doc.createElement("VolumeMusic");
+            volumeMusic.setAttribute("Volume", String.valueOf(this.volumeMusic));
+            volumeMusic.setAttribute("isMuted", String.valueOf(this.volumeMusicIsMuted));
+            volumeSettings.appendChild(volumeMusic);
+            rootElement.appendChild(volumeSettings);
+            
+            TransformerFactory transformerFactory = TransformerFactory.newInstance();
+            Transformer transformer = transformerFactory.newTransformer();
+            DOMSource source = new DOMSource(doc);
+            StreamResult result = new StreamResult(saveSettings);
+            transformer.transform(source, result);
+        } catch (Exception ex) {
+            Logger.getLogger(Settings.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public HashMap getDefaultKeys(){
+        HashMap<String, Integer> keys = new HashMap<>();
+        keys.put("forward", KeyInput.KEY_W);
+        keys.put("backward", KeyInput.KEY_S);
+        keys.put("goRight", KeyInput.KEY_D);
+        keys.put("goLeft", KeyInput.KEY_A);
+        keys.put("jump", KeyInput.KEY_SPACE);
+        keys.put("menu_1", KeyInput.KEY_ESCAPE);
+        keys.put("menu_2", KeyInput.KEY_PAUSE);
+        keys.put("item_1", KeyInput.KEY_1);
+        keys.put("item_2", KeyInput.KEY_2);
+        keys.put("item_3", KeyInput.KEY_3);
+        keys.put("item_4", KeyInput.KEY_4);
+        keys.put("item_5", KeyInput.KEY_5);
+        keys.put("debug", KeyInput.KEY_F4);
+        keys.put("help", KeyInput.KEY_F1);
+        return keys;
+    }
+    
+    public void loadDefaultSettings(boolean resetKeys){
+        setResolution(new Dimension(device.getDisplayMode().getWidth(), device.getDisplayMode().getHeight()));
+        setFullscreen(device.isFullScreenSupported());
+        setVsync(false);
+        setColorDepth(device.getDisplayMode().getBitDepth());
+        setAntiAliasing(0);
+        
+        volumeMaster = 1;
+        volumeMusic = 1;
+        volumeEffects = 1;
+        volumeMasterIsMuted = false;
+        volumeEffectsIsMuted = false;
+        volumeMusicIsMuted = false;
+        
+        if(resetKeys){
+            keys = getDefaultKeys();
+        }
     }
 }

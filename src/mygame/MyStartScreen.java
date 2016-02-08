@@ -354,6 +354,7 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
 //            Main.app.getSettings().setColorDepth(Main.app.getSettings().getPossibleColorDepths().get(screen.findNiftyControl("dropdownColorDepth", DropDown.class).getSelectedIndex()));
         Main.app.getSettings().setAntiAliasing(Main.app.getSettings().getPossibleAntiAliasing().get(screen.findNiftyControl("dropdownAntiAliasing", DropDown.class).getSelectedIndex()));
         Main.app.restart();
+        Main.app.getSettings().saveSettings();
         nifty.gotoScreen("start");
    }
    
@@ -562,34 +563,14 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
    }
    
    public void restoreDefaultSettings(){
-        //AppSettings initialisieren
-        AppSettings appSettings = new AppSettings(true);
-        
-        //Titel setzen
-        appSettings.setTitle("First-Person-View TowerDefense Game");
-        //Get the Resolution of the main/default display
-        GraphicsDevice device = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
-        //set the found resolution of the monitor as the resolution of the game.
-        appSettings.setResolution(device.getDisplayMode().getWidth(), device.getDisplayMode().getHeight());
-        appSettings.setFrequency(device.getDisplayMode().getRefreshRate());
-        appSettings.setBitsPerPixel(device.getDisplayMode().getBitDepth());
-        // Frame rate limitieren
-        appSettings.setFrameRate(60);
-        appSettings.setFullscreen(device.isFullScreenSupported());
-        
-        Main.app.setSettings(appSettings);
-        
-        Settings settings = Main.app.getSettings();
-        settings.setUseScroll(false);
-        settings.setFullscreen(true);
-        settings.setResolution(device.getDisplayMode().getWidth(), device.getDisplayMode().getHeight());
+        Main.app.getSettings().loadDefaultSettings(false);
         Main.app.restart();
 
         screen.findNiftyControl("checkboxScroll", CheckBox.class).uncheck();
         screen.findNiftyControl("checkboxFullscreen", CheckBox.class).check();
-        screen.findNiftyControl("dropdownResolution", DropDown.class).selectItem(device.getDisplayMode().getWidth() + " x " + device.getDisplayMode().getHeight());
+        screen.findNiftyControl("dropdownResolution", DropDown.class).selectItem(Main.app.getAppSettings().getWidth() + " x " + Main.app.getAppSettings().getHeight());
         screen.findNiftyControl("checkboxVsync", CheckBox.class).uncheck();
-        screen.findNiftyControl("dropdownColorDepth", DropDown.class).selectItem(device.getDisplayMode().getBitDepth());
+        screen.findNiftyControl("dropdownColorDepth", DropDown.class).selectItem(Main.app.getAppSettings().getBitsPerPixel());
         screen.findNiftyControl("dropdownAntiAliasing", DropDown.class).selectItemByIndex(0);
         
         nifty.gotoScreen("start");

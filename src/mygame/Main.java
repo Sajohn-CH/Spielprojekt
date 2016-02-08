@@ -63,11 +63,12 @@ public class Main extends SimpleApplication implements ActionListener{
         app.setDisplayStatView(false);
         app.setDisplayFps(false);
         app.setPauseOnLostFocus(true);
-//        app.setShowSettings(false);
+        app.setShowSettings(false);
         //Start into Fullscreen
         appSettings.setFullscreen(device.isFullScreenSupported());
                 
         app.destroyInput();
+        Settings settings = new Settings();
         app.start();
     }
 
@@ -119,12 +120,12 @@ public class Main extends SimpleApplication implements ActionListener{
         app.getAssetManager().loadModel("Objects/MGTower.j3o");
         app.getAssetManager().loadModel("Objects/PyramidTower.j3o");
         
-        NiftyJmeDisplay niftyDisplay = new NiftyJmeDisplay( assetManager, inputManager, audioRenderer, guiViewPort);
+        NiftyJmeDisplay niftyDisplay = new NiftyJmeDisplay(assetManager, inputManager, audioRenderer, guiViewPort);
         //Create a new NiftyGui objects
         nifty = niftyDisplay.getNifty();
         //Lädt die benötigten XML-Dateien (diese werden dabei überprüft)
         addXmlFile("Interface/hud.xml");
-        addXmlFile("Interface/screen.xml"); 
+        addXmlFile("Interface/screen.xml");
         startState = (MyStartScreen) nifty.getScreen("start").getScreenController();
         nifty.registerScreenController(startState);
         nifty.gotoScreen("hud");
@@ -155,9 +156,8 @@ public class Main extends SimpleApplication implements ActionListener{
      * Fügt Tastenbelegungen hinzu.
      */
     private void setUpKeys() {
-        String[] keyItems = settings.getKeysItems();
         //Allgemeine Tasten
-        inputManager.addMapping("Menu", new KeyTrigger(KeyInput.KEY_ESCAPE), new KeyTrigger(KeyInput.KEY_PAUSE));
+        inputManager.addMapping("Menu", new KeyTrigger(settings.getKey("menu_1")), new KeyTrigger(settings.getKey("menu_2")));
         inputManager.addListener(this, "Menu");
         //Tasten für SchnelleisteSlots
         inputManager.addMapping("item_1", new KeyTrigger(settings.getKey("item_1")));
@@ -171,7 +171,7 @@ public class Main extends SimpleApplication implements ActionListener{
         inputManager.addMapping("item_5", new KeyTrigger(settings.getKey("item_5")));
         inputManager.addListener(this, "item_5");
         
-        inputManager.addMapping("debug", new KeyTrigger(settings.getKeyCode(settings.getKeyDebug())));
+        inputManager.addMapping("debug", new KeyTrigger(settings.getKey("debug")));
         inputManager.addListener(this, "debug");
         inputManager.addMapping("help", new KeyTrigger(settings.getKey("help")));
         inputManager.addListener(this, "help");
