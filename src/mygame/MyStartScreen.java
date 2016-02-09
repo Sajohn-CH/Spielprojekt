@@ -10,6 +10,7 @@ import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.controls.Button;
 import de.lessvoid.nifty.controls.CheckBox;
 import de.lessvoid.nifty.controls.DropDown;
+import de.lessvoid.nifty.controls.Slider;
 import de.lessvoid.nifty.elements.render.TextRenderer;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
@@ -103,6 +104,25 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
             screen.findNiftyControl("dropdownColorDepth", DropDown.class).selectItem(Main.app.getSettings().getActiveColorDepth());
             screen.findNiftyControl("dropdownAntiAliasing", DropDown.class).addAllItems(Main.app.getSettings().getPossibleAntiAliasingStrings());
             screen.findNiftyControl("dropdownAntiAliasing", DropDown.class).selectItem(Main.app.getSettings().getActiveAntiAliasing());
+            
+            screen.findNiftyControl("masterVolumeSlider", Slider.class).setValue((float) Main.app.getSettings().getVolumeMaster());
+            screen.findNiftyControl("effectsVolumeSlider", Slider.class).setValue((float) Main.app.getSettings().getVolumeEffects());
+            screen.findNiftyControl("musicVolumeSlider", Slider.class).setValue((float) Main.app.getSettings().getVolumeMusic());
+            if(Main.app.getSettings().isVolumeMasterMuted()){
+                screen.findNiftyControl("checkboxMuteMasterVolume", CheckBox.class).check();
+            } else {
+                screen.findNiftyControl("checkboxMuteMasterVolume", CheckBox.class).uncheck();
+            }
+            if(Main.app.getSettings().isVolumeEffectsMuted()){
+                screen.findNiftyControl("checkboxMuteEffectsVolume", CheckBox.class).check();
+            } else {
+                screen.findNiftyControl("checkboxMuteEffectsVolume", CheckBox.class).uncheck();
+            }
+            if(Main.app.getSettings().isVolumeMusicMuted()){
+                screen.findNiftyControl("checkboxMuteMusicVolume", CheckBox.class).check();
+            } else {
+                screen.findNiftyControl("checkboxMuteMusicVolume", CheckBox.class).uncheck();
+            }
         } else if (screen.getScreenId().equals("highscores")){
             reloadHighscores();
         } else if (screen.getScreenId().equals("credits")){
@@ -354,6 +374,12 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
 //            Main.app.getSettings().setColorDepth(Main.app.getSettings().getPossibleColorDepths().get(screen.findNiftyControl("dropdownColorDepth", DropDown.class).getSelectedIndex()));
         Main.app.getSettings().setAntiAliasing(Main.app.getSettings().getPossibleAntiAliasing().get(screen.findNiftyControl("dropdownAntiAliasing", DropDown.class).getSelectedIndex()));
         Main.app.restart();
+        Main.app.getSettings().setVolumeMaster((double) screen.findNiftyControl("masterVolumeSlider", Slider.class).getValue());
+        Main.app.getSettings().setVolumeEffects((double) screen.findNiftyControl("effectsVolumeSlider", Slider.class).getValue());
+        Main.app.getSettings().setVolumeMusic((double) screen.findNiftyControl("musicVolumeSlider", Slider.class).getValue());
+        Main.app.getSettings().setVolumeMasterMuted(screen.findNiftyControl("checkboxMuteMasterVolume", CheckBox.class).isChecked());
+        Main.app.getSettings().setVolumeEffectsMuted(screen.findNiftyControl("checkboxMuteEffectsVolume", CheckBox.class).isChecked());
+        Main.app.getSettings().setVolumeMusicMuted(screen.findNiftyControl("checkboxMuteMusicVolume", CheckBox.class).isChecked());
         Main.app.getSettings().saveSettings();
         nifty.gotoScreen("start");
    }
@@ -572,8 +598,34 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
         screen.findNiftyControl("checkboxVsync", CheckBox.class).uncheck();
         screen.findNiftyControl("dropdownColorDepth", DropDown.class).selectItem(Main.app.getAppSettings().getBitsPerPixel());
         screen.findNiftyControl("dropdownAntiAliasing", DropDown.class).selectItemByIndex(0);
+        screen.findNiftyControl("masterVolumeSlider", Slider.class).setValue(1);
+        screen.findNiftyControl("effectsVolumeSlider", Slider.class).setValue(1);
+        screen.findNiftyControl("musicVolumeSlider", Slider.class).setValue(1);
+        screen.findNiftyControl("checkboxMuteMasterVolume", CheckBox.class).uncheck();
+        screen.findNiftyControl("checkboxMuteEffectsVolume", CheckBox.class).uncheck();
+        screen.findNiftyControl("checkboxMuteMusicVolume", CheckBox.class).uncheck();
+        
         
         nifty.gotoScreen("start");
+   }
+   
+   public void resetKeyBindings(){
+        Main.app.getSettings().setKeys(Main.app.getSettings().getDefaultKeys());
+        Settings settings = Main.app.getSettings();
+        updateButtonText("forward", settings.getKeyString(settings.getKey("forward")));
+        updateButtonText("backward", settings.getKeyString(settings.getKey("backward")));
+        updateButtonText("goLeft", settings.getKeyString(settings.getKey("goLeft")));
+        updateButtonText("goRight", settings.getKeyString(settings.getKey("goRight")));
+        updateButtonText("jump", settings.getKeyString(settings.getKey("jump")));
+        updateButtonText("item_1", settings.getKeyString(settings.getKey("item_1")));
+        updateButtonText("item_2", settings.getKeyString(settings.getKey("item_2")));
+        updateButtonText("item_3", settings.getKeyString(settings.getKey("item_3")));
+        updateButtonText("item_4", settings.getKeyString(settings.getKey("item_4")));
+        updateButtonText("item_5", settings.getKeyString(settings.getKey("item_5")));
+        updateButtonText("help", settings.getKeyString(settings.getKey("help")));
+        setAllMultipleKeyBindingsButtonsRed();
+        screen.findNiftyControl("saveKeyBindings", Button.class).setText("Zurück zu den Einstellungen");
+        screen.findNiftyControl("saveKeyBindings", Button.class).setTextColor(Color.WHITE);
    }
    
    /**
@@ -630,24 +682,45 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
    }
    
    public void toggleFullscreen(){
-//       Settings settings = Main.app.getSettings();
        screen.findNiftyControl("checkboxFullscreen", CheckBox.class).toggle();
-//       if(settings.isFullscreen()){
-//           screen.findNiftyControl("checkboxFullscreen", CheckBox.class).uncheck();
-//           settings.setFullscreen(false);
-//       } else {
-//           screen.findNiftyControl("checkboxFullscreen", CheckBox.class).check();
-//           settings.setFullscreen(true);
-//       }
    }
    
    public void toggleVsync(){
-//       Settings settings = Main.app.getSettings();
        screen.findNiftyControl("checkboxVsync", CheckBox.class).toggle();
-//       if(settings.isVsync()){
-//           screen.findNiftyControl("checkboxVsync", CheckBox.class).uncheck();
-//       } else {
-//           screen.findNiftyControl("checkboxVsync", CheckBox.class).check();
-//       }
+   }
+   
+   public void toggleMasterVolumeMuted(){
+       screen.findNiftyControl("checkboxMuteMasterVolume", CheckBox.class).toggle();
+       if(screen.findNiftyControl("checkboxMuteMasterVolume", CheckBox.class).isChecked()){
+           screen.findNiftyControl("masterVolumeSlider", Slider.class).disable();
+           screen.findNiftyControl("effectsVolumeSlider", Slider.class).disable();
+           screen.findNiftyControl("musicVolumeSlider", Slider.class).disable();
+           screen.findNiftyControl("checkboxMuteEffectsVolume", CheckBox.class).disable();
+           screen.findNiftyControl("checkboxMuteMusicVolume", CheckBox.class).disable();
+       } else {
+           screen.findNiftyControl("masterVolumeSlider", Slider.class).enable();
+           screen.findNiftyControl("effectsVolumeSlider", Slider.class).enable();
+           screen.findNiftyControl("musicVolumeSlider", Slider.class).enable();
+           screen.findNiftyControl("checkboxMuteEffectsVolume", CheckBox.class).enable();
+           screen.findNiftyControl("checkboxMuteMusicVolume", CheckBox.class).enable();
+       }
+   }
+   
+   public void toggleEffectsVolumeMuted(){
+       screen.findNiftyControl("checkboxMuteEffectsVolume", CheckBox.class).toggle();
+       if(screen.findNiftyControl("checkboxMuteEffectsVolume", CheckBox.class).isChecked()){
+           screen.findNiftyControl("effectsVolumeSlider", Slider.class).disable();
+       } else {
+           screen.findNiftyControl("effectsVolumeSlider", Slider.class).enable();
+       }
+   }
+   
+   public void toggleMusicVolumeMuted(){
+       screen.findNiftyControl("checkboxMuteMusicVolume", CheckBox.class).toggle();
+       if(screen.findNiftyControl("checkboxMuteMusicVolume", CheckBox.class).isChecked()){
+           screen.findNiftyControl("musicVolumeSlider", Slider.class).disable();
+       } else {
+           screen.findNiftyControl("musicVolumeSlider", Slider.class).enable();
+       }
    }
 }

@@ -116,7 +116,6 @@ public class Player extends Entity{
         shootAudio = new AudioNode(Main.app.getAssetManager(), "Audio/shootAudio.wav", false);
         shootAudio.setPositional(false);
         shootAudio.setLooping(true);
-        shootAudio.setVolume(2 * (float) Main.app.getSettings().getVolumeEffects());
         Main.app.getRootNode().attachChild(shootAudio);
         
         //Sound von: https://freesound.org/people/Shadowedhunter/sounds/155920/ (User: Shadowedhunter)
@@ -124,7 +123,6 @@ public class Player extends Entity{
         walkAudio = new AudioNode(Main.app.getAssetManager(), "Audio/walkAudio.wav", false);
         walkAudio.setPositional(false);
         walkAudio.setLooping(true);
-        walkAudio.setVolume(.5f * (float) Main.app.getSettings().getVolumeEffects());
         Main.app.getRootNode().attachChild(walkAudio);
         
         //Sound von: https://freesound.org/people/jact878787/sounds/323809/ (User: jact878787)
@@ -132,7 +130,6 @@ public class Player extends Entity{
         buyAudio = new AudioNode(Main.app.getAssetManager(), "Audio/buyAudio.wav", false);
         buyAudio.setPositional(false);
         buyAudio.setLooping(false);
-        buyAudio.setVolume(2 * (float) Main.app.getSettings().getVolumeEffects());
         Main.app.getRootNode().attachChild(buyAudio);
         
         //Sound von: https://freesound.org/people/clairinski/sounds/184372/ (User: clairinski)
@@ -140,7 +137,6 @@ public class Player extends Entity{
         notEnoughMoneyAudio = new AudioNode(Main.app.getAssetManager(), "Audio/notEnoughMoneyAudio.wav", false);
         notEnoughMoneyAudio.setPositional(false);
         notEnoughMoneyAudio.setLooping(false);
-        notEnoughMoneyAudio.setVolume(2 * (float) Main.app.getSettings().getVolumeEffects());
         Main.app.getRootNode().attachChild(notEnoughMoneyAudio);
         
         //Sound von: https://freesound.org/people/severaltimes/sounds/173989/ (User: severaltimes)
@@ -148,8 +144,9 @@ public class Player extends Entity{
         earnMoneyAudio = new AudioNode(Main.app.getAssetManager(), "Audio/earnMoneyAudio.wav", false);
         earnMoneyAudio.setPositional(false);
         earnMoneyAudio.setLooping(false);
-        earnMoneyAudio.setVolume(2 * (float) Main.app.getSettings().getVolumeEffects());
         Main.app.getRootNode().attachChild(earnMoneyAudio);
+        
+        reloadVolumes();
     }
     
     /**
@@ -948,10 +945,10 @@ public class Player extends Entity{
     }
     
     public void reloadVolumes(){
-        shootAudio.setVolume(2 * (float) Main.app.getSettings().getVolumeEffects());
-        walkAudio.setVolume(.5f * (float) Main.app.getSettings().getVolumeEffects());
-        buyAudio.setVolume(2 * (float) Main.app.getSettings().getVolumeEffects());
-        notEnoughMoneyAudio.setVolume(2 * (float) Main.app.getSettings().getVolumeEffects());
-        earnMoneyAudio.setVolume(2 * (float) Main.app.getSettings().getVolumeEffects());
+        shootAudio.setVolume((float) Main.app.getSettings().getVolumeEffectsEffective());
+        walkAudio.setVolume(.5f * (float) Main.app.getSettings().getVolumeEffectsEffective());
+        buyAudio.setVolume((float) Main.app.getSettings().getVolumeEffectsEffective());
+        notEnoughMoneyAudio.setVolume((float) Main.app.getSettings().getVolumeEffectsEffective());
+        earnMoneyAudio.setVolume((float) Main.app.getSettings().getVolumeEffectsEffective());
     }
 }

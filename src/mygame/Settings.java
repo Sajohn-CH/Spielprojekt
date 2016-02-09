@@ -353,6 +353,10 @@ public class Settings {
         return;
     }
     
+    public void setKeys(HashMap<String, Integer> keys){
+        this.keys = keys;
+    }
+    
     /**
      * Gibt den KeyCode für eine bestimmte Aktion zurück
      * @param eventId Aktion    
@@ -530,7 +534,9 @@ public class Settings {
         ArrayList<String> l = new ArrayList<>();
         DisplayMode [] mode = device.getDisplayModes();
         for(int i = 0; i < mode.length; i++){
-            l.add(mode[i].getWidth()+ " x " + mode[i].getHeight());
+            if(!l.contains(mode[i].getWidth()+ " x " + mode[i].getHeight())){
+                l.add(mode[i].getWidth()+ " x " + mode[i].getHeight());
+            }
         }
         return l;
     }
@@ -550,7 +556,7 @@ public class Settings {
     }
     
     public String getActiveResolution(){
-        return Main.app.getAppSettings().getHeight() + " x " + Main.app.getAppSettings().getWidth();
+        return this.resolution.width + " x " + this.resolution.height;
     }
     
     public ArrayList<Integer> getPossibleColorDepths(){
@@ -568,7 +574,7 @@ public class Settings {
         ArrayList<String> l = new ArrayList<>();
         DisplayMode [] mode = device.getDisplayModes();
         for(int i = 0; i < mode.length; i++){
-            if(!l.contains(mode[i].getBitDepth() + " bpp")){
+            if(!l.contains(String.valueOf(mode[i].getBitDepth() + " bpp"))){
                 l.add(mode[i].getBitDepth()+ " bpp");
             }
         }
@@ -621,16 +627,35 @@ public class Settings {
         return Main.app.getAppSettings().getSamples() + "x";
     }
     
-    public double getVolumeEffects(){
+    public double getVolumeEffectsEffective(){
+        if(volumeMasterIsMuted || volumeEffectsIsMuted){
+            return 0;
+        }
         return volumeMaster*volumeEffects;
     }
     
-    public double getVolumeMusic(){
+    public double getVolumeMusicEffective(){
+        if(volumeMasterIsMuted || volumeMusicIsMuted){
+            return 0;
+        }
         return volumeMaster*volumeMusic;
+    }
+    
+    public double getVolumeMaster(){
+        return volumeMaster;
+    }
+    
+    public double getVolumeEffects(){
+        return volumeEffects;
+    }
+    
+    public double getVolumeMusic(){
+        return volumeMusic;
     }
     
     public void setVolumeMaster(double volumeMaster){
         this.volumeMaster = volumeMaster;
+        Main.app.getWorld().getPlayer().reloadVolumes();
     }
     
     public void setVolumeEffects(double volumeEffects){
@@ -644,10 +669,12 @@ public class Settings {
 
     public void setVolumeMasterMuted(boolean muted){
         this.volumeMasterIsMuted = muted;
+        Main.app.getWorld().getPlayer().reloadVolumes();
     }
     
     public void setVolumeEffectsMuted(boolean muted){
         this.volumeEffectsIsMuted = muted;
+        Main.app.getWorld().getPlayer().reloadVolumes();
     }
     
     public void setVolumeMusicMuted(boolean muted){
@@ -818,7 +845,7 @@ public class Settings {
         setResolution(new Dimension(device.getDisplayMode().getWidth(), device.getDisplayMode().getHeight()));
         setFullscreen(device.isFullScreenSupported());
         setVsync(false);
-        setColorDepth(device.getDisplayMode().getBitDepth());
+//        setColorDepth(device.getDisplayMode().getBitDepth());
         setAntiAliasing(0);
         
         volumeMaster = 1;
