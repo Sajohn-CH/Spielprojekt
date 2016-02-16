@@ -255,8 +255,15 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
                 tower.setHealth(Integer.valueOf(towerElement.getAttribute("Health")));
             }
             
+            //Löscht alle bisherigen Bomben
+            for(int i = Main.app.getWorld().getAllBombs().size(); i > 0; i--) {
+                Main.app.getWorld().removeBomb(Main.app.getWorld().getAllBombs().get(0));
+            }
+            
             //Lädt alle Bomben
             nList = doc.getElementsByTagName("Bomb");
+            int loadedBombs = 0;
+            int loadedShootingBombs = 0;
             for(int i = 0; i < nList.getLength(); i++) {
                 Bomb bomb;
                 Element bombElement = (Element) nList.item(i);
@@ -267,11 +274,13 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
                 position.setZ(Float.valueOf(posEle.getAttribute("z")));
                 int level = Integer.valueOf(bombElement.getAttribute("Level"));
                 int health = Integer.valueOf(bombElement.getAttribute("Health"));
+                int nextCorner = Integer.valueOf(bombElement.getAttribute("nextCorner"));
                 if(bombElement.getAttribute("Type").equals("mygame.Entitys.Bomb")) {
                     bomb = new Bomb(level);
+                    loadedBombs++;
                 } else if(bombElement.getAttribute("Type").equals("mygame.Entitys.ShootingBomb")) {
                     bomb = new ShootingBomb(level);
-                    
+                    loadedShootingBombs++;
                 } else {
                     System.out.println("ERROR while Loading saveGame: BombType doesn't match");
                     bomb = new Bomb(1);
@@ -281,6 +290,9 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
                 bomb.getSpatial().setLocalTranslation(position);
                 System.out.println("getLocationPost: "+bomb.getSpatial().getLocalTranslation());
                 bomb.setHealth(health);
+                bomb.gotoCorner(nextCorner-1);  
+                Main.app.getWorld().addBomb(bomb);
+                
             }
             
             //Setzt Player
@@ -312,7 +324,8 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
             
             //Setzt Welle
             Element rootElement = (Element) doc.getElementsByTagName("SaveGame").item(0);
-            Main.app.getGame().startWave(Integer.valueOf(rootElement.getAttribute("Wave")), Main.app.getWorld().getAllBombs().size());
+            //System.out.println("bombs:"+Main.app.getWorld().getAllBombs().size());
+            Main.app.getGame().startWave(Integer.valueOf(rootElement.getAttribute("Wave")), loadedBombs, loadedShootingBombs);
             
         } catch (Exception e) {
             e.printStackTrace();
@@ -365,6 +378,7 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
                position.setAttribute("x", String.valueOf(allBombs.get(i).getSpatial().getLocalTranslation().getX()));
                position.setAttribute("y", String.valueOf(allBombs.get(i).getSpatial().getLocalTranslation().getY()));
                position.setAttribute("z", String.valueOf(allBombs.get(i).getSpatial().getLocalTranslation().getZ()));
+               bomb.setAttribute("nextCorner", String.valueOf(allBombs.get(i).getCornerIndex()));
                bomb.appendChild(position);
                world.appendChild(bomb);
                

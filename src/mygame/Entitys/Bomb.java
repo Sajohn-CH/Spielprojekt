@@ -214,6 +214,7 @@ public class Bomb extends Entity{
      */
     public void gotoCorner(int cornerIndex){
         way.setNextCorner(cornerIndex);
+        moveTo(way.getNextCorner());
     }
     
     /**
