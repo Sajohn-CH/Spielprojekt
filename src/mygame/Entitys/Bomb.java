@@ -207,7 +207,15 @@ public class Bomb extends Entity{
     public int getCornerIndex(){
         return way.getPositionID();
     }
-        
+    
+    /**
+     * Setzt zu welcher Ecke die Bombe geht.
+     * @param cornerIndex Wievielte Ecke
+     */
+    public void gotoCorner(int cornerIndex){
+        way.setNextCorner(cornerIndex);
+    }
+    
     /**
      * Gibt die Distanz zur nächsten Ecke zurück
      * @return Distanz

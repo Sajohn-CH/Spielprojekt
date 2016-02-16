@@ -51,4 +51,12 @@ public class Way {
     public int getPositionID(){
         return positionID;
     }
+    
+    /**
+     * Setzt, dass die Bombe zu der Ecke, die übergeben wird, geht.
+     * @param cornerID Wievielte Ecke
+     */
+    public void setNextCorner(int cornerID){
+        positionID = cornerID;
+    }
 }
