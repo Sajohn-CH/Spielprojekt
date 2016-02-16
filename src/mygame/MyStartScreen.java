@@ -26,9 +26,11 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import mygame.Entitys.Bomb;
 import mygame.Entitys.SloweringTower;
 import mygame.Entitys.Player;
 import mygame.Entitys.DeactivationTower;
+import mygame.Entitys.ShootingBomb;
 import mygame.Entitys.SimpleTower;
 import mygame.Entitys.Tower;
 import org.w3c.dom.Document;
@@ -253,6 +255,34 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
                 tower.setHealth(Integer.valueOf(towerElement.getAttribute("Health")));
             }
             
+            //Lädt alle Bomben
+            nList = doc.getElementsByTagName("Bomb");
+            for(int i = 0; i < nList.getLength(); i++) {
+                Bomb bomb;
+                Element bombElement = (Element) nList.item(i);
+                Element posEle = (Element) bombElement.getElementsByTagName("Position").item(0);
+                Vector3f position = new Vector3f();
+                position.setX(Float.valueOf(posEle.getAttribute("x")));
+                position.setY(Float.valueOf(posEle.getAttribute("y")));
+                position.setZ(Float.valueOf(posEle.getAttribute("z")));
+                int level = Integer.valueOf(bombElement.getAttribute("Level"));
+                int health = Integer.valueOf(bombElement.getAttribute("Health"));
+                if(bombElement.getAttribute("Type").equals("mygame.Entitys.Bomb")) {
+                    bomb = new Bomb(level);
+                } else if(bombElement.getAttribute("Type").equals("mygame.Entitys.ShootingBomb")) {
+                    bomb = new ShootingBomb(level);
+                    
+                } else {
+                    System.out.println("ERROR while Loading saveGame: BombType doesn't match");
+                    bomb = new Bomb(1);
+                }
+                //Setzt Position der Bombe (Geht nicht)
+                System.out.println("getLocationPre: "+bomb.getSpatial().getLocalTranslation());
+                bomb.getSpatial().setLocalTranslation(position);
+                System.out.println("getLocationPost: "+bomb.getSpatial().getLocalTranslation());
+                bomb.setHealth(health);
+            }
+            
             //Setzt Player
             Element playerEle = (Element) doc.getElementsByTagName("Player").item(0);
             Player player = Main.app.getWorld().getPlayer();
@@ -282,7 +312,7 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
             
             //Setzt Welle
             Element rootElement = (Element) doc.getElementsByTagName("SaveGame").item(0);
-            Main.app.getGame().startWave(Integer.valueOf(rootElement.getAttribute("Wave")));
+            Main.app.getGame().startWave(Integer.valueOf(rootElement.getAttribute("Wave")), Main.app.getWorld().getAllBombs().size());
             
         } catch (Exception e) {
             e.printStackTrace();
@@ -322,6 +352,23 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
                 world.appendChild(tower);
             }
             rootElement.appendChild(world);
+            
+            //Speichert alle Bomben
+           ArrayList<Bomb> allBombs = Main.app.getWorld().getAllBombs();
+           for(int i = 0; i < allBombs.size(); i++) {
+               Element bomb = doc.createElement("Bomb");
+               bomb.setAttribute("Type", allBombs.get(i).getClass().getName());
+               bomb.setAttribute("Level", String.valueOf(allBombs.get(i).getLevel()));
+               bomb.setAttribute("Health", String.valueOf(allBombs.get(i).getHealth()));
+               //Speichert Position der Bombe
+               Element position = doc.createElement("Position");
+               position.setAttribute("x", String.valueOf(allBombs.get(i).getSpatial().getLocalTranslation().getX()));
+               position.setAttribute("y", String.valueOf(allBombs.get(i).getSpatial().getLocalTranslation().getY()));
+               position.setAttribute("z", String.valueOf(allBombs.get(i).getSpatial().getLocalTranslation().getZ()));
+               bomb.appendChild(position);
+               world.appendChild(bomb);
+               
+           }
             
             //Speichert Beacon
            Element beacon = doc.createElement("Beacon");
@@ -546,42 +593,6 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
        setKeyBindingsButtonRedIfMultiple("item_5");
        setKeyBindingsButtonRedIfMultiple("help");
    }
-   
-   /**
-    * Liefert den Name einer Taste.
-    * @param evt Taste (die gedrückt wurde)
-    * @return Name der Taste
-    */
-//   private String getKeyName(KeyInputEvent evt) {
-//       
-//       switch(evt.getKeyCode()) {
-//           case 29:
-//               return "L_CTRL";
-//           case 56:
-//               return "ALT";
-//           case 57:
-//               return "SPACEBAR";
-//           case 157:   
-//               return "R_CTRL";
-//           case 184:
-//               return "ALT_GR";
-//           case 42:
-//               return "L_SHIFT";
-//           case 58:
-//               return "CAPS_LOCK";
-//           case 15:
-//               return "TABULATOR";
-//           case 14:
-//               return "BACKSPACE";
-//           case 28:
-//               return "ENTER";
-//           case 54:
-//               return "R_SHIFT";
-//           default:
-//            return String.valueOf(evt.getKeyChar()).toUpperCase();           
-//       }
-//       
-//   }
    
    private void updateButtonText(String id, String text) {
        screen.findNiftyControl(id, Button.class).setText(text);

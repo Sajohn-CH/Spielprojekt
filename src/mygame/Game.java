@@ -29,10 +29,14 @@ public class Game {
     
     /**
      * Setzt wieviele Bomben generiert werden sollen.
+     * @param wave Setzt die Welle.
+     * @param bombsThere  Setzt die Anzahl Bomben, die schon da sind.
      */
-    public void startWave(){
+    public void startWave(int wave, int bombsThere){
+        this.wave = wave;
         // Mehrere Levels Bomben generieren
         int bombsLeft = (int) (wave*Math.pow(wave,0.5));
+        bombsLeft -= bombsThere;
         while(bombsLeft > 0){
             int i = (int) bombsLeft/wave*2;
             if(i > bombsLeft){
@@ -61,12 +65,16 @@ public class Game {
     
     /**
      * {@link Game#startWave()}
-     * Setzt die Welle auf den übergebenen Wert.
-     * @param wave Setzt die Welle.
      */
     public void startWave(int wave) {
-        this.wave = wave;
-        startWave();
+        startWave(wave, 0);
+    }
+    
+    /**
+     * {@link Game#startWave()}
+     */
+    public void startWave() {
+        startWave(this.wave, 0);
     }
     
     /**
