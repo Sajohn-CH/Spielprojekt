@@ -11,7 +11,9 @@ import java.util.ArrayList;
 public class Game {
     private int wave;                                       //Die wievielte Welle gerade läuft
     private ArrayList<Integer> bombsLeftPerLevel;           //Alle Bomben dieser Welle, die noch erstellt werden müssen
+    private ArrayList<Integer> bombsLeftLevels;             //Die Levels der Bomben, die noch erstellt werden müssen
     private ArrayList<Integer> shootingBombsLeftPerLevel;   //Alle Schiessenden -bomben dieser Welle, die noch erstellt werden müssen
+    private ArrayList<Integer> shootingBombsLeftLevels;     //Die Levels der schiessenden Bomben, die noch erstellt werden müssen
     private long lastTime;                                  //Das Letze Mal, als eine Bombe erstellt wurde
     private long nextTime;                                  //Wieviel Zeit (in Milisekunden) vergeht bis die nächste Bombe erstellt wird.
    
@@ -21,8 +23,10 @@ public class Game {
      */
     public Game(int wave){
         this.wave = wave;
-        this.bombsLeftPerLevel = new ArrayList<Integer>();
-        this.shootingBombsLeftPerLevel = new ArrayList<Integer>();
+        this.bombsLeftPerLevel = new ArrayList<>();
+        this.bombsLeftLevels = new ArrayList<>();
+        this.shootingBombsLeftPerLevel = new ArrayList<>();
+        this.shootingBombsLeftLevels = new ArrayList<>();
         lastTime = System.currentTimeMillis();
         nextTime = 100;
     }
@@ -42,6 +46,7 @@ public class Game {
             }
             bombsLeft -= i;
             bombsLeftPerLevel.add(i);
+            bombsLeftLevels.add(bombsLeftPerLevel.size());
         }
         
         if(wave > 10){
@@ -55,6 +60,7 @@ public class Game {
                 }
                 shootingBombsLeft -= i;
                 shootingBombsLeftPerLevel.add(i);
+                shootingBombsLeftLevels.add(shootingBombsLeftPerLevel.size());
             }
         }
     }
@@ -109,19 +115,21 @@ public class Game {
             if(Math.random() < 0.5 || shootingBombsLeftPerLevel.isEmpty()){
                 int i = Math.round((float) (Math.random()*(bombsLeftPerLevel.size()-1)));
                 if(bombsLeftPerLevel.get(i) >= 0){
-                    Main.getWorld().addBomb(new Bomb(i+1));
+                    Main.getWorld().addBomb(new Bomb(bombsLeftLevels.get(i)));
                     bombsLeftPerLevel.set(i, bombsLeftPerLevel.get(i) - 1);
                     if(bombsLeftPerLevel.get(i) == 0){
                         bombsLeftPerLevel.remove(i);
+                        bombsLeftLevels.remove(i);
                     }
                 }
             } else {
                 int i = Math.round((float) (Math.random()*(shootingBombsLeftPerLevel.size()-1)));
                 if(shootingBombsLeftPerLevel.get(i) >= 0){
-                    Main.getWorld().addBomb(new ShootingBomb(i+1));
+                    Main.getWorld().addBomb(new ShootingBomb(shootingBombsLeftLevels.get(i)));
                     shootingBombsLeftPerLevel.set(i, shootingBombsLeftPerLevel.get(i) - 1);
                     if(shootingBombsLeftPerLevel.get(i) == 0){
                         shootingBombsLeftPerLevel.remove(i);
+                        shootingBombsLeftLevels.remove(i);
                     }
                 }
             }

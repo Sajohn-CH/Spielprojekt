@@ -86,6 +86,9 @@ public class Highscores {
     private ArrayList<HighscoreElement> loadHighscores (){
         ArrayList<HighscoreElement> highscores = new ArrayList<>();
         File highscoresFile = new File("highscores.high");
+        if(!highscoresFile.exists()){
+            return highscores;
+        }
         try{
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
