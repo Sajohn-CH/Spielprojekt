@@ -34,7 +34,6 @@ public class SloweringTower extends Tower{
         this.setLevel(1);
         this.setLocation(location);
         this.setLiving(true);
-        this.setLocation(new Vector3f(location.x, 0, location.z));
         
         //Modell von: http://www.blendswap.com/blends/view/71401 (User: zagony)
         //Bearbeitet von: Florian Wenk

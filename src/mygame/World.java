@@ -9,6 +9,7 @@ import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.material.Material;
+import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
@@ -385,7 +386,8 @@ public class World extends AbstractAppState{
         //Unsichtbare Geometries auf den Weg legen, damit dort nichts gebaut werden kann.
         ArrayList<Vector3f> corners = getAllCorners();
         Geometry geom1C = new Geometry("Corner0", new Box(corners.get(0).mult(2), 6, 0, 6));
-        Material mat = new Material();
+        Material mat = new Material(Main.app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
+        mat.setColor("Color", ColorRGBA.Yellow);
         geom1C.setMaterial(mat);
         wayNode.attachChild(geom1C);
         for(int i = 1; i < corners.size(); i++){
@@ -396,6 +398,8 @@ public class World extends AbstractAppState{
             geom.setMaterial(mat);
             wayNode.attachChild(geom);
         }
+//        Zeigt zur Hilfe die Geometries auf dem Weg an.
+//        Main.app.getRootNode().attachChild(wayNode);
     }
     
     /**

@@ -389,23 +389,22 @@ public class Player extends Entity{
         CollisionResults results = new CollisionResults();
         Ray ray = new Ray(Main.app.getCamera().getLocation(), Main.app.getCamera().getDirection());
         // trifft auf scene
-        Main.getWorld().getScene().collideWith(ray, results);
+        Main.app.getWorld().getScene().collideWith(ray, results);
         if (results.size() > 0) {
             // kontrolliert ob kollision mit Beacon
             CollisionResults resultsBeacon = new CollisionResults();
-            Main.getWorld().getBeacon().getSpatial().collideWith(ray, resultsBeacon);
+            Main.app.getWorld().getBeacon().getSpatial().collideWith(ray, resultsBeacon);
             if(resultsBeacon.size() > 0){
                 // Zu nahe an beacon -> nicht setzen
                 return;
             }
             CollisionResults resultsWay = new CollisionResults();
-            Main.getWorld().getWayNode().collideWith(ray, resultsWay);
+            Main.app.getWorld().getWayNode().collideWith(ray, resultsWay);
             if(resultsWay.size() != 0){
                 return;
             }
             CollisionResult closest = results.getClosestCollision();
             Vector3f v = closest.getContactPoint();
-            v = v.setY(v.getY()+4);
             Tower tower = Main.app.getHudState().getSelectedTower(v);
             //kontrolliert ob Spieler genug Geld hat
             if(getMoney()-tower.getPrice() < 0) {
@@ -413,8 +412,7 @@ public class Player extends Entity{
                 playAudioNotEnoughMoney();
                 return;
             }
-            v = v.setY(v.getY()-4);
-            Tower nearest = Main.getWorld().getNearestTower(v);
+            Tower nearest = Main.app.getWorld().getNearestTower(v);
             // konntrolliert ob Distanz zum nächsten Turm genügend gross ist
             if(nearest != null && nearest.getLocation().subtract(v).length() < 10){
                 // Zu nahe an einem anderen Turm -> Turm wird nicht gesetzt
@@ -427,7 +425,7 @@ public class Player extends Entity{
             increaseMoney(-tower.getPrice());
             playAudioBought();
             // plaziert Turm
-            Main.getWorld().addTower(tower);
+            Main.app.getWorld().addTower(tower);
         }
     }
     

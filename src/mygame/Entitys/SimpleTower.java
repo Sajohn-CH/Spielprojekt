@@ -8,7 +8,6 @@ import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
-import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Line;
 import mygame.Main;
@@ -34,7 +33,6 @@ public class SimpleTower extends Tower{
         this.setLevel(1);
         this.setLocation(location);
         this.setLiving(true);
-        this.setLocation(new Vector3f(location.x, 0, location.z));
         //Modell von: http://www.blendswap.com/blends/view/2611 (User: RH2) 
         //Bearbeitet von: Florian Wenk
         Spatial s = Main.app.getAssetManager().loadModel("Objects/SimpleTower.j3o").scale(2f, 2f, 2f);

@@ -1,13 +1,17 @@
 package mygame.Entitys;
 
 
-import com.jme3.bullet.control.RigidBodyControl;
+import com.jme3.bounding.BoundingSphere;
+import com.jme3.collision.CollisionResults;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Quaternion;
+import com.jme3.math.Ray;
 import com.jme3.math.Vector3f;
+import com.jme3.renderer.Camera;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Cylinder;
 import com.jme3.scene.shape.Sphere;
 import mygame.Main;
@@ -57,7 +61,7 @@ public class Bomb extends Entity{
         
         way = new Way();
         super.setLocation(way.getStartPoint().setY(2));
-        this.getSpatial().setLocalTranslation(way.getStartPoint());
+        this.getSpatial().setLocalTranslation(way.getStartPoint().setY(2));
         money = 5;
     }
     
@@ -114,11 +118,23 @@ public class Bomb extends Entity{
      */
     @Override
     public void action(float tpf) {
-        if(this.getLocation().subtract(this.getSpatial().getLocalTranslation()).length() > 1){
-            Vector3f v = new Vector3f(this.getLocation().subtract(this.getSpatial().getLocalTranslation()));
+        if(this.getLocation().add(0, -this.getLocation().getY(), 0).distance(this.getSpatial().getLocalTranslation().add(0, -this.getSpatial().getLocalTranslation().getY(), 0)) > 1){
+            Vector3f v = new Vector3f(this.getLocation().subtract(this.getSpatial().getLocalTranslation().add(0, -this.getSpatial().getLocalTranslation().getY(), 0)));
             v.divideLocal(10*v.length());
             v.multLocal(5*tpf);
             this.getSpatial().move(v.mult(this.getSpeed()));
+            Ray rayDown = new Ray(this.getSpatial().getLocalTranslation(), new Vector3f(0, -1, 0));
+            CollisionResults results = new CollisionResults();
+            Main.app.getWorld().getScene().collideWith(rayDown, results);
+            if(results.size() > 0 && results.getClosestCollision().getContactPoint().distance(this.getSpatial().getLocalTranslation()) != 2){
+                this.getSpatial().move(0, 2 - results.getClosestCollision().getContactPoint().distance(this.getSpatial().getLocalTranslation()), 0);
+            } else if (results.size() == 0){
+                Ray rayUp = new Ray(this.getSpatial().getLocalTranslation(), new Vector3f(0, 1, 0));
+                Main.app.getWorld().getScene().collideWith(rayUp, results);
+                if(results.size() > 0){
+                    this.getSpatial().move(0, results.getClosestCollision().getContactPoint().distance(this.getSpatial().getLocalTranslation()) + 2, 0);
+                }
+            }
         } else {
             moveTo(way.getNextCorner());
         }
