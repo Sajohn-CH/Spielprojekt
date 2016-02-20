@@ -89,9 +89,9 @@ public class Main extends SimpleApplication implements ActionListener{
         //Set this boolean true when the game loop should stop running when ever the window loses focus.
         app.setPauseOnLostFocus(true);
         
-        scene = assetManager.loadModel("Scenes/scene_1.2.j3o");
+        scene = assetManager.loadModel("Scenes/scene_1.3.j3o");
         scene.setLocalScale(2f);
-        scene.setName("scene_1.2");
+        scene.setName("scene_1.3");
         
         bulletAppState = new BulletAppState();
         stateManager.attach(bulletAppState);

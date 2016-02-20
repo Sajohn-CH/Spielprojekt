@@ -42,12 +42,12 @@ public class SimpleTower extends Tower{
         
         // Licht hinzufügen
         PointLight light1 = new PointLight();
-        light1.setPosition(new Vector3f(location.x ,20, location.z));
+        light1.setPosition(new Vector3f(location.x ,location.y + 20, location.z));
         light1.setRadius(100f);
         s.addLight(light1);
         
         PointLight light2 = new PointLight();
-        light2.setPosition(new Vector3f(location.x +1,2, location.z-1));
+        light2.setPosition(new Vector3f(location.x +1,location.y + 2, location.z-1));
         light2.setRadius(100f);
         s.addLight(light2);
         
@@ -78,7 +78,7 @@ public class SimpleTower extends Tower{
     public void action(float tpf) {
         Bomb bomb = this.getBombToShootAt();
         if(bomb != null && bomb.getSpatial().getLocalTranslation().subtract(this.getSpatial().getLocalTranslation()).length() <= this.getRange() && isLiving() && canShoot()){
-           this.getSpatial().lookAt(bomb.getSpatial().getLocalTranslation().add(Main.getWorld().getBombNode().getLocalTranslation()).setY(0), new Vector3f(0,1,0));
+           this.getSpatial().lookAt(bomb.getSpatial().getLocalTranslation().add(Main.getWorld().getBombNode().getLocalTranslation()).setY(this.getSpatial().getLocalTranslation().getY()), new Vector3f(0,1,0));
            Line l = new Line(this.getSpatial().getLocalTranslation().add(0, 3, 0), bomb.getSpatial().getLocalTranslation());
            line.setMesh(l);
            Main.app.getRootNode().attachChild(line);
@@ -98,7 +98,7 @@ public class SimpleTower extends Tower{
         } else if (this.getHealthPercentage() > 20 && this.lowHealthSignIsVisble()){
             this.hideLowHealthSign();
         }
-        this.getNode().getChild("levelNumber").lookAt(Main.app.getWorld().getPlayer().getLocation().setY(this.getNode().getChild("levelNumber").getLocalTranslation().getY()), new Vector3f (0, 1, 0));
+        this.getNode().getChild("levelNumber").lookAt(Main.app.getWorld().getPlayer().getLocation().setY(this.getNode().getChild("levelNumber").getLocalTranslation().add(this.getSpatial().getLocalTranslation()).getY()), new Vector3f (0, 1, 0));
     }
   
     /**

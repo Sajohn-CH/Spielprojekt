@@ -122,19 +122,32 @@ public class Bomb extends Entity{
             Vector3f v = new Vector3f(this.getLocation().subtract(this.getSpatial().getLocalTranslation().add(0, -this.getSpatial().getLocalTranslation().getY(), 0)));
             v.divideLocal(10*v.length());
             v.multLocal(5*tpf);
-            this.getSpatial().move(v.mult(this.getSpeed()));
+            v.multLocal(this.getSpeed());
+            Vector3f w = new Vector3f(0, 0, 0);
             Ray rayDown = new Ray(this.getSpatial().getLocalTranslation(), new Vector3f(0, -1, 0));
             CollisionResults results = new CollisionResults();
             Main.app.getWorld().getScene().collideWith(rayDown, results);
             if(results.size() > 0 && results.getClosestCollision().getContactPoint().distance(this.getSpatial().getLocalTranslation()) != 2){
-                this.getSpatial().move(0, 2 - results.getClosestCollision().getContactPoint().distance(this.getSpatial().getLocalTranslation()), 0);
+                w = new Vector3f(0, 2 - results.getClosestCollision().getContactPoint().distance(this.getSpatial().getLocalTranslation()), 0);
+                this.getSpatial().move(w);
+                if(w.y > 0){
+                    if(w.length() > v.length()*.9){
+                        v.multLocal(.1f);
+                    } else {
+                        v = v.normalize().mult(v.length()-w.length());
+                    }
+                } else {
+                    v = v.normalize().mult(v.length()+.25f*w.length());
+                }
             } else if (results.size() == 0){
                 Ray rayUp = new Ray(this.getSpatial().getLocalTranslation(), new Vector3f(0, 1, 0));
                 Main.app.getWorld().getScene().collideWith(rayUp, results);
                 if(results.size() > 0){
-                    this.getSpatial().move(0, results.getClosestCollision().getContactPoint().distance(this.getSpatial().getLocalTranslation()) + 2, 0);
+                    w = new Vector3f(0, results.getClosestCollision().getContactPoint().distance(this.getSpatial().getLocalTranslation()) + 2, 0);
+                    this.getSpatial().move(w);
                 }
             }
+            this.getSpatial().move(v);
         } else {
             moveTo(way.getNextCorner());
         }

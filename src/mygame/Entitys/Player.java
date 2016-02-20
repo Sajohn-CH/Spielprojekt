@@ -16,6 +16,7 @@ import com.jme3.math.Ray;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.shape.Line;
+import com.jme3.scene.shape.Sphere;
 import mygame.HudScreenState;
 import mygame.Main;
 import mygame.Settings;
@@ -41,6 +42,8 @@ public class Player extends Entity{
     private int healPoints;                 //Punkte die beim Heilen pro Updateloop geheilt werden.
     private boolean isHealing;              //Ob der Spieler am heilen ist
     private boolean hasHealed;              //Ob der Spieler geheilt hat
+    private boolean towerInfoVisible;       //Ob die Turm info sichtbar ist
+    private Tower towerWithTowerInfoVisible;    // Wenn die turminfo sichtbar ist, auf welchen Turm sie zeigt
     
     private double shotsPerSecond;          //Wieoft der Spieler in der Sekunde schiesst
     private int range;                      //Reichweite des Spielers
@@ -57,6 +60,8 @@ public class Player extends Entity{
     private int keyDown;                   //Keycode der Unten-Taste
     private int keyJump;                   //Keycode der Springen-Taste
     
+    private Geometry sphere;               //Ist immer am ort auf der Scene wo der Spieler hinblickt
+    
     /**
      * Initialisiert den Spieler. Setzt Grundattribute des Spielers, erstellt die Waffe und Schusslinie und lädt die Töne.
      * @param inputListener Für Tasteneingaben benötigt
@@ -72,6 +77,8 @@ public class Player extends Entity{
         isShooting = false;
         isHealing = false;
         hasHealed = false;
+        towerInfoVisible = false;
+        towerWithTowerInfoVisible = null;
         healPoints = 1;
         shotsPerSecond = 50;
         range = 100; 
@@ -100,6 +107,10 @@ public class Player extends Entity{
         Material mat1 = new Material(Main.app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
         mat1.setColor("Color", ColorRGBA.Cyan);
         healingLine.setMaterial(mat1);
+        
+        sphere = new Geometry("sphere", new Sphere(32, 32, 1f));
+        sphere.setMaterial(mat);
+//        Main.app.getRootNode().attachChild(sphere);
         
         //Modell von: http://www.blendswap.com/blends/view/67733 (User: genx473)
         //Beatrbeitet von: Florian Wenk
@@ -336,15 +347,23 @@ public class Player extends Entity{
          //Kontrolle ob Turm im Sichtfeld
          CollisionResults results = new CollisionResults();
          CollisionResults resultsBeacon = new CollisionResults();
+         CollisionResults resultsScene = new CollisionResults();
          Ray ray = new Ray(Main.app.getCamera().getLocation(), Main.app.getCamera().getDirection());
-         Main.getWorld().getTowerNode().collideWith(ray, results);
-         Main.getWorld().getBeacon().getSpatial().collideWith(ray, resultsBeacon);
-         if(results.size() != 0 && (resultsBeacon.size() == 0 || results.getClosestCollision().getContactPoint().subtract(this.getLocation()).length() < resultsBeacon.getClosestCollision().getContactPoint().subtract(this.getLocation()).length()) && results.getClosestCollision().getContactPoint().subtract(this.getLocation()).length() <= 150) {
+         Main.app.getWorld().getTowerNode().collideWith(ray, results);
+         Main.app.getWorld().getBeacon().getSpatial().collideWith(ray, resultsBeacon);
+         Main.app.getWorld().getScene().collideWith(ray, resultsScene);
+         if(results.size() != 0 && (resultsBeacon.size() == 0 || results.getClosestCollision().getContactPoint().subtract(this.getLocation()).length() < resultsBeacon.getClosestCollision().getContactPoint().subtract(this.getLocation()).length()) && results.getClosestCollision().getContactPoint().subtract(this.getLocation()).length() <= 150 && (resultsScene.size() == 0 || results.getClosestCollision().getContactPoint().subtract(this.getLocation()).length() < resultsScene.getClosestCollision().getContactPoint().subtract(this.getLocation()).length())) {
              Tower tower = Main.getWorld().getNearestTower(results.getClosestCollision().getContactPoint());
              Main.app.getHudState().showTowerInfo(tower);
+             towerInfoVisible = true;
+             towerWithTowerInfoVisible = tower;
          } else {
              Main.app.getHudState().hideTowerInfo();
+             towerInfoVisible = false;
+             towerWithTowerInfoVisible = null;
          }
+         if(resultsScene.size() != 0)
+            sphere.setLocalTranslation(resultsScene.getClosestCollision().getContactPoint());
      }
 
    /**
@@ -403,8 +422,10 @@ public class Player extends Entity{
             if(resultsWay.size() != 0){
                 return;
             }
-            CollisionResult closest = results.getClosestCollision();
-            Vector3f v = closest.getContactPoint();
+//            CollisionResult closest = results.getClosestCollision();
+//            Vector3f v = closest.getContactPoint();
+            //Punkt auf der scene wo der Spieler hinblickt, da sphere immer dorthingesetzt wird. results.getClosestCollision().getContactPoint() ergab falsche resultate
+            Vector3f v = sphere.getLocalTranslation();
             Tower tower = Main.app.getHudState().getSelectedTower(v);
             //kontrolliert ob Spieler genug Geld hat
             if(getMoney()-tower.getPrice() < 0) {
@@ -414,11 +435,11 @@ public class Player extends Entity{
             }
             Tower nearest = Main.app.getWorld().getNearestTower(v);
             // konntrolliert ob Distanz zum nächsten Turm genügend gross ist
-            if(nearest != null && nearest.getLocation().subtract(v).length() < 10){
+            if(nearest != null && nearest.getSpatial().getLocalTranslation().distance(tower.getSpatial().getLocalTranslation()) < 10){
                 // Zu nahe an einem anderen Turm -> Turm wird nicht gesetzt
                 return;
             }
-            if(v.subtract(Main.app.getCamera().getLocation()).length() < 15){
+            if(v.subtract(Main.app.getCamera().getLocation()).length() < 5){
                 return;
             }
             //Zieht Geld 
@@ -526,16 +547,25 @@ public class Player extends Entity{
     public void upgradeObject() {
         setNotWalking();
         stopAudio();
+        if(towerInfoVisible){
+            towerWithTowerInfoVisible.increaseLevel();
+            return;
+        }
         CollisionResults resultsTower = new CollisionResults();
         CollisionResults resultsBeacon = new CollisionResults();
+        CollisionResults resultsScene = new CollisionResults();
         Ray ray = new Ray(Main.app.getCamera().getLocation(), Main.app.getCamera().getDirection());
-        Main.getWorld().getTowerNode().collideWith(ray, resultsTower);
-        Main.getWorld().getBeacon().getSpatial().collideWith(ray, resultsBeacon);
+        Main.app.getWorld().getTowerNode().collideWith(ray, resultsTower);
+        Main.app.getWorld().getBeacon().getSpatial().collideWith(ray, resultsBeacon);
+        Main.app.getWorld().getScene().collideWith(ray, resultsScene);
         if(resultsTower.size() == 0) {
-            if(resultsBeacon.size() != 0){
+            if(resultsBeacon.size() != 0 && resultsBeacon.getClosestCollision().getContactPoint().subtract(this.getLocation()).length() < resultsScene.getClosestCollision().getContactPoint().subtract(this.getLocation()).length()){
                 Main.getWorld().getBeacon().increaseLevel();
             }
         } else {
+            if(resultsScene.size() > 0 && resultsTower.getClosestCollision().getContactPoint().subtract(this.getLocation()).length() > resultsScene.getClosestCollision().getContactPoint().subtract(this.getLocation()).length()){
+                return;
+            }
             //Es gibt min. einen Turm. Es wird der nächste geholt
             Vector3f pointTower = resultsTower.getClosestCollision().getContactPoint();
             Tower nearestTower = Main.app.getWorld().getNearestTower(pointTower);

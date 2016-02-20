@@ -45,27 +45,27 @@ public class DeactivationTower extends Tower{
         this.getSpatial().setName("DeactivationTower");
         
         PointLight light1 = new PointLight();
-        light1.setPosition(new Vector3f(location.x ,100, location.z));
+        light1.setPosition(new Vector3f(location.x ,location.y + 100, location.z));
         light1.setRadius(1000f);
         this.getSpatial().addLight(light1);
         
         PointLight light2 = new PointLight();
-        light2.setPosition(new Vector3f(location.x ,1, location.z +100));
+        light2.setPosition(new Vector3f(location.x ,location.y + 1, location.z +100));
         light2.setRadius(1000f);
         this.getSpatial().addLight(light2);
         
         PointLight light3 = new PointLight();
-        light3.setPosition(new Vector3f(location.x,1, location.z-100));
+        light3.setPosition(new Vector3f(location.x,location.y + 1, location.z-100));
         light3.setRadius(1000f);
         this.getSpatial().addLight(light3);
         
         PointLight light4 = new PointLight();
-        light4.setPosition(new Vector3f(location.x +100, 1, location.z));
+        light4.setPosition(new Vector3f(location.x +100, location.y + 1, location.z));
         light4.setRadius(1000f);
         this.getSpatial().addLight(light4);
         
         PointLight light5 = new PointLight();
-        light5.setPosition(new Vector3f(location.x -100, 1, location.z));
+        light5.setPosition(new Vector3f(location.x -100, location.y + 1, location.z));
         light5.setRadius(1000f);
         this.getSpatial().addLight(light5);
         
@@ -97,7 +97,7 @@ public class DeactivationTower extends Tower{
         ShootingBomb bomb = (ShootingBomb) super.getBombToShootAt();
         if(bomb != null && bomb.getSpatial().getLocalTranslation().subtract(this.getSpatial().getLocalTranslation()).length() <= this.getRange() && this.canShoot()){
             if(bomb.isShooting()){
-                this.getSpatial().lookAt(bomb.getSpatial().getLocalTranslation().add(Main.getWorld().getBombNode().getLocalTranslation()).setY(0), new Vector3f(0,1,0));
+                this.getSpatial().lookAt(bomb.getSpatial().getLocalTranslation().add(Main.getWorld().getBombNode().getLocalTranslation()).setY(this.getSpatial().getLocalTranslation().getY()), new Vector3f(0,1,0));
                 this.disableShooting(bomb);
                 Line l = new Line(this.getSpatial().getLocalTranslation().add(0,4,0), bomb.getSpatial().getLocalTranslation());
                 line.setMesh(l);
@@ -118,7 +118,7 @@ public class DeactivationTower extends Tower{
         } else if (this.getHealthPercentage() > 20 && this.lowHealthSignIsVisble()){
             this.hideLowHealthSign();
         }
-        this.getNode().getChild("levelNumber").lookAt(Main.app.getWorld().getPlayer().getLocation().setY(this.getNode().getChild("levelNumber").getLocalTranslation().getY()), new Vector3f (0, 1, 0));
+        this.getNode().getChild("levelNumber").lookAt(Main.app.getWorld().getPlayer().getLocation().setY(this.getNode().getChild("levelNumber").getLocalTranslation().add(this.getSpatial().getLocalTranslation()).getY()), new Vector3f (0, 1, 0));
     }
     
     /**

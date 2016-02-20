@@ -170,6 +170,7 @@ public class World extends AbstractAppState{
         }
         towerNode.detachChild(tower.getSpatial());
         this.towers.remove(tower.getSpatial());
+        Main.getBulletAppState().getPhysicsSpace().remove(tower.getSpatial());
     }
 
     /**
@@ -198,7 +199,7 @@ public class World extends AbstractAppState{
         if(!allTowers.isEmpty()){
             Tower nearest = allTowers.get(0);
             for(int i = 1; i < allTowers.size(); i ++){
-                if(allTowers.get(i).getLocation().subtract(location).length() < nearest.getLocation().subtract(location).length()){
+                if(allTowers.get(i).getSpatial().getLocalTranslation().subtract(location).length() < nearest.getSpatial().getLocalTranslation().subtract(location).length()){
                     nearest = allTowers.get(i);
                 }
             }

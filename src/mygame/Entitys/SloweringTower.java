@@ -43,16 +43,16 @@ public class SloweringTower extends Tower{
         this.getSpatial().setName("SloweringTower");
         
         PointLight light1 = new PointLight();
-        light1.setPosition(new Vector3f(location.x +10 ,20, location.z));
+        light1.setPosition(new Vector3f(location.x +10 ,location.y + 20, location.z));
         light1.setRadius(10000);
         PointLight light2 = new PointLight();
-        light2.setPosition(new Vector3f(location.x -10 ,5, location.z));
+        light2.setPosition(new Vector3f(location.x -10 ,location.y + 5, location.z));
         light2.setRadius(10000);
         PointLight light3 = new PointLight();
-        light3.setPosition(new Vector3f(location.x ,20, location.z +10));
+        light3.setPosition(new Vector3f(location.x ,location.y + 20, location.z +10));
         light3.setRadius(10000);
         PointLight light4 = new PointLight();
-        light4.setPosition(new Vector3f(location.x ,5, location.z -10));
+        light4.setPosition(new Vector3f(location.x ,location.y + 5, location.z -10));
         light4.setRadius(10000);
         
         this.getSpatial().addLight(light1);
@@ -95,7 +95,7 @@ public class SloweringTower extends Tower{
     public void action(float tpf) {
         Bomb bomb = super.getBombToShootAt();
         if(bomb != null && bomb.getSpatial().getLocalTranslation().subtract(this.getSpatial().getLocalTranslation()).length() <= this.getRange() && isLiving() && canShoot() && bomb.getDecreasedSpeed() < bomb.getSpeed()-10-getLevel()*2){
-           this.getSpatial().lookAt(bomb.getSpatial().getLocalTranslation().add(Main.getWorld().getBombNode().getLocalTranslation()).setY(0), new Vector3f(0,1,0));
+           this.getSpatial().lookAt(bomb.getSpatial().getLocalTranslation().add(Main.getWorld().getBombNode().getLocalTranslation()).setY(this.getSpatial().getLocalTranslation().getY()), new Vector3f(0,1,0));
            Vector3f vec = bomb.getSpatial().getLocalTranslation().subtract(this.getSpatial().getLocalTranslation()).normalize().mult(3.15f).setY(5.925f);
            Line l = new Line(this.getSpatial().getLocalTranslation().add(vec), bomb.getSpatial().getLocalTranslation());
            line.setMesh(l);
@@ -116,7 +116,7 @@ public class SloweringTower extends Tower{
         } else if (this.getHealthPercentage() > 20 && this.lowHealthSignIsVisble()){
             this.hideLowHealthSign();
         }
-        this.getNode().getChild("levelNumber").lookAt(Main.app.getWorld().getPlayer().getLocation().setY(this.getNode().getChild("levelNumber").getLocalTranslation().getY()), new Vector3f (0, 1, 0));
+        this.getNode().getChild("levelNumber").lookAt(Main.app.getWorld().getPlayer().getLocation().setY(this.getNode().getChild("levelNumber").getLocalTranslation().add(this.getSpatial().getLocalTranslation()).getY()), new Vector3f (0, 1, 0));
     }
     
     /**
