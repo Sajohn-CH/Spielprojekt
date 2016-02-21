@@ -8,13 +8,16 @@ import com.jme3.app.state.AbstractAppState;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
+import com.jme3.collision.CollisionResults;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.Ray;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Box;
+import com.jme3.scene.shape.Line;
 import com.jme3.texture.Texture;
 import com.jme3.util.SkyFactory;
 import java.util.ArrayList;
@@ -427,5 +430,19 @@ public class World extends AbstractAppState{
      */
     public boolean isPaused(){
         return !this.isEnabled();
+    }
+    
+    /**
+     * Gibt zurück ob der Punkt further weiter entfernt ist als der Punkt nearer
+     * @param origin Von wo
+     * @param further weiter Entfernt?
+     * @param nearer Näher?
+     * @return Ob further weiter entfernt als nearer -- wenn einer null dann true
+     */
+    public boolean distanceIsLonger(Vector3f origin, Vector3f further, Vector3f nearer){
+        if(origin == null || further == null || nearer == null){
+            return true;
+        }
+        return origin.distance(further) > origin.distance(nearer);
     }
 }
