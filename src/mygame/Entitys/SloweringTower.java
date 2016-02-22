@@ -26,11 +26,12 @@ public class SloweringTower extends Tower{
      * Initialisierung des Turmes. Setzt Grundattribute des Turmes, ladet das Modell und erstellt die Schusslinie.
      * @param location Ort
      */
-    public SloweringTower(Vector3f location) {
+    public SloweringTower(Vector3f location, Vector3f up) {
         super();
         this.setName("Verlangsamender Turm");
         this.setPrice(150);
         this.increaseTotalPaidMoney(this.getPrice());
+        this.setUp(up);
         this.setLevel(1);
         this.setLocation(location);
         this.setLiving(true);
@@ -95,7 +96,8 @@ public class SloweringTower extends Tower{
     public void action(float tpf) {
         Bomb bomb = super.getBombToShootAt();
         if(bomb != null && bomb.getSpatial().getLocalTranslation().subtract(this.getSpatial().getLocalTranslation()).length() <= this.getRange() && isLiving() && canShoot() && bomb.getDecreasedSpeed() < bomb.getSpeed()-10-getLevel()*2){
-           this.getSpatial().lookAt(bomb.getSpatial().getLocalTranslation().add(Main.getWorld().getBombNode().getLocalTranslation()).setY(this.getSpatial().getLocalTranslation().getY()), new Vector3f(0,1,0));
+           this.getSpatial().lookAt(bomb.getSpatial().getLocalTranslation().add(Main.getWorld().getBombNode().getLocalTranslation()).setY(this.getSpatial().getLocalTranslation().getY()), this.getUp());
+           this.getSpatial().rotateUpTo(this.getUp());
            Vector3f vec = bomb.getSpatial().getLocalTranslation().subtract(this.getSpatial().getLocalTranslation()).normalize().mult(3.15f).setY(5.925f);
            Line l = new Line(this.getSpatial().getLocalTranslation().add(vec), bomb.getSpatial().getLocalTranslation());
            line.setMesh(l);

@@ -26,11 +26,12 @@ public class DeactivationTower extends Tower{
      * Erstellt den Tower. Setzt wichtige Attribute des Turmes, ladet das Modell und erstellt die Schusslinie.
      * @param location 
      */
-    public DeactivationTower (Vector3f location){
+    public DeactivationTower (Vector3f location, Vector3f up){
         super();
         this.setName("Deaktivierender Turm");
         this.setPrice(200);
         this.increaseTotalPaidMoney(this.getPrice());
+        this.setUp(up);
         this.setLevel(1);
         this.setLocation(location);
         this.setLiving(true);
@@ -97,7 +98,8 @@ public class DeactivationTower extends Tower{
         ShootingBomb bomb = (ShootingBomb) super.getBombToShootAt();
         if(bomb != null && bomb.getSpatial().getLocalTranslation().subtract(this.getSpatial().getLocalTranslation()).length() <= this.getRange() && this.canShoot()){
             if(bomb.isShooting()){
-                this.getSpatial().lookAt(bomb.getSpatial().getLocalTranslation().add(Main.getWorld().getBombNode().getLocalTranslation()).setY(this.getSpatial().getLocalTranslation().getY()), new Vector3f(0,1,0));
+                this.getSpatial().lookAt(bomb.getSpatial().getLocalTranslation().add(Main.getWorld().getBombNode().getLocalTranslation()).setY(this.getSpatial().getLocalTranslation().getY()), this.getUp());
+                this.getSpatial().rotateUpTo(this.getUp());
                 this.disableShooting(bomb);
                 Line l = new Line(this.getSpatial().getLocalTranslation().add(0,4,0), bomb.getSpatial().getLocalTranslation());
                 line.setMesh(l);

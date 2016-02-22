@@ -168,8 +168,8 @@ public class HudScreenState extends AbstractAppState implements ScreenController
         if(itemSelected == 5) {
             selectItem(1);
         } else {
-        int nextItem = itemSelected+1;
-        selectItem(nextItem);
+            int nextItem = itemSelected+1;
+            selectItem(nextItem);
         }
     }
     
@@ -191,19 +191,19 @@ public class HudScreenState extends AbstractAppState implements ScreenController
      * @param location Ort, an dem der Turm gebaut werden soll. 
      * @return gewählter Turm, der gebaut werden soll
      */
-    public Tower getSelectedTower(Vector3f location) {
+    public Tower getSelectedTower(Vector3f location, Vector3f up) {
         switch(itemSelected) {
             case(1):
-                return new SimpleTower(location);
+                return new SimpleTower(location, up);
                 
             case(2):
-                return new SloweringTower(location);
+                return new SloweringTower(location, up);
                 
             case(3):
-                return new DeactivationTower(location);
+                return new DeactivationTower(location, up);
                 
             default:
-                return new SimpleTower(location);
+                return new SimpleTower(location, up);
         }
     }
     

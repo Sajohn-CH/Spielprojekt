@@ -186,7 +186,7 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
         Main.app.getWorld().getPlayer().setLocation(new Vector3f(0,10,0));
         Main.app.getWorld().getPlayer().revive();
         Main.app.getWorld().getPlayer().turn();
-        Main.app.getWorld().getPlayer().setMoney(250);
+        Main.app.getWorld().getPlayer().setMoney(250000);
         //Alle Türme zurücksetzen
         for(int i = Main.app.getWorld().getAllTowers().size()-1; i >= 0; i--) {
             Main.app.getWorld().removeTower(Main.app.getWorld().getAllTowers().get(i));
@@ -241,12 +241,17 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
                 position.setX(Float.valueOf(posEle.getAttribute("x")));
                 position.setY(Float.valueOf(posEle.getAttribute("y")));
                 position.setZ(Float.valueOf(posEle.getAttribute("z")));
+                Element upEle = (Element) towerElement.getElementsByTagName("Up").item(0);
+                Vector3f up = new Vector3f();
+                up.setX(Float.valueOf(upEle.getAttribute("x")));
+                up.setY(Float.valueOf(upEle.getAttribute("y")));
+                up.setZ(Float.valueOf(upEle.getAttribute("z")));
                 if(towerElement.getAttribute("Type").equals("mygame.Entitys.SimpleTower")) {
-                    tower = new SimpleTower(position);
+                    tower = new SimpleTower(position, up);
                 } else if(towerElement.getAttribute("Type").equals("mygame.Entitys.SloweringTower")) {
-                    tower = new SloweringTower(position);
+                    tower = new SloweringTower(position, up);
                 } else {
-                    tower = new DeactivationTower(position);
+                    tower = new DeactivationTower(position, up);
                 }
                 Main.app.getWorld().addTower(tower);
                 tower.setLevel(Integer.valueOf(towerElement.getAttribute("Level")));
@@ -315,10 +320,15 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
                 tower.setAttribute("Health", String.valueOf(towers.get(i).getHealth()));
                 //Speichert Position des Turms
                 Element position = doc.createElement("Position");
-                position.setAttribute("x", String.valueOf(towers.get(i).getLocation().getX()));
-                position.setAttribute("y", String.valueOf(towers.get(i).getLocation().getY()));
-                position.setAttribute("z", String.valueOf(towers.get(i).getLocation().getZ()));
+                position.setAttribute("x", String.valueOf(towers.get(i).getSpatial().getLocalTranslation().getX()));
+                position.setAttribute("y", String.valueOf(towers.get(i).getSpatial().getLocalTranslation().getY()));
+                position.setAttribute("z", String.valueOf(towers.get(i).getSpatial().getLocalTranslation().getZ()));
                 tower.appendChild(position);
+                Element up = doc.createElement("Up");
+                up.setAttribute("x", String.valueOf(towers.get(i).getUp().getX()));
+                up.setAttribute("y", String.valueOf(towers.get(i).getUp().getY()));
+                up.setAttribute("z", String.valueOf(towers.get(i).getUp().getZ()));
+                tower.appendChild(up);
                 world.appendChild(tower);
             }
             rootElement.appendChild(world);

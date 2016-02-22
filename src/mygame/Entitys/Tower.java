@@ -29,6 +29,7 @@ public class Tower extends Entity{
     private boolean lowHealthSignIsVisible; //Zeichen, dass der Turm wenig Leben hat ist aktiv.
     private Node n;
     private Material numberMat;
+    private Vector3f up;
     
     private boolean shootOnlyAtShootingBombs;
     private boolean shootOnlyAtNormalBombs;
@@ -49,6 +50,7 @@ public class Tower extends Entity{
         this.setSpatial(n);
         numberMat = new Material(Main.app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
         numberMat.setColor("Color", ColorRGBA.Gray);
+        up = new Vector3f(0, 1, 0);
         
         shootOnlyAtShootingBombs = false;
         shootOnlyAtNormalBombs = false;
@@ -621,5 +623,22 @@ public class Tower extends Entity{
     
     public void setNode(Node n){
         this.n = n;
+    }
+    
+    /**
+     * Setzt den Vektor der nach oben zeigt.
+     * @param up  Vektor in die die "Spitze" des Turms zeigen soll
+     */
+    public void setUp(Vector3f up){
+        this.up = up;
+        this.getSpatial().rotateUpTo(up);
+    }
+    
+    /**
+     * Gibt den Vektor zurück der nach oben zeigt.
+     * @return Vektor in die die "Spitze" des Turms zeigen soll
+     */
+    public Vector3f getUp(){
+        return this.up;
     }
 }

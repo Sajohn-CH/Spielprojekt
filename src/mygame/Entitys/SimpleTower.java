@@ -25,11 +25,12 @@ public class SimpleTower extends Tower{
      * Initialisiert den Turm. Setzt Grundattribute, ladet das Modell und erstellt die Schusslinie.
      * @param location Ort
      */
-    public SimpleTower (Vector3f location){
+    public SimpleTower (Vector3f location, Vector3f up){
         super();
         this.setName("Zerstörender Turm");
         this.setPrice(100);
         this.increaseTotalPaidMoney(this.getPrice());
+        this.setUp(up);
         this.setLevel(1);
         this.setLocation(location);
         this.setLiving(true);
@@ -78,7 +79,8 @@ public class SimpleTower extends Tower{
     public void action(float tpf) {
         Bomb bomb = this.getBombToShootAt();
         if(bomb != null && bomb.getSpatial().getLocalTranslation().subtract(this.getSpatial().getLocalTranslation()).length() <= this.getRange() && isLiving() && canShoot()){
-           this.getSpatial().lookAt(bomb.getSpatial().getLocalTranslation().add(Main.getWorld().getBombNode().getLocalTranslation()).setY(this.getSpatial().getLocalTranslation().getY()), new Vector3f(0,1,0));
+           this.getSpatial().lookAt(bomb.getSpatial().getLocalTranslation().add(Main.getWorld().getBombNode().getLocalTranslation()).setY(this.getSpatial().getLocalTranslation().getY()), this.getUp());
+           this.getSpatial().rotateUpTo(this.getUp());
            Line l = new Line(this.getSpatial().getLocalTranslation().add(0, 3, 0), bomb.getSpatial().getLocalTranslation());
            line.setMesh(l);
            Main.app.getRootNode().attachChild(line);
