@@ -246,7 +246,7 @@ public class Tower extends Entity{
         mat.setTexture("Texture", Main.app.getAssetManager().loadTexture("Effects/flame.png"));
         mat.setBoolean("PointSprite", true);
         flame.setMaterial(mat);
-        flame.setLocalTranslation(this.getLocation());
+        flame.setLocalTranslation(this.getSpatial().getLocalTranslation());
         flame.emitAllParticles();
         Main.app.getRootNode().attachChild(flame);
         this.getSpatial().removeFromParent();

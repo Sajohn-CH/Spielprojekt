@@ -101,7 +101,7 @@ public class DeactivationTower extends Tower{
                 this.getSpatial().lookAt(bomb.getSpatial().getLocalTranslation().add(Main.getWorld().getBombNode().getLocalTranslation()).setY(this.getSpatial().getLocalTranslation().getY()), this.getUp());
                 this.getSpatial().rotateUpTo(this.getUp());
                 this.disableShooting(bomb);
-                Line l = new Line(this.getSpatial().getLocalTranslation().add(0,4,0), bomb.getSpatial().getLocalTranslation());
+                Line l = new Line(this.getSpatial().getLocalTranslation().add(this.getUp().normalize().mult(4)), bomb.getSpatial().getLocalTranslation());
                 line.setMesh(l);
                 Main.app.getRootNode().attachChild(line);
                 super.shot();

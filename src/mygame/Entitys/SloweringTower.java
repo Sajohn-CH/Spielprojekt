@@ -98,7 +98,7 @@ public class SloweringTower extends Tower{
         if(bomb != null && bomb.getSpatial().getLocalTranslation().subtract(this.getSpatial().getLocalTranslation()).length() <= this.getRange() && isLiving() && canShoot() && bomb.getDecreasedSpeed() < bomb.getSpeed()-10-getLevel()*2){
            this.getSpatial().lookAt(bomb.getSpatial().getLocalTranslation().add(Main.getWorld().getBombNode().getLocalTranslation()).setY(this.getSpatial().getLocalTranslation().getY()), this.getUp());
            this.getSpatial().rotateUpTo(this.getUp());
-           Vector3f vec = bomb.getSpatial().getLocalTranslation().subtract(this.getSpatial().getLocalTranslation()).normalize().mult(3.15f).setY(5.925f);
+           Vector3f vec = bomb.getSpatial().getLocalTranslation().subtract(this.getSpatial().getLocalTranslation()).normalize().mult(3.15f).add(this.getUp().normalize().mult(5.925f));
            Line l = new Line(this.getSpatial().getLocalTranslation().add(vec), bomb.getSpatial().getLocalTranslation());
            line.setMesh(l);
            Main.app.getRootNode().attachChild(line);

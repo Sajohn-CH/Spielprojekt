@@ -186,7 +186,7 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
         Main.app.getWorld().getPlayer().setLocation(new Vector3f(0,10,0));
         Main.app.getWorld().getPlayer().revive();
         Main.app.getWorld().getPlayer().turn();
-        Main.app.getWorld().getPlayer().setMoney(250000);
+        Main.app.getWorld().getPlayer().setMoney(250);
         //Alle Türme zurücksetzen
         for(int i = Main.app.getWorld().getAllTowers().size()-1; i >= 0; i--) {
             Main.app.getWorld().removeTower(Main.app.getWorld().getAllTowers().get(i));

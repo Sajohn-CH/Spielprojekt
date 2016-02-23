@@ -81,7 +81,7 @@ public class SimpleTower extends Tower{
         if(bomb != null && bomb.getSpatial().getLocalTranslation().subtract(this.getSpatial().getLocalTranslation()).length() <= this.getRange() && isLiving() && canShoot()){
            this.getSpatial().lookAt(bomb.getSpatial().getLocalTranslation().add(Main.getWorld().getBombNode().getLocalTranslation()).setY(this.getSpatial().getLocalTranslation().getY()), this.getUp());
            this.getSpatial().rotateUpTo(this.getUp());
-           Line l = new Line(this.getSpatial().getLocalTranslation().add(0, 3, 0), bomb.getSpatial().getLocalTranslation());
+           Line l = new Line(this.getSpatial().getLocalTranslation().add(this.getUp().normalize().mult(3)), bomb.getSpatial().getLocalTranslation());
            line.setMesh(l);
            Main.app.getRootNode().attachChild(line);
            super.shot();
