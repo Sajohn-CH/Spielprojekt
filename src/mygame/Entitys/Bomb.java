@@ -25,6 +25,7 @@ public class Bomb extends Entity{
     private int money;          //Wieviel Geld der Spieler beim zerstören einer Schicht bekommt
     private int decreasedSpeed; //Um wieviel die Geschwindigkeit verringert wurde
     private Node n;             //Enthält alle Graphischen Elemente der Bombe
+    protected Float multiplier;
     
     /**
      * Erstellt die Bombe. Erstellt den Spatial der Bombe und setzt den Weg.
@@ -33,6 +34,7 @@ public class Bomb extends Entity{
     public Bomb (int level){
         colors  = new ColorRGBA[]{ColorRGBA.Blue, ColorRGBA.Cyan, ColorRGBA.Green, ColorRGBA.Magenta, ColorRGBA.Red, ColorRGBA.Orange, ColorRGBA.Yellow, ColorRGBA.Green, ColorRGBA.Pink, ColorRGBA.Brown};
         this.setLiving(true);
+        multiplier = Main.getWorld().getBombMultiplier();
         
         //Spatial erstellen
         n = new Node("bomb");
@@ -182,9 +184,9 @@ public class Bomb extends Entity{
     @Override
     public void setLevel(int newLevel) {
         //setzt Leben als Funktion mit level
-        this.setHealth(50+newLevel*50);
-        this.setDamage(10+newLevel*10);
-        this.setSpeed(50-newLevel*2+Main.getGame().getWave()*2-decreasedSpeed);
+        this.setHealth(50+(int)(newLevel*50*multiplier));
+        this.setDamage(10+(int)(newLevel*10*multiplier));
+        this.setSpeed(50-(int)(newLevel*2*multiplier)+Main.getGame().getWave()*2-decreasedSpeed);
         
         mat.setColor("Color", colors[(newLevel-1)%colors.length]);
         super.setLevel(newLevel);

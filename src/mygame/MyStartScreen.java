@@ -140,6 +140,9 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
             updateButtonText("item_4", settings.getKeyString(settings.getKey("item_4")));
             updateButtonText("item_5", settings.getKeyString(settings.getKey("item_5")));
             updateButtonText("help", settings.getKeyString(settings.getKey("help")));
+        } else if (screen.getScreenId().equals("chooseScene")){
+            screen.findNiftyControl("dropdownScene", DropDown.class).addItem("Welt wählen");
+            screen.findNiftyControl("dropdownScene", DropDown.class).addAllItems(Main.app.getPossibleSceneNames());
         }
         
     }
@@ -179,6 +182,10 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
      * Startet das Spiel.
      */
     public void startGame() {
+        if(screen.findNiftyControl("dropdownScene", DropDown.class).getSelection().equals("Welt wählen")){
+            return;
+        }
+        Main.getWorld().setScene((String) screen.findNiftyControl("dropdownScene", DropDown.class).getSelection());
         //Spiel fortsetzen
         continueGame();
         
@@ -201,6 +208,10 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
         Main.app.getHudState().setBuildPhase(false);
          //InfoBildschirm anzeigen
         Main.app.getHudState().toggleHelpLayer();
+    }
+    
+    public void chooseScene(){
+        nifty.gotoScreen("chooseScene");
     }
     
     /**
@@ -289,6 +300,9 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
             Element rootElement = (Element) doc.getElementsByTagName("SaveGame").item(0);
             Main.app.getGame().startWave(Integer.valueOf(rootElement.getAttribute("Wave")));
             
+            //Setzt Scene
+            Main.getWorld().setScene(rootElement.getAttribute("SceneName"));
+            
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -306,6 +320,7 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
             Document doc = dBuilder.newDocument();
             Element rootElement = doc.createElement("SaveGame");
+            rootElement.setAttribute("SceneName", Main.getWorld().getScene().getName());
             rootElement.setAttribute("Wave", String.valueOf(Main.app.getGame().getWave()));
             rootElement.setAttribute("Date", String.valueOf(System.currentTimeMillis()));
             doc.appendChild(rootElement);

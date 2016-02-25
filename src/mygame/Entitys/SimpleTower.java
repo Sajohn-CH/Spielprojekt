@@ -111,10 +111,10 @@ public class SimpleTower extends Tower{
     public void setLevel(int newLevel) {
         super.setLevel(newLevel);
         this.setRange(getNewRange(newLevel));
-        this.setDamage(getNewDamage(newLevel));
-        this.setHealth(getNewHealth(newLevel));
-        this.setMaxHealth(getNewHealth(newLevel));
-        this.setShotsPerSecond(getNewSPS(newLevel));
+        this.setDamage((int)(getNewDamage(newLevel)*multiplier));
+        this.setHealth((int)(getNewHealth(newLevel)*multiplier));
+        this.setMaxHealth((int)(getNewHealth(newLevel)*multiplier));
+        this.setShotsPerSecond((int)(getNewSPS(newLevel)*multiplier));
         this.setLevelNumberSpatial(newLevel, 6);
     }
     
@@ -155,7 +155,7 @@ public class SimpleTower extends Tower{
      */
     @Override
     public int getUpgradePrice() {
-        return this.getMaxHealth()*(this.getLevel()/10+1);
+        return this.getNewHealth(this.getLevel())*(this.getLevel()/10+1);
     }
     
     /**

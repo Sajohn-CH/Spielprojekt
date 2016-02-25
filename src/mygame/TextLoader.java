@@ -7,11 +7,9 @@ package mygame;
 import com.jme3.asset.AssetInfo;
 import com.jme3.asset.AssetLoader;
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.Reader;
 import java.util.ArrayList;
 
 /**
@@ -28,7 +26,6 @@ public class TextLoader implements AssetLoader{
     }
     
     private static ArrayList<String> getStringFromInputStream(InputStream is) {
-
         BufferedReader br = null;
         ArrayList<StringBuilder> sb = new ArrayList<>();
         String line;

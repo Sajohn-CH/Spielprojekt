@@ -40,25 +40,25 @@ public class World extends AbstractAppState{
     private Node towerNode;                 //Node mit allen Türmen
     private Node wayNode;                   //Node mit dem Weg der Bomben. Blockiert diesen, damit nichts drauf gebaut werden kann
     private ArrayList<Vector3f> corners;               //ArrayList, in der alle Eckpunkte des Weges gespeichert sind.
+    private Float bombMultiplier;
+    private Float towerMultiplier;
     
     /**
      * Konstruktor. Lädt den Himmel, fügt die Szene hinzu und initialisiert alles.
      * @param beacon Den Beacon in der Spielwelt   
      * @param player Der Spieler in der Spielwelt  
-     * @param scene Die "Szene", die Umgebung der Spielwelt bzw. die Spielwelt selbst
+     * @param sceneName Der Name der "Szene", die Umgebung der Spielwelt bzw. die Spielwelt selbst
      */
-    public World(Beacon beacon, Player player, Spatial scene) {
-        this.corners = (ArrayList<Vector3f>) Main.app.getAssetManager().loadAsset("Scenes/" + scene.getName() + ".corners");
+    public World(Beacon beacon, Player player, String sceneName) {
         this.beacon = beacon;
         this.player = player;
         Main.getBulletAppState().getPhysicsSpace().add(player.getCharacterControl());
-        this.scene = scene;
         this.bombs = new HashMap<Spatial, Bomb>();
         this.towers = new HashMap<Spatial, Tower>();
         this.bombNode = new Node();
         this.towerNode = new Node();
         this.wayNode = new Node();
-        generateWayGeometries();
+        this.setScene(sceneName);
         
         // Himmel laden
         Texture west = Main.app.getAssetManager().loadTexture("Textures/sky/BrightSky/west.jpg");
@@ -68,13 +68,6 @@ public class World extends AbstractAppState{
         Texture up = Main.app.getAssetManager().loadTexture("Textures/sky/BrightSky/up.jpg");
         Texture down = Main.app.getAssetManager().loadTexture("Textures/sky/BrightSky/down.jpg");
         Main.app.getRootNode().attachChild(SkyFactory.createSky(Main.app.getAssetManager(), west, east, north, south, up, down));
-                 
-        // Scene collidable machen
-        Main.app.getRootNode().attachChild(scene);
-        CollisionShape sceneShape = CollisionShapeFactory.createMeshShape((Node) scene);
-        RigidBodyControl sceneC = new RigidBodyControl(sceneShape, 0);
-        scene.addControl(sceneC);
-        Main.getBulletAppState().getPhysicsSpace().add(sceneC);
     }
     
     /**
@@ -134,6 +127,34 @@ public class World extends AbstractAppState{
      */
     public Spatial getScene(){
         return scene;
+    }
+    
+    /**
+     * Gibt die Szene der Welt zurück.
+     * @return  Szene
+     */
+    public void setScene(String name){
+        if(Main.app.getRootNode().hasChild(scene)){
+            Main.app.getRootNode().detachChild(scene);
+            Main.getBulletAppState().getPhysicsSpace().remove(scene.getControl(RigidBodyControl.class));
+        }
+        scene = Main.app.getAssetManager().loadModel("Scenes/" + name + ".j3o");
+        scene.setLocalScale(2f);
+        scene.setName(name);         
+        // Scene collidable machen
+        Main.app.getRootNode().attachChild(scene);
+        CollisionShape sceneShape = CollisionShapeFactory.createMeshShape((Node) scene);
+        RigidBodyControl sceneC = new RigidBodyControl(sceneShape, 0);
+        scene.addControl(sceneC);
+        Main.getBulletAppState().getPhysicsSpace().add(sceneC);
+        
+        HashMap<String, Object> data = (HashMap<String, Object>) Main.app.getAssetManager().loadAsset("Scenes/" + scene.getName() + ".sceneData");
+        bombMultiplier = (Float) data.get("bombMultiplier");
+        towerMultiplier = (Float) data.get("towerMultiplier");
+        
+        this.corners = (ArrayList<Vector3f>) Main.app.getAssetManager().loadAsset("Scenes/" + scene.getName() + ".corners");
+        wayNode.detachAllChildren();
+        generateWayGeometries();
     }
     
     /**
@@ -444,5 +465,13 @@ public class World extends AbstractAppState{
             return true;
         }
         return origin.distance(further) > origin.distance(nearer);
+    }
+    
+    public Float getBombMultiplier(){
+        return this.bombMultiplier;
+    }
+    
+    public Float getTowerMultiplier(){
+        return this.towerMultiplier;
     }
 }

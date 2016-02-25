@@ -115,7 +115,7 @@ public class Game {
             if(Math.random() < 0.5 || shootingBombsLeftPerLevel.isEmpty()){
                 int i = Math.round((float) (Math.random()*(bombsLeftPerLevel.size()-1)));
                 if(bombsLeftPerLevel.get(i) >= 0){
-                    Main.getWorld().addBomb(new ShootingBomb(bombsLeftLevels.get(i)));
+                    Main.getWorld().addBomb(new Bomb(bombsLeftLevels.get(i)));
                     bombsLeftPerLevel.set(i, bombsLeftPerLevel.get(i) - 1);
                     if(bombsLeftPerLevel.get(i) == 0){
                         bombsLeftPerLevel.remove(i);

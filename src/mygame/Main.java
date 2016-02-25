@@ -18,6 +18,7 @@ import com.jme3.system.AppSettings;
 import de.lessvoid.nifty.Nifty;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
+import java.util.ArrayList;
 
 /**
  * Die Hauptklasse des Spiels. Sie initialisert alle Komponenten.
@@ -36,7 +37,7 @@ public class Main extends SimpleApplication implements ActionListener{
     private static AppSettings appSettings;     //Die Einstellungen der Applications (kommt von der JMonkeyApplication). Sie ist für Auflösung etc. zuständig
     private Settings settings;          //Die selber erstellten Einstellungen. Sie ist für die Tastenbelegung etc. zuständig.   
     private Highscores highscores;      //Die Highscores, die Angezeigt werden
-    private Spatial scene;              //Die Spielszene
+    private ArrayList<String> sceneNames;
     
     /**
      * Startet das Spiel bzw. die Simple-Application und legt gewisse Einstellungen fest.
@@ -80,7 +81,8 @@ public class Main extends SimpleApplication implements ActionListener{
     @Override
     public void simpleInitApp() {
         assetManager.registerLoader(CornersLoader.class, "corners");
-        assetManager.registerLoader(TextLoader.class, "credits");
+        assetManager.registerLoader(SceneDataLoader.class, "sceneData");
+        assetManager.registerLoader(TextLoader.class, "credits", "txt");
         //Debugmode aktivieren, da das entsprechende Layer anfangs sichtbar ist. Wird später noch deaktiviert.
         debugMode = true;
         settings = new Settings();
@@ -89,17 +91,16 @@ public class Main extends SimpleApplication implements ActionListener{
         //Set this boolean true when the game loop should stop running when ever the window loses focus.
         app.setPauseOnLostFocus(true);
         
-        scene = assetManager.loadModel("Scenes/scene_1.3.j3o");
-        scene.setLocalScale(2f);
-        scene.setName("scene_1.3");
-        
+        //Lädt die Namen der möglichen scenes
+        sceneNames = (ArrayList<String>) assetManager.loadAsset("Scenes/sceneNames.txt");
+                
         bulletAppState = new BulletAppState();
         stateManager.attach(bulletAppState);
         
         Player player = new Player(this);
         
         Beacon beacon = new Beacon(new Vector3f(0, 0, 0), 100);
-        world = new World(beacon, player, scene);
+        world = new World(beacon, player, sceneNames.get(0));
         stateManager.attach(world);
         world.setPaused(true);
         
@@ -365,5 +366,9 @@ public class Main extends SimpleApplication implements ActionListener{
     
     public AppSettings getAppSettings(){
         return appSettings;
+    }
+    
+    public ArrayList<String> getPossibleSceneNames(){
+        return sceneNames;
     }
 }

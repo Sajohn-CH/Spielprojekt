@@ -128,10 +128,10 @@ public class SloweringTower extends Tower{
     public void setLevel(int newLevel) {
         super.setLevel(newLevel);
         this.setRange(getNewRange(newLevel));
-        this.setDamage(getNewDamage(newLevel));
-        this.setHealth(getNewHealth(newLevel));
-        this.setMaxHealth(getNewHealth(newLevel));
-        this.setShotsPerSecond(getNewSPS(newLevel));
+        this.setDamage((int)(getNewDamage(newLevel)*multiplier));
+        this.setHealth((int)(getNewHealth(newLevel)*multiplier));
+        this.setMaxHealth((int)(getNewHealth(newLevel)*multiplier));
+        this.setShotsPerSecond((int)(getNewSPS(newLevel)*multiplier));
         this.setLevelNumberSpatial(newLevel, 8);
     }
     
@@ -172,7 +172,7 @@ public class SloweringTower extends Tower{
      */
     @Override
     public int getUpgradePrice() {
-        return this.getMaxHealth()*(int)(this.getLevel()/10+1);
+        return this.getNewHealth(this.getLevel())*(int)(this.getLevel()/10+1);
     }
     
     /**

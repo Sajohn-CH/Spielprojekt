@@ -30,6 +30,7 @@ public class Tower extends Entity{
     private Node n;
     private Material numberMat;
     private Vector3f up;
+    protected Float multiplier;
     
     private boolean shootOnlyAtShootingBombs;
     private boolean shootOnlyAtNormalBombs;
@@ -51,6 +52,7 @@ public class Tower extends Entity{
         numberMat = new Material(Main.app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
         numberMat.setColor("Color", ColorRGBA.Gray);
         up = new Vector3f(0, 1, 0);
+        multiplier = Main.getWorld().getTowerMultiplier();
         
         shootOnlyAtShootingBombs = false;
         shootOnlyAtNormalBombs = false;
@@ -191,7 +193,7 @@ public class Tower extends Entity{
      * @return Upgradepreis.
      */
     public int getUpgradePrice() {
-        return this.getMaxHealth();
+        return this.getNewHealth(this.getLevel());
     }
     
     /**
@@ -285,9 +287,9 @@ public class Tower extends Entity{
      * Den Turm entfernen. Die Methode wird aufgerufen, wenn der Spieler den Turm entfernt. Sie entfernt den Turm und zahlt einen Teil des bezahlten Geldes zurück.
      */
     public void remove(){
-        Main.app.getWorld().getPlayer().increaseMoney((int) (totalPaidMoney * 0.75));
-        Main.app.getWorld().getPlayer().playAudioEarnMoney();
-        Main.app.getWorld().removeTower(this);
+        Main.getWorld().getPlayer().increaseMoney((int) (totalPaidMoney * 0.75));
+        Main.getWorld().getPlayer().playAudioEarnMoney();
+        Main.getWorld().removeTower(this);
     }
     
     /**

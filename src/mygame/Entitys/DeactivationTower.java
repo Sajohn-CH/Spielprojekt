@@ -138,9 +138,9 @@ public class DeactivationTower extends Tower{
     public void setLevel(int newLevel) {
         super.setLevel(newLevel);
         this.setRange(getNewRange(newLevel));
-        this.setHealth(getNewHealth(newLevel));
-        this.setMaxHealth(getNewHealth(newLevel));
-        this.setShotsPerSecond(getNewSPS(newLevel));
+        this.setHealth((int)(getNewHealth(newLevel)*multiplier));
+        this.setMaxHealth((int)(getNewHealth(newLevel)*multiplier));
+        this.setShotsPerSecond((int)(getNewSPS(newLevel)*multiplier));
         this.setLevelNumberSpatial(newLevel, 6);
     }
         
@@ -173,7 +173,7 @@ public class DeactivationTower extends Tower{
      */
     @Override
     public int getUpgradePrice() {
-        return this.getMaxHealth()*(this.getLevel()/10+1);
+        return this.getNewHealth(this.getLevel())*(this.getLevel()/10+1);
     }
         
     /**

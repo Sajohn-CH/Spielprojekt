@@ -141,9 +141,9 @@ public class ShootingBomb extends Bomb{
     @Override
     public void setLevel(int newLevel) {
         super.setLevel(newLevel);
-        this.range = 10+newLevel*5;
-        this.shotsPerSecond = (newLevel/2)+1;
-        this.shotDamage = 10+newLevel;
+        this.range = 10+(int)(newLevel*5*multiplier);
+        this.shotsPerSecond = (int)(newLevel/2*multiplier)+1;
+        this.shotDamage = 10+(int)(newLevel*multiplier);
     }
     
     /**
