@@ -13,12 +13,16 @@ import com.jme3.input.controls.MouseAxisTrigger;
 import com.jme3.math.Vector3f;
 import com.jme3.niftygui.NiftyJmeDisplay;
 import com.jme3.renderer.RenderManager;
-import com.jme3.scene.Spatial;
 import com.jme3.system.AppSettings;
 import de.lessvoid.nifty.Nifty;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Die Hauptklasse des Spiels. Sie initialisert alle Komponenten.
@@ -38,6 +42,7 @@ public class Main extends SimpleApplication implements ActionListener{
     private Settings settings;          //Die selber erstellten Einstellungen. Sie ist für die Tastenbelegung etc. zuständig.   
     private Highscores highscores;      //Die Highscores, die Angezeigt werden
     private ArrayList<String> sceneNames;
+    private ArrayList<String> saveNames;
     
     /**
      * Startet das Spiel bzw. die Simple-Application und legt gewisse Einstellungen fest.
@@ -94,11 +99,13 @@ public class Main extends SimpleApplication implements ActionListener{
         //Lädt die Namen der möglichen scenes
         sceneNames = (ArrayList<String>) assetManager.loadAsset("Scenes/sceneNames.txt");
                 
+        updateSaveNames();
+        
         bulletAppState = new BulletAppState();
         stateManager.attach(bulletAppState);
         
         Player player = new Player(this);
-        
+                
         Beacon beacon = new Beacon(new Vector3f(0, 0, 0), 100);
         world = new World(beacon, player, sceneNames.get(0));
         stateManager.attach(world);
@@ -370,5 +377,21 @@ public class Main extends SimpleApplication implements ActionListener{
     
     public ArrayList<String> getPossibleSceneNames(){
         return sceneNames;
+    }
+    
+    public ArrayList<String> getPossibleSaveNames(){
+        return saveNames;
+    }
+    
+    public void updateSaveNames(){
+        File saves = new File("saves");
+        if(!saves.exists()){
+            saves.mkdir();
+        }
+        File[] saveGames = saves.listFiles();
+        saveNames = new ArrayList<>();
+        for(int i = 0; i < saveGames.length; i ++){
+            saveNames.add(0, saveGames[i].getName().substring(0, saveGames[i].getName().length()-5));
+        }
     }
 }

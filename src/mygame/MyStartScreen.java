@@ -10,6 +10,7 @@ import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.controls.Button;
 import de.lessvoid.nifty.controls.CheckBox;
 import de.lessvoid.nifty.controls.DropDown;
+import de.lessvoid.nifty.controls.ListBox;
 import de.lessvoid.nifty.controls.Slider;
 import de.lessvoid.nifty.elements.render.TextRenderer;
 import de.lessvoid.nifty.screen.Screen;
@@ -141,10 +142,14 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
             updateButtonText("item_5", settings.getKeyString(settings.getKey("item_5")));
             updateButtonText("help", settings.getKeyString(settings.getKey("help")));
         } else if (screen.getScreenId().equals("chooseScene")){
-            screen.findNiftyControl("dropdownScene", DropDown.class).addItem("Welt wählen");
-            screen.findNiftyControl("dropdownScene", DropDown.class).addAllItems(Main.app.getPossibleSceneNames());
+            screen.findNiftyControl("listBoxScene", ListBox.class).addAllItems(Main.app.getPossibleSceneNames());
+            screen.findNiftyControl("listBoxScene", ListBox.class).selectItemByIndex(0);
+            screen.findElementByName("#startGame").setFocus();
+        } else if (screen.getScreenId().equals("chooseSave")){
+            screen.findNiftyControl("listBoxSave", ListBox.class).addAllItems(Main.app.getPossibleSaveNames());
+            screen.findNiftyControl("listBoxSave", ListBox.class).selectItemByIndex(0);
+            screen.findElementByName("#loadGame").setFocus();
         }
-        
     }
 
     /**
@@ -182,10 +187,7 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
      * Startet das Spiel.
      */
     public void startGame() {
-        if(screen.findNiftyControl("dropdownScene", DropDown.class).getSelection().equals("Welt wählen")){
-            return;
-        }
-        Main.getWorld().setScene((String) screen.findNiftyControl("dropdownScene", DropDown.class).getSelection());
+        Main.getWorld().setScene((String) screen.findNiftyControl("listBoxScene", ListBox.class).getFocusItem());
         //Spiel fortsetzen
         continueGame();
         
@@ -234,7 +236,7 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
      * Lädt einen Spielstand von einer XML-Datei. Diese Datei ist aktuell immer "saveGame.xml". 
      */
     public void loadGame() {
-        File saveGame = new File("saveGame.save");
+        File saveGame = new File("saves/" + (String) screen.findNiftyControl("listBoxSave", ListBox.class).getFocusItem() + ".save");
         try{
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
@@ -310,12 +312,29 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
         continueGame();
     }
     
+    public void chooseSave(){
+        nifty.gotoScreen("chooseSave");
+    }
+    
+    public void deleteSave(){
+        if(screen.findNiftyControl("dropdownSave", DropDown.class).getSelectedIndex() == 0){
+            return;
+        }
+        File file = new File("saves/" + (String) screen.findNiftyControl("dropdownSave", DropDown.class).getSelection() + ".save");
+        file.delete();
+        screen.findNiftyControl("dropdownSave", DropDown.class).removeItem(file.getName().substring(0, file.getName().length()-5));
+        Main.app.updateSaveNames();
+        screen.findNiftyControl("dropdownSave", DropDown.class).selectItemByIndex(0);
+    }
+    
     /**
-     * Speichert den aktuellen Spielstand. Der wird immer in die Datei "saveGame.xml".
+     * Speichert den aktuellen Spielstand.
      */
     private void saveGame() {
-         File saveGame = new File("saveGame.save");
+         SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy;HH-mm");
+         File saveGame = new File("saves/" + df.format(System.currentTimeMillis()) + ".save");
          try{
+            saveGame.createNewFile();
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
             Document doc = dBuilder.newDocument();
@@ -572,42 +591,6 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
        setKeyBindingsButtonRedIfMultiple("help");
    }
    
-   /**
-    * Liefert den Name einer Taste.
-    * @param evt Taste (die gedrückt wurde)
-    * @return Name der Taste
-    */
-//   private String getKeyName(KeyInputEvent evt) {
-//       
-//       switch(evt.getKeyCode()) {
-//           case 29:
-//               return "L_CTRL";
-//           case 56:
-//               return "ALT";
-//           case 57:
-//               return "SPACEBAR";
-//           case 157:   
-//               return "R_CTRL";
-//           case 184:
-//               return "ALT_GR";
-//           case 42:
-//               return "L_SHIFT";
-//           case 58:
-//               return "CAPS_LOCK";
-//           case 15:
-//               return "TABULATOR";
-//           case 14:
-//               return "BACKSPACE";
-//           case 28:
-//               return "ENTER";
-//           case 54:
-//               return "R_SHIFT";
-//           default:
-//            return String.valueOf(evt.getKeyChar()).toUpperCase();           
-//       }
-//       
-//   }
-   
    private void updateButtonText(String id, String text) {
        screen.findNiftyControl(id, Button.class).setText(text);
        nifty.gotoScreen("settings"); 
@@ -629,7 +612,6 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
         screen.findNiftyControl("checkboxMuteMasterVolume", CheckBox.class).uncheck();
         screen.findNiftyControl("checkboxMuteEffectsVolume", CheckBox.class).uncheck();
         screen.findNiftyControl("checkboxMuteMusicVolume", CheckBox.class).uncheck();
-        
         
         nifty.gotoScreen("start");
    }

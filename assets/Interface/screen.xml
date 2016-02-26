@@ -20,8 +20,8 @@
                     <interact onClick="chooseScene()"/>
                 </control>
                 <!-- Knopf zum Laden des letzen Spielstandes-->
-                <control name="button" label="Letzten Spielstand laden" id="loadgame" align="center" valign="center" visibleToMouse="true" width="50%">
-                    <interact onClick="loadGame()"/>
+                <control name="button" label="Spielstand laden" id="loadgame" align="center" valign="center" visibleToMouse="true" width="50%">
+                    <interact onClick="chooseSave()"/>
                 </control>
             </panel>
             <panel id="panel_settings" height="25%" align="center" childLayout="horizontal">
@@ -543,15 +543,43 @@
         <layer id="foreground" childLayout="center">
               <panel width="75%" height="10%" childLayout="vertical">
                     <panel id="panelChooseScene" childLayout="horizontal">
-                         <control name="dropDown" id="dropdownScene" width="100%" focusable="false"/>
+                        <control type="listBox" id="listBoxScene" displayItems="12" horizontal="off" width="*" visibleToMouse="true" forceSelection="true" selectionMode="Single" focusable="false"/>
                     </panel>
                     <panel childLayout="center">
-                        <panel width="200px" childLayout="vertical">
+                        <panel width="75%" childLayout="vertical">
                             <control name="button" id="#startGame" label="Spiel starten" width="100%">
                                 <interact onClick="startGame()"/>
                             </control>
                             <control name="button" id="backToStart" label="Zurück zum Startbildschirm" width="100%">
                                 <interact onClick="toStart()"/>
+                            </control>
+                        </panel>
+                    </panel>
+              </panel>
+        </layer>
+    </screen>
+    
+    <!-- Ladestand wählen Bildschirm -->
+    <screen id="chooseSave" controller="mygame.MyStartScreen">
+         <!-- Hintergrundbild -->
+        <layer id="background" childLayout="center">
+            <image filename="Interface/backgroundStartPage.png" width="100%" height="100%"/>
+        </layer>
+        <layer id="foreground" childLayout="center">
+              <panel width="75%" height="10%" childLayout="vertical">
+                    <panel id="panelChooseSave" childLayout="horizontal">
+                        <control type="listBox" id="listBoxSave" displayItems="12" horizontal="off" width="*" visibleToMouse="true" forceSelection="true" selectionMode="Single" focusable="false"/>
+                    </panel>
+                    <panel childLayout="center">
+                        <panel width="75%" childLayout="vertical">
+                            <control name="button" id="#loadGame" label="Spielstand laden" width="100%">
+                                <interact onClick="loadGame()"/>
+                            </control>
+                            <control name="button" id="#backToStart" label="Zurück zum Startbildschirm" width="100%">
+                                <interact onClick="toStart()"/>
+                            </control>
+                            <control name="button" id="#deleteSave" label="Spielstand löschen" width="100%">
+                                <interact onClick="deleteSave()"/>
                             </control>
                         </panel>
                     </panel>
