@@ -608,9 +608,7 @@ public class Tower extends Entity{
     }
     
     public void setLevelNumberSpatial(int level, float height){
-        if(level > 1){
-            n.detachChildNamed("levelNumber");
-        }
+        n.detachChildNamed("levelNumber");
         // Selbsterstellte Modelle von Florian Wenk
         Spatial s = Main.app.getAssetManager().loadModel("Objects/RomanNumbers/" + level + ".j3o");
         s.setName("levelNumber");

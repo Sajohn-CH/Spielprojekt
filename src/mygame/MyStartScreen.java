@@ -5,7 +5,6 @@ import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.input.event.KeyInputEvent;
 import com.jme3.math.Vector3f;
-import com.jme3.system.AppSettings;
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.controls.Button;
 import de.lessvoid.nifty.controls.CheckBox;
@@ -16,8 +15,6 @@ import de.lessvoid.nifty.elements.render.TextRenderer;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
 import de.lessvoid.nifty.tools.Color;
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -237,6 +234,10 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
      */
     public void loadGame() {
         File saveGame = new File("saves/" + (String) screen.findNiftyControl("listBoxSave", ListBox.class).getFocusItem() + ".save");
+        String [] d = ((String) screen.findNiftyControl("listBoxSave", ListBox.class).getFocusItem()).split(";")[0].split("-");
+        String [] t = ((String) screen.findNiftyControl("listBoxSave", ListBox.class).getFocusItem()).split(";")[1].split("-");
+        Cryption crypt = new Cryption(d[2] + "S" + t[1] + "v" + d[0] + "S" + d[1] + "F" + t[0]);
+        crypt.decrypt(saveGame, saveGame);
         try{
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
@@ -259,12 +260,19 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
                 up.setX(Float.valueOf(upEle.getAttribute("x")));
                 up.setY(Float.valueOf(upEle.getAttribute("y")));
                 up.setZ(Float.valueOf(upEle.getAttribute("z")));
-                if(towerElement.getAttribute("Type").equals("mygame.Entitys.SimpleTower")) {
-                    tower = new SimpleTower(position, up);
-                } else if(towerElement.getAttribute("Type").equals("mygame.Entitys.SloweringTower")) {
-                    tower = new SloweringTower(position, up);
-                } else {
-                    tower = new DeactivationTower(position, up);
+                switch (towerElement.getAttribute("Type")) {
+                    case "mygame.Entitys.SimpleTower":
+                        tower = new SimpleTower(position, up);
+                        break;
+                    case "mygame.Entitys.SloweringTower":
+                        tower = new SloweringTower(position, up);
+                        break;
+                    case "mygame.Entitys.DeactivationTower":
+                        tower = new DeactivationTower(position, up);
+                        break;
+                    default:
+                        tower = new SimpleTower(position, up);
+                        break;
                 }
                 Main.app.getWorld().addTower(tower);
                 tower.setLevel(Integer.valueOf(towerElement.getAttribute("Level")));
@@ -309,6 +317,8 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
             e.printStackTrace();
         }
         
+        crypt.encrypt(saveGame, saveGame);
+        
         continueGame();
     }
     
@@ -332,7 +342,8 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
      */
     private void saveGame() {
          SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy;HH-mm");
-         File saveGame = new File("saves/" + df.format(System.currentTimeMillis()) + ".save");
+         String fileName = df.format(System.currentTimeMillis());
+         File saveGame = new File("saves/" + fileName + ".save");
          try{
             saveGame.createNewFile();
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -400,6 +411,11 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
         } catch (Exception e) {
             e.printStackTrace();
         }
+         
+        String [] d = fileName.split(";")[0].split("-");
+        String [] t = fileName.split(";")[1].split("-");
+        Cryption crypt = new Cryption(d[2] + "S" + t[1] + "v" + d[0] + "S" + d[1] + "F" + t[0]);
+        crypt.encrypt(saveGame, saveGame);
     }
     
     /**

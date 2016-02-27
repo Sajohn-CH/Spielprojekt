@@ -4,8 +4,6 @@ import mygame.Entitys.Beacon;
 import mygame.Entitys.Player;
 import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.BulletAppState;
-import com.jme3.input.FlyByCamera;
-import com.jme3.input.KeyInput;
 import com.jme3.input.MouseInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
@@ -18,11 +16,7 @@ import de.lessvoid.nifty.Nifty;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.io.File;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Die Hauptklasse des Spiels. Sie initialisert alle Komponenten.
@@ -391,7 +385,9 @@ public class Main extends SimpleApplication implements ActionListener{
         File[] saveGames = saves.listFiles();
         saveNames = new ArrayList<>();
         for(int i = 0; i < saveGames.length; i ++){
-            saveNames.add(0, saveGames[i].getName().substring(0, saveGames[i].getName().length()-5));
+            if(!saveGames[i].isHidden()){
+                saveNames.add(0, saveGames[i].getName().substring(0, saveGames[i].getName().length()-5));
+            }
         }
     }
 }
