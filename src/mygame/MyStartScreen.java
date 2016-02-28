@@ -185,10 +185,18 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
      */
     public void startGame() {
         Main.getWorld().setScene((String) screen.findNiftyControl("listBoxScene", ListBox.class).getFocusItem());
+        nifty.gotoScreen("hud");
         //Spiel fortsetzen
         continueGame();
         
         //Spielstand zurücksetzen.
+        Main.app.getWorld().setPaused(false);
+        Main.app.getFlyByCamera().setDragToRotate(false);
+        Main.app.getWorld().getBeacon().setLevel(1);
+        Main.app.getWorld().getBeacon().setLiving(true);
+        Main.app.getWorld().getBeacon().setHealth(Main.app.getWorld().getBeacon().getMaxHealth());
+        Main.app.getRootNode().attachChild(Main.app.getWorld().getBeacon().getSpatial());
+        Main.app.getWorld().getBeacon().setCollidable();
         Main.app.getWorld().getPlayer().setLocation(new Vector3f(0,10,0));
         Main.app.getWorld().getPlayer().revive();
         Main.app.getWorld().getPlayer().turn();
@@ -673,7 +681,7 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
        Highscores highscores = Main.app.getHighscores();
        SimpleDateFormat df = new SimpleDateFormat("dd.MM.yyyy '; ' HH:mm");
        int j = 25;
-       if(highscores.getAllHighscores().size() < 10){
+       if(highscores.getAllHighscores().size() < 25){
            j = highscores.getAllHighscores().size();
        }
        for(int i = 0; i < j; i ++){

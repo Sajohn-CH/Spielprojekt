@@ -371,6 +371,9 @@ public class Player extends Entity{
 //             placeOnScene.removeFromParent();
              placeOnScene.setLocalTranslation(new Vector3f(0, 0, 0));
          }
+         if(player.getPhysicsLocation().getY() <= -150 && !player.onGround()){
+             revive();
+         }
      }
 
    /**
@@ -870,6 +873,7 @@ public class Player extends Entity{
     public void revive(){
         if(this.getRevivePrice() <= this.getMoney()){
             this.increaseMoney(-getRevivePrice());
+            this.setLocation(new Vector3f(0, 10, 0));
             this.setLiving(true);
             this.setMaxHealth(100);
             setHealth(this.maxHealth);

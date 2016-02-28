@@ -55,7 +55,7 @@ public class Highscores {
             return;
         }
         int i = 0;
-        while(highscores.get(i).getWave() > wave){
+        while(i < highscores.size() && highscores.get(i).getWave() >= wave){
             i++;
         }
         highscores.add(i, new HighscoreElement(name, wave, System.currentTimeMillis(), world));
@@ -89,6 +89,8 @@ public class Highscores {
         if(!highscoresFile.exists()){
             return highscores;
         }
+        Cryption crypt = new Cryption("highVerschSamFlo");
+        crypt.decrypt(highscoresFile, highscoresFile);
         try{
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
@@ -107,6 +109,7 @@ public class Highscores {
             return new ArrayList<>();
         }
 
+        crypt.encrypt(highscoresFile, highscoresFile);
         return highscores;
     }
     
@@ -146,5 +149,7 @@ public class Highscores {
         } catch (Exception e) {
             e.printStackTrace();
         }
+         Cryption crypt = new Cryption("highVerschSamFlo");
+         crypt.encrypt(highscores, highscores);
     }
 }

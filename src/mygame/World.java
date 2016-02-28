@@ -441,6 +441,7 @@ public class World extends AbstractAppState{
      */
     public void setPaused(boolean pause){
         this.setEnabled(!pause);
+        player.stopAudio();
         player.setNotShootingAndHealing();
         player.setNotWalking();
     }

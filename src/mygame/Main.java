@@ -324,8 +324,8 @@ public class Main extends SimpleApplication implements ActionListener{
         } else {
             highscores.addHighscore(game.getWave(), getWorld().getScene().getName());
         }
-        world.getPlayer().stopAudio();
         nifty.gotoScreen("gameOver");
+        world.getPlayer().stopAudio();
     }
    
     /**

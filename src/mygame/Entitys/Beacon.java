@@ -55,10 +55,7 @@ public class Beacon extends Entity {
         light5.setRadius(10000f);
         this.getSpatial().addLight(light5);
         
-        CollisionShape beaconShape = CollisionShapeFactory.createMeshShape(this.getSpatial());
-        beaconC = new RigidBodyControl(beaconShape, 0);
-        this.getSpatial().addControl(beaconC);
-        Main.getBulletAppState().getPhysicsSpace().add(beaconC);
+        setCollidable();
     }
     
     /**
@@ -115,5 +112,12 @@ public class Beacon extends Entity {
      */
     public int getNewMaxHealth() {
         return (int)(this.getMaxHealth()*1.1);
+    }
+    
+    public void setCollidable(){
+        CollisionShape beaconShape = CollisionShapeFactory.createMeshShape(this.getSpatial());
+        beaconC = new RigidBodyControl(beaconShape, 0);
+        this.getSpatial().addControl(beaconC);
+        Main.getBulletAppState().getPhysicsSpace().add(beaconC);
     }
 }
