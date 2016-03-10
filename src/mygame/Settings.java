@@ -2,6 +2,10 @@ package mygame;
 
 import com.jme3.input.KeyInput;
 import com.jme3.system.AppSettings;
+import de.lessvoid.nifty.Nifty;
+import de.lessvoid.nifty.controls.Button;
+import de.lessvoid.nifty.elements.render.TextRenderer;
+import de.lessvoid.nifty.screen.Screen;
 import java.awt.Dimension;
 import java.util.HashMap;
 import java.util.Map;
@@ -10,6 +14,7 @@ import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilder;
@@ -47,6 +52,7 @@ public class Settings {
     private String keyDebug;         //Taste um den Debugbildschirm aufzurufen
     private boolean useScroll;          //Gibt an ob das Mausrad zum Scrollen der Slots in der Leiste genutzt werden soll.
     private HashMap<String, Integer> keys;
+    private Properties languageProperties;
     
     final private HashMap<String, Integer> KEYBOARDKEYS;
     
@@ -54,6 +60,7 @@ public class Settings {
      * Konstruktor. Belegt die Einstellungen mit Standarwerten.
      */
     public Settings(){
+        languageProperties = new Properties();
         device = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
                 
         keys = new HashMap();
@@ -78,8 +85,6 @@ public class Settings {
         keyJump = getKeyString(getKey("jump"));
 
         keyDebug = getKeyString(getKey("debug"));
-        
-        
     }
     
     /**
@@ -858,5 +863,172 @@ public class Settings {
         if(resetKeys){
             keys = getDefaultKeys();
         }
+    }
+    
+    public Properties getLanguageProperties(){
+        return this.languageProperties;
+    }
+    
+    public void setLanguage(String languagesShort){
+        this.languageProperties = (Properties) Main.app.getAssetManager().loadAsset("Languages/" + languagesShort + ".properties");
+    }
+    
+    public String getLanguageProperty(String key, String defaultValue){
+        return this.languageProperties.getProperty(key, defaultValue);
+    }
+    
+    public String getLanguageProperty(String key){
+        return this.languageProperties.getProperty(key);
+    }
+    
+    public void reloadLanguage(){
+        Nifty nifty = Main.app.getNifty();
+        Screen screen = nifty.getScreen("hud");
+        setNiftyText(screen, "tutorial", getLanguageProperty("tutorial"));
+        setNiftyText(screen, "aim1", getLanguageProperty("aim1"));
+        setNiftyText(screen, "aim2", getLanguageProperty("aim2"));
+        setNiftyText(screen, "bombs", getLanguageProperty("bombs"));
+        setNiftyText(screen, "textShootingBombs", getLanguageProperty("textShootingBombs"));
+        setNiftyText(screen, "textNormalBombs", getLanguageProperty("textNormalBombs"));
+        setNiftyText(screen, "towers", getLanguageProperty("towers"));
+        setNiftyText(screen, "simpleTower", getLanguageProperty("simpleTower"));
+        setNiftyText(screen, "sloweringTower", getLanguageProperty("sloweringTower"));
+        setNiftyText(screen, "deactivationTower", getLanguageProperty("deactivationTower"));
+        setNiftyText(screen, "upgradeAndHeal", getLanguageProperty("upgradeAndHeal"));
+        setNiftyText(screen, "placeTower", getLanguageProperty("placeTower"));
+        setNiftyText(screen, "changeSelection1", getLanguageProperty("changeSelection1"));
+        setNiftyText(screen, "changeSelection2", getLanguageProperty("changeSelection2"));
+        setNiftyText(screen, "shoot", getLanguageProperty("shoot"));
+        setNiftyText(screen, "pause", getLanguageProperty("pause"));
+        setNiftyText(screen, "textHelp", getLanguageProperty("textHelp"));
+        
+        screen = nifty.getScreen("start");
+        setNiftyText(screen, "title", getLanguageProperty("title"));
+        setNiftyButtonText(screen, "StartButton", getLanguageProperty("StartButton"));
+        setNiftyButtonText(screen, "loadgame", getLanguageProperty("loadgame"));
+        setNiftyButtonText(screen, "SettingsButton", getLanguageProperty("SettingsButton"));
+        setNiftyButtonText(screen, "HighscoresButton", getLanguageProperty("HighscoresButton"));
+        setNiftyButtonText(screen, "CreditsButton", getLanguageProperty("CreditsButton"));
+        setNiftyButtonText(screen, "QuitButton", getLanguageProperty("QuitButton"));
+        
+        screen = nifty.getScreen("pause");
+        setNiftyButtonText(screen, "StartButtonPause", getLanguageProperty("StartButtonPause"));
+        setNiftyButtonText(screen, "MenuButton", getLanguageProperty("MenuButton"));
+        setNiftyButtonText(screen, "QuitButtonPause", getLanguageProperty("QuitButtonPause"));
+        
+        screen = nifty.getScreen("gameOver");
+        setNiftyText(screen, "textGameOver", getLanguageProperty("textGameOver"));
+        setNiftyText(screen, "beaconDestroyed", getLanguageProperty("beaconDestroyed"));
+        setNiftyButtonText(screen, "buttonGameOver", getLanguageProperty("buttonGameOver"));
+        setNiftyButtonText(screen, "#buttonGameOver", getLanguageProperty("buttonGameOverQuit"));
+        
+        screen = nifty.getScreen("settings");
+        setNiftyText(screen, "textScrollMouse", "   " + getLanguageProperty("textScrollMouse"));
+        setNiftyText(screen, "textVolumes", getLanguageProperty("textVolumes"));
+        setNiftyText(screen, "textMasterVolume", getLanguageProperty("textMasterVolume") + "   ");
+        setNiftyText(screen, "textMuteMasterVolume", "   " + getLanguageProperty("textMuteMasterVolume"));
+        setNiftyText(screen, "textEffectsVolume", getLanguageProperty("textEffectsVolume") + "   ");
+        setNiftyText(screen, "textMuteEffectsVolume", "   " + getLanguageProperty("textMuteEffectsVolume"));
+        setNiftyText(screen, "textMusicVolume", getLanguageProperty("textMusicVolume") + "   ");
+        setNiftyText(screen, "textMuteMusicVolume", "   " + getLanguageProperty("textMuteMusicVolume"));
+        setNiftyText(screen, "textFullscreen", "   " + getLanguageProperty("textFullscreen"));
+        setNiftyText(screen, "textResolution", getLanguageProperty("textResolution") + "   ");
+        setNiftyText(screen, "textVSync", "   " + getLanguageProperty("textVSync"));
+        setNiftyText(screen, "textColorDepth", getLanguageProperty("textColorDepth") + "   ");
+        setNiftyText(screen, "textAntiAliasing", getLanguageProperty("textAntiAliasing") + "   ");
+        setNiftyButtonText(screen, "buttonToKeys", getLanguageProperty("buttonToKeys"));
+        setNiftyButtonText(screen, "saveSettings", getLanguageProperty("saveSettings"));
+        setNiftyButtonText(screen, "restoreSettings", getLanguageProperty("restoreSettings"));
+        
+        screen = nifty.getScreen("keyBindings");
+        setNiftyText(screen, "textForward", getLanguageProperty("textForward"));
+        setNiftyText(screen, "textBackward", getLanguageProperty("textBackward"));
+        setNiftyText(screen, "textLeft", getLanguageProperty("textLeft"));
+        setNiftyText(screen, "textRight", getLanguageProperty("textRight"));
+        setNiftyText(screen, "textJump", getLanguageProperty("textJump"));
+        setNiftyText(screen, "textItem_1", getLanguageProperty("textItem_1"));
+        setNiftyText(screen, "textItem_2", getLanguageProperty("textItem_2"));
+        setNiftyText(screen, "textItem_3", getLanguageProperty("textItem_3"));
+        setNiftyText(screen, "textItem_4", getLanguageProperty("textItem_4"));
+        setNiftyText(screen, "textItem_5", getLanguageProperty("textItem_5"));
+        setNiftyText(screen, "textHelp", getLanguageProperty("textHelp"));
+        setNiftyButtonText(screen, "saveKeyBindings", getLanguageProperty("saveKeyBindings"));
+        setNiftyButtonText(screen, "resetKeyBindings", getLanguageProperty("resetKeyBindings"));
+        
+        screen = nifty.getScreen("highscores");
+        setNiftyText(screen, "textPlace", getLanguageProperty("textPlace"));
+        setNiftyText(screen, "textName", getLanguageProperty("textName"));
+        setNiftyText(screen, "textWave", getLanguageProperty("textWave"));
+        setNiftyText(screen, "textWorld", getLanguageProperty("textWorld"));
+        setNiftyText(screen, "textDate", getLanguageProperty("textDate"));
+        setNiftyButtonText(screen, "backToStartHighscores", getLanguageProperty("backToStartHighscores"));
+        setNiftyButtonText(screen, "clearHighscores", getLanguageProperty("clearHighscores"));
+        
+        screen = nifty.getScreen("credits");
+        Main.app.getStateManager().getState(MyStartScreen.class).loadCredits();
+        setNiftyButtonText(screen, "backToStartCredits", getLanguageProperty("backToStartCredits"));
+        
+        screen = nifty.getScreen("chooseScene");
+        setNiftyButtonText(screen, "#startGame", getLanguageProperty("startGame"));
+        setNiftyButtonText(screen, "backToStartChooseScene", getLanguageProperty("backToStartChooseScene"));
+        
+        screen = nifty.getScreen("chooseSave");
+        setNiftyButtonText(screen, "#loadGame", getLanguageProperty("loadGame"));
+        setNiftyButtonText(screen, "backToStartChooseSave", getLanguageProperty("backToStartChooseSave"));
+        setNiftyButtonText(screen, "#deleteSave", getLanguageProperty("deleteSave"));
+    }
+    
+    public void reloadTowerPopupLanguage(de.lessvoid.nifty.elements.Element towerPopup){
+        setNiftyText(towerPopup, "textPrice", getLanguageProperty("textPrice"));
+        setNiftyText(towerPopup, "textDamage", getLanguageProperty("textDamage"));
+        setNiftyText(towerPopup, "textHealth", getLanguageProperty("textHealth"));
+        setNiftyText(towerPopup, "textSPS", getLanguageProperty("textSPS"));
+        setNiftyText(towerPopup, "textRange", getLanguageProperty("textRange"));
+        setNiftyText(towerPopup, "textShootAt", getLanguageProperty("textShootAt"));
+        setNiftyText(towerPopup, "textNearest", getLanguageProperty("textNearest") + "   ");
+        setNiftyText(towerPopup, "textFurthest", getLanguageProperty("textFurthest") + "   ");
+        setNiftyText(towerPopup, "textStrongest", getLanguageProperty("textStrongest") + "   ");
+        setNiftyText(towerPopup, "textWeakest", getLanguageProperty("textWeakest") + "   ");
+        setNiftyText(towerPopup, "textAllBombs", getLanguageProperty("textAllBombs") + "   ");
+        setNiftyText(towerPopup, "textNormalBombs", getLanguageProperty("textNormalBombs") + "   ");
+        setNiftyText(towerPopup, "textShootingBombs", getLanguageProperty("textShootingBombs") + "   ");
+        setNiftyButtonText(towerPopup, "upgrade", getLanguageProperty("upgrade"));
+        setNiftyButtonText(towerPopup, "upgradeToMax", getLanguageProperty("upgradeToMax"));
+        setNiftyButtonText(towerPopup, "removeTower", getLanguageProperty("removeTower"));
+        setNiftyButtonText(towerPopup, "cancel", getLanguageProperty("cancel"));
+    }
+    
+    public void reloadRemoveTowerPopupLanguage(de.lessvoid.nifty.elements.Element removePopup){
+        setNiftyText(removePopup, "#title", getLanguageProperty("title"));
+        setNiftyButtonText(removePopup, "yes", getLanguageProperty("yes"));
+        setNiftyButtonText(removePopup, "no", getLanguageProperty("no"));
+    }
+    
+    public void reloadEndWavePopupLanguage(de.lessvoid.nifty.elements.Element endWavePopup){
+        setNiftyText(endWavePopup, "textEndWaveHealth", getLanguageProperty("textEndWaveHealth"));
+        setNiftyText(endWavePopup, "textEndWaveDamage", getLanguageProperty("textEndWaveDamage"));
+        setNiftyText(endWavePopup, "textEndWaveSPS", getLanguageProperty("textEndWaveSPS"));
+        setNiftyText(endWavePopup, "textEndWaveRange", getLanguageProperty("textEndWaveRange"));
+        setNiftyText(endWavePopup, "textEndWaveSpeed", getLanguageProperty("textEndWaveSpeed"));
+        setNiftyText(endWavePopup, "textEndWaveHealingSpeed", getLanguageProperty("textEndWaveHealingSpeed"));
+        setNiftyText(endWavePopup, "textBeaconUpgrade", getLanguageProperty("textBeaconUpgrade"));
+        setNiftyText(endWavePopup, "textBeaconHealth", getLanguageProperty("textBeaconHealth"));
+        setNiftyButtonText(endWavePopup, "#nextWave", getLanguageProperty("nextWave"));
+    }
+    
+    private void setNiftyButtonText(de.lessvoid.nifty.elements.Element popup, String elementID, String text){
+        popup.findNiftyControl(elementID, Button.class).setText(text);
+    }
+    
+    private void setNiftyButtonText(Screen screen, String elementID, String text){
+        screen.findNiftyControl(elementID, Button.class).setText(text);
+    }
+    
+    private void setNiftyText(de.lessvoid.nifty.elements.Element popup, String elementID, String text){
+        popup.findElementByName(elementID).getRenderer(TextRenderer.class).setText(text);
+    }
+    
+    private void setNiftyText(Screen screen, String elementID, String text){
+        screen.findElementByName(elementID).getRenderer(TextRenderer.class).setText(text);
     }
 }

@@ -53,12 +53,7 @@ public class HudScreenState extends AbstractAppState implements ScreenController
         buildPhase = false;
         debugMode = true;
         df = new SimpleDateFormat("HH:mm");
-        descriptions = new String[5];
-        descriptions[0] = "Zerstört Bomben: 100$";
-        descriptions[1] = "Verlangsamt Bomben: 150$";
-        descriptions[2] = "Macht schiessende Bomben schiessunfähig: 200$";
-        descriptions[3] = "Upgraden";
-        descriptions[4] = "Heilen: 1$ pro Lebenspunkt";
+        descriptions = Main.app.getSettings().getLanguageProperties().getProperty("towerDescriptions").split(",");
     }
     
     /**
@@ -69,12 +64,12 @@ public class HudScreenState extends AbstractAppState implements ScreenController
         //Setzt Text im HUD
         if(buildPhase) {
             long time = startWaveTime-System.currentTimeMillis();
-            updateText("wave", "Nächste Welle in "+(time/1000));
+            updateText("wave", Main.app.getSettings().getLanguageProperty("reloadWave", "Nächste Welle in") + " " + (time/1000));
         } else {
-            updateText("wave", ("Welle: " + Main.getGame().getWave()));
+            updateText("wave", (Main.app.getSettings().getLanguageProperty("wave", "Welle:") + " " + Main.getGame().getWave()));
         }
-        updateText("time", ("Uhrzeit: "+df.format(System.currentTimeMillis())));
-        updateText("money", ("Geld: " + Main.app.getWorld().getPlayer().getMoney() + "$"));
+        updateText("time", (Main.app.getSettings().getLanguageProperty("time", "Uhrzeit:") + " " + df.format(System.currentTimeMillis())));
+        updateText("money", (Main.app.getSettings().getLanguageProperty("money", "Geld:") + " " + Main.app.getWorld().getPlayer().getMoney() + "$"));
         updateText("towerDescription", descriptions[getSelectedItemNum()-1]);
         updateText("beaconHealth", (Main.app.getWorld().getBeacon().getHealth()+"/"+Main.app.getWorld().getBeacon().getMaxHealth()));
         updateText("health", Main.app.getWorld().getPlayer().getHealth()+"/"+Main.app.getWorld().getPlayer().getMaxHealth());
@@ -93,6 +88,7 @@ public class HudScreenState extends AbstractAppState implements ScreenController
             double x = Math.round(player.getLocation().x*10.0)/10.0;
             double y = Math.round(player.getLocation().y*10.0)/10.0;
             double z = Math.round(player.getLocation().z*10.0)/10.0;
+            updateText("playerPosition", Main.app.getSettings().getLanguageProperty("playerPosition", "Spielerposition: "));
             updateText("PlayerPos", "x: "+x+" y: "+y+" z: "+z);
         }
         
@@ -224,7 +220,7 @@ public class HudScreenState extends AbstractAppState implements ScreenController
        String price = tower.getUpgradePrice()+"$";
        String damage = tower.getDamage()+"+"+(tower.getNewDamage(newLevel)-tower.getDamage());
        if(tower.getSpatial().getName().equals("DeactivationTower")){
-            damage = "Macht schiessunfähig";
+            damage = Main.app.getSettings().getLanguageProperty("textDamageDeactivationTower");
        }
        String health = tower.getHealth()+"/"+tower.getMaxHealth()+"+"+(tower.getNewHealth(newLevel)-tower.getHealth());
        String sps = tower.getShotsPerSecond()+"+"+Math.round((tower.getNewSPS(newLevel)-tower.getShotsPerSecond())*100)/100.0;
@@ -246,13 +242,14 @@ public class HudScreenState extends AbstractAppState implements ScreenController
        Main.app.getFlyByCamera().setDragToRotate(true);
        cameraDragToRotate = true;
        towerPopup = nifty.createPopup("niftyPopupTower");
+       Main.app.getSettings().reloadTowerPopupLanguage(towerPopup);
        if(tower.getLevel() >= 30){
            towerPopup.findElementByName("upgrade").setVisible(false);
            towerPopup.findElementByName("upgradeToMax").setVisible(false);
            towerPopup.findElementByName("textPrice").setVisible(false);
            towerPopup.findElementByName("price").setVisible(false);
        }
-       towerPopup.findElementByName("#title").getRenderer(TextRenderer.class).setText(tower.getName() + " Stufe " + tower.getLevel());
+       towerPopup.findElementByName("#title").getRenderer(TextRenderer.class).setText(tower.getName() + " " + Main.app.getSettings().getLanguageProperty("levelOfTower") + " " + tower.getLevel());
        towerPopup.findElementByName("price").getRenderer(TextRenderer.class).setText(price);
        if(!tower.getSpatial().getName().equals("DeactivationTower")){
            towerPopup.findElementByName("damage").getRenderer(TextRenderer.class).setText(damage);
@@ -430,6 +427,7 @@ public class HudScreenState extends AbstractAppState implements ScreenController
         Main.app.getFlyByCamera().setDragToRotate(true);
         cameraDragToRotate = true;
         towerPopup = nifty.createPopup("niftyPopupRemoveTower");
+        Main.app.getSettings().reloadRemoveTowerPopupLanguage(towerPopup);
         towerPopup.findElementByName("no").setFocus();
         Main.app.getWorld().setPaused(true);
         nifty.showPopup(screen, towerPopup.getId(), null);
@@ -471,6 +469,7 @@ public class HudScreenState extends AbstractAppState implements ScreenController
        Main.app.getFlyByCamera().setDragToRotate(true);
        cameraDragToRotate = true;
        endWavePopup = nifty.createPopup("waveEndPopup");
+       Main.app.getSettings().reloadEndWavePopupLanguage(endWavePopup);
        nifty.showPopup(screen, endWavePopup.getId(), null);
        Player player = Main.app.getWorld().getPlayer();
        Beacon beacon = Main.app.getWorld().getBeacon();
@@ -747,7 +746,7 @@ public class HudScreenState extends AbstractAppState implements ScreenController
     public void showTowerInfo(Tower tower) {
         screen.findElementByName("towerInfoLayer").setVisible(true);
         updateText("#towerHealth", tower.getHealth()+"/"+tower.getMaxHealth());
-        updateText("#towerDescription", tower.getName()+" der Stufe "+tower.getLevel());
+        updateText("#towerDescription", tower.getName() + " " + Main.app.getSettings().getLanguageProperty("levelOfTower") + " " + tower.getLevel());
         
         Element towerInfoPanel = screen.findElementByName("#towerInfoPanel");
         Element towerHealthBar = screen.findElementByName("#towerHealthBar");

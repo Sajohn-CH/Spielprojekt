@@ -94,8 +94,8 @@
                 <text id="aim1" text="Ziel des Spiels:" font="Interface/Fonts/Arial.fnt"/>
                 <text id="aim2" text="Ziel des Spieles ist, die Drohne in der Kartenmitte vor den angreifenden Bomben zu verteidigen." font="Interface/Fonts/Arial.fnt"/>
                 <text id="bombs" text="Diese folgen immer dem markiertem Weg zur Drohne. Es gibt zwei Arten von Bomben:" font="Interface/Fonts/Arial.fnt"/> 
-                <text id="shootingBombs" text="Die normale und die schiessende Bombe. Die schiessende Bombe schiesst auf Türme und den Spieler, wenn diese sich in Reichweite befinden." font="Interface/Fonts/Arial.fnt"/>
-                <text id="normalBombs" text="Eine normale Bomben dagegen macht nur Schaden wenn man in sie rein läuft oder sie die Drohne trifft." font="Interface/Fonts/Arial.fnt"/>
+                <text id="textShootingBombs" text="Die normale und die schiessende Bombe. Die schiessende Bombe schiesst auf Türme und den Spieler, wenn diese sich in Reichweite befinden." font="Interface/Fonts/Arial.fnt"/>
+                <text id="textNormalBombs" text="Eine normale Bomben dagegen macht nur Schaden wenn man in sie rein läuft oder sie die Drohne trifft." font="Interface/Fonts/Arial.fnt"/>
                 <text id="towers" text="Zur Verteidigung können Türme errichtet werden und der Spieler kann selber schiessen. Es stehen folgende Trüme zur Verfügung:" font="Interface/Fonts/Arial.fnt"/>
                 <panel childLayout="horizontal" width="100%" height="400">
                     <!-- Bilder der Türme. Die Dimension der Bilder ist absolut in Pixeln (-> nicht verzehrt). Deswegen sind die Angaben der Panels z.T. auch absolut in einer oder beiden Dimensionen.-->
@@ -118,7 +118,7 @@
                 <text id="changeSelection2" text="was aber zuerst in den Einstellungen aktiviert werden muss)." font="Interface/Fonts/Arial.fnt"/>
                 <text id="shoot" text="Zum Schiessen muss man die linke Maustaste drücken, die Auswahl spielt dabei keine Rolle. Der Spieler bewegt sich mit den Tasten W,A,S,D." font="Interface/Fonts/Arial.fnt"/>
                 <text id="pause" text="Mit der ESC-Taste ruft man das Pausenmenu auf." font="Interface/Fonts/Arial.fnt"/>
-                <text id="help" text="Um diesen Bildschirm erneut aufzurufen, muss die F1-Taste gedrückt werden. Zum Schliessen dieses Bildschirms muss einmal die linke Maustaste gedrückt werden." font="Interface/Fonts/Arial.fnt"/>
+                <text id="textHelp" text="Um diesen Bildschirm erneut aufzurufen, muss die F1-Taste gedrückt werden. Zum Schliessen dieses Bildschirms muss einmal die linke Maustaste gedrückt werden." font="Interface/Fonts/Arial.fnt"/>
             </panel>
         </layer>
         

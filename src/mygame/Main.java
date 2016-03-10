@@ -87,6 +87,7 @@ public class Main extends SimpleApplication implements ActionListener{
         //Debugmode aktivieren, da das entsprechende Layer anfangs sichtbar ist. Wird später noch deaktiviert.
         debugMode = true;
         settings = new Settings();
+        settings.setLanguage("de");
         highscores = new Highscores();
                 
         //Set this boolean true when the game loop should stop running when ever the window loses focus.
@@ -391,5 +392,9 @@ public class Main extends SimpleApplication implements ActionListener{
                 saveNames.add(0, saveGames[i].getName().substring(0, saveGames[i].getName().length()-5));
             }
         }
+    }
+    
+    public Nifty getNifty(){
+        return nifty;
     }
 }

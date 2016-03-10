@@ -154,7 +154,7 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
      */
     public void onStartScreen() {
         if(screen.getScreenId().equals("gameOver")) {
-            screen.findElementByName("untilWave").getRenderer(TextRenderer.class).setText("Du hast es bist zur Welle " + getCurrentWave()+" geschaft");    
+            screen.findElementByName("untilWave").getRenderer(TextRenderer.class).setText(Main.app.getSettings().getLanguageProperty("untilWave1") + " " + getCurrentWave()+ " " + Main.app.getSettings().getLanguageProperty("untilWave2"));    
         }
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.      
     }
@@ -335,14 +335,11 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
     }
     
     public void deleteSave(){
-        if(screen.findNiftyControl("dropdownSave", DropDown.class).getSelectedIndex() == 0){
-            return;
-        }
-        File file = new File("saves/" + (String) screen.findNiftyControl("dropdownSave", DropDown.class).getSelection() + ".save");
+        File file = new File("saves/" + (String) screen.findNiftyControl("listBoxSave", ListBox.class).getFocusItem() + ".save");
         file.delete();
-        screen.findNiftyControl("dropdownSave", DropDown.class).removeItem(file.getName().substring(0, file.getName().length()-5));
+        screen.findNiftyControl("listBoxSave", ListBox.class).removeItem(file.getName().substring(0, file.getName().length()-5));
         Main.app.updateSaveNames();
-        screen.findNiftyControl("dropdownSave", DropDown.class).selectItemByIndex(0);
+        screen.findNiftyControl("listBoxSave", ListBox.class).selectItemByIndex(0);
     }
     
     /**
@@ -350,7 +347,7 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
      */
     private void saveGame() {
          SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy;HH-mm");
-         String fileName = df.format(System.currentTimeMillis());
+         String fileName = Main.getWorld().getScene().getName() + ";" + df.format(System.currentTimeMillis());
          File saveGame = new File("saves/" + fileName + ".save");
          try{
             saveGame.createNewFile();
@@ -420,8 +417,8 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
             e.printStackTrace();
         }
          
-        String [] d = fileName.split(";")[0].split("-");
-        String [] t = fileName.split(";")[1].split("-");
+        String [] d = fileName.split(";")[1].split("-");
+        String [] t = fileName.split(";")[2].split("-");
         Cryption crypt = new Cryption(d[2] + "S" + t[1] + "v" + d[0] + "S" + d[1] + "F" + t[0]);
         crypt.encrypt(saveGame, saveGame);
     }
@@ -502,7 +499,7 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
            Main.app.getInputManager().removeRawInputListener(settingsInputHandler);
        }
        Button button = screen.findNiftyControl(eventId, Button.class);
-       button.setText("<press any key>");
+       button.setText(Main.app.getSettings().getLanguageProperty("pressAnyKey"));
        settingsInputHandler = new SettingsInputHandler(this, eventId);
        Main.app.getInputManager().addRawInputListener(settingsInputHandler);
        deactivateKeyBindingsButtonsExept(eventId);
@@ -527,10 +524,10 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
           Main.app.reloadKeys();
       }
       if(Main.app.getSettings().hasAnyKeyMultipleTimes()){
-           screen.findNiftyControl("saveKeyBindings", Button.class).setText("Gleiche Tasteneingaben vermeiden");
+           screen.findNiftyControl("saveKeyBindings", Button.class).setText(Main.app.getSettings().getLanguageProperty("sameKeyBindingsWarining"));
            screen.findNiftyControl("saveKeyBindings", Button.class).setTextColor(new Color(1, 0, 0, 1));
       } else {
-           screen.findNiftyControl("saveKeyBindings", Button.class).setText("Zurück zu den Einstellungen");
+           screen.findNiftyControl("saveKeyBindings", Button.class).setText(Main.app.getSettings().getLanguageProperty("saveKeyBindings"));
            screen.findNiftyControl("saveKeyBindings", Button.class).setTextColor(Color.WHITE);
       }
       activateKeyBindingsButtonsExept(eventId);
@@ -705,7 +702,7 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
    }
    
    public void loadCredits(){
-       ArrayList<String> text = (ArrayList<String>) Main.app.getAssetManager().loadAsset("Language/de.credits");
+       ArrayList<String> text = (ArrayList<String>) Main.app.getAssetManager().loadAsset(Main.app.getSettings().getLanguageProperty("credits"));
        
        for(int i = 0; i < text.size(); i ++){
            screen.findElementByName((i+1) + "credits").getRenderer(TextRenderer.class).setText(text.get(i));
