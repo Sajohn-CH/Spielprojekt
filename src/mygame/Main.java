@@ -17,6 +17,7 @@ import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Properties;
 
 /**
  * Die Hauptklasse des Spiels. Sie initialisert alle Komponenten.
@@ -82,6 +83,7 @@ public class Main extends SimpleApplication implements ActionListener{
         assetManager.registerLoader(CornersLoader.class, "corners");
         assetManager.registerLoader(SceneDataLoader.class, "sceneData");
         assetManager.registerLoader(TextLoader.class, "credits", "txt");
+        assetManager.registerLoader(PropertiesLoader.class, "properties");
         //Debugmode aktivieren, da das entsprechende Layer anfangs sichtbar ist. Wird später noch deaktiviert.
         debugMode = true;
         settings = new Settings();

@@ -75,7 +75,7 @@
             <panel childLayout="center" width="100%" height="8%"/>
             <panel childLayout="horizontal" width="30%" height="30%" backgroundColor="#00000060">
                 <panel childLayout="vertical" width="50%" height="100%">
-                    <text text="Playerposition:" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="playerPosition" text="Playerposition:" font="Interface/Fonts/Arial.fnt"/>
                 </panel>
                  <panel childLayout="vertical" width="50%" height="100%">
                     <text id="PlayerPos" text="" font="Interface/Fonts/Arial.fnt"/>
@@ -90,13 +90,13 @@
             <interact onClick="toggleHelpLayer()"/>
             <panel childLayout="vertical" width="90%" height="90%" backgroundColor="#00fffff3">
                 <!-- Spielbeschreibung -->
-                <text text="Tutorial" font="Interface/Fonts/Arial.fnt"/>
-                <text text="Ziel des Spiels:" font="Interface/Fonts/Arial.fnt"/>
-                <text text="Ziel des Spieles ist, die Drohne in der Kartenmitte vor den angreifenden Bomben zu verteidigen." font="Interface/Fonts/Arial.fnt"/>
-                <text text="Diese folgen immer dem markiertem Weg zur Drohne. Es gibt zwei Arten von Bomben:" font="Interface/Fonts/Arial.fnt"/> 
-                <text text="Die normale und die schiessende Bombe. Die schiessende Bombe schiesst auf Türme und den Spieler, wenn diese sich in Reichweite befinden." font="Interface/Fonts/Arial.fnt"/>
-                <text text="Eine normale Bomben dagegen macht nur Schaden wenn man in sie rein läuft oder sie die Drohne trifft." font="Interface/Fonts/Arial.fnt"/>
-                <text text="Zur Verteidigung können Türme errichtet werden und der Spieler kann selber schiessen. Es stehen folgende Trüme zur Verfügung:" font="Interface/Fonts/Arial.fnt"/>
+                <text id="tutorial" text="Tutorial" font="Interface/Fonts/Arial.fnt"/>
+                <text id="aim1" text="Ziel des Spiels:" font="Interface/Fonts/Arial.fnt"/>
+                <text id="aim2" text="Ziel des Spieles ist, die Drohne in der Kartenmitte vor den angreifenden Bomben zu verteidigen." font="Interface/Fonts/Arial.fnt"/>
+                <text id="bombs" text="Diese folgen immer dem markiertem Weg zur Drohne. Es gibt zwei Arten von Bomben:" font="Interface/Fonts/Arial.fnt"/> 
+                <text id="shootingBombs" text="Die normale und die schiessende Bombe. Die schiessende Bombe schiesst auf Türme und den Spieler, wenn diese sich in Reichweite befinden." font="Interface/Fonts/Arial.fnt"/>
+                <text id="normalBombs" text="Eine normale Bomben dagegen macht nur Schaden wenn man in sie rein läuft oder sie die Drohne trifft." font="Interface/Fonts/Arial.fnt"/>
+                <text id="towers" text="Zur Verteidigung können Türme errichtet werden und der Spieler kann selber schiessen. Es stehen folgende Trüme zur Verfügung:" font="Interface/Fonts/Arial.fnt"/>
                 <panel childLayout="horizontal" width="100%" height="400">
                     <!-- Bilder der Türme. Die Dimension der Bilder ist absolut in Pixeln (-> nicht verzehrt). Deswegen sind die Angaben der Panels z.T. auch absolut in einer oder beiden Dimensionen.-->
                     <panel width="130" height="400" childLayout="vertical">
@@ -106,19 +106,19 @@
                     </panel>
                     <!-- Turmbeschreibungen-->
                     <panel height="400" childLayout="vertical">
-                        <text text="Dieser Turm kann Bomben zerstören indem er auf sie schiesst." font="Interface/Fonts/Arial.fnt" width="100%" height="128"/>
-                        <text text="Dieser Turm verlangsamt jede Bombe, auf die er schiesst." font="Interface/Fonts/Arial.fnt" width="100%" height="128"/>
-                        <text text="Dieser Turm kann eine schiessende Bombe zu einer normalen Bombe umfunktioniern." font="Interface/Fonts/Arial.fnt" width="100%" height="128"/>
+                        <text id="simpleTower" text="Dieser Turm kann Bomben zerstören indem er auf sie schiesst." font="Interface/Fonts/Arial.fnt" width="100%" height="128"/>
+                        <text id="sloweringTower" text="Dieser Turm verlangsamt jede Bombe, auf die er schiesst." font="Interface/Fonts/Arial.fnt" width="100%" height="128"/>
+                        <text id="deactivationTower" text="Dieser Turm kann eine schiessende Bombe zu einer normalen Bombe umfunktioniern." font="Interface/Fonts/Arial.fnt" width="100%" height="128"/>
                     </panel>
                 </panel>
                 <!-- weitere Erklärungen -->
-                <text text="Der Spieler kann mit dem grünen Plus einen Turm upgraden, also verbessern und mit dem roten Herz sich selber, einen Turm oder die Drohne heilen." font="Interface/Fonts/Arial.fnt"/>
-                <text text="Um einen Turm zu setzen, zu heilen oder upzugraden muss man die rechte Maustaste drücken, während unten, in der Leiste das entsprechende Symbol ausgewählt wurde." font="Interface/Fonts/Arial.fnt"/>
-                <text text="Die Auswahl kann man ändern, indem man die Zahlen 1-5 auf der Tastatur drückt (oder alternativ mit dem Mausrad," font="Interface/Fonts/Arial.fnt"/>
-                <text text="was aber zuerst in den Einstellungen aktiviert werden muss)." font="Interface/Fonts/Arial.fnt"/>
-                <text text="Zum Schiessen muss man die linke Maustaste drücken, die Auswahl spielt dabei keine Rolle. Der Spieler bewegt sich mit den Tasten W,A,S,D." font="Interface/Fonts/Arial.fnt"/>
-                <text text="Mit der ESC-Taste ruft man das Pausenmenu auf." font="Interface/Fonts/Arial.fnt"/>
-                <text text="Um diesen Bildschirm erneut aufzurufen, muss die F1-Taste gedrückt werden. Zum Schliessen dieses Bildschirms muss einmal die linke Maustaste gedrückt werden." font="Interface/Fonts/Arial.fnt"/>
+                <text id="upgradeAndHeal" text="Der Spieler kann mit dem grünen Plus einen Turm upgraden, also verbessern und mit dem roten Herz sich selber, einen Turm oder die Drohne heilen." font="Interface/Fonts/Arial.fnt"/>
+                <text id="placeTower" text="Um einen Turm zu setzen, zu heilen oder upzugraden muss man die rechte Maustaste drücken, während unten, in der Leiste das entsprechende Symbol ausgewählt wurde." font="Interface/Fonts/Arial.fnt"/>
+                <text id="changeSelection1" text="Die Auswahl kann man ändern, indem man die Zahlen 1-5 auf der Tastatur drückt (oder alternativ mit dem Mausrad," font="Interface/Fonts/Arial.fnt"/>
+                <text id="changeSelection2" text="was aber zuerst in den Einstellungen aktiviert werden muss)." font="Interface/Fonts/Arial.fnt"/>
+                <text id="shoot" text="Zum Schiessen muss man die linke Maustaste drücken, die Auswahl spielt dabei keine Rolle. Der Spieler bewegt sich mit den Tasten W,A,S,D." font="Interface/Fonts/Arial.fnt"/>
+                <text id="pause" text="Mit der ESC-Taste ruft man das Pausenmenu auf." font="Interface/Fonts/Arial.fnt"/>
+                <text id="help" text="Um diesen Bildschirm erneut aufzurufen, muss die F1-Taste gedrückt werden. Zum Schliessen dieses Bildschirms muss einmal die linke Maustaste gedrückt werden." font="Interface/Fonts/Arial.fnt"/>
             </panel>
         </layer>
         
@@ -153,9 +153,9 @@
                 <panel id="#labels" width="50%" height="100%" childLayout="vertical">
                     <text id="textPrice" text="Preis:" font="Interface/Fonts/Arial.fnt" width="100%" />
                     <text id="textDamage" text="Schaden:" font="Interface/Fonts/Arial.fnt" width="100%"/>
-                    <text text="Lebenspunkte:" font="Interface/Fonts/Arial.fnt" width="100%"/>
-                    <text text="Schüsse pro Sekunde:" font="Interface/Fonts/Arial.fnt" width="100%"/>
-                    <text text="Reichweite:" font="Interface/Fonts/Arial.fnt" width="100%"/>
+                    <text id="textHealth" text="Lebenspunkte:" font="Interface/Fonts/Arial.fnt" width="100%"/>
+                    <text id="textSPS" text="Schüsse pro Sekunde:" font="Interface/Fonts/Arial.fnt" width="100%"/>
+                    <text id="textRange" text="Reichweite:" font="Interface/Fonts/Arial.fnt" width="100%"/>
                 </panel>   
                 <!-- Werte zu den passenden Beschriftungen-->
                 <panel id="#values" width="50%" height="100%" childLayout="vertical">
@@ -169,7 +169,7 @@
              <!-- Panel mit drei weiteren Panels als Spalten zum Anzeigen von knöpfen -->
             <panel id="#buttons" width="100%" height="45%" childLayout="horizontal">
                 <panel id="#shootAt" width="66%" height="100%" childLayout="vertical">
-                    <text text="Schiessen auf:" font="Interface/Fonts/Arial.fnt" width="100%"/>  
+                    <text id="textShootAt" text="Schiessen auf:" font="Interface/Fonts/Arial.fnt" width="100%"/>  
                     <text text="" font="Interface/Fonts/Arial.fnt" width="100%" height="5%"/> 
                     <!-- CheckBoxes zum steuern auf Welche Bombe schiessen -->
                     <panel id="shootAt" width="100%" height="80%" childLayout="horizontal">
@@ -287,12 +287,12 @@
             <panel id="#playerUpgrades" childLayout="horizontal" height="60%">
                 <!-- Beschriftungen -->
                 <panel id="#labels" width="40%" height="100%" childLayout="vertical">
-                    <text text="Lebenspunkte:" font="Interface/Fonts/Arial.fnt" width="100%"/>
-                    <text text="Schaden:" font="Interface/Fonts/Arial.fnt" width="100%"/>
-                    <text text="Schüsse pro Sekunde:" font="Interface/Fonts/Arial.fnt" width="100%"/>
-                    <text text="Reichweite:" font="Interface/Fonts/Arial.fnt" width="100%"/>
-                    <text text="Geschwindigkeit:" font="Interface/Fonts/Arial.fnt" width="100%"/>
-                    <text text="Heilgeschwindigkeit:" font="Interface/Fonts/Arial.fnt" width="100%"/>
+                    <text id="textEndWaveHealth" text="Lebenspunkte:" font="Interface/Fonts/Arial.fnt" width="100%"/>
+                    <text id="textEndWaveDamage" text="Schaden:" font="Interface/Fonts/Arial.fnt" width="100%"/>
+                    <text id="textEndWaveSPS" text="Schüsse pro Sekunde:" font="Interface/Fonts/Arial.fnt" width="100%"/>
+                    <text id="textEndWaveRange" text="Reichweite:" font="Interface/Fonts/Arial.fnt" width="100%"/>
+                    <text id="textEndWaveSpeed" text="Geschwindigkeit:" font="Interface/Fonts/Arial.fnt" width="100%"/>
+                    <text id="textEndWaveHealingSpeed" text="Heilgeschwindigkeit:" font="Interface/Fonts/Arial.fnt" width="100%"/>
                 </panel>
                 <!-- Werte zu den Beschriftungen-->
                 <panel id="#values" width="40%" height="100%" childLayout="vertical">
@@ -326,9 +326,9 @@
                 </panel> 
             </panel>
             <!-- Beaconupgrades -->
-            <text text="Upgrade der Drohne" font="Interface/Fonts/Arial.fnt" width="100%"/>
+            <text id="textBeaconUpgrade" text="Upgrade der Drohne" font="Interface/Fonts/Arial.fnt" width="100%"/>
             <panel id="#beaconUpgrade" width="90%" childLayout="horizontal">
-                <text text="Lebenspunkte:" font="Interface/Fonts/Arial.fnt" width="50%"/>
+                <text id="textBeaconHealth" text="Lebenspunkte:" font="Interface/Fonts/Arial.fnt" width="50%"/>
                 <text text="" id="#BeaconUpgrade" font="Interface/Fonts/Arial.fnt" width="40%"/>
                 <control name="button" id="#BeaconBtn" label="${CALL.getBeaconUpgradePrice()}$" width="10%">
                     <interact onClick="upgradeBeacon()"/>

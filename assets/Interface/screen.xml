@@ -12,7 +12,7 @@
             <!-- Vordergrund-->
             <panel id="panel_top" height="25%" width="75%" align="center" childLayout="center" >
                 <!-- Name des Spiels-->
-                <text text="First Person View Tower Defense" font="Interface/Fonts/Arial.fnt" width="100%" height="100%" color="#000000ff"/>
+                <text id="title" text="First Person View Tower Defense" font="Interface/Fonts/Arial.fnt" width="100%" height="100%" color="#000000ff"/>
             </panel>
             <panel id="panel_mid" height="25%" width="75%" align="center" childLayout="horizontal" >
                 <!-- Knopf zum Starten des Spiels-->
@@ -53,7 +53,7 @@
         <layer id="foreground" backgroundColor="#0000" childLayout="vertical">
             <panel id="panel_top" height="34%" width="75%" align="center" childLayout="center">
                 <!-- Knopf zum Spiel fortsetzen -->
-                <control name="button" label="Fortsetzen" id="StartButton" align="center" valign="center" visibleToMouse="true">
+                <control name="button" label="Fortsetzen" id="StartButtonPause" align="center" valign="center" visibleToMouse="true">
                     <interact onClick="continueGame()"/>
                 </control>
              </panel>
@@ -65,7 +65,7 @@
             </panel>
             <panel id="panel_bottom" height="33%" width="75%" align="center" childLayout="center">
                 <!--Knopf zum Beenden -->
-                <control name="button" label="Beenden" id="QuitButton" align="center" valign="center" visibleToMouse="true">
+                <control name="button" label="Beenden" id="QuitButtonPause" align="center" valign="center" visibleToMouse="true">
                     <interact onClick="quitGame()"/>
                 </control>
             </panel> 
@@ -83,14 +83,14 @@
         <layer id="foreground" childLayout="center">
             <!-- Anzeige mit dem Text "GAME OVER", bis zur welcher Welle man es geschaft hat und einen Knopf zum Beenden des Spiels und einem um zum Startmenu zu gelangen-->
             <panel childLayout="vertical">
-                <text text="GAME OVER" font="Interface/Fonts/Arial.fnt" align="center"/>
-                <text text="Der Beacon wurde zerstört" font="Interface/Fonts/Arial.fnt" align="center"/>
+                <text id="textGameOver" text="GAME OVER" font="Interface/Fonts/Arial.fnt" align="center"/>
+                <text id="beaconDestroyed" text="Der Beacon wurde zerstört" font="Interface/Fonts/Arial.fnt" align="center"/>
                 <text id="untilWave" text="Du hast es bist zur Welle ${CALL.getCurrentWave()} geschafft" font="Interface/Fonts/Arial.fnt" align="center"/>
-                <control name="button" label="Zurück zum Startmenu" align="center" valign="center" visibleToMouse="true" width="20%">
+                <control name="button" id="buttonGameOver" label="Zurück zum Startmenu" align="center" valign="center" visibleToMouse="true" width="20%">
                     <!-- Zum Startmenu-->
                     <interact onClick="toStart()"/>
                 </control>
-                 <control name="button" label="Spiel beenden" align="center" valign="center" visibleToMouse="true" width="20%">
+                 <control name="button" id="#buttonGameOver" label="Spiel beenden" align="center" valign="center" visibleToMouse="true" width="20%">
                     <!-- Spiel beenden-->
                     <interact onClick="quitGame()"/>
                 </control>
@@ -115,7 +115,7 @@
                          <control name="checkbox" id="checkboxScroll" label="Aus" focusable="false">
                              <interact onClick="toggleScroll()"/>
                          </control>
-                         <text text="   Mausrad benutzen um Auswahl in der Leiste zu ändern" font="Interface/Fonts/Arial.fnt">
+                         <text id="textScrollMouse" text="   Mausrad benutzen um Auswahl in der Leiste zu ändern" font="Interface/Fonts/Arial.fnt">
                              <interact onClick="toggleScroll()"/>
                          </text>
                      </panel>
@@ -129,43 +129,43 @@
                      <!-- Leere Zeile als Abstand -->
                      <text text="" font="Interface/Fonts/Arial.fnt"/>
                      <text text="" font="Interface/Fonts/Arial.fnt"/>
-                     <text text="Lautstärken:" font="Interface/Fonts/Arial.fnt"/>
+                     <text id="textVolumes" text="Lautstärken:" font="Interface/Fonts/Arial.fnt"/>
                      <text text="" font="Interface/Fonts/Arial.fnt"/>
                      <panel id="panelMasterVolume" childLayout="horizontal">
-                        <text text="Master   " font="Interface/Fonts/Arial.fnt"/>
+                        <text id="textMasterVolume" text="Master   " font="Interface/Fonts/Arial.fnt"/>
                         <control name="horizontalSlider" id="masterVolumeSlider" buttonStepSize="0.05" max="1" min="0" stepSize="0.001" focusable="false" width="75%"/>
                      </panel>
                      <panel id="panelMuteMasterVolume" childLayout="horizontal">
                           <control name="checkbox" id="checkboxMuteMasterVolume" focusable="false">
                               <interact onClick="toggleMasterVolumeMuted()"/>
                           </control>
-                          <text text="   Stummschalten" font="Interface/Fonts/Arial.fnt">
+                          <text id="textMuteMasterVolume" text="   Stummschalten" font="Interface/Fonts/Arial.fnt">
                              <interact onClick="toggleMasterVolumeMuted()"/>
                          </text>
                      </panel>
                      <text text="" font="Interface/Fonts/Arial.fnt"/>
                      <panel id="panelEffectsVolume" childLayout="horizontal">
-                        <text text="Effekte   " font="Interface/Fonts/Arial.fnt"/>
+                        <text id="textEffectsVolume" text="Effekte   " font="Interface/Fonts/Arial.fnt"/>
                         <control name="horizontalSlider" id="effectsVolumeSlider" buttonStepSize="0.05" max="1" min="0" stepSize="0.001" focusable="false" width="75%"/>
                      </panel>
                      <panel id="panelMuteEffectsVolume" childLayout="horizontal">
                           <control name="checkbox" id="checkboxMuteEffectsVolume" focusable="false">
                               <interact onClick="toggleEffectsVolumeMuted()"/>
                           </control>
-                          <text text="   Stummschalten" font="Interface/Fonts/Arial.fnt">
+                          <text id="textMuteEffectsVolume" text="   Stummschalten" font="Interface/Fonts/Arial.fnt">
                              <interact onClick="toggleEffectsVolumeMuted()"/>
                          </text>
                      </panel>
                      <text text="" font="Interface/Fonts/Arial.fnt"/>
                      <panel id="panelMusicVolume" childLayout="horizontal">
-                        <text text="Musik     " font="Interface/Fonts/Arial.fnt"/>
+                        <text id="textMusicVolume" text="Musik     " font="Interface/Fonts/Arial.fnt"/>
                         <control name="horizontalSlider" id="musicVolumeSlider" buttonStepSize="0.05" max="1" min="0" stepSize="0.001" focusable="false" width="75%"/>
                      </panel>
                      <panel id="panelMuteMusicVolume" childLayout="horizontal">
                           <control name="checkbox" id="checkboxMuteMusicVolume" focusable="false">
                               <interact onClick="toggleMusicVolumeMuted()"/>
                           </control>
-                          <text text="   Stummschalten" font="Interface/Fonts/Arial.fnt">
+                          <text id="textMuteMusicVolume" text="   Stummschalten" font="Interface/Fonts/Arial.fnt">
                              <interact onClick="toggleMusicVolumeMuted()"/>
                          </text>
                      </panel>
@@ -176,14 +176,14 @@
                           <control name="checkbox" id="checkboxFullscreen" focusable="false">
                               <interact onClick="toggleFullscreen()"/>
                           </control>
-                          <text text="   Vollbildmodus aktivieren" font="Interface/Fonts/Arial.fnt">
+                          <text id="textFullscreen" text="   Vollbildmodus aktivieren" font="Interface/Fonts/Arial.fnt">
                              <interact onClick="toggleFullscreen()"/>
                          </text>
                      </panel>
                      <!-- Leere Zeile als Abstand -->
                      <text text="" font="Interface/Fonts/Arial.fnt"/>
                      <panel id="panelResolution" childLayout="horizontal">
-                          <text text="Bildschirmauflösung   " font="Interface/Fonts/Arial.fnt" />
+                          <text id="textResolution" text="Bildschirmauflösung   " font="Interface/Fonts/Arial.fnt" />
                           <control name="dropDown" id="dropdownResolution" width="100px" focusable="false"/>
                       </panel>
                      <!-- Leere Zeile als Abstand -->
@@ -192,20 +192,20 @@
                          <control name="checkbox" id="checkboxVsync" focusable="false">
                              <interact onClick="toggleVsync()"/>
                          </control>
-                         <text text="   Vsync aktivieren" font="Interface/Fonts/Arial.fnt">
+                         <text id="textVSync" text="   Vsync aktivieren" font="Interface/Fonts/Arial.fnt">
                              <interact onClick="toggleVsync()"/>
                          </text>
                      </panel>
                      <!-- Leere Zeile als Abstand -->
                      <text text="" font="Interface/Fonts/Arial.fnt"/>
                      <panel id="panelColorDepth" childLayout="horizontal">
-                         <text text="Farbtiefe   " font="Interface/Fonts/Arial.fnt" />
+                         <text id="textColorDepth" text="Farbtiefe   " font="Interface/Fonts/Arial.fnt" />
                          <control name="dropDown" id="dropdownColorDepth" width="100px" focusable="false"/>
                      </panel>
                      <!-- Leere Zeile als Abstand -->
                      <text text="" font="Interface/Fonts/Arial.fnt"/>
                      <panel id="panelAntiAliasing" childLayout="horizontal">
-                         <text text="Anti-Aliasing   " font="Interface/Fonts/Arial.fnt" />
+                         <text id="textAntiAliasing" text="Anti-Aliasing   " font="Interface/Fonts/Arial.fnt" />
                          <control name="dropDown" id="dropdownAntiAliasing" width="100px" focusable="false"/>
                      </panel>
                      <!-- Leere Zeile als Abstand -->
@@ -240,17 +240,17 @@
                 <panel width="10%"></panel>
                 <!-- Beschriftungen-->
                 <panel id="#keyLabels" width="60%" height="100%" childLayout="vertical">
-                    <text text="Vorwärts laufen" font="Interface/Fonts/Arial.fnt"/>
-                    <text text="Rückwärts laufen" font="Interface/Fonts/Arial.fnt"/>
-                    <text text="Links laufen" font="Interface/Fonts/Arial.fnt"/>
-                    <text text="Rechts laufen" font="Interface/Fonts/Arial.fnt"/>
-                    <text text="Springen" font="Interface/Fonts/Arial.fnt"/>
-                    <text text="1. Slot auswählen" font="Interface/Fonts/Arial.fnt"/>
-                    <text text="2. Slot auswählen" font="Interface/Fonts/Arial.fnt"/>
-                    <text text="3. Slot auswählen" font="Interface/Fonts/Arial.fnt"/>
-                    <text text="4. Slot auswählen" font="Interface/Fonts/Arial.fnt"/>
-                    <text text="5. Slot auswählen" font="Interface/Fonts/Arial.fnt"/>
-                    <text text="Hilfe anzeigen" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="textForward" text="Vorwärts laufen" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="textBackward" text="Rückwärts laufen" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="textLeft" text="Links laufen" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="textRight" text="Rechts laufen" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="textJump" text="Springen" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="textItem_1" text="1. Slot auswählen" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="textItem_2" text="2. Slot auswählen" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="textItem_3" text="3. Slot auswählen" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="textItem_4" text="4. Slot auswählen" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="textItem_5" text="5. Slot auswählen" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="textHelp" text="Hilfe anzeigen" font="Interface/Fonts/Arial.fnt"/>
                 </panel>
                 <!-- Knöpfe um neue Taste zu belegen-->
                 <panel id="keyButtons" width="30%" height="100%" childLayout="vertical">
@@ -317,7 +317,7 @@
                 <panel width="10%" height="100%"></panel>
                 <!-- Beschriftungen-->
                 <panel id="#places" width="15%" height="100%" childLayout="vertical">
-                    <text text="Platz" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="textPlace" text="Platz" font="Interface/Fonts/Arial.fnt"/>
                     <text text="" font="Interface/Fonts/Arial.fnt"/>
                     <text id="1place" text="" font="Interface/Fonts/Arial.fnt"/>
                     <text id="2place" text="" font="Interface/Fonts/Arial.fnt"/>
@@ -347,7 +347,7 @@
                 </panel>
                 <!-- Name-->
                 <panel id="#names" width="20%" height="100%" childLayout="vertical">
-                    <text text="Spielername" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="textName" text="Spielername" font="Interface/Fonts/Arial.fnt"/>
                     <text text="" font="Interface/Fonts/Arial.fnt"/>
                     <text id="name1" text="" font="Interface/Fonts/Arial.fnt"/>
                     <text id="name2" text="" font="Interface/Fonts/Arial.fnt"/>
@@ -377,7 +377,7 @@
                 </panel>
                 <!-- Bis Welle-->
                 <panel id="#wave" width="15%" height="100%" childLayout="vertical">
-                    <text text="Erreichte Welle" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="textWave" text="Erreichte Welle" font="Interface/Fonts/Arial.fnt"/>
                     <text text="" font="Interface/Fonts/Arial.fnt"/>
                     <text id="wave1" text="" font="Interface/Fonts/Arial.fnt"/>
                     <text id="wave2" text="" font="Interface/Fonts/Arial.fnt"/>
@@ -407,7 +407,7 @@
                 </panel>
                 <!-- Weltname-->
                 <panel id="#world" width="20%" height="100%" childLayout="vertical">
-                    <text text="Welt" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="textWorld" text="Welt" font="Interface/Fonts/Arial.fnt"/>
                     <text text="" font="Interface/Fonts/Arial.fnt"/>
                     <text id="world1" text="" font="Interface/Fonts/Arial.fnt"/>
                     <text id="world2" text="" font="Interface/Fonts/Arial.fnt"/>
@@ -437,7 +437,7 @@
                 </panel>
                 <!-- Datum-->
                 <panel id="#date" width="20%" height="100%" childLayout="vertical">
-                    <text text="Datum; Zeit" font="Interface/Fonts/Arial.fnt"/>
+                    <text id="textDate" text="Datum; Zeit" font="Interface/Fonts/Arial.fnt"/>
                     <text text="" font="Interface/Fonts/Arial.fnt"/>
                     <text id="date1" text="" font="Interface/Fonts/Arial.fnt"/>
                     <text id="date2" text="" font="Interface/Fonts/Arial.fnt"/>
@@ -469,7 +469,7 @@
             <panel height="15%" childLayout="center">
                 <panel width="25%" childLayout="horizontal">
                     <!-- Knopf zum Verlassen der Einstellungen-->
-                    <control name="button" id="backToStart" label="Zurück zum Startbildschirm" width="50%">
+                    <control name="button" id="backToStartHighscores" label="Zurück zum Startbildschirm" width="50%">
                         <interact onClick="toStart()"/>
                     </control>
                     <!-- Knopf zum Verlassen der Einstellungen-->
@@ -525,7 +525,7 @@
             <panel height="15%" childLayout="center">
                 <panel width="25%" childLayout="horizontal">
                     <!-- Knopf zum Verlassen der Credits-->
-                    <control name="button" id="backToStart" label="Zurück zum Startbildschirm" width="100%">
+                    <control name="button" id="backToStartCredits" label="Zurück zum Startbildschirm" width="100%">
                         <interact onClick="toStart()"/>
                     </control>
                 </panel>
@@ -550,7 +550,7 @@
                             <control name="button" id="#startGame" label="Spiel starten" width="100%">
                                 <interact onClick="startGame()"/>
                             </control>
-                            <control name="button" id="backToStart" label="Zurück zum Startbildschirm" width="100%">
+                            <control name="button" id="backToStartChooseScene" label="Zurück zum Startbildschirm" width="100%">
                                 <interact onClick="toStart()"/>
                             </control>
                         </panel>
@@ -575,7 +575,7 @@
                             <control name="button" id="#loadGame" label="Spielstand laden" width="100%">
                                 <interact onClick="loadGame()"/>
                             </control>
-                            <control name="button" id="#backToStart" label="Zurück zum Startbildschirm" width="100%">
+                            <control name="button" id="backToStartChooseSave" label="Zurück zum Startbildschirm" width="100%">
                                 <interact onClick="toStart()"/>
                             </control>
                             <control name="button" id="#deleteSave" label="Spielstand löschen" width="100%">

@@ -705,7 +705,7 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
    }
    
    public void loadCredits(){
-       ArrayList<String> text = (ArrayList<String>) Main.app.getAssetManager().loadAsset("Interface/credits.credits");
+       ArrayList<String> text = (ArrayList<String>) Main.app.getAssetManager().loadAsset("Language/de.credits");
        
        for(int i = 0; i < text.size(); i ++){
            screen.findElementByName((i+1) + "credits").getRenderer(TextRenderer.class).setText(text.get(i));
