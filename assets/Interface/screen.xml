@@ -16,7 +16,7 @@
             </panel>
             <panel id="panel_mid" height="25%" width="75%" align="center" childLayout="horizontal" >
                 <!-- Knopf zum Starten des Spiels-->
-                <control name="button" label="Start" id="StartButton" align="center" valign="center" visibleToMouse="true" width="50%">
+                <control id="StartButton" name="button" label="Start" align="center" valign="center" visibleToMouse="true" width="50%">
                     <interact onClick="chooseScene()"/>
                 </control>
                 <!-- Knopf zum Laden des letzen Spielstandes-->
@@ -172,6 +172,12 @@
                   </panel>
                   <!-- Einstellungen rechts -->
                   <panel id="#Settings2" width="50%" height="100%" childLayout="vertical">
+                     <panel id="panelLanguage" childLayout="horizontal">
+                          <text id="textLanguage" text="Sprache   " font="Interface/Fonts/Arial.fnt" />
+                          <control name="dropDown" id="dropdownLanguage" width="100px" focusable="false"/>
+                      </panel>
+                     <!-- Leere Zeile als Abstand -->
+                     <text text="" font="Interface/Fonts/Arial.fnt"/>
                       <panel id="panelFullscreen" childLayout="horizontal">
                           <control name="checkbox" id="checkboxFullscreen" focusable="false">
                               <interact onClick="toggleFullscreen()"/>

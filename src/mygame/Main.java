@@ -17,7 +17,6 @@ import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Properties;
 
 /**
  * Die Hauptklasse des Spiels. Sie initialisert alle Komponenten.
@@ -69,7 +68,7 @@ public class Main extends SimpleApplication implements ActionListener{
         appSettings.setFullscreen(device.isFullScreenSupported());
                 
         app.destroyInput();
-        Settings settings = new Settings();
+        Settings settings = new Settings(false);
         app.start();
     }
 
@@ -86,8 +85,7 @@ public class Main extends SimpleApplication implements ActionListener{
         assetManager.registerLoader(PropertiesLoader.class, "properties");
         //Debugmode aktivieren, da das entsprechende Layer anfangs sichtbar ist. Wird später noch deaktiviert.
         debugMode = true;
-        settings = new Settings();
-        settings.setLanguage("de");
+        settings = new Settings(true);
         highscores = new Highscores();
                 
         //Set this boolean true when the game loop should stop running when ever the window loses focus.

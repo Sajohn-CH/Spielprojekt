@@ -27,7 +27,7 @@ public class SimpleTower extends Tower{
      */
     public SimpleTower (Vector3f location, Vector3f up){
         super();
-        this.setName("Zerstörender Turm");
+        this.setName(Main.app.getSettings().getLanguageProperty("simpleTowerName"));
         this.setPrice(100);
         this.increaseTotalPaidMoney(this.getPrice());
         this.setUp(up);

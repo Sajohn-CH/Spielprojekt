@@ -20,7 +20,6 @@ public class TextLoader implements AssetLoader{
     @Override
     public Object load(AssetInfo assetInfo) {
         InputStream inputStream = assetInfo.openStream();
-//        ArrayList<String> text = new ArrayList<>();
         ArrayList<String> text = getStringFromInputStream(inputStream);        
         return text;
     }

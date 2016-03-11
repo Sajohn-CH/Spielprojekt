@@ -71,7 +71,7 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
         //e.g. remove all spatials from rootNode
         //this is called on the OpenGL thread after the AppState has been detached
     }
-
+    
     /**
      * {@inheritDoc }
      */
@@ -80,12 +80,15 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
         this.screen = screen;
         System.out.println("bind " + screen.getScreenId());
         if(screen.getScreenId().equals("settings")) {
+            Main.app.getSettings().reloadLanguageSettings(screen);
             //Lädt die eingestellten Einstellungen, damit diese angezeigt werden, wenn der Einstellungsbildschirm geladen wird.
             if(Main.app.getSettings().isUseScroll()) {
                 screen.findNiftyControl("checkboxScroll", CheckBox.class).check();
             } else {
                 screen.findNiftyControl("checkboxScroll", CheckBox.class).uncheck();
             }
+            screen.findNiftyControl("dropdownLanguage", DropDown.class).addAllItems(Main.app.getSettings().getPossibleLanguagesStrings());
+            screen.findNiftyControl("dropdownLanguage", DropDown.class).selectItem(Main.app.getSettings().getActiveLanguageString());
             if(Main.app.getSettings().isFullscreen()){
                 screen.findNiftyControl("checkboxFullscreen", CheckBox.class).check();
             } else {
@@ -122,10 +125,13 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
                 screen.findNiftyControl("checkboxMuteMusicVolume", CheckBox.class).uncheck();
             }
         } else if (screen.getScreenId().equals("highscores")){
+            Main.app.getSettings().reloadLanguageHighscores(screen);
             reloadHighscores();
         } else if (screen.getScreenId().equals("credits")){
+            Main.app.getSettings().reloadLanguageCredits(screen);
             loadCredits();
         } else if (screen.getScreenId().equals("keyBindings")){
+            Main.app.getSettings().reloadLanguageKeyBindings(screen);
             Settings settings = Main.app.getSettings();
             updateButtonText("forward", settings.getKeyString(settings.getKey("forward")));
             updateButtonText("backward", settings.getKeyString(settings.getKey("backward")));
@@ -139,13 +145,21 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
             updateButtonText("item_5", settings.getKeyString(settings.getKey("item_5")));
             updateButtonText("help", settings.getKeyString(settings.getKey("help")));
         } else if (screen.getScreenId().equals("chooseScene")){
+            Main.app.getSettings().reloadLanguageChooseScene(screen);
             screen.findNiftyControl("listBoxScene", ListBox.class).addAllItems(Main.app.getPossibleSceneNames());
             screen.findNiftyControl("listBoxScene", ListBox.class).selectItemByIndex(0);
             screen.findElementByName("#startGame").setFocus();
         } else if (screen.getScreenId().equals("chooseSave")){
+            Main.app.getSettings().reloadLanguageChooseSave(screen);
             screen.findNiftyControl("listBoxSave", ListBox.class).addAllItems(Main.app.getPossibleSaveNames());
             screen.findNiftyControl("listBoxSave", ListBox.class).selectItemByIndex(0);
             screen.findElementByName("#loadGame").setFocus();
+        } else if(screen.getScreenId().equals("start")){
+            Main.app.getSettings().reloadLanguageStart(screen);
+        } else if(screen.getScreenId().equals("pause")){
+            Main.app.getSettings().reloadLanguagePause(screen);
+        } else if(screen.getScreenId().equals("gameOver")){
+            Main.app.getSettings().reloadLanguageGameOver(screen);
         }
     }
 
@@ -154,7 +168,26 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
      */
     public void onStartScreen() {
         if(screen.getScreenId().equals("gameOver")) {
+            Main.app.getSettings().reloadLanguageGameOver(screen);
             screen.findElementByName("untilWave").getRenderer(TextRenderer.class).setText(Main.app.getSettings().getLanguageProperty("untilWave1") + " " + getCurrentWave()+ " " + Main.app.getSettings().getLanguageProperty("untilWave2"));    
+        } else if(screen.getScreenId().equals("settings")) {
+            Main.app.getSettings().reloadLanguageSettings(screen);
+        } else if (screen.getScreenId().equals("highscores")){
+            Main.app.getSettings().reloadLanguageHighscores(screen);
+            reloadHighscores();
+        } else if (screen.getScreenId().equals("credits")){
+            Main.app.getSettings().reloadLanguageCredits(screen);
+            loadCredits();
+        } else if (screen.getScreenId().equals("keyBindings")){
+            Main.app.getSettings().reloadLanguageKeyBindings(screen);
+        } else if (screen.getScreenId().equals("chooseScene")){
+            Main.app.getSettings().reloadLanguageChooseScene(screen);
+        } else if (screen.getScreenId().equals("chooseSave")){
+            Main.app.getSettings().reloadLanguageChooseSave(screen);
+        } else if(screen.getScreenId().equals("start")){
+            Main.app.getSettings().reloadLanguageStart(screen);
+        } else if(screen.getScreenId().equals("pause")){
+            Main.app.getSettings().reloadLanguagePause(screen);
         }
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.      
     }
@@ -432,6 +465,7 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
    }
    
    public void saveSettings() {
+        Main.app.getSettings().setLanguage(screen.findNiftyControl("dropdownLanguage", DropDown.class).getSelectedIndex());
         DropDown dropdownResolution = screen.findNiftyControl("dropdownResolution", DropDown.class);
         Main.app.getSettings().setResolution(Main.app.getSettings().getPossibleResolutions().get(dropdownResolution.getSelectedIndex()));
         Main.app.getSettings().setFullscreen(screen.findNiftyControl("checkboxFullscreen", CheckBox.class).isChecked());

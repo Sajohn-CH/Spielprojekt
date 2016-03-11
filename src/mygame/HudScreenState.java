@@ -120,7 +120,10 @@ public class HudScreenState extends AbstractAppState implements ScreenController
     public void bind(Nifty nifty, Screen screen) {
         this.nifty = nifty;
         this.screen = screen;
-        System.out.println("bind("+screen.getScreenId()+")");      
+        System.out.println("bind("+screen.getScreenId()+")");
+        if(screen.getScreenId().equals("hud")){
+            Main.app.getSettings().reloadLanguageHud(screen);
+        }
         //Deaktiviert den Hilfebildschirm
         toggleHelpLayer();
         hideTowerInfo();
@@ -130,6 +133,9 @@ public class HudScreenState extends AbstractAppState implements ScreenController
      * {@inheritDoc}
      */
     public void onStartScreen() {
+        if(screen.getScreenId().equals("hud")){
+            Main.app.getSettings().reloadLanguageHud(screen);
+        }
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -482,7 +488,7 @@ public class HudScreenState extends AbstractAppState implements ScreenController
        String beaconHealth = beacon.getMaxHealth()+"+"+(beacon.getNewMaxHealth()-beacon.getMaxHealth());
        
        //Setzt richtige Werte, für die Upgrademöglichkeiten
-       endWavePopup.findElementByName("#waveEnd").getRenderer(TextRenderer.class).setText("Ende der Welle "+(Main.app.getGame().getWave()-1));
+       endWavePopup.findElementByName("#waveEnd").getRenderer(TextRenderer.class).setText(Main.app.getSettings().getLanguageProperty("endWave") + " "+(Main.app.getGame().getWave()-1));
        endWavePopup.findElementByName("#PLHealth").getRenderer(TextRenderer.class).setText(health);
        endWavePopup.findElementByName("#PLDamage").getRenderer(TextRenderer.class).setText(damage);
        endWavePopup.findElementByName("#PLSPS").getRenderer(TextRenderer.class).setText(sps);

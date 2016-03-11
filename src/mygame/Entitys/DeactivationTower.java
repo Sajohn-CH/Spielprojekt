@@ -28,7 +28,7 @@ public class DeactivationTower extends Tower{
      */
     public DeactivationTower (Vector3f location, Vector3f up){
         super();
-        this.setName("Deaktivierender Turm");
+        this.setName(Main.app.getSettings().getLanguageProperty("deactivationTowerName"));
         this.setPrice(200);
         this.increaseTotalPaidMoney(this.getPrice());
         this.setUp(up);

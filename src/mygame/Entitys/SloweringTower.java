@@ -28,7 +28,7 @@ public class SloweringTower extends Tower{
      */
     public SloweringTower(Vector3f location, Vector3f up) {
         super();
-        this.setName("Verlangsamender Turm");
+        this.setName(Main.app.getSettings().getLanguageProperty("sloweringTowerName"));
         this.setPrice(150);
         this.increaseTotalPaidMoney(this.getPrice());
         this.setUp(up);
