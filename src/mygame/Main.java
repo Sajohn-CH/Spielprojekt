@@ -79,7 +79,6 @@ public class Main extends SimpleApplication implements ActionListener{
      */
     @Override
     public void simpleInitApp() {
-        assetManager.registerLoader(CornersLoader.class, "corners");
         assetManager.registerLoader(SceneDataLoader.class, "sceneData");
         assetManager.registerLoader(TextLoader.class, "credits", "txt");
         assetManager.registerLoader(PropertiesLoader.class, "properties");

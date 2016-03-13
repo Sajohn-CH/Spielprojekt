@@ -8,16 +8,13 @@ import com.jme3.app.state.AbstractAppState;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
-import com.jme3.collision.CollisionResults;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
-import com.jme3.math.Ray;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Box;
-import com.jme3.scene.shape.Line;
 import com.jme3.texture.Texture;
 import com.jme3.util.SkyFactory;
 import java.util.ArrayList;
@@ -151,8 +148,8 @@ public class World extends AbstractAppState{
         HashMap<String, Object> data = (HashMap<String, Object>) Main.app.getAssetManager().loadAsset("Scenes/" + scene.getName() + ".sceneData");
         bombMultiplier = (Float) data.get("bombMultiplier");
         towerMultiplier = (Float) data.get("towerMultiplier");
+        this.corners = (ArrayList<Vector3f>) data.get("corners");
         
-        this.corners = (ArrayList<Vector3f>) Main.app.getAssetManager().loadAsset("Scenes/" + scene.getName() + ".corners");
         wayNode.detachAllChildren();
         generateWayGeometries();
     }

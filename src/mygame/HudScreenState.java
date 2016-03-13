@@ -123,6 +123,7 @@ public class HudScreenState extends AbstractAppState implements ScreenController
         System.out.println("bind("+screen.getScreenId()+")");
         if(screen.getScreenId().equals("hud")){
             Main.app.getSettings().reloadLanguageHud(screen);
+            reloadDescriptionsLanguage();
         }
         //Deaktiviert den Hilfebildschirm
         toggleHelpLayer();
@@ -135,6 +136,7 @@ public class HudScreenState extends AbstractAppState implements ScreenController
     public void onStartScreen() {
         if(screen != null && screen.getScreenId().equals("hud")){
             Main.app.getSettings().reloadLanguageHud(screen);
+            reloadDescriptionsLanguage();
         }
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
@@ -768,5 +770,9 @@ public class HudScreenState extends AbstractAppState implements ScreenController
     public void hideTowerInfo() {
         screen.findElementByName("towerInfoLayer").setVisible(false);
         screen.findElementByName("crosshair").setVisible(true);
+    }
+    
+    public void reloadDescriptionsLanguage(){
+        descriptions = Main.app.getSettings().getLanguageProperty("towerDescriptions").split(",");
     }
 }
