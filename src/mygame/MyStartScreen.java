@@ -275,8 +275,8 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
      */
     public void loadGame() {
         File saveGame = new File("saves/" + (String) screen.findNiftyControl("listBoxSave", ListBox.class).getFocusItem() + ".save");
-        String [] d = ((String) screen.findNiftyControl("listBoxSave", ListBox.class).getFocusItem()).split(";")[0].split("-");
-        String [] t = ((String) screen.findNiftyControl("listBoxSave", ListBox.class).getFocusItem()).split(";")[1].split("-");
+        String [] d = ((String) screen.findNiftyControl("listBoxSave", ListBox.class).getFocusItem()).split(";")[1].split("-");
+        String [] t = ((String) screen.findNiftyControl("listBoxSave", ListBox.class).getFocusItem()).split(";")[2].split("-");
         Cryption crypt = new Cryption(d[2] + "S" + t[1] + "v" + d[0] + "S" + d[1] + "F" + t[0]);
         crypt.decrypt(saveGame, saveGame);
         try{

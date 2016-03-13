@@ -133,7 +133,7 @@ public class HudScreenState extends AbstractAppState implements ScreenController
      * {@inheritDoc}
      */
     public void onStartScreen() {
-        if(screen.getScreenId().equals("hud")){
+        if(screen != null && screen.getScreenId().equals("hud")){
             Main.app.getSettings().reloadLanguageHud(screen);
         }
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
