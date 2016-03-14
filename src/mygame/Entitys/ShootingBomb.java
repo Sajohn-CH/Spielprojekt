@@ -32,6 +32,7 @@ public class ShootingBomb extends Bomb{
      */
     public ShootingBomb(int level){
         super(level);
+        super.setNormal(false);
         line = new Geometry("line");
         Material matL = new Material(Main.app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
         matL.setColor("Color", ColorRGBA.Yellow);
@@ -151,6 +152,7 @@ public class ShootingBomb extends Bomb{
      */
     public void disableShooting(){
         shooting = false;
+        super.setNormal(true);
         n.getChild("gun").removeFromParent();
     }
     

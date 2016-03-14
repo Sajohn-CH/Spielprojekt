@@ -26,6 +26,7 @@ public class Bomb extends Entity{
     private int decreasedSpeed; //Um wieviel die Geschwindigkeit verringert wurde
     private Node n;             //Enthält alle Graphischen Elemente der Bombe
     protected Float multiplier;
+    private boolean isNormal;
     
     /**
      * Erstellt die Bombe. Erstellt den Spatial der Bombe und setzt den Weg.
@@ -34,6 +35,7 @@ public class Bomb extends Entity{
     public Bomb (int level){
         colors  = new ColorRGBA[]{ColorRGBA.Blue, ColorRGBA.Cyan, ColorRGBA.Green, ColorRGBA.Magenta, ColorRGBA.Red, ColorRGBA.Orange, ColorRGBA.Yellow, ColorRGBA.Green, ColorRGBA.Pink, ColorRGBA.Brown};
         this.setLiving(true);
+        this.setNormal(true);
         multiplier = Main.getWorld().getBombMultiplier();
         
         //Spatial erstellen
@@ -249,5 +251,17 @@ public class Bomb extends Entity{
      */
     public double getDistanceToNextCorner(){
         return this.getSpatial().getLocalTranslation().subtract(way.getThisCorner()).length();
+    }
+    
+    /**
+     * Gibt zurück, ob die Bombe nun "normal" ist.
+     * @return 
+     */
+    public boolean isNormal(){
+        return isNormal;
+    }
+    
+    protected void setNormal(boolean isNormal){
+        this.isNormal = isNormal;
     }
 }

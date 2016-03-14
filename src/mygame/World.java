@@ -388,6 +388,63 @@ public class World extends AbstractAppState{
     }
     
     /**
+     * Gibt alle Bomben der Klasse die einen Maximalabstand zu einem Ort haben zurück.
+     * @param location Ort
+     * @param range Maximalabstand
+     * @param bombClass Klasse der gewünschten Bomben
+     * @return alle Bomben der Klasse im Umkreis
+     */
+     public ArrayList<Bomb> getAllClassBombsInRange(Vector3f location, int range, Class<? extends Bomb> bombClass){
+        ArrayList<Bomb> allBombs = this.getAllBombs();
+        ArrayList<Bomb> bombsInRange = new ArrayList<>();
+        if(!allBombs.isEmpty()){
+            for(int i = 0; i < allBombs.size(); i ++){
+                if(allBombs.get(i).getSpatial().getLocalTranslation().subtract(location).length() <= range){
+                    if(allBombs.get(i).getClass().equals(bombClass)){
+                        bombsInRange.add(bombClass.cast(allBombs.get(i)));
+                    } else if(bombClass.equals(Bomb.class)){
+                        Bomb bomb = bombClass.cast(allBombs.get(i));
+                        if(bomb.isNormal()){
+                            bombsInRange.add(bomb);
+                        }
+                    }
+                }
+            }
+            return bombsInRange;
+        }
+        return null;
+    }
+     
+     /**
+     * Gibt die nächste Bombe der gewünschten Klasse bei einem bestimmten Ort zurück.
+     * @param location Ort
+     * @param bombClass Klasse der Bombs
+     * @return nächste Bombe der Klasse
+     */
+    public Bomb getNearestClassBomb(Vector3f location, Class <? extends Bomb> bombClass){
+        ArrayList<Bomb> allBombs = this.getAllBombs();
+        if(!allBombs.isEmpty()){
+            Bomb nearest = null;
+            for(int i = 0; i < allBombs.size(); i ++){
+                if(nearest == null && allBombs.get(i).getClass().equals(bombClass)){
+                    nearest = allBombs.get(i);
+                }else if(nearest != null && allBombs.get(i).getSpatial().getLocalTranslation().subtract(location).length() < nearest.getSpatial().getLocalTranslation().subtract(location).length()){
+                    if(allBombs.get(i).getClass().equals(bombClass)){
+                        nearest = allBombs.get(i);
+                    } else if (bombClass.equals(Bomb.class)){
+                        Bomb bomb = bombClass.cast(allBombs.get(i));
+                        if(!bomb.isNormal()){
+                            nearest = bomb;
+                        }
+                    }
+                }
+            }
+            return nearest;
+        }
+        return null;
+    }
+    
+    /**
      * {@inheritDoc }
      *
      */

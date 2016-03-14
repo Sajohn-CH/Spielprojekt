@@ -35,8 +35,7 @@ public class DeactivationTower extends Tower{
         this.setLevel(1);
         this.setLocation(location);
         this.setLiving(true);
-        super.setShootAt(true, false, false, false);
-        super.setShootOnlyAtShootingBombs();
+        super.setShootAt(ShootingBomb.class, false, true, false, false, false);
         
         //Modell von: http://www.blendswap.com/blends/view/77840 (User: thanhkhmt1)
         //Bearbeitet von: Florian Wenk

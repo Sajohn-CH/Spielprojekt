@@ -22,6 +22,8 @@ import de.lessvoid.nifty.screen.ScreenController;
 import de.lessvoid.xml.xpp3.Attributes;
 import java.text.SimpleDateFormat;
 import java.util.Properties;
+import mygame.Entitys.Bomb;
+import mygame.Entitys.ShootingBomb;
 
 
 /**
@@ -292,11 +294,11 @@ public class HudScreenState extends AbstractAppState implements ScreenController
             towerPopup.findNiftyControl("strongest", CheckBox.class).uncheck();
             towerPopup.findNiftyControl("weakest", CheckBox.class).check();
        }
-       if(tower.getShootAtShootingBombs()){
+       if(tower.getShootAtBombsClass().equals(ShootingBomb.class)){
            towerPopup.findNiftyControl("shootingBombs", CheckBox.class).check();
        } else if (tower.getShootAtAllBombs()){
            towerPopup.findNiftyControl("allBombs", CheckBox.class).check();
-       } else if (tower.getShootAtNormalBombs()){
+       } else if (tower.getShootAtBombsClass().equals(Bomb.class)){
            towerPopup.findNiftyControl("normalBombs", CheckBox.class).check();
        }
        
@@ -389,7 +391,7 @@ public class HudScreenState extends AbstractAppState implements ScreenController
         checkboxShootingBombs.check();
         checkboxNormalBombs.uncheck();
         
-        tower.setShootOnlyAtShootingBombs();
+        tower.setShootAt(ShootingBomb.class, false);
     }
     
     /**
@@ -406,7 +408,7 @@ public class HudScreenState extends AbstractAppState implements ScreenController
         checkboxShootingBombs.uncheck();
         checkboxNormalBombs.check();
         
-        tower.setShootOnlyAtNormalBombs();
+        tower.setShootAt(Bomb.class, false);
     }
     
     /**
