@@ -363,7 +363,17 @@ public class Player extends Entity{
              towerWithTowerInfoVisible = null;
          }
          if(resultsScene.size() != 0){
-            placeOnScene.setLocalTranslation(resultsScene.getClosestCollision().getContactPoint());
+            if(Main.app.getWorld().getSceneDecoration() != null){
+                CollisionResults resultsDecoration = new CollisionResults();
+                Main.app.getWorld().getSceneDecoration().collideWith(ray, resultsDecoration);
+                if(resultsDecoration.size() == 0){
+                    placeOnScene.setLocalTranslation(resultsScene.getClosestCollision().getContactPoint());
+                } else {
+                    placeOnScene.setLocalTranslation(new Vector3f(0, 0, 0));
+                }
+            } else {
+                placeOnScene.setLocalTranslation(resultsScene.getClosestCollision().getContactPoint());
+            }
 //            if(!placeOnScene.hasAncestor(Main.app.getRootNode())){
 //                Main.app.getRootNode().attachChild(placeOnScene);
 //            }
@@ -434,6 +444,10 @@ public class Player extends Entity{
             Vector3f up = results.getClosestCollision().getContactNormal();
             //Es wird nicht auf Scene geschaut -> abbrechen
             if(location.equals(new Vector3f(0, 0, 0))){
+                return;
+            }
+            // senkrechte Wand -> Spatial auf der Seite
+            if(up.getY() == 0){
                 return;
             }
             // kontrolliert ob kollision mit Beacon

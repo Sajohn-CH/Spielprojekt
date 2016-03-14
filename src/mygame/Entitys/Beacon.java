@@ -62,7 +62,10 @@ public class Beacon extends Entity {
      * Dreht den Beacon in die Richtung. Wird bisher nicht benötigt
      */
     public void turn(){
-        this.getSpatial().lookAt(Main.getWorld().getAllCorners().get(Main.getWorld().getAllCorners().size()-1), new Vector3f(0,1,0));
+        if(Main.getWorld() != null){
+            this.getSpatial().lookAt(Main.getWorld().getAllCorners().get(Main.getWorld().getAllCorners().size()-2), new Vector3f(0,1,0));
+            this.getSpatial().rotateUpTo(new Vector3f(0, 1, 0));
+        }
     }
     
     /**
@@ -115,6 +118,11 @@ public class Beacon extends Entity {
     }
     
     public void setCollidable(){
+        try{
+            Main.getBulletAppState().getPhysicsSpace().remove(this.getSpatial().getControl(RigidBodyControl.class));
+        } catch (Exception e){
+            
+        }
         CollisionShape beaconShape = CollisionShapeFactory.createMeshShape(this.getSpatial());
         beaconC = new RigidBodyControl(beaconShape, 0);
         this.getSpatial().addControl(beaconC);

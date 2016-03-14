@@ -5,6 +5,7 @@ import mygame.Entitys.Beacon;
 import mygame.Entitys.Player;
 import mygame.Entitys.Tower;
 import com.jme3.app.state.AbstractAppState;
+import com.jme3.asset.AssetNotFoundException;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
@@ -29,6 +30,7 @@ import mygame.Entitys.ShootingBomb;
 public class World extends AbstractAppState{
     
     private Spatial scene;                  //Die Spielszene
+    private Spatial sceneDecoration;
     private HashMap<Spatial, Bomb> bombs;   //Alle Bomben. Jeweils mit ihrem Spatial (Objekt in der 3D-Welt)
     private HashMap<Spatial, Tower> towers;     //Alle Türme. Jeweils mit ihrem Spatial (Objekt in der 3D-Welt)
     private Beacon beacon;                  //Der Beacon
@@ -137,7 +139,7 @@ public class World extends AbstractAppState{
         }
         scene = Main.app.getAssetManager().loadModel("Scenes/" + name + ".j3o");
         scene.setLocalScale(2f);
-        scene.setName(name);         
+        scene.setName(name);
         // Scene collidable machen
         Main.app.getRootNode().attachChild(scene);
         CollisionShape sceneShape = CollisionShapeFactory.createMeshShape((Node) scene);
@@ -145,11 +147,29 @@ public class World extends AbstractAppState{
         scene.addControl(sceneC);
         Main.getBulletAppState().getPhysicsSpace().add(sceneC);
         
+        try{
+            sceneDecoration = Main.app.getAssetManager().loadModel("Scenes/" + name + "Decoration.j3o");
+            sceneDecoration.setLocalScale(2f);
+            // SceneDecoration collidable machen
+            Main.app.getRootNode().attachChild(sceneDecoration);
+            CollisionShape sceneDecorationShape = CollisionShapeFactory.createMeshShape((Node) sceneDecoration);
+            RigidBodyControl sceneDecorationC = new RigidBodyControl(sceneDecorationShape, 0);
+            sceneDecoration.addControl(sceneDecorationC);
+            Main.getBulletAppState().getPhysicsSpace().add(sceneDecorationC);
+        } catch (AssetNotFoundException e){
+            if(Main.app.getRootNode().hasChild(sceneDecoration)){
+                Main.app.getBulletAppState().getPhysicsSpace().remove(this.sceneDecoration.getControl(RigidBodyControl.class));
+                Main.app.getRootNode().detachChild(sceneDecoration);
+            }
+            sceneDecoration = null;
+        }
+        
         HashMap<String, Object> data = (HashMap<String, Object>) Main.app.getAssetManager().loadAsset("Scenes/" + scene.getName() + ".sceneData");
         bombMultiplier = (Float) data.get("bombMultiplier");
         towerMultiplier = (Float) data.get("towerMultiplier");
         this.corners = (ArrayList<Vector3f>) data.get("corners");
         
+        beacon.turn();
         wayNode.detachAllChildren();
         generateWayGeometries();
     }
@@ -471,5 +491,9 @@ public class World extends AbstractAppState{
     
     public Float getTowerMultiplier(){
         return this.towerMultiplier;
+    }
+    
+    public Spatial getSceneDecoration(){
+        return this.sceneDecoration;
     }
 }
