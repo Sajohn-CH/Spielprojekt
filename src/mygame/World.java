@@ -20,7 +20,6 @@ import com.jme3.texture.Texture;
 import com.jme3.util.SkyFactory;
 import java.util.ArrayList;
 import java.util.HashMap;
-import mygame.Entitys.ShootingBomb;
 
 /**
  * Die Spielwelt. Sie enthält alle nötigen Element der Welt: Die Umgebung (scene), alle Bomben und Türme, den Beacon (den es zu verteidigen gilt), den Spieler, sowie den Weg den die Bomben zurücklegen müssen. 
@@ -254,62 +253,15 @@ public class World extends AbstractAppState{
      * @param location Ort
      * @return nächste Bombe
      */
-    public Bomb getNearestBomb(Vector3f location){
-        ArrayList<Bomb> allBombs = this.getAllBombs();
-        if(!allBombs.isEmpty()){
-            Bomb nearest = allBombs.get(0);
-            for(int i = 1; i < allBombs.size(); i ++){
-                if(allBombs.get(i).getSpatial().getLocalTranslation().subtract(location).length() < nearest.getSpatial().getLocalTranslation().subtract(location).length()){
-                    nearest = allBombs.get(i);
-                }
-            }
-            return nearest;
-        }
-        return null;
-    }
-    
-    /**
-     * Gibt die nächste ShootingBomb bei einem bestimmten Ort zurück.
-     * @param location Ort
-     * @return nächste ShootingBomb
-     */
-    public ShootingBomb getNearestShootingBomb(Vector3f location){
-        ArrayList<Bomb> allBombs = this.getAllBombs();
-        if(!allBombs.isEmpty()){
-            ShootingBomb nearest = null;
-            for(int i = 0; i < allBombs.size(); i ++){
-                if(nearest == null && allBombs.get(i).getSpatial().getName().equals("shootingBomb")){
-                    nearest = (ShootingBomb) allBombs.get(i);
-                }else if(nearest != null && allBombs.get(i).getSpatial().getLocalTranslation().subtract(location).length() < nearest.getSpatial().getLocalTranslation().subtract(location).length() && allBombs.get(i).getSpatial().getName().equals("shootingBomb")){
-                    nearest = (ShootingBomb) allBombs.get(i);
-                }
-            }
-            return nearest;
-        }
-        return null;
-    }
-    
-    /**
-     * Gibt die nächste Normale Bombe bei einem bestimmten Ort zurück.
-     * @param location Ort
-     * @return nächste normale Bombe
-     */
-    public Bomb getNearestNormalBomb(Vector3f location){
+    public Bomb getNearestBombInRange(Vector3f location, int range){
         ArrayList<Bomb> allBombs = this.getAllBombs();
         if(!allBombs.isEmpty()){
             Bomb nearest = null;
-            for(int i = 0; i < allBombs.size(); i ++){
-                if(nearest == null && allBombs.get(i).getSpatial().getName().equals("bomb")){
+            for(int i = 1; i < allBombs.size(); i ++){
+                if(allBombs.get(i).getSpatial().getLocalTranslation().subtract(location).length() <= range){
                     nearest = allBombs.get(i);
-                }else if(nearest != null && allBombs.get(i).getSpatial().getLocalTranslation().subtract(location).length() < nearest.getSpatial().getLocalTranslation().subtract(location).length()){
-                    if(allBombs.get(i).getSpatial().getName().equals("bomb")){
-                        nearest = allBombs.get(i);
-                    } else {
-                        ShootingBomb sBomb = (ShootingBomb) allBombs.get(i);
-                        if(!sBomb.isShooting()){
-                            nearest = (Bomb) sBomb;
-                        }
-                    }
+                } else if(nearest != null && allBombs.get(i).getSpatial().getLocalTranslation().subtract(location).length() < nearest.getSpatial().getLocalTranslation().subtract(location).length()){
+                    nearest = allBombs.get(i);
                 }
             }
             return nearest;
@@ -333,56 +285,6 @@ public class World extends AbstractAppState{
                 }
             }
             return bombsInRange;
-        }
-        return null;
-    }
-     
-     /**
-     * Gibt alle ShootingBombs zurück die einen Maximalabstand zu einem Ort haben zurück.
-     * @param location Ort
-     * @param range Maximalabstand
-     * @return alle ShootingBombs im Umkreis
-     */
-     public ArrayList<ShootingBomb> getAllShootingBombsInRange(Vector3f location, int range){
-        ArrayList<Bomb> allBombs = this.getAllBombs();
-        ArrayList<ShootingBomb> shootingBombsInRange = new ArrayList<ShootingBomb>();
-        if(!allBombs.isEmpty()){
-            for(int i = 0; i < allBombs.size(); i ++){
-                if(allBombs.get(i).getSpatial().getLocalTranslation().subtract(location).length() <= range && allBombs.get(i).getSpatial().getName().equals("shootingBomb")){
-                    ShootingBomb sBomb = (ShootingBomb) allBombs.get(i);
-                    if(sBomb.isShooting()){
-                        shootingBombsInRange.add(sBomb);
-                    }
-                }
-            }
-            return shootingBombsInRange;
-        }
-        return null;
-    }
-     
-     /**
-     * Gibt alle Normalen Bomben zurück die einen Maximalabstand zu einem Ort haben zurück.
-     * @param location Ort
-     * @param range Maximalabstand
-     * @return alle normalen Bomben im Umkreis
-     */
-     public ArrayList<Bomb> getAllNormalBombsInRange(Vector3f location, int range){
-        ArrayList<Bomb> allBombs = this.getAllBombs();
-        ArrayList<Bomb> normalBombsInRange = new ArrayList<Bomb>();
-        if(!allBombs.isEmpty()){
-            for(int i = 0; i < allBombs.size(); i ++){
-                if(allBombs.get(i).getSpatial().getLocalTranslation().subtract(location).length() <= range){
-                    if(allBombs.get(i).getSpatial().getName().equals("bomb")){
-                        normalBombsInRange.add(allBombs.get(i));
-                    } else {
-                        ShootingBomb sBomb = (ShootingBomb) allBombs.get(i);
-                        if(!sBomb.isShooting()){
-                            normalBombsInRange.add((Bomb) sBomb);
-                        }
-                    }
-                }
-            }
-            return normalBombsInRange;
         }
         return null;
     }
@@ -421,12 +323,12 @@ public class World extends AbstractAppState{
      * @param bombClass Klasse der Bombs
      * @return nächste Bombe der Klasse
      */
-    public Bomb getNearestClassBomb(Vector3f location, Class <? extends Bomb> bombClass){
+    public Bomb getNearestClassBombInRange(Vector3f location, int range, Class <? extends Bomb> bombClass){
         ArrayList<Bomb> allBombs = this.getAllBombs();
         if(!allBombs.isEmpty()){
             Bomb nearest = null;
             for(int i = 0; i < allBombs.size(); i ++){
-                if(nearest == null && allBombs.get(i).getClass().equals(bombClass)){
+                if(nearest == null && allBombs.get(i).getClass().equals(bombClass) && allBombs.get(i).getSpatial().getLocalTranslation().subtract(location).length() <= range){
                     nearest = allBombs.get(i);
                 }else if(nearest != null && allBombs.get(i).getSpatial().getLocalTranslation().subtract(location).length() < nearest.getSpatial().getLocalTranslation().subtract(location).length()){
                     if(allBombs.get(i).getClass().equals(bombClass)){
@@ -450,23 +352,23 @@ public class World extends AbstractAppState{
      */
     @Override
     public void update (float tpf){
-        ArrayList<Bomb> allBombs = this.getAllBombs();
         ArrayList<Tower> allTowers= this.getAllTowers();
+        ArrayList<Bomb> allBombs = this.getAllBombs();
         
         player.action(tpf);
         beacon.action(tpf);
+        for(int i = 0; i < allTowers.size(); i++){
+            allTowers.get(i).action(tpf);
+            if(!allTowers.get(i).isLiving() && allTowers.get(i).canRemove()){
+                this.removeTower(allTowers.get(i));
+            }
+        }
         for(int i = 0; i < allBombs.size(); i++){
             allBombs.get(i).action(tpf);
             if(!allBombs.get(i).isLiving()){
                 this.removeBomb(allBombs.get(i));
             }
             
-        }
-        for(int i = 0; i < allTowers.size(); i++){
-            allTowers.get(i).action(tpf);
-            if(!allTowers.get(i).isLiving() && allTowers.get(i).canRemove()){
-                this.removeTower(allTowers.get(i));
-            }
         }
     }
     

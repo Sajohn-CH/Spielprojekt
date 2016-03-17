@@ -30,7 +30,7 @@ public class ShootingBomb extends Bomb{
      * Erstellt eine ShootingBomb. Eine ShootingBomb wird erstellt und die Schusslinie geladen.
      * @param level Das Level, das die Bombe haben soll.
      */
-    public ShootingBomb(int level){
+    public ShootingBomb(Integer level){
         super(level);
         super.setNormal(false);
         line = new Geometry("line");

@@ -1,0 +1,2 @@
+Bomb;0
+ShootingBomb;10

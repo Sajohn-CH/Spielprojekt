@@ -12,6 +12,7 @@ import com.jme3.math.Vector3f;
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.controls.CheckBox;
 import de.lessvoid.nifty.controls.Controller;
+import de.lessvoid.nifty.controls.DropDown;
 import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.elements.render.ImageRenderer;
 import de.lessvoid.nifty.elements.render.TextRenderer;
@@ -68,7 +69,7 @@ public class HudScreenState extends AbstractAppState implements ScreenController
             long time = startWaveTime-System.currentTimeMillis();
             updateText("wave", Main.app.getSettings().getLanguageProperty("reloadWave", "Nächste Welle in") + " " + (time/1000));
         } else {
-            updateText("wave", (Main.app.getSettings().getLanguageProperty("wave", "Welle:") + " " + Main.getGame().getWave()));
+            updateText("wave", (Main.app.getSettings().getLanguageProperty("wave", "Welle:") + " " + Main.app.getGame().getWave()));
         }
         updateText("time", (Main.app.getSettings().getLanguageProperty("time", "Uhrzeit:") + " " + df.format(System.currentTimeMillis())));
         updateText("money", (Main.app.getSettings().getLanguageProperty("money", "Geld:") + " " + Main.app.getWorld().getPlayer().getMoney() + "$"));
@@ -294,12 +295,12 @@ public class HudScreenState extends AbstractAppState implements ScreenController
             towerPopup.findNiftyControl("strongest", CheckBox.class).uncheck();
             towerPopup.findNiftyControl("weakest", CheckBox.class).check();
        }
-       if(tower.getShootAtBombsClass().equals(ShootingBomb.class)){
-           towerPopup.findNiftyControl("shootingBombs", CheckBox.class).check();
-       } else if (tower.getShootAtAllBombs()){
-           towerPopup.findNiftyControl("allBombs", CheckBox.class).check();
-       } else if (tower.getShootAtBombsClass().equals(Bomb.class)){
-           towerPopup.findNiftyControl("normalBombs", CheckBox.class).check();
+       DropDown shootAtBomb = towerPopup.findNiftyControl("dropdownShootAtBomb", DropDown.class);
+       shootAtBomb.addAllItems(Main.app.getGame().getPossibleBombTypes());
+       if (tower.getShootAtAllBombs()){
+           shootAtBomb.selectItemByIndex(0);
+       } else {
+           shootAtBomb.selectItem(tower.getShootAtBombsString());
        }
        
        nifty.showPopup(screen, towerPopup.getId(), null);  
@@ -317,6 +318,7 @@ public class HudScreenState extends AbstractAppState implements ScreenController
        if(tower == null) {
            return;
        }
+       setShootAtBombsClass();
        if(upgrade.equals("true")) {
            this.tower.upgrade();
        }
@@ -378,56 +380,19 @@ public class HudScreenState extends AbstractAppState implements ScreenController
     }
     
     /**
-     * Setzt, dass nur auf ShootingBombs geschossen werden soll.
-     */
-    public void setShootAtShootingBombs(){
-        if(tower == null){
-            return;
-        }
-        CheckBox checkboxAll = screen.findNiftyControl("allBombs", CheckBox.class);
-        CheckBox checkboxShootingBombs = screen.findNiftyControl("shootingBombs", CheckBox.class);
-        CheckBox checkboxNormalBombs = screen.findNiftyControl("normalBombs", CheckBox.class);
-        checkboxAll.uncheck();
-        checkboxShootingBombs.check();
-        checkboxNormalBombs.uncheck();
-        
-        tower.setShootAt(ShootingBomb.class, false);
-    }
-    
-    /**
      * Setzt, dass nur auf normale Bomben geschossen werden soll.
      */
-    public void setShootAtNormalBombs(){
+    public void setShootAtBombsClass(){
         if(tower == null){
             return;
         }
-        CheckBox checkboxAll = screen.findNiftyControl("allBombs", CheckBox.class);
-        CheckBox checkboxShootingBombs = screen.findNiftyControl("shootingBombs", CheckBox.class);
-        CheckBox checkboxNormalBombs = screen.findNiftyControl("normalBombs", CheckBox.class);
-        checkboxAll.uncheck();
-        checkboxShootingBombs.uncheck();
-        checkboxNormalBombs.check();
-        
-        tower.setShootAt(Bomb.class, false);
-    }
-    
-    /**
-     * Setzt, dass auf alle Bomben geschossen werden soll.
-     */
-    public void setShootAtAllBombs(){
-        if(tower == null){
+        DropDown shootAtBomb = screen.findNiftyControl("dropdownShootAtBomb", DropDown.class);
+        if(shootAtBomb.getSelection().toString().equals(Main.app.getSettings().getLanguageProperty("allBombs"))){
+            tower.setShootAtAllBombs();
             return;
-        }
-        CheckBox checkboxAll = screen.findNiftyControl("allBombs", CheckBox.class);
-        CheckBox checkboxShootingBombs = screen.findNiftyControl("shootingBombs", CheckBox.class);
-        CheckBox checkboxNormalBombs = screen.findNiftyControl("normalBombs", CheckBox.class);
-        checkboxAll.check();
-        checkboxShootingBombs.uncheck();
-        checkboxNormalBombs.uncheck();
-        
-        tower.setShootAtAllBombs();
+        } 
+        tower.setShootAt(Main.app.getGame().getBombType((String) shootAtBomb.getSelection()), false);
     }
-    
     
     public void openRemoveTowerPopup(){
         if(tower == null){

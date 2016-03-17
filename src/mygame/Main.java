@@ -114,7 +114,7 @@ public class Main extends SimpleApplication implements ActionListener{
         
         setUpKeys();
         
-        game = new Game(1);
+        game = new Game(1, (ArrayList<String>) assetManager.loadAsset("bombClasses.txt"));
         game.startWave();
         
         //Test, ob es dann beim ersten Setzen eines Turms nicht lange braucht
@@ -301,7 +301,7 @@ public class Main extends SimpleApplication implements ActionListener{
      * Gibt das Game ({@link Game}) zurück. Dies steuert die Spielmechanik
      * @return Game
      */
-    public static Game getGame(){
+    public Game getGame(){
         return game;
     }
     

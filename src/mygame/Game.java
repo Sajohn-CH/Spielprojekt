@@ -1,8 +1,12 @@
 package mygame;
 
+import java.lang.reflect.InvocationTargetException;
 import mygame.Entitys.Bomb;
 import mygame.Entitys.ShootingBomb;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Das grundsätzliche Spielprinzip. Es werden die Wellen kontrolliert und die Bomben, die in einer solchen kommen generiert.
@@ -10,10 +14,11 @@ import java.util.ArrayList;
  */
 public class Game {
     private int wave;                                       //Die wievielte Welle gerade läuft
-    private ArrayList<Integer> bombsLeftPerLevel;           //Alle Bomben dieser Welle, die noch erstellt werden müssen
-    private ArrayList<Integer> bombsLeftLevels;             //Die Levels der Bomben, die noch erstellt werden müssen
-    private ArrayList<Integer> shootingBombsLeftPerLevel;   //Alle Schiessenden -bomben dieser Welle, die noch erstellt werden müssen
-    private ArrayList<Integer> shootingBombsLeftLevels;     //Die Levels der schiessenden Bomben, die noch erstellt werden müssen
+    private HashMap<Class<? extends Bomb>, HashMap<String, ArrayList<Integer>>> bombsLeft;
+    private ArrayList<Class<? extends Bomb>> classes;
+    private ArrayList<Integer> fromWave;
+    private HashMap<Class<? extends Bomb>, String> classToLanguageString;
+    private HashMap<String, Class<? extends Bomb>> languageStringToClass;
     private long lastTime;                                  //Das Letze Mal, als eine Bombe erstellt wurde
     private long nextTime;                                  //Wieviel Zeit (in Milisekunden) vergeht bis die nächste Bombe erstellt wird.
    
@@ -21,12 +26,24 @@ public class Game {
      * Initialisiert das Spielprinzip. Sorgt dafür, dass Bomben erstellt werden.
      * @param wave Welche Welle es ist.
      */
-    public Game(int wave){
+    public Game(int wave, ArrayList<String> classNames){
         this.wave = wave;
-        this.bombsLeftPerLevel = new ArrayList<>();
-        this.bombsLeftLevels = new ArrayList<>();
-        this.shootingBombsLeftPerLevel = new ArrayList<>();
-        this.shootingBombsLeftLevels = new ArrayList<>();
+        this.bombsLeft = new HashMap<>();
+        this.classes = new ArrayList<>();
+        this.classes = new ArrayList<>();
+        this.fromWave = new ArrayList<>();
+        this.classToLanguageString = new HashMap<>();
+        this.languageStringToClass = new HashMap<>();
+        for(int i = 0; i < classNames.size(); i ++){
+            String[] className = classNames.get(i).split(";");
+            try {
+                classes.add(Class.forName("mygame.Entitys." + className[0]).asSubclass(Bomb.class));
+                fromWave.add(Integer.valueOf(className[1]));
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        reloadLanguage();
         lastTime = System.currentTimeMillis();
         nextTime = 100;
     }
@@ -35,34 +52,37 @@ public class Game {
      * Setzt wieviele Bomben generiert werden sollen.
      */
     public void startWave(){
-        // Mehrere Levels Bomben generieren
-        int bombsLeft = (int) (wave*Math.pow(wave,0.5));
-        while(bombsLeft > 0){
-            int i = (int) bombsLeft/wave*2;
-            if(i > bombsLeft){
-                i = bombsLeft;
+        HashMap<String, ArrayList<Integer>> map;
+        for(int i = 0; i < classes.size(); i ++){
+            map = generateBombsList(fromWave.get(i));
+            if(map != null && !map.isEmpty()){
+                bombsLeft.put(classes.get(i), map);
+            }
+        }
+    }
+    
+    private HashMap<String, ArrayList<Integer>> generateBombsList(int fromWave){
+        if(wave < fromWave){
+            return null;
+        }
+        ArrayList<Integer> classBombsLeftPerLevel= new ArrayList<>();
+        ArrayList<Integer> classBombsLeftLevels = new ArrayList<>();
+        int bombLeft = Math.round((float) ((wave+1-fromWave)*Math.pow((wave+1-fromWave), 0.5)/2));
+        while(bombLeft > 0){
+            int i = (int) bombLeft/wave*2;
+            if(i > bombLeft){
+                i = bombLeft;
             } else if (i <= 0){
                 i = 1;
             }
-            bombsLeft -= i;
-            bombsLeftPerLevel.add(i);
-            bombsLeftLevels.add(bombsLeftPerLevel.size());
+            bombLeft -= i;
+            classBombsLeftPerLevel.add(i);
+            classBombsLeftLevels.add(classBombsLeftPerLevel.size());
         }
-        
-        if(wave > 10){
-            int shootingBombsLeft = (int) ((wave-10)*Math.pow((wave-10), 0.5))/2;
-            while(shootingBombsLeft > 0){
-                int i = (int) shootingBombsLeft/wave*2;
-                if(i > shootingBombsLeft){
-                    i = shootingBombsLeft;
-                } else if (i <= 0){
-                    i = 1;
-                }
-                shootingBombsLeft -= i;
-                shootingBombsLeftPerLevel.add(i);
-                shootingBombsLeftLevels.add(shootingBombsLeftPerLevel.size());
-            }
-        }
+        HashMap<String, ArrayList<Integer>> map = new HashMap();
+        map.put("bombsLeft", classBombsLeftPerLevel);
+        map.put("levels", classBombsLeftLevels);
+        return map;
     }
     
     /**
@@ -103,7 +123,11 @@ public class Game {
      * @return Ob schon alle Bomben generiert sind.
      */
     public boolean bombLeft(){
-        return !bombsLeftPerLevel.isEmpty() || !shootingBombsLeftPerLevel.isEmpty();
+        for(int i = 0; i < classes.size(); i++){
+            if(bombsLeft.containsKey(classes.get(i)) && !bombsLeft.get(classes.get(i)).get("bombsLeft").isEmpty())
+                return true;
+        }
+        return false;
     }
     
     /**
@@ -112,29 +136,48 @@ public class Game {
      */
     public void action(float tpf){
         if(System.currentTimeMillis()-lastTime >= nextTime){
-            if(Math.random() < 0.5 || shootingBombsLeftPerLevel.isEmpty()){
-                int i = Math.round((float) (Math.random()*(bombsLeftPerLevel.size()-1)));
-                if(bombsLeftPerLevel.get(i) >= 0){
-                    Main.getWorld().addBomb(new Bomb(bombsLeftLevels.get(i)));
-                    bombsLeftPerLevel.set(i, bombsLeftPerLevel.get(i) - 1);
-                    if(bombsLeftPerLevel.get(i) == 0){
-                        bombsLeftPerLevel.remove(i);
-                        bombsLeftLevels.remove(i);
-                    }
+            if(classes.isEmpty()){
+                return;
+            }
+            Class bombClass = null;
+            do{
+                bombClass = classes.get(Math.round((float) (Math.random()*(classes.size()-1))));
+            } while (!bombsLeft.containsKey(bombClass) || (bombsLeft.containsKey(bombClass) && bombsLeft.get(bombClass).get("bombsLeft").isEmpty()));
+            int i = Math.round((float) (Math.random()*(bombsLeft.get(bombClass).get("bombsLeft").size()-1)));
+            if(!bombsLeft.get(bombClass).get("bombsLeft").isEmpty() && bombsLeft.get(bombClass).get("bombsLeft").get(i) >= 0){
+                try {
+                    Main.app.getWorld().addBomb((Bomb) bombClass.getConstructor(Integer.class).newInstance(bombsLeft.get(bombClass).get("levels").get(i)));
+                } catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+                    Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
                 }
-            } else {
-                int i = Math.round((float) (Math.random()*(shootingBombsLeftPerLevel.size()-1)));
-                if(shootingBombsLeftPerLevel.get(i) >= 0){
-                    Main.getWorld().addBomb(new ShootingBomb(shootingBombsLeftLevels.get(i)));
-                    shootingBombsLeftPerLevel.set(i, shootingBombsLeftPerLevel.get(i) - 1);
-                    if(shootingBombsLeftPerLevel.get(i) == 0){
-                        shootingBombsLeftPerLevel.remove(i);
-                        shootingBombsLeftLevels.remove(i);
-                    }
+                bombsLeft.get(bombClass).get("bombsLeft").set(i, bombsLeft.get(bombClass).get("bombsLeft").get(i) - 1);
+                if(bombsLeft.get(bombClass).get("bombsLeft").get(i) == 0){
+                    bombsLeft.get(bombClass).get("bombsLeft").remove(i);
+                    bombsLeft.get(bombClass).get("levels").remove(i);
                 }
             }
             lastTime =System.currentTimeMillis();
             nextTime = (long) ((Math.random()*10)*100);
+        }
+    }
+    
+    public ArrayList<String> getPossibleBombTypes(){
+        ArrayList<String> bombTypes = new ArrayList<>();
+        bombTypes.add(Main.app.getSettings().getLanguageProperty("allBombs"));
+        for(int i = 0; i < classes.size(); i++){
+            bombTypes.add(classToLanguageString.get(classes.get(i)));
+        }
+        return bombTypes;
+    }
+    
+    public Class<? extends Bomb> getBombType(String type){
+        return languageStringToClass.get(type);
+    }
+    
+    public void reloadLanguage(){
+        for(int i = 0; i < classes.size(); i++){
+            classToLanguageString.put(classes.get(i), Main.app.getSettings().getLanguageProperty(classes.get(i).getSimpleName(), classes.get(i).getSimpleName()));
+            languageStringToClass.put(Main.app.getSettings().getLanguageProperty(classes.get(i).getSimpleName()), classes.get(i));
         }
     }
 }

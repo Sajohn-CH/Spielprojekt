@@ -316,168 +316,7 @@ public class Tower extends Entity{
      */
     public void setName(String name){
         this.name = name;
-    }
-    
-    /**
-     * Gibt die Schwächste Bombe in Reichweite zurück.
-     * @param shootingBombs Ob nur shootingBombs
-     * @param normalBomb Ob nur normale Bomben
-     * @return schwächste Bombe
-     */
-    public Bomb getWeakestBombInRange(boolean shootingBombs, boolean normalBomb){
-        if(!shootingBombs && !normalBomb){
-            ArrayList<Bomb> allBombs = Main.app.getWorld().getAllBombsInRange(this.getLocation(), range);
-            if(allBombs == null){
-                return null;
-            }
-            if(!allBombs.isEmpty()){
-                Bomb weakest = allBombs.get(0);
-                for(int i = 0; i < allBombs.size(); i ++){
-                    if(allBombs.get(i).getLevel() < weakest.getLevel() || (allBombs.get(i).getLevel() == weakest.getLevel() && allBombs.get(i).getSpatial().getLocalTranslation().subtract(this.getLocation()).length() < weakest.getSpatial().getLocalTranslation().subtract(this.getLocation()).length())){
-                        weakest = allBombs.get(i);
-                    }
-                }
-                return weakest;
-            }
-        } else if(shootingBombs){
-            ArrayList<ShootingBomb> allBombs = Main.app.getWorld().getAllShootingBombsInRange(this.getLocation(), range);
-            if(allBombs == null){
-                return null;
-            }
-            if(!allBombs.isEmpty()){
-                ShootingBomb weakest = allBombs.get(0);
-                for(int i = 0; i < allBombs.size(); i ++){
-                    if(allBombs.get(i).getLevel() < weakest.getLevel() || (allBombs.get(i).getLevel() == weakest.getLevel() && allBombs.get(i).getSpatial().getLocalTranslation().subtract(this.getLocation()).length() < weakest.getSpatial().getLocalTranslation().subtract(this.getLocation()).length())){
-                        weakest = allBombs.get(i);
-                    }
-                }
-                return weakest;
-            }
-        } else if (normalBomb){
-            ArrayList<Bomb> allBombs = Main.app.getWorld().getAllNormalBombsInRange(this.getLocation(), range);
-            if(allBombs == null){
-                return null;
-            }
-            if(!allBombs.isEmpty()){
-                Bomb weakest = allBombs.get(0);
-                for(int i = 0; i < allBombs.size(); i ++){
-                    if(allBombs.get(i).getLevel() < weakest.getLevel() || (allBombs.get(i).getLevel() == weakest.getLevel() && allBombs.get(i).getSpatial().getLocalTranslation().subtract(this.getLocation()).length() < weakest.getSpatial().getLocalTranslation().subtract(this.getLocation()).length())){
-                        weakest = allBombs.get(i);
-                    }
-                }
-                return weakest;
-            }
-        }
-        return null;
-    }
-    
-    /**
-     * Gibt die stärkste Bombe in Reichweite zurück.
-     * @param shootingBombs Ob nur shootingBombs
-     * @param normalBomb Ob nur normale Bomben
-     * @return stärkste Bombe
-     */
-    public Bomb getStrongestBombInRange(boolean shootingBombs, boolean normalBomb){
-        if(!shootingBombs && !normalBomb){
-            ArrayList<Bomb> allBombs = Main.app.getWorld().getAllBombsInRange(this.getLocation(), range);
-            if(allBombs == null){
-                return null;
-            }
-            if(!allBombs.isEmpty()){
-                Bomb strongest = allBombs.get(0);
-                for(int i = 0; i < allBombs.size(); i ++){
-                    if(allBombs.get(i).getLevel() > strongest.getLevel() || (allBombs.get(i).getLevel() == strongest.getLevel() && allBombs.get(i).getSpatial().getLocalTranslation().subtract(this.getLocation()).length() < strongest.getSpatial().getLocalTranslation().subtract(this.getLocation()).length())){
-                        strongest = allBombs.get(i);
-                    }
-                }
-                return strongest;
-            }
-        } else if (shootingBombs){
-            ArrayList<ShootingBomb> allBombs = Main.app.getWorld().getAllShootingBombsInRange(this.getLocation(), range);
-            if(allBombs == null){
-                return null;
-            }
-            if(!allBombs.isEmpty()){
-                ShootingBomb strongest = allBombs.get(0);
-                for(int i = 0; i < allBombs.size(); i ++){
-                    if(allBombs.get(i).getLevel() > strongest.getLevel() || (allBombs.get(i).getLevel() == strongest.getLevel() && allBombs.get(i).getSpatial().getLocalTranslation().subtract(this.getLocation()).length() < strongest.getSpatial().getLocalTranslation().subtract(this.getLocation()).length())){
-                        strongest = allBombs.get(i);
-                    }
-                }
-                return strongest;
-            }
-        } else if (normalBomb){
-            ArrayList<Bomb> allBombs = Main.app.getWorld().getAllNormalBombsInRange(this.getLocation(), range);
-            if(allBombs == null){
-                return null;
-            }
-            if(!allBombs.isEmpty()){
-                Bomb strongest = allBombs.get(0);
-                for(int i = 0; i < allBombs.size(); i ++){
-                    if(allBombs.get(i).getLevel() > strongest.getLevel() || (allBombs.get(i).getLevel() == strongest.getLevel() && allBombs.get(i).getSpatial().getLocalTranslation().subtract(this.getLocation()).length() < strongest.getSpatial().getLocalTranslation().subtract(this.getLocation()).length())){
-                        strongest = allBombs.get(i);
-                    }
-                }
-                return strongest;
-            }
-        }
-        return null;
-    }
-    
-    /**
-     * Gibt die weiteste Bombe in Reichweite zurück.
-     * @param shootingBomb Ob nur ShootingBomb
-     * @param normalBomb Ob nur normale Bomben
-     * @return Weiteste Bombe
-     */
-    public Bomb getFurthestBombInRange(boolean shootingBomb, boolean normalBomb){
-        if(!shootingBomb && !normalBomb){
-            ArrayList<Bomb> allBombs = Main.app.getWorld().getAllBombsInRange(this.getLocation(), range);
-            if(allBombs == null){
-                return null;
-            }
-            if(!allBombs.isEmpty()){
-                Bomb furthest = allBombs.get(0);
-                for(int i = 0; i < allBombs.size(); i++){
-                    if(allBombs.get(i).getCornerIndex() > furthest.getCornerIndex() || (allBombs.get(i).getCornerIndex() == furthest.getCornerIndex() && allBombs.get(i).getDistanceToNextCorner() < furthest.getDistanceToNextCorner())){
-                        furthest = allBombs.get(i);
-                    }
-                }
-                return furthest;
-            }
-        } else if (shootingBomb){
-            ArrayList<ShootingBomb> allBombs = Main.app.getWorld().getAllShootingBombsInRange(this.getLocation(), range);
-            if(allBombs == null){
-                return null;
-            }
-            if(!allBombs.isEmpty()){
-                ShootingBomb furthest = allBombs.get(0);
-                for(int i = 0; i < allBombs.size(); i++){
-                    if(allBombs.get(i).getCornerIndex() > furthest.getCornerIndex() || (allBombs.get(i).getCornerIndex() == furthest.getCornerIndex() && allBombs.get(i).getDistanceToNextCorner() < furthest.getDistanceToNextCorner())){
-                        furthest = allBombs.get(i);
-                    }
-                }
-                return furthest;
-            }
-        } else if (normalBomb){
-            ArrayList<Bomb> allBombs = Main.app.getWorld().getAllNormalBombsInRange(this.getLocation(), range);
-            if(allBombs == null){
-                return null;
-            }
-            if(!allBombs.isEmpty()){
-                Bomb furthest = allBombs.get(0);
-                for(int i = 0; i < allBombs.size(); i++){
-                    if(allBombs.get(i).getCornerIndex() > furthest.getCornerIndex() || (allBombs.get(i).getCornerIndex() == furthest.getCornerIndex() && allBombs.get(i).getDistanceToNextCorner() < furthest.getDistanceToNextCorner())){
-                        furthest = allBombs.get(i);
-                    }
-                }
-                return furthest;
-            }
-        }
-        return null;
-    }
-    
-    
+    }    
     
     /**
      * Gibt die Schwächste Bombe der Klasse in Reichweite zurück.
@@ -487,28 +326,28 @@ public class Tower extends Entity{
      */
     public Bomb getWeakestBombInRange(Class<? extends Bomb> bombsClass, boolean shootAtAllBombs){
         if(shootAtAllBombs){
-            ArrayList<Bomb> allBombs = Main.app.getWorld().getAllBombsInRange(this.getLocation(), range);
+            ArrayList<Bomb> allBombs = Main.app.getWorld().getAllBombsInRange(this.getSpatial().getLocalTranslation(), range);
             if(allBombs == null){
                 return null;
             }
             if(!allBombs.isEmpty()){
                 Bomb weakest = allBombs.get(0);
                 for(int i = 0; i < allBombs.size(); i ++){
-                    if(allBombs.get(i).getLevel() < weakest.getLevel() || (allBombs.get(i).getLevel() == weakest.getLevel() && allBombs.get(i).getSpatial().getLocalTranslation().subtract(this.getLocation()).length() < weakest.getSpatial().getLocalTranslation().subtract(this.getLocation()).length())){
+                    if(allBombs.get(i).getLevel() < weakest.getLevel() || (allBombs.get(i).getLevel() == weakest.getLevel() && allBombs.get(i).getSpatial().getLocalTranslation().subtract(this.getSpatial().getLocalTranslation()).length() < weakest.getSpatial().getLocalTranslation().subtract(this.getSpatial().getLocalTranslation()).length())){
                         weakest = allBombs.get(i);
                     }
                 }
                 return weakest;
             }
         } else {
-            ArrayList<Bomb> allBombs = Main.app.getWorld().getAllClassBombsInRange(this.getLocation(), range, bombsClass);
+            ArrayList<Bomb> allBombs = Main.app.getWorld().getAllClassBombsInRange(this.getSpatial().getLocalTranslation(), range, bombsClass);
             if(allBombs == null){
                 return null;
             }
             if(!allBombs.isEmpty()){
                 Bomb weakest = bombsClass.cast(allBombs.get(0));
                 for(int i = 0; i < allBombs.size(); i ++){
-                    if(allBombs.get(i).getLevel() < weakest.getLevel() || (allBombs.get(i).getLevel() == weakest.getLevel() && allBombs.get(i).getSpatial().getLocalTranslation().subtract(this.getLocation()).length() < weakest.getSpatial().getLocalTranslation().subtract(this.getLocation()).length())){
+                    if(allBombs.get(i).getLevel() < weakest.getLevel() || (allBombs.get(i).getLevel() == weakest.getLevel() && allBombs.get(i).getSpatial().getLocalTranslation().subtract(this.getSpatial().getLocalTranslation()).length() < weakest.getSpatial().getLocalTranslation().subtract(this.getSpatial().getLocalTranslation()).length())){
                         weakest = allBombs.get(i);
                     }
                 }
@@ -526,28 +365,28 @@ public class Tower extends Entity{
      */
     public Bomb getStrongestBombInRange(Class <? extends Bomb> bombsClass, boolean shootAtAllBombs){
         if(shootAtAllBombs){
-            ArrayList<Bomb> allBombs = Main.app.getWorld().getAllBombsInRange(this.getLocation(), range);
+            ArrayList<Bomb> allBombs = Main.app.getWorld().getAllBombsInRange(this.getSpatial().getLocalTranslation(), range);
             if(allBombs == null){
                 return null;
             }
             if(!allBombs.isEmpty()){
                 Bomb strongest = allBombs.get(0);
                 for(int i = 0; i < allBombs.size(); i ++){
-                    if(allBombs.get(i).getLevel() > strongest.getLevel() || (allBombs.get(i).getLevel() == strongest.getLevel() && allBombs.get(i).getSpatial().getLocalTranslation().subtract(this.getLocation()).length() < strongest.getSpatial().getLocalTranslation().subtract(this.getLocation()).length())){
+                    if(allBombs.get(i).getLevel() > strongest.getLevel() || (allBombs.get(i).getLevel() == strongest.getLevel() && allBombs.get(i).getSpatial().getLocalTranslation().subtract(this.getSpatial().getLocalTranslation()).length() < strongest.getSpatial().getLocalTranslation().subtract(this.getSpatial().getLocalTranslation()).length())){
                         strongest = allBombs.get(i);
                     }
                 }
                 return strongest;
             }
         } else {
-            ArrayList<Bomb> allBombs = Main.app.getWorld().getAllClassBombsInRange(this.getLocation(), range, bombsClass);
+            ArrayList<Bomb> allBombs = Main.app.getWorld().getAllClassBombsInRange(this.getSpatial().getLocalTranslation(), range, bombsClass);
             if(allBombs == null){
                 return null;
             }
             if(!allBombs.isEmpty()){
                 Bomb strongest = bombsClass.cast(allBombs.get(0));
                 for(int i = 0; i < allBombs.size(); i ++){
-                    if(allBombs.get(i).getLevel() > strongest.getLevel() || (allBombs.get(i).getLevel() == strongest.getLevel() && allBombs.get(i).getSpatial().getLocalTranslation().subtract(this.getLocation()).length() < strongest.getSpatial().getLocalTranslation().subtract(this.getLocation()).length())){
+                    if(allBombs.get(i).getLevel() > strongest.getLevel() || (allBombs.get(i).getLevel() == strongest.getLevel() && allBombs.get(i).getSpatial().getLocalTranslation().subtract(this.getSpatial().getLocalTranslation()).length() < strongest.getSpatial().getLocalTranslation().subtract(this.getSpatial().getLocalTranslation()).length())){
                         strongest = allBombs.get(i);
                     }
                 }
@@ -565,7 +404,7 @@ public class Tower extends Entity{
      */
     public Bomb getFurthestBombInRange(Class<? extends Bomb> bombsClass, boolean shootAtAllBombs){
         if(shootAtAllBombs){
-            ArrayList<Bomb> allBombs = Main.app.getWorld().getAllBombsInRange(this.getLocation(), range);
+            ArrayList<Bomb> allBombs = Main.app.getWorld().getAllBombsInRange(this.getSpatial().getLocalTranslation(), range);
             if(allBombs == null){
                 return null;
             }
@@ -579,7 +418,7 @@ public class Tower extends Entity{
                 return furthest;
             }
         } else {
-            ArrayList<Bomb> allBombs = Main.app.getWorld().getAllClassBombsInRange(this.getLocation(), range, bombsClass);
+            ArrayList<Bomb> allBombs = Main.app.getWorld().getAllClassBombsInRange(this.getSpatial().getLocalTranslation(), range, bombsClass);
             if(allBombs == null){
                 return null;
             }
@@ -596,16 +435,21 @@ public class Tower extends Entity{
         return null;
     }
     
+    public Bomb getNearestBombInRange(Class<? extends Bomb> bombsClass, boolean shootAtAllBombs){
+        if(shootAtAllBombs){
+            return Main.app.getWorld().getNearestBombInRange(this.getSpatial().getLocalTranslation(), range);
+        } else {
+            return Main.app.getWorld().getNearestClassBombInRange(this.getSpatial().getLocalTranslation(), range, bombsClass);
+        }
+    }
+    
     /**
      * Gibt die Bombe zurück, auf die geschossen werden soll.
      * @return Bombe, die Ziel ist
      */
     public Bomb getBombToShootAt(){
         if(shootAtNearestBomb)
-            if(shootAtAllBombs)
-                return Main.app.getWorld().getNearestBomb(this.getLocation());
-            else
-                return Main.app.getWorld().getNearestClassBomb(this.getLocation(), bombsClass);
+            return getNearestBombInRange(bombsClass, shootAtAllBombs);
         else if (shootAtFurthestBomb)
             return getFurthestBombInRange(bombsClass, shootAtAllBombs);
         else if (shootAtStrongestBomb)
@@ -661,6 +505,10 @@ public class Tower extends Entity{
     
     public Class<? extends Bomb> getShootAtBombsClass(){
         return this.bombsClass;
+    }
+    
+    public String getShootAtBombsString(){
+        return Main.app.getSettings().getLanguageProperty(this.bombsClass.getSimpleName());
     }
     
     /**

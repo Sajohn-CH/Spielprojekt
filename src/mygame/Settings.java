@@ -891,6 +891,9 @@ public class Settings {
     
     public void setLanguage(String languageShort){
         this.languageProperties = (Properties) Main.app.getAssetManager().loadAsset("Languages/" + languageShort + ".properties");
+        if(Main.app.getGame() != null){
+            Main.app.getGame().reloadLanguage();
+        }
     }
     
     public void setLanguage(int numberOfLanguage){
@@ -1024,9 +1027,6 @@ public class Settings {
         setNiftyText(towerPopup, "textFurthest", getLanguageProperty("textFurthest") + "   ");
         setNiftyText(towerPopup, "textStrongest", getLanguageProperty("textStrongest") + "   ");
         setNiftyText(towerPopup, "textWeakest", getLanguageProperty("textWeakest") + "   ");
-        setNiftyText(towerPopup, "textAllBombs", getLanguageProperty("textAllBombs") + "   ");
-        setNiftyText(towerPopup, "textNormalBombs", getLanguageProperty("textNormalBombs") + "   ");
-        setNiftyText(towerPopup, "textShootingBombs", getLanguageProperty("textShootingBombs") + "   ");
         setNiftyButtonText(towerPopup, "upgrade", getLanguageProperty("upgrade"));
         setNiftyButtonText(towerPopup, "upgradeToMax", getLanguageProperty("upgradeToMax"));
         setNiftyButtonText(towerPopup, "removeTower", getLanguageProperty("removeTower"));

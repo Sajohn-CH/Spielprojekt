@@ -78,7 +78,7 @@ public class SimpleTower extends Tower{
     @Override
     public void action(float tpf) {
         Bomb bomb = this.getBombToShootAt();
-        if(bomb != null && bomb.getSpatial().getLocalTranslation().subtract(this.getSpatial().getLocalTranslation()).length() <= this.getRange() && isLiving() && canShoot()){
+        if(bomb != null && this.isLiving() && this.canShoot()){
            this.getSpatial().lookAt(bomb.getSpatial().getLocalTranslation().add(Main.getWorld().getBombNode().getLocalTranslation()).setY(this.getSpatial().getLocalTranslation().getY()), this.getUp());
            this.getSpatial().rotateUpTo(this.getUp());
            Line l = new Line(this.getSpatial().getLocalTranslation().add(this.getUp().normalize().mult(3)), bomb.getSpatial().getLocalTranslation());
@@ -97,7 +97,7 @@ public class SimpleTower extends Tower{
         }
         if(this.getHealthPercentage() <= 20 && !this.lowHealthSignIsVisble()){
             this.showLowHealthSign();
-        } else if (this.getHealthPercentage() > 20 && this.lowHealthSignIsVisble()){
+        } else if (this.lowHealthSignIsVisble() && this.getHealthPercentage() > 20){
             this.hideLowHealthSign();
         }
         this.getNode().getChild("levelNumber").lookAt(Main.app.getWorld().getPlayer().getLocation().setY(this.getNode().getChild("levelNumber").getLocalTranslation().add(this.getSpatial().getLocalTranslation()).getY()), new Vector3f (0, 1, 0));

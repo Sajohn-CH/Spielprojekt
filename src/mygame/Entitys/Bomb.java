@@ -32,7 +32,7 @@ public class Bomb extends Entity{
      * Erstellt die Bombe. Erstellt den Spatial der Bombe und setzt den Weg.
      * @param level 
      */
-    public Bomb (int level){
+    public Bomb (Integer level){
         colors  = new ColorRGBA[]{ColorRGBA.Blue, ColorRGBA.Cyan, ColorRGBA.Green, ColorRGBA.Magenta, ColorRGBA.Red, ColorRGBA.Orange, ColorRGBA.Yellow, ColorRGBA.Green, ColorRGBA.Pink, ColorRGBA.Brown};
         this.setLiving(true);
         this.setNormal(true);
@@ -188,7 +188,7 @@ public class Bomb extends Entity{
         //setzt Leben als Funktion mit level
         this.setHealth(50+(int)(newLevel*50*multiplier));
         this.setDamage(10+(int)(newLevel*10*multiplier));
-        this.setSpeed(50-(int)(newLevel*2*multiplier)+Main.getGame().getWave()*2-decreasedSpeed);
+        this.setSpeed(50-(int)(newLevel*2*multiplier)+Main.app.getGame().getWave()*2-decreasedSpeed);
         
         mat.setColor("Color", colors[(newLevel-1)%colors.length]);
         super.setLevel(newLevel);
@@ -199,10 +199,10 @@ public class Bomb extends Entity{
       */
     public void decreaseSpeed (int speed){
         this.decreasedSpeed += speed;
-        if(decreasedSpeed >= (50-this.getLevel()*2+Main.getGame().getWave()*2)-10-getLevel()*2){
-            decreasedSpeed = (50-this.getLevel()*2+Main.getGame().getWave()*2)-10-getLevel()*2;
+        if(decreasedSpeed >= (50-this.getLevel()*2+Main.app.getGame().getWave()*2)-10-getLevel()*2){
+            decreasedSpeed = (50-this.getLevel()*2+Main.app.getGame().getWave()*2)-10-getLevel()*2;
         }
-        this.setSpeed((50-this.getLevel()*2+Main.getGame().getWave()*2) - decreasedSpeed);
+        this.setSpeed((50-this.getLevel()*2+Main.app.getGame().getWave()*2) - decreasedSpeed);
     }
     
     /**
