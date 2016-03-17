@@ -322,7 +322,7 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
             Vector3f pos = new Vector3f();
             Element posEle = (Element) playerEle.getElementsByTagName("Position").item(0);
             pos.setX(Float.valueOf(posEle.getAttribute("x")));
-            pos.setY(Float.valueOf(posEle.getAttribute("y")));
+            pos.setY(Float.valueOf(posEle.getAttribute("y")) + 10);
             pos.setZ(Float.valueOf(posEle.getAttribute("z")));
             player.setLocation(pos);
             //Schaut ob Player tot ist

@@ -257,7 +257,7 @@ public class World extends AbstractAppState{
         ArrayList<Bomb> allBombs = this.getAllBombs();
         if(!allBombs.isEmpty()){
             Bomb nearest = null;
-            for(int i = 1; i < allBombs.size(); i ++){
+            for(int i = 0; i < allBombs.size(); i ++){
                 if(allBombs.get(i).getSpatial().getLocalTranslation().subtract(location).length() <= range){
                     nearest = allBombs.get(i);
                 } else if(nearest != null && allBombs.get(i).getSpatial().getLocalTranslation().subtract(location).length() < nearest.getSpatial().getLocalTranslation().subtract(location).length()){

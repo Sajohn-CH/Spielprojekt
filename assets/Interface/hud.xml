@@ -173,8 +173,8 @@
                     <text text="" font="Interface/Fonts/Arial.fnt" width="100%" height="5%"/> 
                     <!-- CheckBoxes zum steuern auf Welche Bombe schiessen -->
                     <panel id="shootAt" width="100%" height="80%" childLayout="horizontal">
-                        <panel id="#buttonsShootAt" childLayout="vertical" width="40%" height="100%">
-                            <panel childLayout="horizontal">
+                        <panel id="#buttonsShootAt" childLayout="vertical" width="50%" height="100%">
+                            <panel childLayout="horizontal" width="80%">
                                 <text id="textNearest" text="Nächste" font="Interface/Fonts/Arial.fnt" width="90%"> 
                                     <interact onClick="setShootAt(true, false, false, false)"/>
                                 </text>
@@ -182,7 +182,7 @@
                                     <interact onClick="setShootAt(true, false, false, false)"/>
                                 </control>
                             </panel>
-                            <panel childLayout="horizontal">
+                            <panel childLayout="horizontal" width="80%">
                                 <text id="textFurthest" text="Erste" font="Interface/Fonts/Arial.fnt" width="90%">
                                     <interact onClick="setShootAt(false, true, false, false)"/>
                                 </text>
@@ -190,7 +190,7 @@
                                     <interact onClick="setShootAt(false, true, false, false)"/>
                                 </control>
                             </panel>
-                            <panel childLayout="horizontal">
+                            <panel childLayout="horizontal" width="80%">
                                 <text id="textStrongest" text="Stärkste" font="Interface/Fonts/Arial.fnt" width="90%">
                                     <interact onClick="setShootAt(false, false, true, false)"/>
                                 </text>
@@ -198,7 +198,7 @@
                                     <interact onClick="setShootAt(false, false, true, false)"/>
                                 </control>
                             </panel>
-                            <panel childLayout="horizontal">
+                            <panel childLayout="horizontal" width="80%">
                                 <text id="textWeakest" text="Schwächste" font="Interface/Fonts/Arial.fnt" width="90%">
                                     <interact onClick="setShootAt(false, false, false, true)"/>
                                 </text>
@@ -207,8 +207,7 @@
                                 </control>
                             </panel>
                         </panel>
-                         <!-- CheckBoxes zum steuern auf welche Arten von Bomben geschossen werden kann -->
-                        <panel id="#buttonsShootingBomb" childLayout="vertical" width="60%" height="100%">
+                        <panel id="#buttonsShootingBomb" childLayout="center" width="50%" height="90%">
                             <control id="dropdownShootAtBomb" name="dropDown" width="100%" focusable="false" align="center" valign="center" color="#0000" visibleToMouse="true"></control>
                         </panel>
                     </panel>
@@ -314,6 +313,22 @@
             <control id="#nextWave" name="button" label="nächste Welle" align="center" valign="center" visibleToMouse="true">
                 <interact onClick="nextWave()"/>
             </control>
+        </panel>
+    </popup>  
+    
+    <!--Popup zum Auswählen eines Turms. -->
+    <popup id="niftyPopupChooseTower" childLayout="center" controller="mygame.HudScreenState" width="100%" height="100%">
+        <panel id="#foregroundPanelChooseTower" childLayout="center" width="40%" height="30%" backgroundColor="#37bcecff">
+            <panel childLayout="vertical" width="100%" height="80%">
+                <text id="#title" text="Turm wählen" font="Interface/Fonts/Arial.fnt" width="100%" height="10%"/>
+                <panel id="panelChooseTower" childLayout="horizontal">
+                    <control type="listBox" id="listBoxSave" displayItems="5" horizontal="off" width="*" visibleToMouse="true" forceSelection="true" selectionMode="Single" focusable="false"/>
+                </panel>
+                <text id="chooseTowerDescription" text="Turmbeschreibung" font="Interface/Fonts/Arial.fnt" width="100%"/>
+                <control id="chooseTower" name="button" label="Turm wählen" align="center" valign="center" visibleToMouse="true">
+                    <interact onClick="chooseTower()"/>
+                </control>
+            </panel>
         </panel>
     </popup>
 </nifty>
