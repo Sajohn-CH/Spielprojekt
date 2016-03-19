@@ -5,7 +5,6 @@ import mygame.Entitys.Beacon;
 import mygame.Entitys.SimpleTower;
 import mygame.Entitys.Player;
 import mygame.Entitys.SloweringTower;
-import mygame.Entitys.DeactivationTower;
 import mygame.Entitys.Tower;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.math.Vector3f;
@@ -13,6 +12,7 @@ import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.controls.CheckBox;
 import de.lessvoid.nifty.controls.Controller;
 import de.lessvoid.nifty.controls.DropDown;
+import de.lessvoid.nifty.controls.ListBox;
 import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.elements.render.ImageRenderer;
 import de.lessvoid.nifty.elements.render.TextRenderer;
@@ -21,10 +21,13 @@ import de.lessvoid.nifty.render.NiftyImage;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
 import de.lessvoid.xml.xpp3.Attributes;
+import java.lang.reflect.InvocationTargetException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Properties;
-import mygame.Entitys.Bomb;
-import mygame.Entitys.ShootingBomb;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 /**
@@ -39,6 +42,11 @@ public class HudScreenState extends AbstractAppState implements ScreenController
     private int itemSelected;       //Welcher Slot in der Leiste gerade ausgewählt ist.
     private String[] descriptions;   //Alle Beschreibungen der Items, die in der Leiste ausgewählt werden können.
     private Element towerPopup;     //Das Popup, welches erscheint, wenn man einen Turm upgraden will.
+    private Element chooseTowerPopup;
+    private ArrayList<Class<? extends Tower>> towerClasses;
+    private Class<? extends Tower> towerClass;
+    private HashMap<Class<? extends Tower>, String> classToLanguageString;
+    private HashMap<String, Class<? extends Tower>> languageStringToClass;
     private Tower tower;            //Der Turm der geupgradet werden soll. Die Variable wird jedes Mal neu initialisiert.
     private Element endWavePopup;   //Das Popup das am Ende jeder Welle erscheint.
     private boolean cameraDragToRotate;     //Ist nur dann true, wenn bei der aktuellen anzeige DragToRotate der FlyByCamera true ist (z.B: bei Popup)
@@ -56,7 +64,22 @@ public class HudScreenState extends AbstractAppState implements ScreenController
         buildPhase = false;
         debugMode = true;
         df = new SimpleDateFormat("HH:mm");
-        descriptions = Main.app.getSettings().getLanguageProperties().getProperty("towerDescriptions").split(",");
+        descriptions = Main.app.getSettings().getLanguageProperties().getProperty("itemDescriptions").split(",");
+        classToLanguageString = new HashMap<>();
+        languageStringToClass = new HashMap<>();
+        
+        towerClasses = new ArrayList<>();
+        ArrayList<String> classNames = (ArrayList <String>) Main.app.getAssetManager().loadAsset("towerClasses.txt");
+        for(int i = 0; i < classNames.size(); i ++){
+            try {
+                towerClasses.add(Class.forName("mygame.Entitys." + classNames.get(i)).asSubclass(Tower.class));
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        towerClass = SloweringTower.class;
+        
+        reloadLanguage();
     }
     
     /**
@@ -73,7 +96,14 @@ public class HudScreenState extends AbstractAppState implements ScreenController
         }
         updateText("time", (Main.app.getSettings().getLanguageProperty("time", "Uhrzeit:") + " " + df.format(System.currentTimeMillis())));
         updateText("money", (Main.app.getSettings().getLanguageProperty("money", "Geld:") + " " + Main.app.getWorld().getPlayer().getMoney() + "$"));
-        updateText("towerDescription", descriptions[getSelectedItemNum()-1]);
+        if(getSelectedItemNum() <= 2){
+            if(getSelectedItemNum() == 1)
+                updateText("towerDescription", Main.app.getSettings().getLanguageProperty("SimpleTower"));
+            else
+                updateText("towerDescription", Main.app.getSettings().getLanguageProperty(towerClass.getSimpleName()));
+        } else {
+            updateText("towerDescription", descriptions[getSelectedItemNum()-3]);
+        }
         updateText("beaconHealth", (Main.app.getWorld().getBeacon().getHealth()+"/"+Main.app.getWorld().getBeacon().getMaxHealth()));
         updateText("health", Main.app.getWorld().getPlayer().getHealth()+"/"+Main.app.getWorld().getPlayer().getMaxHealth());
         
@@ -105,6 +135,13 @@ public class HudScreenState extends AbstractAppState implements ScreenController
            Main.app.getFlyByCamera().setEnabled(false);
         } else if (!Main.app.getFlyByCamera().isEnabled()){
             Main.app.getFlyByCamera().setEnabled(true);
+        }
+        if(itemSelected == 3 && chooseTowerPopup == null){
+            showChooseTowerPopup();
+        }
+        if(chooseTowerPopup != null){
+            Class c = languageStringToClass.get((String) chooseTowerPopup.findNiftyControl("#listBoxChooseTower", ListBox.class).getSelection().get(0));
+            chooseTowerPopup.findElementByName("#chooseTowerDescriptionText").getRenderer(TextRenderer.class).setText(Main.app.getSettings().getLanguageProperty(c.getSimpleName() + "Description"));
         }
     }
     
@@ -160,12 +197,12 @@ public class HudScreenState extends AbstractAppState implements ScreenController
         NiftyImage img = nifty.getRenderEngine().createImage(screen, "Interface/item-frame.png", false);
         Element item = screen.findElementByName("item-"+itemSelected);
         item.getRenderer(ImageRenderer.class).setImage(img);
-        
+
         //Ersetzt den Rahmen des neu gewählten Items mit dem markierten Rahmen.
         NiftyImage imgSel = nifty.getRenderEngine().createImage(screen, "Interface/item-frame-selected.png", false);
         Element itemSel = screen.findElementByName("item-"+num);
         itemSel.getRenderer(ImageRenderer.class).setImage(imgSel);
-        
+
         itemSelected = num;
     }
     /**
@@ -187,8 +224,8 @@ public class HudScreenState extends AbstractAppState implements ScreenController
         if(itemSelected == 1) {
             selectItem(5);
         } else {
-         int lastItem =  itemSelected-1;
-        selectItem(lastItem);
+            int lastItem =  itemSelected-1;
+            selectItem(lastItem);
         }
     }
     
@@ -204,10 +241,11 @@ public class HudScreenState extends AbstractAppState implements ScreenController
                 return new SimpleTower(location, up);
                 
             case(2):
-                return new SloweringTower(location, up);
-                
-            case(3):
-                return new DeactivationTower(location, up);
+                try {
+                    return towerClass.getConstructor(Vector3f.class, Vector3f.class).newInstance(location, up);
+                } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException ex) {
+                    Logger.getLogger(HudScreenState.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 
             default:
                 return new SimpleTower(location, up);
@@ -740,6 +778,46 @@ public class HudScreenState extends AbstractAppState implements ScreenController
     }
     
     public void reloadDescriptionsLanguage(){
-        descriptions = Main.app.getSettings().getLanguageProperty("towerDescriptions").split(",");
+        descriptions = Main.app.getSettings().getLanguageProperty("itemDescriptions").split(",");
+    }
+    
+    public void showChooseTowerPopup(){
+        //Setzt Texte im Popup entsprechend den Werten des Turms
+        Main.app.getFlyByCamera().setDragToRotate(true);
+        cameraDragToRotate = true;
+        chooseTowerPopup = nifty.createPopup("#niftyPopupChooseTower");
+        Main.app.getSettings().reloadChooseTowerPopupLanguage(chooseTowerPopup);
+        nifty.showPopup(screen, chooseTowerPopup.getId(), null);  
+        chooseTowerPopup.findElementByName("#chooseTower").setFocus();
+        ListBox listBoxChooseTower = chooseTowerPopup.findNiftyControl("#listBoxChooseTower", ListBox.class);
+        for(int i = 0; i < towerClasses.size(); i++){
+            listBoxChooseTower.addItem(classToLanguageString.get(towerClasses.get(i)));
+        }
+        Main.app.getWorld().setPaused(true);
+    }
+    
+    public void chooseTower(){
+        if(nifty == null){
+            return;
+        }
+        towerClass = languageStringToClass.get((String) chooseTowerPopup.findNiftyControl("#listBoxChooseTower", ListBox.class).getSelection().get(0));
+        selectItem(2);
+        NiftyImage img = nifty.getRenderEngine().createImage(screen, "Interface/" + towerClass.getSimpleName() + ".png", false);
+        Element towerImage = screen.findElementByName("towerImage");
+        towerImage.getRenderer(ImageRenderer.class).setImage(img);
+        nifty.closePopup(chooseTowerPopup.getId());
+        chooseTowerPopup.disable();
+        Main.app.getFlyByCamera().setDragToRotate(false);
+        Main.app.getWorld().setPaused(false);
+        cameraDragToRotate = false;
+        chooseTowerPopup = null;
+    }
+    
+    
+    public void reloadLanguage(){
+        for(int i = 0; i < towerClasses.size(); i++){
+            classToLanguageString.put(towerClasses.get(i), Main.app.getSettings().getLanguageProperty(towerClasses.get(i).getSimpleName() + "Name", towerClasses.get(i).getSimpleName()));
+            languageStringToClass.put(Main.app.getSettings().getLanguageProperty(towerClasses.get(i).getSimpleName() + "Name", towerClasses.get(i).getSimpleName()), towerClasses.get(i));
+        }
     }
 }

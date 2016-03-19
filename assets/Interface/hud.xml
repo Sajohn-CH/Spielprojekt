@@ -17,9 +17,9 @@
             <!-- Die einzelnen Bilder für die Leiste-->
             <panel height="13%" width="100%" childLayout="center">
                 <panel height="90%" width="50%" childLayout="horizontal" backgroundColor="#000000ff">
-                    <image filename="Interface/tower-1.png" width="20%" height="100%"/>
-                    <image filename="Interface/tower-2.png" width="20%" height="100%"/> 
-                    <image filename="Interface/tower-3.png" width="20%" height="100%"/>
+                    <image filename="Interface/SimpleTower.png" width="20%" height="100%"/>
+                    <image id="towerImage" filename="Interface/SloweringTower.png" width="20%" height="100%"/> 
+                    <image filename="Interface/dots.png" width="20%" height="100%"/>
                     <image filename="Interface/upgrade.png" width="20%" height="100%"/>
                     <image filename="Interface/healing.png" width="20%" height="100%"/>
                 </panel>
@@ -100,9 +100,9 @@
                 <panel childLayout="horizontal" width="100%" height="400">
                     <!-- Bilder der Türme. Die Dimension der Bilder ist absolut in Pixeln (-> nicht verzehrt). Deswegen sind die Angaben der Panels z.T. auch absolut in einer oder beiden Dimensionen.-->
                     <panel width="130" height="400" childLayout="vertical">
-                        <image filename="Interface/tower-1.png" width="128" height="128"/>
-                        <image filename="Interface/tower-2.png" width="128" height="128"/>
-                        <image filename="Interface/tower-3.png" width="128" height="128"/>
+                        <image filename="Interface/SimpleTower.png" width="128" height="128"/>
+                        <image filename="Interface/SloweringTower.png" width="128" height="128"/>
+                        <image filename="Interface/DeactivationTower.png" width="128" height="128"/>
                     </panel>
                     <!-- Turmbeschreibungen-->
                     <panel height="400" childLayout="vertical">
@@ -317,17 +317,20 @@
     </popup>  
     
     <!--Popup zum Auswählen eines Turms. -->
-    <popup id="niftyPopupChooseTower" childLayout="center" controller="mygame.HudScreenState" width="100%" height="100%">
+    <popup id="#niftyPopupChooseTower" childLayout="center" controller="mygame.HudScreenState" width="100%" height="100%">
         <panel id="#foregroundPanelChooseTower" childLayout="center" width="40%" height="30%" backgroundColor="#37bcecff">
             <panel childLayout="vertical" width="100%" height="80%">
-                <text id="#title" text="Turm wählen" font="Interface/Fonts/Arial.fnt" width="100%" height="10%"/>
-                <panel id="panelChooseTower" childLayout="horizontal">
-                    <control type="listBox" id="listBoxSave" displayItems="5" horizontal="off" width="*" visibleToMouse="true" forceSelection="true" selectionMode="Single" focusable="false"/>
+                <text id="#chooseTowerTitle" text="Turm wählen" font="Interface/Fonts/Arial.fnt" width="100%" height="10%"/>
+                <panel id="#panelChooseTower" childLayout="center">
+                    <control type="listBox" id="#listBoxChooseTower" displayItems="5" horizontal="off" width="95%" visibleToMouse="true" forceSelection="true" selectionMode="Single" focusable="false"/>
                 </panel>
-                <text id="chooseTowerDescription" text="Turmbeschreibung" font="Interface/Fonts/Arial.fnt" width="100%"/>
-                <control id="chooseTower" name="button" label="Turm wählen" align="center" valign="center" visibleToMouse="true">
-                    <interact onClick="chooseTower()"/>
-                </control>
+                <panel childLayout="vertical">
+                    <text id="#chooseTowerDescription" text="Turmbeschreibung" font="Interface/Fonts/Arial.fnt" width="100%"/>
+                    <text id="#chooseTowerDescriptionText" text="Turmbeschreibung" font="Interface/Fonts/Arial.fnt" wrap="true" width="100%"/>
+                    <control id="#chooseTower" name="button" label="Turm wählen" align="center" valign="center" visibleToMouse="true">
+                        <interact onClick="chooseTower()"/>
+                    </control>
+                </panel>
             </panel>
         </panel>
     </popup>

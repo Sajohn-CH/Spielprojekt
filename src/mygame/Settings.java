@@ -1053,6 +1053,13 @@ public class Settings {
         setNiftyButtonText(endWavePopup, "#nextWave", getLanguageProperty("nextWave"));
     }
     
+    public void reloadChooseTowerPopupLanguage(de.lessvoid.nifty.elements.Element removePopup){
+        setNiftyText(removePopup, "#chooseTowerTitle", getLanguageProperty("chooseTowerTitle"));
+        setNiftyText(removePopup, "#chooseTowerDescription", getLanguageProperty("chooseTowerDescription"));
+        setNiftyButtonText(removePopup, "#chooseTower", getLanguageProperty("chooseTowerButton"));
+        Main.app.getHudState().reloadLanguage();
+    }
+    
     private void setNiftyButtonText(de.lessvoid.nifty.elements.Element popup, String elementID, String text){
         popup.findNiftyControl(elementID, Button.class).setText(text);
     }

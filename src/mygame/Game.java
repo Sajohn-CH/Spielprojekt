@@ -2,7 +2,6 @@ package mygame;
 
 import java.lang.reflect.InvocationTargetException;
 import mygame.Entitys.Bomb;
-import mygame.Entitys.ShootingBomb;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Level;
