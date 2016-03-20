@@ -304,7 +304,7 @@ public class World extends AbstractAppState{
                 if(allBombs.get(i).getSpatial().getLocalTranslation().subtract(location).length() <= range){
                     if(allBombs.get(i).getClass().equals(bombClass)){
                         bombsInRange.add(bombClass.cast(allBombs.get(i)));
-                    } else if(bombClass.equals(Bomb.class)){
+                    } else if(bombClass == null || bombClass.equals(Bomb.class)){
                         Bomb bomb = bombClass.cast(allBombs.get(i));
                         if(bomb.isNormal()){
                             bombsInRange.add(bomb);

@@ -262,6 +262,8 @@ public class Player extends Entity{
                          playAudioBought();
                          hasHealed = false;
                        }
+                   } else if(Main.app.getHudState().getSelectedItemNum() == 3){
+                       Main.app.getHudState().showChooseTowerPopup();
                    } else {
                        this.placeTower();  
                    }

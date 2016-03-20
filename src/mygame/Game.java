@@ -176,7 +176,7 @@ public class Game {
     public void reloadLanguage(){
         for(int i = 0; i < classes.size(); i++){
             classToLanguageString.put(classes.get(i), Main.app.getSettings().getLanguageProperty(classes.get(i).getSimpleName(), classes.get(i).getSimpleName()));
-            languageStringToClass.put(Main.app.getSettings().getLanguageProperty(classes.get(i).getSimpleName()), classes.get(i));
+            languageStringToClass.put(Main.app.getSettings().getLanguageProperty(classes.get(i).getSimpleName(), classes.get(i).getSimpleName()), classes.get(i));
         }
     }
 }

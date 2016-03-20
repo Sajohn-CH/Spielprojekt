@@ -508,7 +508,7 @@ public class Tower extends Entity{
     }
     
     public String getShootAtBombsString(){
-        return Main.app.getSettings().getLanguageProperty(this.bombsClass.getSimpleName());
+        return Main.app.getSettings().getLanguageProperty(this.bombsClass.getSimpleName(), this.bombsClass.getSimpleName());
     }
     
     /**

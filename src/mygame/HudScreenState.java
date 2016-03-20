@@ -136,9 +136,6 @@ public class HudScreenState extends AbstractAppState implements ScreenController
         } else if (!Main.app.getFlyByCamera().isEnabled()){
             Main.app.getFlyByCamera().setEnabled(true);
         }
-        if(itemSelected == 3 && chooseTowerPopup == null){
-            showChooseTowerPopup();
-        }
         if(chooseTowerPopup != null){
             Class c = languageStringToClass.get((String) chooseTowerPopup.findNiftyControl("#listBoxChooseTower", ListBox.class).getSelection().get(0));
             chooseTowerPopup.findElementByName("#chooseTowerDescriptionText").getRenderer(TextRenderer.class).setText(Main.app.getSettings().getLanguageProperty(c.getSimpleName() + "Description"));
@@ -418,17 +415,17 @@ public class HudScreenState extends AbstractAppState implements ScreenController
     }
     
     /**
-     * Setzt, dass nur auf normale Bomben geschossen werden soll.
+     * Setzt auf welche Bomben geschossen werden soll.
      */
     public void setShootAtBombsClass(){
         if(tower == null){
             return;
         }
         DropDown shootAtBomb = screen.findNiftyControl("dropdownShootAtBomb", DropDown.class);
-        if(shootAtBomb.getSelection().toString().equals(Main.app.getSettings().getLanguageProperty("allBombs"))){
+        if(shootAtBomb.getSelectedIndex() == 0){
             tower.setShootAtAllBombs();
             return;
-        } 
+        }
         tower.setShootAt(Main.app.getGame().getBombType((String) shootAtBomb.getSelection()), false);
     }
     
