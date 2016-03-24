@@ -11,9 +11,12 @@ import com.jme3.input.controls.KeyTrigger;
 import com.jme3.input.controls.MouseButtonTrigger;
 import com.jme3.light.PointLight;
 import com.jme3.material.Material;
+import com.jme3.material.RenderState;
+import com.jme3.material.RenderState.BlendMode;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Ray;
 import com.jme3.math.Vector3f;
+import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.shape.Line;
 import com.jme3.scene.shape.Sphere;
@@ -62,6 +65,7 @@ public class Player extends Entity{
     private Geometry placeOnScene;         //Ist immer am ort auf der Scene wo der Spieler hinblickt
     private boolean towerPreviewVisible;
     private Tower towerPreview;
+    private Geometry towerPreviewRange;
     
     /**
      * Initialisiert den Spieler. Setzt Grundattribute des Spielers, erstellt die Waffe und Schusslinie und lädt die Töne.
@@ -113,7 +117,7 @@ public class Player extends Entity{
         placeOnScene = new Geometry("sphere", new Sphere(32, 32, 1f));
         placeOnScene.setMaterial(mat);
 //        Main.app.getRootNode().attachChild(placeOnScene);
-        
+
         //Modell von: http://www.blendswap.com/blends/view/67733 (User: genx473)
         //Beatrbeitet von: Florian Wenk
         this.setSpatial(Main.app.getAssetManager().loadModel("Objects/Gun.j3o").scale(.2f));
@@ -410,6 +414,15 @@ public class Player extends Entity{
              if(towerPreview == null){
                 towerPreview = getPreviewTower();
                 if(towerPreview != null){
+                    towerPreviewRange = new Geometry("Range", new Sphere(50, 50, (float) towerPreview.getRange()));
+                    Material mat = new Material(Main.app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
+                    mat.setColor("Color", new ColorRGBA(0, 0, 0, 0.25f));
+                    mat.getAdditionalRenderState().setBlendMode(BlendMode.Alpha);
+                    mat.getAdditionalRenderState().setFaceCullMode(RenderState.FaceCullMode.Off);
+                    towerPreviewRange.setMaterial(mat);
+                    towerPreviewRange.setQueueBucket(RenderQueue.Bucket.Translucent);
+                    towerPreviewRange.setLocalTranslation(towerPreview.getNode().getLocalTranslation());
+                    Main.app.getRootNode().attachChild(towerPreviewRange);
                     Main.app.getRootNode().attachChild(towerPreview.getNode());
                 }
              } else {
@@ -417,6 +430,8 @@ public class Player extends Entity{
              }
          } else if (towerPreview != null && towerPreview.getNode().hasAncestor(Main.app.getRootNode())){
              towerPreview.getNode().removeFromParent();
+         } else if (towerPreviewRange != null && towerPreviewRange.hasAncestor(Main.app.getRootNode())){
+             towerPreviewRange.removeFromParent();
          }
      }
 
@@ -495,6 +510,10 @@ public class Player extends Entity{
             CollisionResults resultsWay = new CollisionResults();
             Ray rayWay = new Ray(location, new Vector3f(0, 0-location.getY(), 0));
             Main.getWorld().getWayNode().collideWith(rayWay, resultsWay);
+            if(resultsWay.size() != 0){
+                return;
+            }
+            Main.getWorld().getWayNode().collideWith(ray, resultsWay);
             if(resultsWay.size() != 0){
                 return;
             }
@@ -1083,6 +1102,10 @@ public class Player extends Entity{
             if(resultsWay.size() != 0){
                 return null;
             }
+            Main.getWorld().getWayNode().collideWith(ray, resultsWay);
+            if(resultsWay.size() != 0){
+                return null;
+            }
             
             Tower nearest = Main.app.getWorld().getNearestTower(location);
             // konntrolliert ob Distanz zum nächsten Turm genügend gross ist
@@ -1110,11 +1133,13 @@ public class Player extends Entity{
             //Es wird nicht auf Scene geschaut -> abbrechen
             if(location.equals(new Vector3f(0, 0, 0))){
                 towerPreview.getNode().removeFromParent();
+                towerPreviewRange.removeFromParent();
                 return;
             }
             // senkrechte Wand -> Spatial auf der Seite
             if(up.getY() == 0){
                 towerPreview.getNode().removeFromParent();
+                towerPreviewRange.removeFromParent();
                 return;
             }
             // kontrolliert ob kollision mit Beacon
@@ -1123,6 +1148,7 @@ public class Player extends Entity{
             if(resultsBeacon.size() > 0){
                 // Zu nahe an beacon -> nicht setzen
                 towerPreview.getNode().removeFromParent();
+                towerPreviewRange.removeFromParent();
                 return;
             }
             Tower tower = Main.app.getHudState().getSelectedTower(location, up);
@@ -1131,11 +1157,13 @@ public class Player extends Entity{
             Main.getWorld().getWayNode().collideWith(rayWay, resultsWay);
             if(resultsWay.size() != 0){
                 towerPreview.getNode().removeFromParent();
+                towerPreviewRange.removeFromParent();
                 return;
             }
             Main.getWorld().getWayNode().collideWith(ray, resultsWay);
             if(resultsWay.size() != 0){
                 towerPreview.getNode().removeFromParent();
+                towerPreviewRange.removeFromParent();
                 return;
             }
             
@@ -1144,17 +1172,30 @@ public class Player extends Entity{
             if(nearest != null && nearest.getSpatial().getLocalTranslation().distance(tower.getSpatial().getLocalTranslation()) < 10){
                 // Zu nahe an einem anderen Turm -> Turm wird nicht gesetzt
                 towerPreview.getNode().removeFromParent();
+                towerPreviewRange.removeFromParent();
                 return;
             }
             if(location.subtract(Main.app.getCamera().getLocation()).length() < 5){
                 towerPreview.getNode().removeFromParent();
+                towerPreviewRange.removeFromParent();
                 return;
             }
             towerPreview.getNode().removeFromParent();
             towerPreview = tower;
             Main.app.getRootNode().attachChild(towerPreview.getNode());
+            towerPreviewRange.removeFromParent();
+            towerPreviewRange = new Geometry("Range", new Sphere(50, 50, (float) towerPreview.getRange()));
+            Material mat = new Material(Main.app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
+            mat.setColor("Color", new ColorRGBA(0, 0, 0, 0.25f));
+            mat.getAdditionalRenderState().setBlendMode(BlendMode.Alpha);
+            mat.getAdditionalRenderState().setFaceCullMode(RenderState.FaceCullMode.Off);
+            towerPreviewRange.setMaterial(mat);
+            towerPreviewRange.setQueueBucket(RenderQueue.Bucket.Translucent);
+            towerPreviewRange.setLocalTranslation(towerPreview.getNode().getLocalTranslation());
+            Main.app.getRootNode().attachChild(towerPreviewRange);
             return;
         }
         towerPreview.getNode().removeFromParent();
+        towerPreviewRange.removeFromParent();
     }
 }
