@@ -986,7 +986,7 @@ public class Settings {
         setNiftyText(keyBindings, "textItem_3", getLanguageProperty("textItem_3"));
         setNiftyText(keyBindings, "textItem_4", getLanguageProperty("textItem_4"));
         setNiftyText(keyBindings, "textItem_5", getLanguageProperty("textItem_5"));
-        setNiftyText(keyBindings, "textHelp", getLanguageProperty("textHelp"));
+        setNiftyText(keyBindings, "textHelp", getLanguageProperty("textHelpKey"));
         setNiftyButtonText(keyBindings, "saveKeyBindings", getLanguageProperty("saveKeyBindings"));
         setNiftyButtonText(keyBindings, "resetKeyBindings", getLanguageProperty("resetKeyBindings"));
     }

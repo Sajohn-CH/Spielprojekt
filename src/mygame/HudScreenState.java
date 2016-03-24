@@ -227,7 +227,7 @@ public class HudScreenState extends AbstractAppState implements ScreenController
     }
     
     /**
-     * Gibt dem geraden gewählten Turm zurück. Dieser Turm wird dann später gebaut. Falls etwas anderes als ein Turm im Itemslot ausgewählt wird sollte dies vorher 
+     * Gibt den geraden gewählten Turm zurück. Dieser Turm wird dann später gebaut. Falls etwas anderes als ein Turm im Itemslot ausgewählt wird sollte dies vorher 
      * herausgefiltert werden.
      * @param location Ort, an dem der Turm gebaut werden soll. 
      * @return gewählter Turm, der gebaut werden soll

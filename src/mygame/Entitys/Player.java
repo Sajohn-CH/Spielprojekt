@@ -17,7 +17,6 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.shape.Line;
 import com.jme3.scene.shape.Sphere;
-import mygame.HudScreenState;
 import mygame.Main;
 import mygame.Settings;
 
@@ -61,6 +60,8 @@ public class Player extends Entity{
     private int keyJump;                   //Keycode der Springen-Taste
     
     private Geometry placeOnScene;         //Ist immer am ort auf der Scene wo der Spieler hinblickt
+    private boolean towerPreviewVisible;
+    private Tower towerPreview;
     
     /**
      * Initialisiert den Spieler. Setzt Grundattribute des Spielers, erstellt die Waffe und Schusslinie und lädt die Töne.
@@ -84,6 +85,7 @@ public class Player extends Entity{
         range = 100; 
         money = 250;
         this.inputListener = inputListener;
+        towerPreviewVisible = false;
         //Ob Tastaturbelgung gesetzt werden soll. Dies ist nur beim ersten Starten des Spiels notwendig, nicht bei Neustarten
         setUpKeys();
         CapsuleCollisionShape capsuleShape = new CapsuleCollisionShape(1.5f, 6f, 1);
@@ -231,49 +233,67 @@ public class Player extends Entity{
      * @param isPressed Ob die Taste gedrückt oder losgelassen wurde.
      */
     public void onAction(String binding, boolean isPressed){
-         if (binding.equals("Left")) {
-             left = isPressed;
-         } else if (binding.equals("Right")) {
-             right= isPressed;
-         } else if (binding.equals("Up")) {
-             up = isPressed;
-         } else if (binding.equals("Down")) {
-             down = isPressed;
-         } else if (binding.equals("Shoot") && this.isLiving()) {
-             if(isPressed) {
-                 isShooting = true;
-                 Main.app.getRootNode().attachChild(line);
-             }
-             if(!isPressed){
-                 isShooting = false;
-                 line.removeFromParent();
-             }
-         } else if (binding.equals("placeTower") && this.isLiving()) {
-             //if(!isPressed) verhindert, dass die Methode zweimal ausgeführt wird
-             if(isPressed && Main.app.getHudState().getSelectedItemNum() == 5) {
-                 isHealing = true;
-             }
-             if(!isPressed) {
-                   if(Main.app.getHudState().getSelectedItemNum()==4) {
-                       this.upgradeObject();
-                   } else if(Main.app.getHudState().getSelectedItemNum() == 5) {
-                       isHealing = false;
-                       if(hasHealed){
-                         playAudioBought();
-                         hasHealed = false;
-                       }
-                   } else if(Main.app.getHudState().getSelectedItemNum() == 3){
-                       Main.app.getHudState().showChooseTowerPopup();
-                   } else {
-                       this.placeTower();  
-                   }
-             }
-         } else if (binding.equals("Jump")) {
+        if (binding.equals("Left")) {
+            left = isPressed;
+        } else if (binding.equals("Right")) {
+            right= isPressed;
+        } else if (binding.equals("Up")) {
+            up = isPressed;
+        } else if (binding.equals("Down")) {
+            down = isPressed;
+        } else if (binding.equals("Shoot") && this.isLiving()) {
+            if(isPressed) {
+                isShooting = true;
+                Main.app.getRootNode().attachChild(line);
+            }
+            if(!isPressed){
+                isShooting = false;
+                line.removeFromParent();
+            }
+        } else if (binding.equals("placeTower") && this.isLiving()) {
+            //if(!isPressed) verhindert, dass die Methode zweimal ausgeführt wird
+            if(isPressed) {
+                switch(Main.app.getHudState().getSelectedItemNum()){
+                    case 1:
+                    case 2:
+                        //Turmvorschau
+                        towerPreviewVisible = true;
+                        break;
+                    case 5:
+                        isHealing = true;
+                        break;
+                }
+            }
+            if(!isPressed) {
+                switch(Main.app.getHudState().getSelectedItemNum()){
+                    case 1:
+                    case 2:
+                        if(towerPreviewVisible){
+                            towerPreviewVisible = false;
+                            this.placeTower();
+                        }
+                        break;
+                    case 3:
+                        Main.app.getHudState().showChooseTowerPopup();
+                        break;
+                    case 4:
+                        this.upgradeObject();
+                        break;
+                    case 5:
+                        isHealing = false;
+                        if(hasHealed){
+                          playAudioBought();
+                          hasHealed = false;
+                        }
+                        break;
+                }
+            }
+        } else if (binding.equals("Jump")) {
            if (isPressed) {
                player.jump();
            }
-         }
-     }
+        }
+    }
 
     /**
      * Gibt zurück, ob genügend Zeit vergangen ist, um wieder zu schiessen.
@@ -385,6 +405,18 @@ public class Player extends Entity{
          }
          if(player.getPhysicsLocation().getY() <= -150 && !player.onGround()){
              revive();
+         }
+         if(towerPreviewVisible){
+             if(towerPreview == null){
+                towerPreview = getPreviewTower();
+                if(towerPreview != null){
+                    Main.app.getRootNode().attachChild(towerPreview.getNode());
+                }
+             } else {
+                 replacePreviewTower();
+             }
+         } else if (towerPreview != null && towerPreview.getNode().hasAncestor(Main.app.getRootNode())){
+             towerPreview.getNode().removeFromParent();
          }
      }
 
@@ -1018,5 +1050,111 @@ public class Player extends Entity{
         buyAudio.setVolume((float) Main.app.getSettings().getVolumeEffectsEffective());
         notEnoughMoneyAudio.setVolume((float) Main.app.getSettings().getVolumeEffectsEffective());
         earnMoneyAudio.setVolume((float) Main.app.getSettings().getVolumeEffectsEffective());
+    }
+    
+    private Tower getPreviewTower(){
+        CollisionResults results = new CollisionResults();
+        Ray ray = new Ray(placeOnScene.getLocalTranslation(), Main.app.getCamera().getDirection());
+        // trifft auf scene
+        Main.app.getWorld().getScene().collideWith(ray, results);
+        if (results.size() > 0) {
+            //Punkt auf der scene wo der Spieler hinblickt, da sphere immer dorthingesetzt wird. results.getClosestCollision().getContactPoint() ergab falsche resultate
+            Vector3f location = placeOnScene.getLocalTranslation();
+            Vector3f up = results.getClosestCollision().getContactNormal();
+            //Es wird nicht auf Scene geschaut -> abbrechen
+            if(location.equals(new Vector3f(0, 0, 0))){
+                return null;
+            }
+            // senkrechte Wand -> Spatial auf der Seite
+            if(up.getY() == 0){
+                return null;
+            }
+            // kontrolliert ob kollision mit Beacon
+            CollisionResults resultsBeacon = new CollisionResults();
+            Main.app.getWorld().getBeacon().getSpatial().collideWith(ray, resultsBeacon);
+            if(resultsBeacon.size() > 0){
+                // Zu nahe an beacon -> nicht setzen
+                return null;
+            }
+            Tower tower = Main.app.getHudState().getSelectedTower(location, up);
+            CollisionResults resultsWay = new CollisionResults();
+            Ray rayWay = new Ray(location, new Vector3f(0, 0-location.getY(), 0));
+            Main.getWorld().getWayNode().collideWith(rayWay, resultsWay);
+            if(resultsWay.size() != 0){
+                return null;
+            }
+            
+            Tower nearest = Main.app.getWorld().getNearestTower(location);
+            // konntrolliert ob Distanz zum nächsten Turm genügend gross ist
+            if(nearest != null && nearest.getSpatial().getLocalTranslation().distance(tower.getSpatial().getLocalTranslation()) < 10){
+                // Zu nahe an einem anderen Turm -> Turm wird nicht gesetzt
+                return null;
+            }
+            if(location.subtract(Main.app.getCamera().getLocation()).length() < 5){
+                return null;
+            }
+            return tower;
+        }
+        return null;
+    }
+    
+    private void replacePreviewTower(){
+        CollisionResults results = new CollisionResults();
+        Ray ray = new Ray(placeOnScene.getLocalTranslation(), Main.app.getCamera().getDirection());
+        // trifft auf scene
+        Main.app.getWorld().getScene().collideWith(ray, results);
+        if (results.size() > 0) {
+            //Punkt auf der scene wo der Spieler hinblickt, da sphere immer dorthingesetzt wird. results.getClosestCollision().getContactPoint() ergab falsche resultate
+            Vector3f location = placeOnScene.getLocalTranslation();
+            Vector3f up = results.getClosestCollision().getContactNormal();
+            //Es wird nicht auf Scene geschaut -> abbrechen
+            if(location.equals(new Vector3f(0, 0, 0))){
+                towerPreview.getNode().removeFromParent();
+                return;
+            }
+            // senkrechte Wand -> Spatial auf der Seite
+            if(up.getY() == 0){
+                towerPreview.getNode().removeFromParent();
+                return;
+            }
+            // kontrolliert ob kollision mit Beacon
+            CollisionResults resultsBeacon = new CollisionResults();
+            Main.app.getWorld().getBeacon().getSpatial().collideWith(ray, resultsBeacon);
+            if(resultsBeacon.size() > 0){
+                // Zu nahe an beacon -> nicht setzen
+                towerPreview.getNode().removeFromParent();
+                return;
+            }
+            Tower tower = Main.app.getHudState().getSelectedTower(location, up);
+            CollisionResults resultsWay = new CollisionResults();
+            Ray rayWay = new Ray(location, new Vector3f(0, 0-location.getY(), 0));
+            Main.getWorld().getWayNode().collideWith(rayWay, resultsWay);
+            if(resultsWay.size() != 0){
+                towerPreview.getNode().removeFromParent();
+                return;
+            }
+            Main.getWorld().getWayNode().collideWith(ray, resultsWay);
+            if(resultsWay.size() != 0){
+                towerPreview.getNode().removeFromParent();
+                return;
+            }
+            
+            Tower nearest = Main.app.getWorld().getNearestTower(location);
+            // konntrolliert ob Distanz zum nächsten Turm genügend gross ist
+            if(nearest != null && nearest.getSpatial().getLocalTranslation().distance(tower.getSpatial().getLocalTranslation()) < 10){
+                // Zu nahe an einem anderen Turm -> Turm wird nicht gesetzt
+                towerPreview.getNode().removeFromParent();
+                return;
+            }
+            if(location.subtract(Main.app.getCamera().getLocation()).length() < 5){
+                towerPreview.getNode().removeFromParent();
+                return;
+            }
+            towerPreview.getNode().removeFromParent();
+            towerPreview = tower;
+            Main.app.getRootNode().attachChild(towerPreview.getNode());
+            return;
+        }
+        towerPreview.getNode().removeFromParent();
     }
 }
