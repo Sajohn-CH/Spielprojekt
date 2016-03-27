@@ -245,7 +245,7 @@ public class HudScreenState extends AbstractAppState implements ScreenController
                 }
                 
             default:
-                return new SimpleTower(location, up);
+                return null;
         }
     }
     

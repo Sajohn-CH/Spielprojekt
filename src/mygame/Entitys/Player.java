@@ -260,12 +260,14 @@ public class Player extends Entity{
                 switch(Main.app.getHudState().getSelectedItemNum()){
                     case 1:
                     case 2:
+                    case 4:
                         //Turmvorschau
                         towerPreviewVisible = true;
                         break;
                     case 5:
                         isHealing = true;
                         break;
+                        
                 }
             }
             if(!isPressed) {
@@ -273,7 +275,6 @@ public class Player extends Entity{
                     case 1:
                     case 2:
                         if(towerPreviewVisible){
-                            towerPreviewVisible = false;
                             this.placeTower();
                         }
                         break;
@@ -291,6 +292,7 @@ public class Player extends Entity{
                         }
                         break;
                 }
+                towerPreviewVisible = false;
             }
         } else if (binding.equals("Jump")) {
            if (isPressed) {
@@ -316,102 +318,102 @@ public class Player extends Entity{
      */
     @Override
     public void action(float tpf){
-          if (!Main.app.getFlyByCamera().isDragToRotate() && !Main.app.getWorld().isPaused() && !player.isEnabled()) {
-              player.setEnabled(true);
-          }
-          camDir.set(Main.app.getCamera().getDirection()).multLocal(0.6f);
-          camLeft.set(Main.app.getCamera().getLeft()).multLocal(0.4f);
-          //Versucht y-Komponente zu entferen, damit man nicht nach oben/unten gehen kann
-          camDir.setY(0);
-          camLeft.setY(0);
-          walkDirection.set(0, 0, 0);
-          if (left) {
-              walkDirection.addLocal(camLeft);
-          }
-          if (right) {
-              walkDirection.addLocal(camLeft.negate());
-          } 
-          if (up) {
-              walkDirection.addLocal(camDir);
-          }
-          if (down) {
-              walkDirection.addLocal(camDir.negate());
-          }
-         walkDirection.normalizeLocal();
-         walkDirection.multLocal(this.getSpeed() * tpf);
-         if(walkDirection.length() != 0 && player.onGround()){
-             walkAudio.play();
-         } else {
-             walkAudio.stop();
-         }
-         player.setWalkDirection(walkDirection);
-         Main.app.getCamera().setLocation(player.getPhysicsLocation());
-         this.getSpatial().setLocalTranslation(Main.app.getCamera().getLocation().add(Main.app.getCamera().getUp().normalize().mult(-1.75f)).add(Main.app.getCamera().getLeft().normalize().mult(-.75f)).add(Main.app.getCamera().getDirection().normalize().mult(1.9f)));
-         this.getSpatial().lookAt(Main.app.getCamera().getDirection().mult(range).add(Main.app.getCamera().getLocation()), new Vector3f(0,1,0));
+        if (!Main.app.getFlyByCamera().isDragToRotate() && !Main.app.getWorld().isPaused() && !player.isEnabled()) {
+            player.setEnabled(true);
+        }
+        camDir.set(Main.app.getCamera().getDirection()).multLocal(0.6f);
+        camLeft.set(Main.app.getCamera().getLeft()).multLocal(0.4f);
+        //Versucht y-Komponente zu entferen, damit man nicht nach oben/unten gehen kann
+        camDir.setY(0);
+        camLeft.setY(0);
+        walkDirection.set(0, 0, 0);
+        if (left) {
+            walkDirection.addLocal(camLeft);
+        }
+        if (right) {
+            walkDirection.addLocal(camLeft.negate());
+        } 
+        if (up) {
+            walkDirection.addLocal(camDir);
+        }
+        if (down) {
+            walkDirection.addLocal(camDir.negate());
+        }
+        walkDirection.normalizeLocal();
+        walkDirection.multLocal(this.getSpeed() * tpf);
+        if(walkDirection.length() != 0 && player.onGround()){
+            walkAudio.play();
+        } else {
+            walkAudio.stop();
+        }
+        player.setWalkDirection(walkDirection);
+        Main.app.getCamera().setLocation(player.getPhysicsLocation());
+        this.getSpatial().setLocalTranslation(Main.app.getCamera().getLocation().add(Main.app.getCamera().getUp().normalize().mult(-1.75f)).add(Main.app.getCamera().getLeft().normalize().mult(-.75f)).add(Main.app.getCamera().getDirection().normalize().mult(1.9f)));
+        this.getSpatial().lookAt(Main.app.getCamera().getDirection().mult(range).add(Main.app.getCamera().getLocation()), new Vector3f(0,1,0));
 
-         if(isHealing) {
-             heal();
-         } else {
-             healingLine.removeFromParent();
-         }
-         if(isShooting){
-             shootAudio.play();
-             shoot();
-         } else {
-             shootAudio.stop();
-         }
-         if(!isLiving() && (isHealing || isShooting)){
-             isHealing = false;
-             isShooting = false;
-             line.removeFromParent();
-             healingLine.removeFromParent();
-         }
-         if(!isLiving() && this.getSpatial().hasAncestor(Main.app.getRootNode())){
-             this.getSpatial().removeFromParent();
-         }
-         
-         //Kontrolle ob Turm im Sichtfeld
-         CollisionResults results = new CollisionResults();
-         CollisionResults resultsBeacon = new CollisionResults();
-         CollisionResults resultsScene = new CollisionResults();
-         Ray ray = new Ray(Main.app.getCamera().getLocation(), Main.app.getCamera().getDirection());
-         Main.getWorld().getTowerNode().collideWith(ray, results);
-         Main.getWorld().getBeacon().getSpatial().collideWith(ray, resultsBeacon);
-         Main.getWorld().getScene().collideWith(ray, resultsScene);
-         if(results.size() != 0 && (resultsBeacon.size() == 0 || results.getClosestCollision().getContactPoint().subtract(this.getLocation()).length() < resultsBeacon.getClosestCollision().getContactPoint().subtract(this.getLocation()).length()) && results.getClosestCollision().getContactPoint().subtract(this.getLocation()).length() <= 150 && (resultsScene.size() == 0 || results.getClosestCollision().getContactPoint().subtract(this.getLocation()).length() < resultsScene.getClosestCollision().getContactPoint().subtract(this.getLocation()).length())) {
-             Tower tower = Main.getWorld().getNearestTower(results.getClosestCollision().getContactPoint());
-             Main.app.getHudState().showTowerInfo(tower);
-             towerInfoVisible = true;
-             towerWithTowerInfoVisible = tower;
-         } else {
-             Main.app.getHudState().hideTowerInfo();
-             towerInfoVisible = false;
-             towerWithTowerInfoVisible = null;
-         }
-         if(resultsScene.size() != 0){
-            if(Main.app.getWorld().getSceneDecoration() != null){
-                CollisionResults resultsDecoration = new CollisionResults();
-                Main.app.getWorld().getSceneDecoration().collideWith(ray, resultsDecoration);
-                if(resultsDecoration.size() == 0){
-                    placeOnScene.setLocalTranslation(resultsScene.getClosestCollision().getContactPoint());
-                } else {
-                    placeOnScene.setLocalTranslation(new Vector3f(0, 0, 0));
-                }
-            } else {
-                placeOnScene.setLocalTranslation(resultsScene.getClosestCollision().getContactPoint());
-            }
-//            if(!placeOnScene.hasAncestor(Main.app.getRootNode())){
-//                Main.app.getRootNode().attachChild(placeOnScene);
-//            }
-         } else {
-//             placeOnScene.removeFromParent();
-             placeOnScene.setLocalTranslation(new Vector3f(0, 0, 0));
-         }
-         if(player.getPhysicsLocation().getY() <= -150 && !player.onGround()){
-             revive();
-         }
-         if(towerPreviewVisible){
-             if(towerPreview == null){
+        if(isHealing) {
+            heal();
+        } else {
+            healingLine.removeFromParent();
+        }
+        if(isShooting){
+            shootAudio.play();
+            shoot();
+        } else {
+            shootAudio.stop();
+        }
+        if(!isLiving() && (isHealing || isShooting)){
+            isHealing = false;
+            isShooting = false;
+            line.removeFromParent();
+            healingLine.removeFromParent();
+        }
+        if(!isLiving() && this.getSpatial().hasAncestor(Main.app.getRootNode())){
+            this.getSpatial().removeFromParent();
+        }
+
+        //Kontrolle ob Turm im Sichtfeld
+        CollisionResults results = new CollisionResults();
+        CollisionResults resultsBeacon = new CollisionResults();
+        CollisionResults resultsScene = new CollisionResults();
+        Ray ray = new Ray(Main.app.getCamera().getLocation(), Main.app.getCamera().getDirection());
+        Main.getWorld().getTowerNode().collideWith(ray, results);
+        Main.getWorld().getBeacon().getSpatial().collideWith(ray, resultsBeacon);
+        Main.getWorld().getScene().collideWith(ray, resultsScene);
+        if(results.size() != 0 && (resultsBeacon.size() == 0 || results.getClosestCollision().getContactPoint().subtract(this.getLocation()).length() < resultsBeacon.getClosestCollision().getContactPoint().subtract(this.getLocation()).length()) && results.getClosestCollision().getContactPoint().subtract(this.getLocation()).length() <= 150 && (resultsScene.size() == 0 || results.getClosestCollision().getContactPoint().subtract(this.getLocation()).length() < resultsScene.getClosestCollision().getContactPoint().subtract(this.getLocation()).length())) {
+            Tower tower = Main.getWorld().getNearestTower(results.getClosestCollision().getContactPoint());
+            Main.app.getHudState().showTowerInfo(tower);
+            towerInfoVisible = true;
+            towerWithTowerInfoVisible = tower;
+        } else {
+            Main.app.getHudState().hideTowerInfo();
+            towerInfoVisible = false;
+            towerWithTowerInfoVisible = null;
+        }
+        if(resultsScene.size() != 0){
+           if(Main.app.getWorld().getSceneDecoration() != null){
+               CollisionResults resultsDecoration = new CollisionResults();
+               Main.app.getWorld().getSceneDecoration().collideWith(ray, resultsDecoration);
+               if(resultsDecoration.size() == 0){
+                   placeOnScene.setLocalTranslation(resultsScene.getClosestCollision().getContactPoint());
+               } else {
+                   placeOnScene.setLocalTranslation(new Vector3f(0, 0, 0));
+               }
+           } else {
+               placeOnScene.setLocalTranslation(resultsScene.getClosestCollision().getContactPoint());
+           }
+     //            if(!placeOnScene.hasAncestor(Main.app.getRootNode())){
+     //                Main.app.getRootNode().attachChild(placeOnScene);
+     //            }
+        } else {
+     //             placeOnScene.removeFromParent();
+            placeOnScene.setLocalTranslation(new Vector3f(0, 0, 0));
+        }
+        if(player.getPhysicsLocation().getY() <= -150 && !player.onGround()){
+            revive();
+        }
+        if(towerPreviewVisible && Main.app.getHudState().getSelectedItemNum() != 4){
+            if(towerPreview == null){
                 towerPreview = getPreviewTower();
                 if(towerPreview != null){
                     towerPreviewRange = new Geometry("Range", new Sphere(50, 50, (float) towerPreview.getRange()));
@@ -428,12 +430,32 @@ public class Player extends Entity{
              } else {
                  replacePreviewTower();
              }
-         } else if (towerPreview != null && towerPreview.getNode().hasAncestor(Main.app.getRootNode())){
-             towerPreview.getNode().removeFromParent();
-         } else if (towerPreviewRange != null && towerPreviewRange.hasAncestor(Main.app.getRootNode())){
-             towerPreviewRange.removeFromParent();
-         }
-     }
+        } else if (towerPreviewVisible && Main.app.getHudState().getSelectedItemNum() == 4){
+            if(towerPreview.getNode().hasAncestor(Main.app.getRootNode())){
+                towerPreview.getNode().removeFromParent();
+            }
+            if(!towerPreviewRange.hasAncestor(Main.app.getRootNode()) && towerInfoVisible){
+                towerPreviewRange = new Geometry("Range", new Sphere(50, 50, (float) towerWithTowerInfoVisible.getNewRange(towerWithTowerInfoVisible.getLevel()+1)));
+                Material mat = new Material(Main.app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
+                mat.setColor("Color", new ColorRGBA(0, 0, 0, 0.25f));
+                mat.getAdditionalRenderState().setBlendMode(BlendMode.Alpha);
+                mat.getAdditionalRenderState().setFaceCullMode(RenderState.FaceCullMode.Off);
+                towerPreviewRange.setMaterial(mat);
+                towerPreviewRange.setQueueBucket(RenderQueue.Bucket.Translucent);
+                towerPreviewRange.setLocalTranslation(towerWithTowerInfoVisible.getNode().getLocalTranslation());
+                Main.app.getRootNode().attachChild(towerPreviewRange);
+            } else if (towerPreviewRange.hasAncestor(Main.app.getRootNode()) && towerWithTowerInfoVisible == null) {
+                towerPreviewRange.removeFromParent();
+            }
+        } else if (towerPreview != null && towerPreview.getNode().hasAncestor(Main.app.getRootNode())){
+            towerPreview.getNode().removeFromParent();
+        } else if (towerPreviewRange != null && towerPreviewRange.hasAncestor(Main.app.getRootNode())){
+            towerPreviewRange.removeFromParent();
+        }
+        if (Main.app.getHudState().getSelectedItemNum() == 3 || Main.app.getHudState().getSelectedItemNum() == 5){
+            towerPreviewVisible = false;
+        }
+    }
 
    /**
     * Fügt einem Objekt Schaden zu.
@@ -1152,6 +1174,9 @@ public class Player extends Entity{
                 return;
             }
             Tower tower = Main.app.getHudState().getSelectedTower(location, up);
+            if(tower == null){
+                return;
+            }
             CollisionResults resultsWay = new CollisionResults();
             Ray rayWay = new Ray(location, new Vector3f(0, 0-location.getY(), 0));
             Main.getWorld().getWayNode().collideWith(rayWay, resultsWay);
