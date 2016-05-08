@@ -587,4 +587,32 @@ public class Tower extends Entity{
     public Vector3f getUp(){
         return this.up;
     }
+    
+    /**
+     * Gibt zurück ob der Turm auf eine bestimmte Bombenart schiessen kann.
+     * @param bombsClass Bombenart
+     * @return Ob der Turm auf diese Bombenart schiessen kann
+     */
+    public boolean canShootAtBombsClass(Class <? extends Bomb> bombsClass){
+        try{
+            makeDamage(bombsClass.getConstructor(Integer.class).newInstance(1));
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
+    }
+    
+    /**
+     * Gibt zurück ob der Turm auf alle Bombenarten schiessen kann
+     * @return Ob der Turm auf alle Bombenarten schiessen kann.
+     */
+    public boolean canShootAtAllBombs(){
+        ArrayList<String> bombTypes = Main.app.getGame().getPossibleBombTypes();
+        for(int i = 1; i < bombTypes.size(); i++){
+            if(!canShootAtBombsClass(Main.app.getGame().getBombType(bombTypes.get(i)))){
+                return false;
+            }
+        }
+        return true;
+    }
 }

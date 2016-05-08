@@ -302,8 +302,6 @@ public class HudScreenState extends AbstractAppState implements ScreenController
        } else {
            towerPopup.findElementByName("textDamage").getRenderer(TextRenderer.class).setText(damage);
            towerPopup.findElementByName("damage").getRenderer(TextRenderer.class).setText("");
-           towerPopup.findElementByName("panelAllBombs").setVisible(false);
-           towerPopup.findElementByName("panelNormalBombs").setVisible(false);
        }
        towerPopup.findElementByName("health").getRenderer(TextRenderer.class).setText(health);
        towerPopup.findElementByName("sps").getRenderer(TextRenderer.class).setText(sps);
@@ -331,7 +329,16 @@ public class HudScreenState extends AbstractAppState implements ScreenController
             towerPopup.findNiftyControl("weakest", CheckBox.class).check();
        }
        DropDown shootAtBomb = towerPopup.findNiftyControl("dropdownShootAtBomb", DropDown.class);
-       shootAtBomb.addAllItems(Main.app.getGame().getPossibleBombTypes());
+       shootAtBomb.clear();
+       ArrayList<String> bombTypes = Main.app.getGame().getPossibleBombTypes();
+       if(tower.canShootAtAllBombs()){
+           shootAtBomb.addItem(bombTypes.get(0));
+       }
+       for(int i = 1; i < bombTypes.size(); i++){
+           if(tower.canShootAtBombsClass(Main.app.getGame().getBombType(bombTypes.get(i)))){
+               shootAtBomb.addItem(bombTypes.get(i));
+           }
+       }
        if (tower.getShootAtAllBombs()){
            shootAtBomb.selectItemByIndex(0);
        } else {
@@ -422,7 +429,7 @@ public class HudScreenState extends AbstractAppState implements ScreenController
             return;
         }
         DropDown shootAtBomb = screen.findNiftyControl("dropdownShootAtBomb", DropDown.class);
-        if(shootAtBomb.getSelectedIndex() == 0){
+        if(shootAtBomb.getSelection().equals(Main.app.getSettings().getLanguageProperty("allBombs"))){
             tower.setShootAtAllBombs();
             return;
         }
@@ -447,12 +454,18 @@ public class HudScreenState extends AbstractAppState implements ScreenController
    /**
     * Entfernt den Turm. Dies wird vom Towerpopup aufgerufen, so dass der Turm, dessen Upgrade-Popup offen ist entfernt wird.
     */
-    public void removeTower(){
+    public void removeTower(String remove){
         if(tower == null) {
             return;
         }
-        closeTowerPopup("false");
-        tower.remove();
+        if(remove.equals("true")){
+            tower.remove();
+        }
+        nifty.closePopup(towerPopup.getId());
+        towerPopup.disable();
+        Main.app.getFlyByCamera().setDragToRotate(false);
+        Main.app.getWorld().setPaused(false);
+        cameraDragToRotate = false;
     }
    
    /**

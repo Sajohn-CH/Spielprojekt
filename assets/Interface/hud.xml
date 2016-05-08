@@ -242,10 +242,10 @@
                  <panel childLayout="center" width="100%" height="70%">
                     <panel id="#buttonsYesNo" childLayout="horizontal" width="40%" height="100%">
                         <control id="yes" name="button" label="Ja" align="center" valign="center" color="#0000" visibleToMouse="true">
-                            <interact onClick="removeTower()"/>
+                            <interact onClick="removeTower(true)"/>
                         </control>
                         <control id="no" name="button" label="Nein" align="center" valign="center" color="#ffffffff" visibleToMouse="true">
-                            <interact onClick="closeTowerPopup(false)"/>
+                            <interact onClick="removeTower(false)"/>
                         </control>
                     </panel>
                  </panel>

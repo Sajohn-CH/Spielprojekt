@@ -196,4 +196,17 @@ public class SloweringTower extends Tower{
            Main.app.getWorld().getPlayer().playAudioNotEnoughMoney();
          }
     }
+    
+    /**
+     * {@inheritDoc }
+     */
+    @Override
+    public boolean canShootAtBombsClass(Class <? extends Bomb> bombsClass){
+        try{
+            decreaseSpeed(bombsClass.getConstructor(Integer.class).newInstance(1));
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
+    }
 }

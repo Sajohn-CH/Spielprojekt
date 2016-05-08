@@ -126,8 +126,8 @@ public class DeactivationTower extends Tower{
      * Entzieht der Bombe die Fähigkeit zu schiessen, indem die Methode {@link ShootingBomb#disableShooting() } aufgerufen wird.
      * @param b ShootingBomb der die Fähigkeit entzogen werden soll.
      */
-    private void disableShooting(ShootingBomb b){
-        b.disableShooting();
+    private void disableShooting(Bomb b) throws ClassCastException{
+        ShootingBomb.class.cast(b).disableShooting();
     }
         
     /**
@@ -196,5 +196,18 @@ public class DeactivationTower extends Tower{
          } else {
             Main.app.getWorld().getPlayer().playAudioNotEnoughMoney();
          }
+    }
+    
+    /**
+     * {@inheritDoc }
+     */
+    @Override
+    public boolean canShootAtBombsClass(Class <? extends Bomb> bombsClass){
+        try{
+            disableShooting(bombsClass.getConstructor(Integer.class).newInstance(1));
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
     }
 }

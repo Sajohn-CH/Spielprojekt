@@ -179,4 +179,17 @@ public class SimpleTower extends Tower{
            Main.app.getWorld().getPlayer().playAudioNotEnoughMoney();
          }
     }
+    
+    /**
+     * {@inheritDoc }
+     */
+    @Override
+    public boolean canShootAtBombsClass(Class <? extends Bomb> bombsClass){
+        try{
+            makeDamage(bombsClass.getConstructor(Integer.class).newInstance(1));
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
+    }
 }

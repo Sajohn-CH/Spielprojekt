@@ -1034,7 +1034,7 @@ public class Settings {
     }
     
     public void reloadRemoveTowerPopupLanguage(de.lessvoid.nifty.elements.Element removePopup){
-        setNiftyText(removePopup, "#title", getLanguageProperty("title"));
+        setNiftyText(removePopup, "#title", getLanguageProperty("removeTowerTitle"));
         setNiftyButtonText(removePopup, "yes", getLanguageProperty("yes"));
         setNiftyButtonText(removePopup, "no", getLanguageProperty("no"));
     }
