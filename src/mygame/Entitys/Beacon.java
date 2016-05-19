@@ -5,6 +5,7 @@ import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.light.PointLight;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.Spatial;
 import mygame.Main;
 
 /**
@@ -29,6 +30,7 @@ public class Beacon extends Entity {
         //Bearbeitet von: Florian Wenk
         this.setSpatial(Main.app.getAssetManager().loadModel("Objects/Beacon.j3o").scale(2f));
         this.getSpatial().setLocalTranslation(this.getLocation());
+        this.getSpatial().setCullHint(Spatial.CullHint.Never);
         
         PointLight light1 = new PointLight();
         light1.setPosition(new Vector3f(location.x ,1000, location.z));
@@ -119,7 +121,7 @@ public class Beacon extends Entity {
     
     public void setCollidable(){
         try{
-            Main.getBulletAppState().getPhysicsSpace().remove(this.getSpatial().getControl(RigidBodyControl.class));
+            Main.getBulletAppState().getPhysicsSpace().remove(beaconC);
         } catch (Exception e){
             
         }

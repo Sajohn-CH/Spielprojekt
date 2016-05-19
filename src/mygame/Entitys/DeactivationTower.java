@@ -164,7 +164,7 @@ public class DeactivationTower extends Tower{
      */
     @Override
     public double getNewSPS(int newLevel) {
-        return Math.round(newLevel/20.0*100)/100.0;
+        return Math.round((double) newLevel/20.0*100.0)/100.0;
     }
         
     /**
