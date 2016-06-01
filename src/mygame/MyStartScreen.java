@@ -289,20 +289,8 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
                 up.setX(Float.valueOf(upEle.getAttribute("x")));
                 up.setY(Float.valueOf(upEle.getAttribute("y")));
                 up.setZ(Float.valueOf(upEle.getAttribute("z")));
-                switch (towerElement.getAttribute("Type")) {
-                    case "mygame.Entitys.SimpleTower":
-                        tower = new SimpleTower(position, up);
-                        break;
-                    case "mygame.Entitys.SloweringTower":
-                        tower = new SloweringTower(position, up);
-                        break;
-                    case "mygame.Entitys.DeactivationTower":
-                        tower = new DeactivationTower(position, up);
-                        break;
-                    default:
-                        tower = new SimpleTower(position, up);
-                        break;
-                }
+                Class towerClass = Class.forName(towerElement.getAttribute("Type"));
+                tower = (Tower) towerClass.getConstructor(Vector3f.class, Vector3f.class).newInstance(position, up);
                 Main.app.getWorld().addTower(tower);
                 tower.setLevel(Integer.valueOf(towerElement.getAttribute("Level")));
                 tower.setHealth(Integer.valueOf(towerElement.getAttribute("Health")));
