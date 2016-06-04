@@ -6,6 +6,7 @@ import mygame.Entitys.Player;
 import mygame.Entitys.Tower;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.asset.AssetNotFoundException;
+import com.jme3.audio.AudioNode;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
@@ -40,6 +41,7 @@ public class World extends AbstractAppState{
     private ArrayList<Vector3f> corners;               //ArrayList, in der alle Eckpunkte des Weges gespeichert sind.
     private Float bombMultiplier;
     private Float towerMultiplier;
+    private AudioNode musicTheme;
     
     /**
      * Konstruktor. Lädt den Himmel, fügt die Szene hinzu und initialisiert alles.
@@ -66,6 +68,14 @@ public class World extends AbstractAppState{
         Texture up = Main.app.getAssetManager().loadTexture("Textures/sky/BrightSky/up.jpg");
         Texture down = Main.app.getAssetManager().loadTexture("Textures/sky/BrightSky/down.jpg");
         Main.app.getRootNode().attachChild(SkyFactory.createSky(Main.app.getAssetManager(), west, east, north, south, up, down));
+        
+        //Musik von Dismite (Simon Stäuble)
+        musicTheme = new AudioNode(Main.app.getAssetManager(), "Audio/Music/Filmmusik TowerDefense.wav", false);
+        musicTheme.setPositional(false);
+        musicTheme.setLooping(true);
+        musicTheme.setVolume((float) Main.app.getSettings().getVolumeMusic());
+        Main.app.getRootNode().attachChild(musicTheme);
+        startMusic();
     }
     
     /**
@@ -454,5 +464,17 @@ public class World extends AbstractAppState{
     
     public Spatial getSceneDecoration(){
         return this.sceneDecoration;
+    }
+    
+    public void startMusic(){
+        musicTheme.play();
+    }
+    
+    public void stopMusic(){
+        musicTheme.stop();
+    }
+    
+    public void reloadVolumes(){
+        musicTheme.setVolume((float) Main.app.getSettings().getVolumeMusicEffective());
     }
 }

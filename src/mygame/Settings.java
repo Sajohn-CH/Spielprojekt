@@ -542,7 +542,9 @@ public class Settings {
         ArrayList<Dimension> l = new ArrayList<Dimension>();
         DisplayMode [] mode = device.getDisplayModes();
         for(int i = 0; i < mode.length; i++){
-            l.add(new Dimension(mode[i].getWidth(), mode[i].getHeight()));
+            if(!l.contains(new Dimension(mode[i].getWidth(), mode[i].getHeight()))){
+                l.add(new Dimension(mode[i].getWidth(), mode[i].getHeight()));
+            }
         }
         return l;
     }
@@ -673,11 +675,13 @@ public class Settings {
     public void setVolumeMaster(double volumeMaster){
         this.volumeMaster = volumeMaster;
         Main.app.getWorld().getPlayer().reloadVolumes();
+        Main.app.getWorld().reloadVolumes();
     }
     
     public void setVolumeEffects(double volumeEffects){
         this.volumeEffects = volumeEffects;
         Main.app.getWorld().getPlayer().reloadVolumes();
+        Main.app.getWorld().reloadVolumes();
     }
     
     public void setVolumeMusic(double volumeMusic){
@@ -687,15 +691,18 @@ public class Settings {
     public void setVolumeMasterMuted(boolean muted){
         this.volumeMasterIsMuted = muted;
         Main.app.getWorld().getPlayer().reloadVolumes();
+        Main.app.getWorld().reloadVolumes();
     }
     
     public void setVolumeEffectsMuted(boolean muted){
         this.volumeEffectsIsMuted = muted;
         Main.app.getWorld().getPlayer().reloadVolumes();
+        Main.app.getWorld().reloadVolumes();
     }
     
     public void setVolumeMusicMuted(boolean muted){
         this.volumeMusicIsMuted = muted;
+        Main.app.getWorld().reloadVolumes();
     }
     
     public boolean isVolumeMasterMuted(){

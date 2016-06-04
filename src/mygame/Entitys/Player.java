@@ -130,35 +130,35 @@ public class Player extends Entity{
         
         //Sound von: https://freesound.org/people/cormi/sounds/93979/ (User: cormi)
         //Bearbeitet von: Florian Wenk
-        shootAudio = new AudioNode(Main.app.getAssetManager(), "Audio/shootAudio.wav", false);
+        shootAudio = new AudioNode(Main.app.getAssetManager(), "Audio/Effects/shootAudio.wav", false);
         shootAudio.setPositional(false);
         shootAudio.setLooping(true);
         Main.app.getRootNode().attachChild(shootAudio);
         
         //Sound von: https://freesound.org/people/Shadowedhunter/sounds/155920/ (User: Shadowedhunter)
         //Bearbeitet von: Florian Wenk
-        walkAudio = new AudioNode(Main.app.getAssetManager(), "Audio/walkAudio.wav", false);
+        walkAudio = new AudioNode(Main.app.getAssetManager(), "Audio/Effects/walkAudio.wav", false);
         walkAudio.setPositional(false);
         walkAudio.setLooping(true);
         Main.app.getRootNode().attachChild(walkAudio);
         
         //Sound von: https://freesound.org/people/jact878787/sounds/323809/ (User: jact878787)
         //Bearbeitet von: Florian Wenk
-        buyAudio = new AudioNode(Main.app.getAssetManager(), "Audio/buyAudio.wav", false);
+        buyAudio = new AudioNode(Main.app.getAssetManager(), "Audio/Effects/buyAudio.wav", false);
         buyAudio.setPositional(false);
         buyAudio.setLooping(false);
         Main.app.getRootNode().attachChild(buyAudio);
         
         //Sound von: https://freesound.org/people/clairinski/sounds/184372/ (User: clairinski)
         //Bearbeitet von: Florian Wenk
-        notEnoughMoneyAudio = new AudioNode(Main.app.getAssetManager(), "Audio/notEnoughMoneyAudio.wav", false);
+        notEnoughMoneyAudio = new AudioNode(Main.app.getAssetManager(), "Audio/Effects/notEnoughMoneyAudio.wav", false);
         notEnoughMoneyAudio.setPositional(false);
         notEnoughMoneyAudio.setLooping(false);
         Main.app.getRootNode().attachChild(notEnoughMoneyAudio);
         
         //Sound von: https://freesound.org/people/severaltimes/sounds/173989/ (User: severaltimes)
         //Bearbeitet von: Florian Wenk
-        earnMoneyAudio = new AudioNode(Main.app.getAssetManager(), "Audio/earnMoneyAudio.wav", false);
+        earnMoneyAudio = new AudioNode(Main.app.getAssetManager(), "Audio/Effects/earnMoneyAudio.wav", false);
         earnMoneyAudio.setPositional(false);
         earnMoneyAudio.setLooping(false);
         Main.app.getRootNode().attachChild(earnMoneyAudio);
