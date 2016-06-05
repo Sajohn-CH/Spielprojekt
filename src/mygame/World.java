@@ -73,7 +73,7 @@ public class World extends AbstractAppState{
         musicTheme = new AudioNode(Main.app.getAssetManager(), "Audio/Music/Filmmusik TowerDefense.wav", false);
         musicTheme.setPositional(false);
         musicTheme.setLooping(true);
-        musicTheme.setVolume((float) Main.app.getSettings().getVolumeMusic());
+        musicTheme.setVolume((float) Main.app.getSettings().getVolumeMusicEffective());
         Main.app.getRootNode().attachChild(musicTheme);
         startMusic();
     }
