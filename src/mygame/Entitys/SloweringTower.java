@@ -67,6 +67,8 @@ public class SloweringTower extends Tower{
         Material matL = new Material(Main.app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
         matL.setColor("Color", ColorRGBA.Blue);
         line.setMaterial(matL);
+        
+        super.setShootAudio("Audio/Effects/towerShootAudio.wav");
     }
     
     /**
@@ -102,7 +104,7 @@ public class SloweringTower extends Tower{
            Line l = new Line(this.getSpatial().getLocalTranslation().add(vec), bomb.getSpatial().getLocalTranslation());
            line.setMesh(l);
            Main.app.getRootNode().attachChild(line);
-           super.shot();
+           super.shot(true);
            this.decreaseSpeed(bomb);
         }
         if(!this.isLiving() && !this.isDead()){

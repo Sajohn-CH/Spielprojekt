@@ -475,6 +475,11 @@ public class World extends AbstractAppState{
     }
     
     public void reloadVolumes(){
-        musicTheme.setVolume((float) Main.app.getSettings().getVolumeMusicEffective());
+        float volume = (float) Main.app.getSettings().getVolumeMusicEffective();
+        musicTheme.setVolume(volume);
+        ArrayList<Tower> allTowers = this.getAllTowers();
+        for(int i = 0; i < allTowers.size(); i++){
+            allTowers.get(i).setShootAudioVolume(volume);
+        }
     }
 }

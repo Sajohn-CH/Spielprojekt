@@ -58,6 +58,8 @@ public class SimpleTower extends Tower{
         Material matL = new Material(Main.app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
         matL.setColor("Color", ColorRGBA.Red);
         line.setMaterial(matL);
+        
+        super.setShootAudio("Audio/Effects/towerShootAudio.wav");
     }
     
     /**
@@ -84,7 +86,7 @@ public class SimpleTower extends Tower{
            Line l = new Line(this.getSpatial().getLocalTranslation().add(this.getUp().normalize().mult(3)), bomb.getSpatial().getLocalTranslation());
            line.setMesh(l);
            Main.app.getRootNode().attachChild(line);
-           super.shot();
+           super.shot(true);
            this.makeDamage(bomb);
         }
         if(!this.isLiving() && !this.isDead()){

@@ -350,7 +350,8 @@ public class Player extends Entity{
         Main.app.getCamera().setLocation(player.getPhysicsLocation());
         this.getSpatial().setLocalTranslation(Main.app.getCamera().getLocation().add(Main.app.getCamera().getUp().normalize().mult(-1.75f)).add(Main.app.getCamera().getLeft().normalize().mult(-.75f)).add(Main.app.getCamera().getDirection().normalize().mult(1.9f)));
         this.getSpatial().lookAt(Main.app.getCamera().getDirection().mult(range).add(Main.app.getCamera().getLocation()), new Vector3f(0,1,0));
-
+        Main.app.getListener().setLocation(Main.app.getCamera().getLocation());
+        
         if(isHealing) {
             heal();
         } else {

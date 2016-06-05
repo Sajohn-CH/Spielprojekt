@@ -1,5 +1,6 @@
 package mygame.Entitys;
 
+import com.jme3.audio.AudioNode;
 import com.jme3.effect.ParticleEmitter;
 import com.jme3.effect.ParticleMesh.Type;
 import com.jme3.effect.shapes.EmitterSphereShape;
@@ -31,6 +32,7 @@ public class Tower extends Entity{
     private Material numberMat;
     private Vector3f up;
     protected Float multiplier;
+    private AudioNode shootAudio;
     
     private boolean shootAtNearestBomb;
     private boolean shootAtStrongestBomb;
@@ -132,10 +134,14 @@ public class Tower extends Entity{
     }
     
     /**
-     * Setzt die Zeit des letzten Schusses auf jetzt.
+     * Setzt die Zeit des letzten Schusses auf jetzt und spielt den Schusston ab(je nach dem wie angegeben).
+     * @param playAudio Ob Schusston abgespielt werden soll.
      */
-    public void shot(){
+    public void shot(boolean playAudio){
         this.shot = System.currentTimeMillis();
+        if(shootAudio != null && playAudio){
+            shootAudio.playInstance();
+        }
     }
     
     /**
@@ -614,5 +620,22 @@ public class Tower extends Entity{
             }
         }
         return true;
+    }
+    
+    public void setShootAudio(String path){
+        shootAudio = new AudioNode(Main.app.getAssetManager(), path, false);
+        shootAudio.setPositional(true);
+        shootAudio.setLooping(false);
+        shootAudio.setRefDistance(2f);
+        shootAudio.setLocalTranslation(this.getSpatial().getLocalTranslation());
+        Main.app.getRootNode().attachChild(shootAudio);
+    }
+    
+    public AudioNode getShootAudio(){
+        return shootAudio;
+    }
+    
+    public void setShootAudioVolume(float volume){
+        shootAudio.setVolume(volume);
     }
 }
