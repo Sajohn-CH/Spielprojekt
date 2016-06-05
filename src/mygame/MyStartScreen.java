@@ -59,6 +59,18 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
     @Override
     public void update(float tpf) {
          //TODO: implement behavior during runtime
+        if(nifty != null){
+            //Benötigt, da Screen in der bind() nicht geändert wird, und sonst der Screen immer der startscreen ist.
+            screen = nifty.getCurrentScreen();
+            if(screen.getScreenId().equals("settings")){
+                Main.app.getSettings().setVolumeMaster((double) screen.findNiftyControl("masterVolumeSlider", Slider.class).getValue());
+                Main.app.getSettings().setVolumeEffects((double) screen.findNiftyControl("effectsVolumeSlider", Slider.class).getValue());
+                Main.app.getSettings().setVolumeMusic((double) screen.findNiftyControl("musicVolumeSlider", Slider.class).getValue());
+                Main.app.getSettings().setVolumeMasterMuted(screen.findNiftyControl("checkboxMuteMasterVolume", CheckBox.class).isChecked());
+                Main.app.getSettings().setVolumeEffectsMuted(screen.findNiftyControl("checkboxMuteEffectsVolume", CheckBox.class).isChecked());
+                Main.app.getSettings().setVolumeMusicMuted(screen.findNiftyControl("checkboxMuteMusicVolume", CheckBox.class).isChecked());
+            }
+        }
     }
     
     /**
