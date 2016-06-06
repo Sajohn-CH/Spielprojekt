@@ -24,10 +24,7 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import mygame.Entitys.SloweringTower;
 import mygame.Entitys.Player;
-import mygame.Entitys.DeactivationTower;
-import mygame.Entitys.SimpleTower;
 import mygame.Entitys.Tower;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -289,7 +286,6 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
             //Lädt alle Türme
             NodeList nList = doc.getElementsByTagName("Tower");
             for(int i = 0; i < nList.getLength(); i++) {
-                Tower tower;
                 Element towerElement = (Element) nList.item(i);
                 Element posEle = (Element) towerElement.getElementsByTagName("Position").item(0);
                 Vector3f position = new Vector3f();
@@ -302,10 +298,10 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
                 up.setY(Float.valueOf(upEle.getAttribute("y")));
                 up.setZ(Float.valueOf(upEle.getAttribute("z")));
                 Class towerClass = Class.forName(towerElement.getAttribute("Type"));
-                tower = (Tower) towerClass.getConstructor(Vector3f.class, Vector3f.class).newInstance(position, up);
-                Main.app.getWorld().addTower(tower);
+                Tower tower = (Tower) towerClass.getConstructor(Vector3f.class, Vector3f.class).newInstance(position, up);
                 tower.setLevel(Integer.valueOf(towerElement.getAttribute("Level")));
                 tower.setHealth(Integer.valueOf(towerElement.getAttribute("Health")));
+                Main.app.getWorld().addTower(tower);
             }
             
             //Setzt Player

@@ -413,7 +413,7 @@ public class Player extends Entity{
         if(player.getPhysicsLocation().getY() <= -150 && !player.onGround()){
             revive();
         }
-        if(towerPreviewVisible && Main.app.getHudState().getSelectedItemNum() != 4){
+        if(towerPreviewVisible && Main.app.getHudState().getSelectedItemNum() != 4 || towerPreview == null){
             if(towerPreview == null){
                 towerPreview = getPreviewTower();
                 if(towerPreview != null){
