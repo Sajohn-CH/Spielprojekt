@@ -271,6 +271,14 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
      * Lädt einen Spielstand von einer XML-Datei. Diese Datei ist aktuell immer "saveGame.xml". 
      */
     public void loadGame() {
+        //Alle Türme zurücksetzen
+        for(int i = Main.app.getWorld().getAllTowers().size()-1; i >= 0; i--) {
+            Main.app.getWorld().removeTower(Main.app.getWorld().getAllTowers().get(i));
+        }
+        //Alle Bomben zurücksetzen
+        for(int i = Main.app.getWorld().getAllBombs().size()-1; i >= 0; i--) {
+            Main.app.getWorld().removeBomb(Main.app.getWorld().getAllBombs().get(i));
+        }
         File saveGame = new File("saves/" + (String) screen.findNiftyControl("listBoxSave", ListBox.class).getFocusItem() + ".save");
         String [] d = ((String) screen.findNiftyControl("listBoxSave", ListBox.class).getFocusItem()).split(";")[1].split("-");
         String [] t = ((String) screen.findNiftyControl("listBoxSave", ListBox.class).getFocusItem()).split(";")[2].split("-");
@@ -450,6 +458,7 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
    
    public void saveSettings() {
         Main.app.getSettings().setLanguage(screen.findNiftyControl("dropdownLanguage", DropDown.class).getSelectedIndex());
+        Main.app.getSettings().reloadLanguageStart(nifty.getScreen("start"));
         DropDown dropdownResolution = screen.findNiftyControl("dropdownResolution", DropDown.class);
         Main.app.getSettings().setResolution(Main.app.getSettings().getPossibleResolutions().get(dropdownResolution.getSelectedIndex()));
         Main.app.getSettings().setFullscreen(screen.findNiftyControl("checkboxFullscreen", CheckBox.class).isChecked());
