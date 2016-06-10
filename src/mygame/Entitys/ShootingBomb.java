@@ -143,8 +143,8 @@ public class ShootingBomb extends Bomb{
     public void setLevel(int newLevel) {
         super.setLevel(newLevel);
         this.range = 10+(int)(newLevel*5*multiplier);
-        this.shotsPerSecond = (int)(newLevel/2*multiplier)+1;
-        this.shotDamage = 10+(int)(newLevel*multiplier);
+        this.shotsPerSecond = (int)(newLevel/5*multiplier)+1;
+        this.shotDamage = (int)(5+Math.sqrt(newLevel)*multiplier);
     }
     
     /**

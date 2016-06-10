@@ -61,7 +61,7 @@ public class Beacon extends Entity {
     }
     
     /**
-     * Dreht den Beacon in die Richtung. Wird bisher nicht benötigt
+     * Dreht den Beacon in die Richtung.
      */
     public void turn(){
         if(Main.getWorld() != null){
@@ -122,6 +122,7 @@ public class Beacon extends Entity {
     public void setCollidable(){
         try{
             Main.getBulletAppState().getPhysicsSpace().remove(beaconC);
+            this.getSpatial().removeControl(beaconC);
         } catch (Exception e){
             
         }

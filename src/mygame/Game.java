@@ -155,7 +155,7 @@ public class Game {
                     bombsLeft.get(bombClass).get("levels").remove(i);
                 }
             }
-            lastTime =System.currentTimeMillis();
+            lastTime = System.currentTimeMillis();
             nextTime = (long) ((Math.random()*10)*100);
         }
     }

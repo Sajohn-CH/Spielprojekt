@@ -145,6 +145,10 @@ public class World extends AbstractAppState{
         if(Main.app.getRootNode().hasChild(scene)){
             Main.app.getRootNode().detachChild(scene);
             Main.getBulletAppState().getPhysicsSpace().remove(scene.getControl(RigidBodyControl.class));
+            if(sceneDecoration != null && sceneDecoration.hasAncestor(Main.app.getRootNode())){
+                Main.app.getRootNode().detachChild(sceneDecoration);
+                Main.getBulletAppState().getPhysicsSpace().remove(sceneDecoration.getControl(RigidBodyControl.class));
+            }
         }
         scene = Main.app.getAssetManager().loadModel("Scenes/" + name + ".j3o");
         scene.setLocalScale(2f);
@@ -166,11 +170,7 @@ public class World extends AbstractAppState{
             sceneDecoration.addControl(sceneDecorationC);
             Main.getBulletAppState().getPhysicsSpace().add(sceneDecorationC);
         } catch (AssetNotFoundException e){
-            if(Main.app.getRootNode().hasChild(sceneDecoration)){
-                Main.app.getBulletAppState().getPhysicsSpace().remove(this.sceneDecoration.getControl(RigidBodyControl.class));
-                Main.app.getRootNode().detachChild(sceneDecoration);
-            }
-            sceneDecoration = null;
+            
         }
         
         HashMap<String, Object> data = (HashMap<String, Object>) Main.app.getAssetManager().loadAsset("Scenes/" + scene.getName() + ".sceneData");

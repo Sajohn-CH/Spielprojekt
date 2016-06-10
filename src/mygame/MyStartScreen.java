@@ -265,6 +265,7 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
      */
     public void toStart() {
         nifty.gotoScreen("start");
+        Main.getWorld().startMusic();
     }
     
     /**
@@ -272,13 +273,15 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
      */
     public void loadGame() {
         //Alle Türme zurücksetzen
-        for(int i = Main.app.getWorld().getAllTowers().size()-1; i >= 0; i--) {
-            Main.app.getWorld().removeTower(Main.app.getWorld().getAllTowers().get(i));
+        for(int i = Main.getWorld().getAllTowers().size()-1; i >= 0; i--) {
+            Main.getWorld().removeTower(Main.getWorld().getAllTowers().get(i));
         }
         //Alle Bomben zurücksetzen
-        for(int i = Main.app.getWorld().getAllBombs().size()-1; i >= 0; i--) {
-            Main.app.getWorld().removeBomb(Main.app.getWorld().getAllBombs().get(i));
+        for(int i = Main.getWorld().getAllBombs().size()-1; i >= 0; i--) {
+            Main.getWorld().removeBomb(Main.getWorld().getAllBombs().get(i));
         }
+        Main.getWorld().getBeacon().setLiving(true);
+        Main.getWorld().getPlayer().setLiving(true);
         File saveGame = new File("saves/" + (String) screen.findNiftyControl("listBoxSave", ListBox.class).getFocusItem() + ".save");
         String [] d = ((String) screen.findNiftyControl("listBoxSave", ListBox.class).getFocusItem()).split(";")[1].split("-");
         String [] t = ((String) screen.findNiftyControl("listBoxSave", ListBox.class).getFocusItem()).split(";")[2].split("-");
@@ -345,13 +348,13 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
             
             //Setzt Scene
             Main.getWorld().setScene(rootElement.getAttribute("SceneName"));
+            Main.getWorld().getBeacon().setCollidable();
             
         } catch (Exception e) {
             e.printStackTrace();
         }
         
         crypt.encrypt(saveGame, saveGame);
-        
         continueGame();
     }
     
