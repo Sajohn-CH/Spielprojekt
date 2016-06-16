@@ -37,6 +37,7 @@ public class Main extends SimpleApplication implements ActionListener{
     private Highscores highscores;      //Die Highscores, die Angezeigt werden
     private ArrayList<String> sceneNames;
     private ArrayList<String> saveNames;
+    private Clock clock;
     
     /**
      * Startet das Spiel bzw. die Simple-Application und legt gewisse Einstellungen fest.
@@ -79,6 +80,9 @@ public class Main extends SimpleApplication implements ActionListener{
      */
     @Override
     public void simpleInitApp() {
+        this.clock = new Clock();
+        this.clock.startClock();
+        stateManager.attach(clock);
         assetManager.registerLoader(SceneDataLoader.class, "sceneData");
         assetManager.registerLoader(TextLoader.class, "credits", "txt");
         assetManager.registerLoader(PropertiesLoader.class, "properties");
@@ -394,5 +398,9 @@ public class Main extends SimpleApplication implements ActionListener{
     
     public Nifty getNifty(){
         return nifty;
+    }
+    
+    public Clock getClock(){
+        return this.clock;
     }
 }

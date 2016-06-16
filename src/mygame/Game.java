@@ -43,7 +43,7 @@ public class Game {
             }
         }
         reloadLanguage();
-        lastTime = System.currentTimeMillis();
+        lastTime = Main.app.getClock().getTime();
         nextTime = 100;
     }
     
@@ -51,6 +51,7 @@ public class Game {
      * Setzt wieviele Bomben generiert werden sollen.
      */
     public void startWave(){
+        lastTime = Main.app.getClock().getTime();
         HashMap<String, ArrayList<Integer>> map;
         for(int i = 0; i < classes.size(); i ++){
             map = generateBombsList(fromWave.get(i));
@@ -134,7 +135,7 @@ public class Game {
      * @param tpf Time per Frame
      */
     public void action(float tpf){
-        if(System.currentTimeMillis()-lastTime >= nextTime){
+        if(Main.app.getClock().getTime()-lastTime >= nextTime){
             if(classes.isEmpty()){
                 return;
             }
@@ -155,7 +156,7 @@ public class Game {
                     bombsLeft.get(bombClass).get("levels").remove(i);
                 }
             }
-            lastTime = System.currentTimeMillis();
+            lastTime = Main.app.getClock().getTime();
             nextTime = (long) ((Math.random()*10)*100);
         }
     }

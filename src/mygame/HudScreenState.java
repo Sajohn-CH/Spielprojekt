@@ -89,7 +89,7 @@ public class HudScreenState extends AbstractAppState implements ScreenController
     public void update(float tpf) {
         //Setzt Text im HUD
         if(buildPhase) {
-            long time = startWaveTime-System.currentTimeMillis();
+            long time = startWaveTime-Main.app.getClock().getTime();
             updateText("wave", Main.app.getSettings().getLanguageProperty("reloadWave", "Nächste Welle in") + " " + (time/1000));
         } else {
             updateText("wave", (Main.app.getSettings().getLanguageProperty("wave", "Welle:") + " " + Main.app.getGame().getWave()));
@@ -125,7 +125,7 @@ public class HudScreenState extends AbstractAppState implements ScreenController
             updateText("PlayerPos", "x: "+x+" y: "+y+" z: "+z);
         }
         
-        if(startWaveTime != 0 && startWaveTime <= System.currentTimeMillis()) {
+        if(startWaveTime != 0 && startWaveTime <= Main.app.getClock().getTime()) {
             startNextWave();
         }
         
@@ -530,7 +530,7 @@ public class HudScreenState extends AbstractAppState implements ScreenController
        endWavePopup.disable();
        Main.app.getFlyByCamera().setDragToRotate(false);
        cameraDragToRotate = false;
-       startWaveTime = System.currentTimeMillis()+10000;
+       startWaveTime = Main.app.getClock().getTime()+10000;
        buildPhase = true;
    }
    

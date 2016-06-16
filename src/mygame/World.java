@@ -42,6 +42,7 @@ public class World extends AbstractAppState{
     private Float bombMultiplier;
     private Float towerMultiplier;
     private AudioNode musicTheme;
+    private Clock clock;
     
     /**
      * Konstruktor. Lädt den Himmel, fügt die Szene hinzu und initialisiert alles.
@@ -426,6 +427,7 @@ public class World extends AbstractAppState{
      * @param pause true = pausieren, false = entpausieren (weiterfahren)
      */
     public void setPaused(boolean pause){
+        Main.app.getClock().setPaused(pause);
         this.setEnabled(!pause);
         player.stopAudio();
         player.setNotShootingAndHealing();
