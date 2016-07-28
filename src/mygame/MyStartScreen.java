@@ -24,6 +24,7 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import mygame.Entitys.Bomb;
 import mygame.Entitys.Player;
 import mygame.Entitys.Tower;
 import org.w3c.dom.Document;
@@ -312,6 +313,24 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
                 Tower tower = (Tower) towerClass.getConstructor(Vector3f.class, Vector3f.class).newInstance(position, up);
                 tower.setLevel(Integer.valueOf(towerElement.getAttribute("Level")));
                 tower.setHealth(Integer.valueOf(towerElement.getAttribute("Health")));
+                Element shootAt = (Element) towerElement.getElementsByTagName("ShootAt").item(0);
+                switch(shootAt.getAttribute("Place")){
+                    case "nearest":
+                        tower.setShootAt(true, false, false, false);
+                        break;
+                    case "furthest":
+                        tower.setShootAt(false, true, false, false);
+                        break;
+                    case "strongest":
+                        tower.setShootAt(false, false, true, false);
+                        break;
+                    case "weakest":
+                        tower.setShootAt(false, false, false, true);
+                        break;
+                    default:
+                        tower.setShootAt(true, false, false, false);
+                }
+                tower.setShootAt(Class.forName(shootAt.getAttribute("BombType")).asSubclass(Bomb.class), Boolean.valueOf(shootAt.getAttribute("AllBombs")));
                 Main.app.getWorld().addTower(tower);
             }
             
@@ -407,6 +426,11 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
                 up.setAttribute("y", String.valueOf(towers.get(i).getUp().getY()));
                 up.setAttribute("z", String.valueOf(towers.get(i).getUp().getZ()));
                 tower.appendChild(up);
+                Element shootAt = doc.createElement("ShootAt");
+                shootAt.setAttribute("Place", towers.get(i).getShootAt());
+                shootAt.setAttribute("BombType", towers.get(i).getShootAtBombsClass().getName());
+                shootAt.setAttribute("AllBombs", String.valueOf(towers.get(i).getShootAtAllBombs()));
+                tower.appendChild(shootAt);
                 world.appendChild(tower);
             }
             rootElement.appendChild(world);
