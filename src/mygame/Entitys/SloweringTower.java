@@ -112,7 +112,7 @@ public class SloweringTower extends Tower{
             Main.getBulletAppState().getPhysicsSpace().remove(towerC);
             line.removeFromParent();
         }
-        if(System.currentTimeMillis()-getLastShot() >= 50){
+        if(Main.app.getClock().getTime()-getLastShot() >= 50){
             line.removeFromParent();
         }
         if(this.getHealthPercentage() <= 20 && !this.lowHealthSignIsVisble()){

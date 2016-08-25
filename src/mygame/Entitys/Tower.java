@@ -127,7 +127,7 @@ public class Tower extends Entity{
      * @return Ob der Turm bereit zum Schiessen ist.
      */
     public boolean canShoot(){
-        if(System.currentTimeMillis() - shot >= 1000/shotsPerSecond){
+        if(Main.app.getClock().getTime() - shot >= 1000/shotsPerSecond){
             return true;
         }
         return false;
@@ -138,7 +138,7 @@ public class Tower extends Entity{
      * @param playAudio Ob Schusston abgespielt werden soll.
      */
     public void shot(boolean playAudio){
-        this.shot = System.currentTimeMillis();
+        this.shot = Main.app.getClock().getTime();
         if(shootAudio != null && playAudio){
             shootAudio.playInstance();
         }
@@ -235,7 +235,7 @@ public class Tower extends Entity{
      * Der Turm wurde zerstört. Den Turm entfernen und einen Feuereffekt für einen Moment anzeigen.
      */
     public void died(){
-        died = System.currentTimeMillis();
+        died = Main.app.getClock().getTime();
                 
         flame = new ParticleEmitter("Flame", Type.Point, 32);
         flame.setSelectRandomImage(true);
@@ -267,7 +267,7 @@ public class Tower extends Entity{
      * @return Ob Ob der Turm entfernt werden kann.
      */
     public boolean canRemove(){
-        if (System.currentTimeMillis() - died >= 10000){
+        if (Main.app.getClock().getTime() - died >= 10000){
             return true;
         }
         return false;

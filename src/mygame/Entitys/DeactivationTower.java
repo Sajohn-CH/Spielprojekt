@@ -11,6 +11,8 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Line;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import mygame.Main;
 
 /**
@@ -96,12 +98,12 @@ public class DeactivationTower extends Tower{
      */
     @Override
     public void action(float tpf) {
-        ShootingBomb bomb = (ShootingBomb) super.getBombToShootAt();
+        Bomb bomb = super.getBombToShootAt();
         if(bomb != null && bomb.getSpatial().getLocalTranslation().subtract(this.getSpatial().getLocalTranslation()).length() <= this.getRange() && this.canShoot()){
-            if(bomb.isShooting()){
+            if(!bomb.isNormal()){
                 this.getSpatial().lookAt(bomb.getSpatial().getLocalTranslation().add(Main.getWorld().getBombNode().getLocalTranslation()).setY(this.getSpatial().getLocalTranslation().getY()), this.getUp());
                 this.getSpatial().rotateUpTo(this.getUp());
-                this.disableShooting(bomb);
+                this.setNormal(bomb);
                 Line l = new Line(this.getSpatial().getLocalTranslation().add(this.getUp().normalize().mult(4)), bomb.getSpatial().getLocalTranslation());
                 line.setMesh(l);
                 Main.app.getRootNode().attachChild(line);
@@ -113,7 +115,7 @@ public class DeactivationTower extends Tower{
             Main.getBulletAppState().getPhysicsSpace().remove(towerC);
             line.removeFromParent();
         }
-        if(System.currentTimeMillis()-getLastShot() >= 50){
+        if(Main.app.getClock().getTime()-getLastShot() >= 50){
             line.removeFromParent();
         }
         if(this.getHealthPercentage() <= 20 && !this.lowHealthSignIsVisble()){
@@ -128,8 +130,8 @@ public class DeactivationTower extends Tower{
      * Entzieht der Bombe die Fähigkeit zu schiessen, indem die Methode {@link ShootingBomb#disableShooting() } aufgerufen wird.
      * @param b ShootingBomb der die Fähigkeit entzogen werden soll.
      */
-    private void disableShooting(Bomb b) throws ClassCastException{
-        ShootingBomb.class.cast(b).disableShooting();
+    private void setNormal(Bomb b) throws ClassCastException{
+        b.setNormal(true);
     }
         
     /**
@@ -205,11 +207,11 @@ public class DeactivationTower extends Tower{
      */
     @Override
     public boolean canShootAtBombsClass(Class <? extends Bomb> bombsClass){
-        try{
-            disableShooting(bombsClass.getConstructor(Integer.class).newInstance(1));
-        } catch (Exception e) {
-            return false;
-        }
+        try {
+            if(bombsClass.getConstructor(Integer.class).newInstance(1).isNormal()){
+                return false;
+            }
+        } catch (Exception e){};
         return true;
     }
 }

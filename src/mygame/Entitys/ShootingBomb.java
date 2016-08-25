@@ -33,13 +33,14 @@ public class ShootingBomb extends Bomb{
     public ShootingBomb(Integer level){
         super(level);
         super.setNormal(false);
+        super.setMoney(10);
         line = new Geometry("line");
         Material matL = new Material(Main.app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
         matL.setColor("Color", ColorRGBA.Yellow);
         line.setMaterial(matL);
         
         shooting = true;
-        shot = System.currentTimeMillis();
+        shot = Main.app.getClock().getTime();
         shotDamage = 10;
         
         n = new Node("shootingBomb");
@@ -70,7 +71,7 @@ public class ShootingBomb extends Bomb{
      * @return Ob die Zeit verstrichen ist, dass die Bombe wieder schiessen kann.
      */
     public boolean canShoot(){
-        if(System.currentTimeMillis() - shot >= 1000/shotsPerSecond && shooting){
+        if(Main.app.getClock().getTime() - shot >= 1000/shotsPerSecond && shooting){
             return true;
         }
         return false;
@@ -88,7 +89,7 @@ public class ShootingBomb extends Bomb{
      * Speichert den Zeitpunkt des letzten Schusses.
      */
     public void shot(){
-        this.shot = System.currentTimeMillis();
+        this.shot = Main.app.getClock().getTime();
     }
         
     /**
@@ -130,7 +131,7 @@ public class ShootingBomb extends Bomb{
         if(!this.isLiving()){
             line.removeFromParent();
         }
-        if(System.currentTimeMillis()-shot>= 50){
+        if(Main.app.getClock().getTime()-shot>= 50){
             line.removeFromParent();
         }
     }
@@ -150,10 +151,13 @@ public class ShootingBomb extends Bomb{
     /**
      * Entzieht die Fähigkeit des Schiessens.
      */
-    public void disableShooting(){
+    @Override
+    public void setNormal(boolean normal){
         shooting = false;
         super.setNormal(true);
-        n.getChild("gun").removeFromParent();
+        if(n != null){
+            n.getChild("gun").removeFromParent();
+        }
     }
     
     /**

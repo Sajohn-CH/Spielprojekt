@@ -261,7 +261,12 @@ public class Bomb extends Entity{
         return isNormal;
     }
     
-    protected void setNormal(boolean isNormal){
+    public void setNormal(boolean isNormal){
         this.isNormal = isNormal;
+        setMoney(5);
+    }
+    
+    protected void setMoney(int money){
+        this.money = money;
     }
 }
