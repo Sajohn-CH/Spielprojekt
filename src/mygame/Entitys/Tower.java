@@ -628,6 +628,7 @@ public class Tower extends Entity{
         shootAudio.setLooping(false);
         shootAudio.setRefDistance(2f);
         shootAudio.setLocalTranslation(this.getSpatial().getLocalTranslation());
+        shootAudio.setVolume((float) Main.app.getSettings().getVolumeEffectsEffective());
         Main.app.getRootNode().attachChild(shootAudio);
     }
     
