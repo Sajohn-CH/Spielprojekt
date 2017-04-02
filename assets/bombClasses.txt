@@ -1,2 +1,3 @@
 Bomb;0
 ShootingBomb;10
+RegeneratingBomb;5

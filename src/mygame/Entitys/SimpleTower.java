@@ -187,11 +187,14 @@ public class SimpleTower extends Tower{
      */
     @Override
     public boolean canShootAtBombsClass(Class <? extends Bomb> bombsClass){
+        int money = Main.app.getWorld().getPlayer().getMoney();
         try{
             makeDamage(bombsClass.getConstructor(Integer.class).newInstance(1));
         } catch (Exception e) {
+            Main.app.getWorld().getPlayer().setMoney(money);
             return false;
         }
+        Main.app.getWorld().getPlayer().setMoney(money);
         return true;
     }
 }
