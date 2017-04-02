@@ -330,7 +330,11 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
                     default:
                         tower.setShootAt(true, false, false, false);
                 }
-                tower.setShootAt(Class.forName(shootAt.getAttribute("BombType")).asSubclass(Bomb.class), Boolean.valueOf(shootAt.getAttribute("AllBombs")));
+                ArrayList<Class<? extends Bomb>> bombTypes = new ArrayList<>();
+                for(int j = 0; j < shootAt.getAttributes().getLength()-1; j++){
+                    bombTypes.add(Class.forName(shootAt.getAttribute("BombType" + j)).asSubclass(Bomb.class));
+                }
+                tower.setShootAt(bombTypes);
                 Main.app.getWorld().addTower(tower);
             }
             
@@ -428,8 +432,10 @@ public class MyStartScreen extends AbstractAppState implements ScreenController{
                 tower.appendChild(up);
                 Element shootAt = doc.createElement("ShootAt");
                 shootAt.setAttribute("Place", towers.get(i).getShootAt());
-                shootAt.setAttribute("BombType", towers.get(i).getShootAtBombsClass().getName());
-                shootAt.setAttribute("AllBombs", String.valueOf(towers.get(i).getShootAtAllBombs()));
+                ArrayList<Class <? extends Bomb>> bombsClass = towers.get(i).getShootAtBombsClass();
+                for(int j = 0; j < bombsClass.size(); j++){
+                    shootAt.setAttribute("BombType" + j, bombsClass.get(j).getName());
+                }
                 tower.appendChild(shootAt);
                 world.appendChild(tower);
             }

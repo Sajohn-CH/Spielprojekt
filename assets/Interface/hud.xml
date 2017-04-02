@@ -208,7 +208,7 @@
                             </panel>
                         </panel>
                         <panel id="#buttonsShootingBomb" childLayout="center" width="50%" height="90%">
-                            <control id="dropdownShootAtBomb" name="dropDown" width="100%" focusable="false" align="center" valign="center" color="#0000" visibleToMouse="true"></control>
+                            <control id="listBoxShootAtBomb" name="listBox" width="100%" vertical="optional" horizontal="optional" displayItems="4" forceSelection="true" selectionMode="Multiple" />
                         </panel>
                     </panel>
                 </panel>

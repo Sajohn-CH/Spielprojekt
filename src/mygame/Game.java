@@ -29,7 +29,6 @@ public class Game {
         this.wave = wave;
         this.bombsLeft = new HashMap<>();
         this.classes = new ArrayList<>();
-        this.classes = new ArrayList<>();
         this.fromWave = new ArrayList<>();
         this.classToLanguageString = new HashMap<>();
         this.languageStringToClass = new HashMap<>();
@@ -163,7 +162,6 @@ public class Game {
     
     public ArrayList<String> getPossibleBombTypes(){
         ArrayList<String> bombTypes = new ArrayList<>();
-        bombTypes.add(Main.app.getSettings().getLanguageProperty("allBombs"));
         for(int i = 0; i < classes.size(); i++){
             bombTypes.add(classToLanguageString.get(classes.get(i)));
         }

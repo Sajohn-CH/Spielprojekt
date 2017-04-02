@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import mygame.Entitys.Bomb;
 
 
 /**
@@ -328,21 +329,19 @@ public class HudScreenState extends AbstractAppState implements ScreenController
             towerPopup.findNiftyControl("strongest", CheckBox.class).uncheck();
             towerPopup.findNiftyControl("weakest", CheckBox.class).check();
        }
-       DropDown shootAtBomb = towerPopup.findNiftyControl("dropdownShootAtBomb", DropDown.class);
+       ListBox shootAtBomb = towerPopup.findNiftyControl("listBoxShootAtBomb", ListBox.class);
        shootAtBomb.clear();
        ArrayList<String> bombTypes = Main.app.getGame().getPossibleBombTypes();
-       if(tower.canShootAtAllBombs()){
-           shootAtBomb.addItem(bombTypes.get(0));
-       }
-       for(int i = 1; i < bombTypes.size(); i++){
+       for(int i = 0; i < bombTypes.size(); i++){
            if(tower.canShootAtBombsClass(Main.app.getGame().getBombType(bombTypes.get(i)))){
                shootAtBomb.addItem(bombTypes.get(i));
            }
        }
-       if (tower.getShootAtAllBombs()){
-           shootAtBomb.selectItemByIndex(0);
-       } else {
-           shootAtBomb.selectItem(tower.getShootAtBombsString());
+       for(int i = 0; i < tower.getShootAtBombsString().size(); i++){
+            shootAtBomb.selectItem(tower.getShootAtBombsString().get(i));
+       }
+       if(!tower.getShootAtBombsString().contains(shootAtBomb.getItems().get(0).toString())){
+           shootAtBomb.deselectItemByIndex(0);
        }
        
        nifty.showPopup(screen, towerPopup.getId(), null);  
@@ -428,12 +427,12 @@ public class HudScreenState extends AbstractAppState implements ScreenController
         if(tower == null){
             return;
         }
-        DropDown shootAtBomb = screen.findNiftyControl("dropdownShootAtBomb", DropDown.class);
-        if(shootAtBomb.getSelection().equals(Main.app.getSettings().getLanguageProperty("allBombs"))){
-            tower.setShootAtAllBombs();
-            return;
+        ListBox shootAtBomb = screen.findNiftyControl("listBoxShootAtBomb", ListBox.class);
+        ArrayList<Class<? extends Bomb>> bombClass = new ArrayList<>();
+        for (int i = 0; i < shootAtBomb.getSelection().size(); i++){
+            bombClass.add(Main.app.getGame().getBombType(shootAtBomb.getSelection().get(i).toString()));
         }
-        tower.setShootAt(Main.app.getGame().getBombType((String) shootAtBomb.getSelection()), false);
+        tower.setShootAt(bombClass);
     }
     
     public void openRemoveTowerPopup(){
