@@ -266,6 +266,10 @@ public class Bomb extends Entity{
         setMoney(5);
     }
     
+    protected int getMoney(){
+        return money;
+    }
+    
     protected void setMoney(int money){
         this.money = money;
     }
